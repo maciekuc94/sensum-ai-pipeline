@@ -61,7 +61,6 @@ This loop is how the framework improves over time.
 tools/          # Python scripts for deterministic execution
 workflows/      # Markdown SOPs defining what to do and how
 .env            # API keys and environment variables (NEVER store secrets anywhere else)
-credentials.json, token.json  # Google OAuth (gitignored)
 ```
 
 **Core principle:** Local files are just for processing. Anything I need to see or use lives in cloud services. Everything in `.tmp/` is disposable.
@@ -136,16 +135,12 @@ Complete pipeline — run in this order. Each agent reads its **Input** and writ
 | 8 | `agent8_publish.py` | Claude Sonnet 4.6 + web scrape | `04`, `06`, `02` outputs | `md/07_publish_package.md` |
 | 9 | `agent9_images.py` | Gemini 3 Pro Image Preview | `05_image_prompts.md` | `images/image_*.png` |
 | 10 | `agent10_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |
-| 11 | `agent11_analytics_fetch.py` | YouTube APIs | OAuth | `outputs/channel/analytics_latest.json` |
-| 12 | `agent12_analytics_report.py` | Claude Opus 4.7 + Sheets API | `analytics_latest.json` | Google Sheets + `md/12_report_*.md` |
 
 **Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously. Agent 7 depends on Agent 6. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
 
 **Quality gate — Agent 4b:** Scores opening hook (Tier 1: ≥8/10 at 37 words; Tier 2: ≥7/10 at 200 words). Verdict must be `RECORD` before recording voiceover. Modifies `04_script_final.md` in place; backup saved to `04_script_final.bak.md`.
 
 **Novelty check — Agent 3n:** Compares new draft against all prior `outputs/*/md/06_script_narration.md` files (the shipped corpus). First video ever produces `SKIPPED` verdict automatically — that is correct behavior.
-
-**Analytics pipeline (post-publication, independent):** Agents 11 and 12 run on their own cadence. Agent 11 fetches raw YouTube metrics to JSON; Agent 12 synthesizes insights and pushes to Google Sheets.
 
 ## Bottom Line
 

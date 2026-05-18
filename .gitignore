@@ -1,0 +1,12 @@
+.env
+credentials.json
+token.json
+token_youtube.json
+client_secret_*.json
+__pycache__/
+*.pyc
+.superpowers/
+.tmp/
+.pytest_cache/
+*.bak.md
+outputs/

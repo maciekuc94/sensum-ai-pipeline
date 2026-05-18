@@ -128,7 +128,7 @@ Agent 3 has not been run yet for this slug, or the slug is misspelled.
 
 ```bash
 # Run Agent 3 first:
-python tools/agent3_chain.py "emotional-dysregulation-in-adhd"
+python tools/agent3.py "emotional-dysregulation-in-adhd"
 # Then run Agent 4a:
 python tools/agent4a_edit.py "emotional-dysregulation-in-adhd"
 ```

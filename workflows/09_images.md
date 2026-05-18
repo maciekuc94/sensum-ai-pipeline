@@ -2,284 +2,276 @@
 
 ## Purpose
 
-Agent 9 reads the `05_image_prompts.md` file produced by Agent 5 and generates
-actual PNG images using Vertex AI Imagen. It runs in two phases separated by a
-human review step so you can refine prompts before spending API credits on
-generation.
+Agent 9 reads the `md/05_image_prompts.md` file produced by **Agent 5** and
+renders each prompt as a PNG using **Gemini 3 Pro Image Preview** on Vertex AI.
+It runs in two phases separated by a human review step so prompts can be
+refined before spending API credits on generation.
+
+The image-prompt content itself is **owned by Agent 5** (`tools/agent5_visuals.py`).
+Agent 9 is a renderer — it does not generate or rewrite prompts.
 
 ---
 
 ## Prerequisites
 
-1. **Agent 4 must have run successfully.** The file
-   `outputs/[slug]/04_script_final.md` must exist and contain `[IMAGE: ...]`
-   markers.
+1. **Agent 5 must have run successfully.** The file
+   `outputs/[slug]/md/05_image_prompts.md` must exist. If it does not, run:
+   ```bash
+   PYTHONIOENCODING=utf-8 python tools/agent5_visuals.py "<slug>"
+   ```
 
 2. **Google Cloud project** — set in `.env` at the project root:
    ```
    GOOGLE_CLOUD_PROJECT=my-gcp-project-id
    ```
-   Optionally override the default region:
-   ```
-   GOOGLE_CLOUD_LOCATION=us-central1
-   ```
+   Region is hard-coded to `global` — Gemini 3 Pro Image Preview returns 404 on
+   regional endpoints.
 
 3. **Application Default Credentials** — authenticate once per workstation:
    ```bash
    gcloud auth application-default login
    ```
-   The script uses ADC automatically; no service-account key file is required.
 
 4. **Python dependencies installed:**
-   ```
+   ```bash
    pip install -r requirements.txt
    ```
-   The `google-cloud-aiplatform` package must be present for image generation.
 
 ---
 
-## Phase 1: Extract Prompts
+## Phase 1: Verify prompts file
 
-Run the script without `--generate` to extract all `[IMAGE: ...]` markers and
-expand them into full Imagen prompts:
+Run the script with no flags to confirm `05_image_prompts.md` exists and
+report the parsed prompt count:
 
 ```bash
-python tools/agent9_images.py "emotional-dysregulation-in-adhd"
+PYTHONIOENCODING=utf-8 python tools/agent9_images.py "<slug>"
 ```
 
 Expected output:
 
 ```
 === Agent 9: Image Generation — Phase 1 Check ===
-Slug : emotional-dysregulation-in-adhd
+Slug : <slug>
 
-[1/3] Reading 04_script_final.md...
-  Topic : emotional dysregulation in ADHD
-  Script length: 9,430 characters
+Agent 5 writes 05_image_prompts.md directly.
+Run Agent 5 if you have not already:
+  python tools/agent5_visuals.py "<slug>"
 
-[2/3] Extracting [IMAGE: ...] markers...
-  Found 8 image marker(s)
+  Found existing md/05_image_prompts.md with 76 prompt(s).
 
-[3/3] Saving 05_image_prompts.md...
-  Saved: outputs/emotional-dysregulation-in-adhd/05_image_prompts.md
-
-Found 8 prompt(s). Review and edit 05_image_prompts.md, then run:
-  python tools/agent9_images.py "emotional-dysregulation-in-adhd" --generate
+Review and edit md/05_image_prompts.md, then generate images:
+  python tools/agent9_images.py "<slug>" --generate
 ```
 
-**What it does:**
-- Reads the final script and finds every `[IMAGE: ...]` marker using a regex
-- Appends a fixed style suffix to each description to produce a full Imagen prompt
-- Saves all prompts to `05_image_prompts.md` for your review
-
-**Output:** `outputs/[slug]/05_image_prompts.md`
+If the file does not exist, the command exits with a clear pointer to run
+Agent 5 first.
 
 ---
 
-## Phase 2: Review Prompts
+## Phase 2: Review prompts
 
-Open `outputs/[slug]/05_image_prompts.md` before running generation. Each block
-looks like this:
+Open `outputs/[slug]/md/05_image_prompts.md` before running generation. Each
+block looks like this:
 
 ```markdown
 ## Image 001
-**Script marker:** [IMAGE: a brain split into two halves]
+**Sentence:** "You are 27. Or 32. Or 41."
+**Beat:** opening_hook
 **Imagen prompt:**
-a brain split into two halves, flat vector illustration, soft warm color palette, dark background, psychology/mental health theme, minimal and modern, 16:9 aspect ratio
+a completely androgynous faceless gender-neutral human mannequin figure with
+a smooth featureless blank oval head — [...full CHARACTER_DESCRIPTION...].
+A faceless figure holds a phone in both hands, thumbs positioned for scrolling.
+minimalist high-contrast ink illustration on clean flat white background,
+color palette strictly limited to #582F0E dark brown ink lines on white —
+[...full STYLE_SUFFIX...] — 16:9 aspect ratio
 ```
 
 **What to check and edit:**
 
-- Does the prompt accurately represent what should appear at that moment in the
-  script? Cross-reference the surrounding narration if needed.
-- Is the subject specific enough for Imagen to render correctly? Vague
-  descriptions like "emotions" generate inconsistent results — add visual
-  specifics ("two overlapping circles, one red one blue, person standing
-  between them").
-- Are there any prompts with human faces or complex text? Imagen struggles with
-  both — rephrase to avoid them (see Limitations below).
-- Does the style suffix feel appropriate? You can edit the suffix per-image
-  directly in this file before running Phase 2. The script reads whatever is
-  in `05_image_prompts.md` at generation time.
-- Is the emotional tone of each image consistent with the script's arc?
-  (empathy → science → empowerment)
+- Does the prompt accurately represent the moment in the script? Cross-reference
+  the surrounding narration if needed.
+- Is the visual specific enough? Vague abstractions ("emotions", "thoughts")
+  produce inconsistent renders — replace with concrete posture, props, and
+  spatial cues.
+- The character description and style suffix are already embedded in each
+  prompt (prepended/appended by Agent 5). Edits to them propagate only to the
+  one prompt you edit.
+- Watch for unintended faces, head-cropping, or readable text — the negative
+  prompt blocks these, but prompts that explicitly request them will still
+  fight the negative.
 
-Edit `05_image_prompts.md` freely. The script reads the file as-is, so any
-changes you make here are what gets sent to Imagen.
+Edit the file freely. Agent 9 reads it as-is at Phase 2 time.
 
 ---
 
-## Phase 3: Generate Images
+## Phase 3: Generate images
 
-Once you are satisfied with the prompts, run with the `--generate` flag:
+Once the prompts are approved, run with `--generate`:
 
 ```bash
-python tools/agent9_images.py "emotional-dysregulation-in-adhd" --generate
+PYTHONIOENCODING=utf-8 python tools/agent9_images.py "<slug>" --generate
 ```
+
+Optional flags:
+- `--start N` — start from prompt N (1-based).
+- `--limit N` — render only N prompts.
+- `--grain N` — apply film grain at intensity N to freshly-generated images.
 
 Expected output:
 
 ```
 === Agent 9: Image Generation — Phase 2 (Generate Images) ===
-Slug : emotional-dysregulation-in-adhd
+Slug : <slug>
 
-[1/3] Reading 05_image_prompts.md...
-  Loaded 8 prompt(s)
+[1/3] Reading md/05_image_prompts.md...
+  Loaded 76 prompt(s)
 
 [2/3] Initialising Vertex AI Imagen...
   Project  : my-gcp-project-id
-  Location : us-central1
-  Model    : imagen-4.0-ultra-generate-001
+  Location : global
+  Model    : gemini-3-pro-image-preview
 
-[3/3] Generating 8 image(s)...
-  [1/8] Generating image_001.png...
-  Saved: outputs/emotional-dysregulation-in-adhd/images/image_001.png
-  [2/8] Generating image_002.png...
-  Saved: outputs/emotional-dysregulation-in-adhd/images/image_002.png
+[3/3] Generating 76 image(s)...
+  [1/76] Generating image_001.png...
+  Saved: outputs/<slug>/images/image_001.png
+  Waiting 20s (rate limit)...
   ...
-
-Generated 8/8 images.
-Images saved to: outputs/emotional-dysregulation-in-adhd/images
 ```
 
 **What it does:**
-- Reads `05_image_prompts.md` and parses the Imagen prompts
-- Calls Vertex AI `imagen-4.0-ultra-generate-001` for each prompt (one image per call)
-- Saves each result as a zero-padded PNG: `image_001.png`, `image_002.png`, etc.
-- If an individual image fails, prints a warning and continues rather than
-  aborting the batch
+- Parses each `**Imagen prompt:**` block from `md/05_image_prompts.md`.
+- Appends a short negative instruction (face suppression, color-drift
+  suppression, head-cropping suppression) to each prompt.
+- Calls `gemini-3-pro-image-preview` with `response_modalities=["IMAGE"]`.
+- Saves the result as `image_NNN.png`.
+- Post-processes: resizes/pillarboxes to 1920×1080 with `#F4E5CA` padding,
+  then enforces the brand background color by replacing near-white pixels
+  (`>248` in all channels) with exact `#F4E5CA`.
+- Waits 20 s between calls to stay under the Vertex AI quota.
+
+Existing files at the target path are skipped — to re-render a single image,
+delete `image_NNN.png` first.
 
 **Output:** `outputs/[slug]/images/image_001.png`, `image_002.png`, ...
 
 ---
 
-## Reviewer Checklist
+## Auxiliary modes
 
-After generation, open the images folder and work through these questions:
+### `--correct-bg` — background correction pass
 
-- Do images match the script context at the timestamp where each marker appears?
-- Is the visual style consistent across all images (palette, illustration style,
-  overall mood)?
-- Are there any images with text artifacts, garbled words, or visible distortions?
-- Does the color palette feel appropriate for the topic? (Dark background with
-  warm accents is the default; adjust per-prompt in `05_image_prompts.md` and
-  regenerate only those images if needed.)
+Copies `images/` to `images_corrected/` and replaces near-white pixels with
+exact `#F4E5CA`. Useful if you regenerated images outside the standard pipeline
+and need to enforce brand background color.
 
-If individual images need to be regenerated, edit the specific prompt in
-`05_image_prompts.md` and rerun Phase 2. Existing images are overwritten by
-filename, so only the changed ones need attention.
+```bash
+PYTHONIOENCODING=utf-8 python tools/agent9_images.py "<slug>" --correct-bg
+```
+
+### `--apply-grain N` — grain pass
+
+Copies images (from `images_corrected/` if it exists, otherwise `images/`) to
+`images_grain/` with Gaussian film grain at intensity N applied. Standard
+intensity is 12.
+
+```bash
+PYTHONIOENCODING=utf-8 python tools/agent9_images.py "<slug>" --apply-grain 12
+```
+
+### `--sync-scripts` — insert cue markers
+
+Updates `md/04_script_final.md` so each row in `md/05_image_prompts.md` has a
+matching `[IMAGE_NNN]` cue marker inserted before the sentence it illustrates.
+This is for editor reference during recording — it does not affect Agent 6
+narration (Agent 6 strips these defensively).
+
+```bash
+PYTHONIOENCODING=utf-8 python tools/agent9_images.py "<slug>" --sync-scripts
+```
 
 ---
 
-## Image Style
+## Image Style (enforced by Agent 5, not Agent 9)
 
-The default style suffix appended to every prompt enforces the SENSUM brand aesthetic:
+The bichromatic SENSUM contract — `#F4E5CA` background + `#582F0E` ink only,
+19th-century scientific etching, no facial features, no text — is enforced by
+Agent 5 when it constructs each prompt. The `CHARACTER_DESCRIPTION` and
+`STYLE_SUFFIX` constants live in `tools/utils.py` and are imported by Agent 5.
 
-```
-minimalist high-contrast ink illustration on clean flat white background,
-color palette strictly limited to #582F0E dark brown ink lines on white — no other colors whatsoever,
-technique: detailed cross-hatching for depth and shadow, fine-liner ink sketch, 2D perspective, heavy negative space,
-style: 19th-century scientific journal engraving, zero photorealism, no gradients, no glows, no blurs,
-no golden ochre, no moss green, no watercolor, no color fills,
-absolutely no text, no words, no letters, no numbers, no labels anywhere,
-16:9 aspect ratio
-```
-
-Background is applied in post-processing: after generation the `--correct-bg` pass replaces near-white pixels with exact `#F4E5CA`.
-
-A consistent character description is also prepended to every prompt — a faceless gender-neutral mannequin figure with a blank oval head, drawn entirely in ink lines with cross-hatching — to maintain visual continuity across all images in a video.
-
-This suffix is **baked into the code** (`STYLE_SUFFIX` and `CHARACTER_DESCRIPTION` constants in `tools/agent9_images.py`) and applied automatically during Phase 1. To use a different style for a specific image, edit the `**Imagen prompt:**` line in `05_image_prompts.md` directly before running Phase 2 — the code reads whatever is in the file.
-
-To change the default style for all future runs, update `STYLE_SUFFIX` in `tools/agent9_images.py` and update this workflow doc to match.
+To change the default style, edit `tools/utils.py` and rerun Agent 5. Agent 9
+does **not** re-apply the style — it just renders whatever is in
+`md/05_image_prompts.md`.
 
 ---
 
 ## Limitations
 
-- **Text rendering** — Imagen frequently distorts or misrenders text within
-  images. Avoid prompts that ask for readable words, labels, or numbers.
-  Describe visual metaphors instead.
+- **Text rendering** — Gemini frequently distorts text within images. The
+  style suffix forbids text and the negative prompt suppresses it, but prompts
+  that explicitly describe books, papers, or signs may still produce garbled
+  characters. Describe these as objects (e.g. "open book") without naming
+  what is written.
 
-- **Human faces** — Realistic faces are unreliable and may trigger safety
-  filters. Use silhouettes, abstract figures, or icon-style representations
-  of people.
+- **Faces** — Despite explicit negative prompts, Gemini occasionally renders
+  faint facial features on figures. Re-render affected images by deleting the
+  file and rerunning Phase 2.
 
-- **Complex scenes** — Prompts with more than two or three interacting elements
-  tend to produce cluttered or incoherent results. Keep each prompt focused on
-  a single clear subject.
+- **Consistency across images** — Gemini does not maintain visual consistency
+  between separate calls. The repeated `CHARACTER_DESCRIPTION` reduces drift
+  but does not eliminate it.
 
-- **Consistency across images** — Imagen does not maintain visual consistency
-  between separate calls. The style suffix helps, but colors and illustration
-  style will vary slightly. If tight consistency is needed, consider
-  post-processing or manual adjustments.
+- **Rate limit** — Vertex AI Gemini 3 Pro Image Preview has a low QPM quota.
+  Agent 9 spaces calls 20 s apart. A 76-image script takes ~25 minutes.
 
-- **API quota** — Each image is one API call. Large scripts with many IMAGE
-  markers will consume quota quickly. Review prompts carefully before running
-  Phase 2 to avoid regenerating images unnecessarily.
+- **Stochasticity** — Re-running the same prompt produces a different render.
+  This is expected behavior of the model.
 
 ---
 
 ## Common Issues
 
-**"Output file not found" on Phase 1**
+**`md/05_image_prompts.md not found`**
 
-Agent 4 has not been run yet for this slug, or the slug is misspelled.
-
+Agent 5 has not been run for this slug. Run it first:
 ```bash
-python tools/agent4a_edit.py "emotional-dysregulation-in-adhd"
-python tools/agent9_images.py "emotional-dysregulation-in-adhd"
+PYTHONIOENCODING=utf-8 python tools/agent5_visuals.py "<slug>"
 ```
 
-**"No [IMAGE: ...] markers found"**
+**`Header says N images but M prompt blocks were parsed`**
 
-The final script does not contain any IMAGE markers. Add markers in the format
-`[IMAGE: description of visual]` to `04_script_final.md` and rerun Phase 1.
+The `Total images:` line in the prompts file and the actual block count
+disagree. Usually means the file was hand-edited and a block was added or
+removed without updating the header. Generation proceeds with the parsed
+count; fix the header for clarity.
 
-**"05_image_prompts.md not found" on Phase 2**
+**`Failed to initialise Vertex AI`**
 
-Phase 1 has not been run yet. Run it first:
-
-```bash
-python tools/agent9_images.py "emotional-dysregulation-in-adhd"
-```
-
-**"GOOGLE_CLOUD_PROJECT is missing or empty"**
-
-Add your GCP project ID to `.env`:
-```
-GOOGLE_CLOUD_PROJECT=my-gcp-project-id
-```
-
-**"Failed to initialise Vertex AI"**
-
-Your Application Default Credentials are missing or expired. Re-authenticate:
+Application Default Credentials are missing or expired:
 ```bash
 gcloud auth application-default login
 ```
 
-**Individual image warnings during generation**
+**Individual `Failed to generate image_NNN.png` warnings**
 
-A warning like `Warning: Failed to generate image_003.png — ...` means one
-image failed but the rest continued. Check the error detail, fix the prompt
-in `05_image_prompts.md`, and rerun Phase 2 (the successful images will be
-overwritten but are unchanged).
+One image failed (safety filter, transient API error, etc.) but the rest
+continued. Inspect the warning, fix the prompt in `md/05_image_prompts.md`,
+delete the failing PNG (or run with `--start NNN --limit 1`), and rerun
+Phase 2.
 
 ---
 
 ## Output Location
 
 ```
-outputs/
-└── emotional-dysregulation-in-adhd/
-    ├── 01_research.md             (Agent 1 output)
-    ├── 02_verified_research.md    (Agent 2 output)
-    ├── 03_script_draft.md         (Agent 3 output)
-    ├── 04_script_final.md         (Agent 4a output)
-    ├── 05_image_prompts.md        (Agent 5 output — input for Agent 9)
-    ├── 05_image_prompts.md           (Agent 9 Phase 1 output — human-reviewed)
-    └── images/
-        ├── image_001.png          (Agent 9 Phase 2 output)
-        ├── image_002.png
-        └── ...
+outputs/<slug>/
+├── md/
+│   ├── 04_script_final.md         (Agent 4b output)
+│   └── 05_image_prompts.md        (Agent 5 output — Agent 9 input)
+├── images/                         (Agent 9 --generate output)
+│   ├── image_001.png
+│   ├── image_002.png
+│   └── ...
+├── images_corrected/               (--correct-bg output, optional)
+└── images_grain/                   (--apply-grain output, optional)
 ```

@@ -241,14 +241,24 @@ def log_cost(slug: str, agent: str, data: dict) -> None:
     log_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
 
 
-def export_to_docx(slug: str, md_filename: str, docx_filename: str) -> Path:
+def export_to_docx(
+    slug: str,
+    md_filename: str,
+    docx_filename: str,
+    sentence_per_line: bool = False,
+) -> Path:
     """Convert a markdown file in the output dir to a .docx Word document.
 
     Handles: H1/H2/H3 headings, bullet lines (- ...), bold (**text**), GFM
     pipe tables, and plain paragraphs. Horizontal rules (---) are skipped.
 
+    When ``sentence_per_line`` is True, plain paragraphs are split on sentence
+    boundaries (.!?) so each sentence becomes its own docx paragraph. Headings,
+    bullets, and tables are unaffected.
+
     Returns the path to the written .docx file.
     """
+    _sentence_split_re = re.compile(r"(?<=[.!?])\s+(?=\S)")
     from docx import Document
 
     md_text = read_output(slug, md_filename)
@@ -348,8 +358,16 @@ def export_to_docx(slug: str, md_filename: str, docx_filename: str) -> Path:
             # Blank line — skip
             continue
         else:
-            para = doc.add_paragraph()
-            _add_inline(para, stripped)
+            if sentence_per_line:
+                for sentence in _sentence_split_re.split(stripped):
+                    sentence = sentence.strip()
+                    if not sentence:
+                        continue
+                    para = doc.add_paragraph()
+                    _add_inline(para, sentence)
+            else:
+                para = doc.add_paragraph()
+                _add_inline(para, stripped)
 
     _flush_table()  # in case the file ends with a table
 

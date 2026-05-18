@@ -1,15 +1,22 @@
 """
 Agent 9: Image Generation
-Reads the final script produced by Agent 4, extracts all [IMAGE: ...] markers,
-expands them into full image prompts, and (optionally) generates the
-images via Gemini 3 Pro Image Preview on Vertex AI (location=global).
+
+Reads `md/05_image_prompts.md` produced by Agent 5 (which is the source of
+truth for image prompts in the current pipeline) and renders each prompt to
+a PNG via Gemini 3 Pro Image Preview on Vertex AI (location=global).
 
 Two-phase workflow:
-  Phase 1 — Extract prompts (run first, then review 05_image_prompts.md):
+  Phase 1 — Verify prompts file exists (Agent 5 must have run first):
       python tools/agent9_images.py "slug"
 
-  Phase 2 — Generate images (run after reviewing/editing prompts):
+  Phase 2 — Generate images:
       python tools/agent9_images.py "slug" --generate
+
+Auxiliary modes:
+  --correct-bg    Replace near-white pixels with #F4E5CA in existing images.
+  --apply-grain N Apply film grain at intensity N to existing images.
+  --sync-scripts  Insert [IMAGE_NNN] cue markers into 04_script_final.md
+                  aligned with the rows in 05_image_prompts.md.
 """
 
 import argparse
@@ -17,11 +24,9 @@ import re
 import sys
 import os
 import time
-import json
-from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from tools.utils import read_output, write_output, get_output_dir, get_env, export_to_docx, CHARACTER_DESCRIPTION, STYLE_SUFFIX
+from tools.utils import read_output, write_output, get_output_dir, get_env
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -44,22 +49,6 @@ NEGATIVE_PROMPT = (
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-
-def _extract_topic_from_script(script_content: str) -> str:
-    """Extract the topic from the first heading of the final script file."""
-    for line in script_content.splitlines():
-        line = line.strip()
-        if line.startswith("# Script Final:"):
-            return line[len("# Script Final:"):].strip()
-        if line.startswith("# "):
-            return line[2:].strip()
-    return "Unknown Topic"
-
-
-def _extract_image_markers(script_content: str) -> list[str]:
-    """Return all [IMAGE: description] descriptions found in the script."""
-    return re.findall(r'\[IMAGE:\s*([^\]]+)\]', script_content)
 
 
 # Exact sage beige background color from SENSUM palette
@@ -102,212 +91,6 @@ def _add_grain(image_path, intensity: int = 10) -> None:
     Image.fromarray(arr).save(str(image_path))
 
 
-def _clean_script_for_sentences(script_content: str) -> str:
-    """Strip non-narration content (markers, headers, metadata) from the script."""
-    text = script_content
-    text = re.sub(r'\[IMAGE:[^\]]+\]', '', text)
-    text = re.sub(r'\[EDITOR NOTE:[^\]]+\]', '', text)
-    text = re.sub(r'^#.*$', '', text, flags=re.MULTILINE)
-    text = re.sub(r'^---.*$', '', text, flags=re.MULTILINE)
-    text = re.sub(r'^(Generated:|Model:|Estimated duration:|Editor notes).*$', '', text, flags=re.MULTILINE)
-    text = re.sub(r'\n{3,}', '\n\n', text)
-    return text.strip()
-
-
-def _extract_script_image_pairs(script_content: str) -> list[dict]:
-    """Split script by [IMAGE: ...] markers, return (script_visual, sentence) pairs."""
-    sections = re.split(r'\[IMAGE:\s*([^\]]+)\]', script_content)
-    # sections = [pre_text, marker1, text_after_1, marker2, text_after_2, ...]
-    if len(sections) < 3:
-        return []
-
-    pairs = []
-    for i in range(1, len(sections) - 1, 2):
-        script_visual = sections[i].strip()
-        following = sections[i + 1]
-        following = re.sub(r'\[EDITOR NOTE:[^\]]+\]', '', following)
-        following = re.sub(r'^#.*$', '', following, flags=re.MULTILINE)
-        following = re.sub(r'^---.*$', '', following, flags=re.MULTILINE)
-        following = re.sub(r'^(Generated:|Model:|Estimated duration:).*$', '', following, flags=re.MULTILINE)
-        following = following.strip()
-        sentences = re.split(r'(?<=[.!?])\s+', following)
-        sentence_group = ' '.join(s.strip() for s in sentences[:3] if s.strip())
-        if sentence_group and script_visual:
-            pairs.append({"script_visual": script_visual, "sentence": sentence_group})
-
-    return pairs
-
-
-HAIKU_MODEL = "claude-haiku-4-5-20251001"
-HAIKU_MAX_TOKENS = 8192
-
-
-def _call_claude_for_json(
-    client,
-    system: str,
-    batches: list[str],
-    *,
-    temperature: float | None = None,
-    label: str = "Calling Haiku",
-) -> tuple[list[dict], dict]:
-    """Run a Claude Haiku call per batch, strip JSON fencing, return concatenated items + usage."""
-    all_items: list[dict] = []
-    total_usage = {"model": HAIKU_MODEL, "input_tokens": 0, "output_tokens": 0}
-
-    for i, batch in enumerate(batches, start=1):
-        print(f"  {label} batch {i}/{len(batches)}...")
-        kwargs: dict = dict(
-            model=HAIKU_MODEL,
-            max_tokens=HAIKU_MAX_TOKENS,
-            system=system,
-            messages=[{"role": "user", "content": batch}],
-        )
-        if temperature is not None:
-            kwargs["temperature"] = temperature
-        message = client.messages.create(**kwargs)
-
-        raw = message.content[0].text.strip()
-        if raw.startswith("```"):
-            raw = re.sub(r'^```[a-z]*\n?', '', raw)
-            raw = re.sub(r'\n?```$', '', raw)
-
-        all_items.extend(json.loads(raw))
-        total_usage["input_tokens"] += message.usage.input_tokens
-        total_usage["output_tokens"] += message.usage.output_tokens
-
-    return all_items, total_usage
-
-
-def _enhance_script_visuals(pairs: list[dict]) -> tuple[list[dict], dict]:
-    """Use Haiku to refine script-embedded [IMAGE: ...] descriptions into production-ready visuals."""
-    import anthropic
-
-    system = (
-        "You are a visual director writing image descriptions for a YouTube psychology video rendered in 19th-century scientific etching style.\n\n"
-        "For each JSON entry you receive, you will see:\n"
-        "- 'script_visual': the scriptwriter's image description (your primary source)\n"
-        "- 'sentence': the narration text this image illustrates\n\n"
-        "YOUR TASK: produce a refined 'visual' description that:\n"
-        "1. Preserves the scene setting and action from 'script_visual' — keep what is specific\n"
-        "2. Expands it to 40-60 words with concrete props, spatial positioning, and body language\n"
-        "3. Shows emotion through POSTURE ONLY — no facial expressions, no faces\n"
-        "4. Uses 'sentence' as context to understand the emotional beat — then find an unexpected, vivid way to show it\n\n"
-        "BE INVENTIVE with composition — vary these across the set:\n"
-        "- Close-up: just hands holding an object, two hands in different gestures, a detail of posture\n"
-        "- Overhead: figure viewed from directly above, small in a large empty floor\n"
-        "- Wide: figure tiny against a large object or architectural element (doorway, wall, staircase)\n"
-        "- Two-figure contrast: left/right split showing before vs after, alone vs connected, trapped vs free\n"
-        "- Sequential: one figure shown twice in the same frame at different moments (ghost posture, faded duplicate)\n"
-        "- Object-forward: the prop dominates the frame, figure interacts with it from the side\n\n"
-        "FORBIDDEN — remove or replace:\n"
-        "- 'glowing' / 'illuminated' / 'lit' → describe the object without light effect (e.g. 'phone screen', 'laptop')\n"
-        "- 'scribbles', 'tangled lines', 'jagged marks' floating around a figure → remove entirely\n"
-        "- 'dim', 'dark', 'shadowed' environment → remove; background is always clean white\n"
-        "- Any readable text, labels, numbers, or digits on objects\n\n"
-        "GOOD EXAMPLES (match this level of specificity):\n"
-        "- 'Faceless figure perched on the edge of a bed, one hand resting limp on a face-down phone on the mattress, spine bowed forward, shoulders drawn inward'\n"
-        "- 'Overhead view: faceless figure lying flat on a bare floor, arms spread slightly outward, seen from directly above, surrounded by empty space'\n"
-        "- 'Two faceless figures side by side — left one stands with shoulders collapsed, right one stands upright with arms open; wide gap between them'\n"
-        "- 'Close-up of two hands: one hand open and releasing a small rectangular shape, the other hand empty and open below it'\n"
-        "- 'Faceless figure dwarfed beside a tall doorframe, one hand on the frame edge, entire body small against the architectural scale'\n\n"
-        "Return a JSON array with no markdown fencing:\n"
-        '[{"sentence": "exact sentence from input", "visual": "refined scene description"}, ...]'
-    )
-
-    mid = len(pairs) // 2
-    batches = [
-        json.dumps(pairs[:mid], ensure_ascii=False, indent=2),
-        json.dumps(pairs[mid:], ensure_ascii=False, indent=2),
-    ]
-
-    client = anthropic.Anthropic(api_key=get_env("ANTHROPIC_API_KEY"))
-    return _call_claude_for_json(client, system, batches, temperature=1, label="Enhancing prompts")
-
-
-def _generate_literal_prompts(script_content: str) -> tuple[list[dict], dict]:
-    """Call Claude Haiku in batches to produce one literal visual description per sentence."""
-    import anthropic
-
-    clean_text = _clean_script_for_sentences(script_content)
-
-    system = (
-        "You are generating image descriptions for a YouTube psychology video. "
-        "Your single job: convert each sentence into a LITERAL, DRAWABLE visual scene.\n\n"
-        "TRANSLATION RULES — most important:\n"
-        "- If the script names specific people, objects, or places — show them exactly: "
-        "'woman with a sourdough kitchen' → faceless figure standing at a kitchen counter with a rustic sourdough loaf; "
-        "'guy announcing his startup' → faceless figure standing before a small group, arms open, a building silhouette behind him\n"
-        "- If the script describes an action — show the action: "
-        "'you scrolled past her post' → a hand holding a phone, thumb mid-swipe across the screen\n"
-        "- If the script states a psychological concept — find its most concrete physical form: "
-        "'nervous system perceives a threat' → character standing rigid, shoulders drawn up, weight shifted back\n"
-        "- Abstract metaphors are your cue to go concrete: "
-        "'you carry that weight' → character hunched forward, a heavy dark shape pressing down on their upper back\n\n"
-        "CHARACTER RULES:\n"
-        "- Every person in the scene is FACELESS: smooth blank oval head, NO eyes, nose, mouth, ears, or hair\n"
-        "- NEVER describe facial expressions — convey ALL emotion through posture only\n"
-        "- NEVER describe readable text, numbers, or digits on any object (a clock is 'a clock', not '2:00 AM')\n"
-        "- NEVER describe darkness, dim lighting, glowing light sources, or shadows — "
-        "background is always clean flat white\n\n"
-        "GROUPING RULES:\n"
-        "- Group 2–3 consecutive sentences ONLY when they show the IDENTICAL visual scene\n"
-        "- A new location, object, or action = a new entry\n"
-        "- Every sentence must be covered by exactly one entry\n\n"
-        "Return a JSON array with no markdown fencing:\n"
-        '[{"sentence": "exact sentence(s) from script", "visual": "one concrete drawable scene, max 20 words"}, ...]'
-    )
-
-    # Split into two halves to stay within Haiku's 8192 output token limit
-    paragraphs = [p.strip() for p in clean_text.split("\n\n") if p.strip()]
-    mid = len(paragraphs) // 2
-    batches = [
-        "\n\n".join(paragraphs[:mid]),
-        "\n\n".join(paragraphs[mid:]),
-    ]
-
-    client = anthropic.Anthropic(api_key=get_env("ANTHROPIC_API_KEY"))
-    return _call_claude_for_json(client, system, batches, label="Generating prompts")
-
-
-def _build_imagen_prompt(description: str) -> str:
-    # If the marker still uses the old structured format, extract only the scene= content
-    scene_match = re.search(r'scene=(.+)', description, re.DOTALL)
-    scene = scene_match.group(1).strip() if scene_match else description.strip()
-    return CHARACTER_DESCRIPTION + ". " + scene + ", " + STYLE_SUFFIX
-
-
-def _build_prompts_file(topic: str, items: list[dict]) -> str:
-    """Build the 05_image_prompts.md content from a list of {sentence, visual} dicts."""
-    today = date.today().isoformat()
-    count = len(items)
-
-    lines = [
-        f"# Image Prompts: {topic}",
-        f"Generated: {today}",
-        f"Source: {SCRIPT_FILENAME}",
-        f"Total images: {count}",
-        "",
-        "Review and edit these prompts before generating. "
-        "Each prompt feeds directly into Vertex AI Imagen.",
-        "",
-        "---",
-    ]
-
-    for i, item in enumerate(items, start=1):
-        imagen_prompt = _build_imagen_prompt(item["visual"])
-        lines += [
-            "",
-            f"## Image {i:03d}",
-            f'**Sentence:** "{item["sentence"].strip()}"',
-            "**Imagen prompt:**",
-            imagen_prompt,
-            "",
-            "---",
-        ]
-
-    return "\n".join(lines) + "\n"
-
-
 def _parse_prompts_from_file(content: str) -> list[str]:
     """
     Parse the Imagen prompts from 05_image_prompts.md.
@@ -341,11 +124,11 @@ def _parse_prompts_from_file(content: str) -> list[str]:
 
 
 def extract_and_save_prompts(slug: str) -> None:
-    """Phase 1 (legacy): check that 05_image_prompts.md was produced by Agent 5."""
+    """Phase 1: verify that 05_image_prompts.md was produced by Agent 5."""
     print(f"\n=== Agent 9: Image Generation — Phase 1 Check ===")
     print(f"Slug : {slug}")
     print()
-    print("Agent 5 now writes 05_image_prompts.md directly.")
+    print("Agent 5 writes 05_image_prompts.md directly.")
     print("Run Agent 5 if you have not already:")
     print(f'  python tools/agent5_visuals.py "{slug}"')
     print()

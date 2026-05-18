@@ -91,11 +91,28 @@ Scripts using the Historical Reversal narrative architecture may name Darwin as 
 **Image generation — Agent 9**
 Agent 9 uses `gemini-3-pro-image-preview` via Vertex AI with `location="global"` (regional endpoints return 404 for this model). The API is `generate_content(response_modalities=["IMAGE"])` — not `generate_images()`. The negative prompt is embedded in the prompt text, not passed as a parameter. Aspect ratio is handled post-generation via `ImageOps.pad()` (pillarbox with #F4E5CA sage beige — no stretching, no cropping). Image prompts use a clean flat white background (defined in `STYLE_SUFFIX` in `utils.py`); #F4E5CA is applied as post-processing via `--correct-bg` (PIL-only). The `--transparent`/`rembg` path was removed — see plan `enumerated-doodling-lovelace.md` F4.
 
-**Thumbnail generation — agent_thumbnails.py**
-Run after Agent 8 (needs `07_publish_package.md`) and Agent 9 is optional. Two-step: Claude Opus 4.7 generates 5 distinct thumbnail concepts (one per composition type), then Gemini renders each. Output goes to `thumbnails/` (with grain) or `thumbnails_no_grain/` (without). Prompts are saved to `thumbnail_prompts.md` for reference. Flags: `--no-grain` (skip grain post-processing), `--reuse-prompts` (skip Claude step, reload saved prompts), `--indices 1,4` (only generate those prompt numbers), `--count 3` (generate N variations per prompt — named `thumbnail_01_v1.png` etc). Rate limit: 20s between Vertex AI calls. Gemini is stochastic — exact pixel-identical re-runs are impossible; `--reuse-prompts` reuses the same prompt text but produces new renders.
+**Thumbnail generation — agent10_thumbnails.py**
+Run after Agent 8 (needs `07_publish_package.md`) and Agent 9 is optional. Two-step: Claude Opus 4.7 generates 5 distinct thumbnail concepts (one per composition type), then Gemini renders each at 1920×1080. Run with `--no-grain` — grain is applied manually in Canva after adding the title text overlay. Prompts are saved to `thumbnail_prompts.md` for reference. Flags: `--no-grain` (recommended), `--reuse-prompts` (skip Claude step, reload saved prompts), `--indices 1,4` (only generate those prompt numbers), `--count 3` (generate N variations per prompt — named `thumbnail_01_v1.png` etc). Rate limit: 20s between Vertex AI calls. Gemini is stochastic — exact pixel-identical re-runs are impossible; `--reuse-prompts` reuses the same prompt text but produces new renders.
 
 **Agent 8 web scraping**
 `agent8_publish.py` scrapes Google Autocomplete and YouTube search results for SEO tags. This is fragile — if Google/YouTube changes their HTML, the scraper returns an empty tag list silently and the rest of the output is fine. If the tags section in `07_publish_package.md` looks empty or short, the scraper has broken; add tags manually.
+
+## Quick Command Reference
+
+All agents (except 0 and 1) take a **slug** — the output directory name under `outputs/`. Never pass the raw topic after Agent 1.
+
+```bash
+# Standard invocation:
+PYTHONIOENCODING=utf-8 python tools/agentN_name.py "<slug>"
+
+# List existing slugs:
+ls outputs/
+```
+
+**Agents that take a TOPIC:** Agent 0 (`--topic` flag), Agent 1 (positional arg). All others take a slug.  
+**Before running any agent:** verify the previous agent's output exists in `outputs/{slug}/md/`.  
+**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously.  
+**For flags and error recovery:** see the matching `workflows/NN_name.md` file.
 
 ## Agent Chain
 
@@ -118,11 +135,11 @@ Complete pipeline — run in this order. Each agent reads its **Input** and writ
 | 7 (optional) | `agent7_tts.py` | Gemini Flash TTS / Chirp3 HD | `06_script_narration.md` | `tts/*.wav` |
 | 8 | `agent8_publish.py` | Claude Sonnet 4.6 + web scrape | `04`, `06`, `02` outputs | `md/07_publish_package.md` |
 | 9 | `agent9_images.py` | Gemini 3 Pro Image Preview | `05_image_prompts.md` | `images/image_*.png` |
-| T | `agent_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |
+| 10 | `agent10_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |
 | 11 | `agent11_analytics_fetch.py` | YouTube APIs | OAuth | `outputs/channel/analytics_latest.json` |
 | 12 | `agent12_analytics_report.py` | Claude Opus 4.7 + Sheets API | `analytics_latest.json` | Google Sheets + `md/12_report_*.md` |
 
-**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously. Agent 7 depends on Agent 6. Agent 9 depends on Agent 5. `agent_thumbnails.py` depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
+**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously. Agent 7 depends on Agent 6. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
 
 **Quality gate — Agent 4b:** Scores opening hook (Tier 1: ≥8/10 at 37 words; Tier 2: ≥7/10 at 200 words). Verdict must be `RECORD` before recording voiceover. Modifies `04_script_final.md` in place; backup saved to `04_script_final.bak.md`.
 

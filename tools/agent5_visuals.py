@@ -36,9 +36,11 @@ systematically — assigning a visual scene to each moment.
 ## Output Format
 
 Return a JSON array with no markdown fencing:
-[{"sentence": "exact quoted sentence(s) from the script", "visual": "40-60 word image description", "beat": "<beat name from the architecture below>"}, ...]
+[{"sentence": "exact quoted sentence(s) from the script", "visual": "40-60 word image description", "beat": "<beat name from the architecture below>", "include_figure": true|false}, ...]
 
 The `beat` field is required. Use the exact beat name from the architecture's Beat Sequence below.
+
+The `include_figure` field is required — `true` when the scene meaningfully needs the faceless figure, `false` when the scene is better served by an object, environment, anatomical diagram, or pure absence. See the "When to Include the Figure" section below.
 
 ## Pacing Rules
 
@@ -75,8 +77,41 @@ objects, environments, or postures
 - **Theatre tableau**: three or more figures arranged in a stage-like composition, frozen mid-gesture, \
 centered, slightly stylized
 
-Still-life is the *only* composition where the faceless figure may be absent. All other compositions \
-require at least one figure.
+Any composition may be rendered without a figure when the scene's meaning lives in absence, \
+in objects, in an environment, or in an anatomical/diagrammatic mechanism — see the next section.
+
+## When to Include the Figure
+
+The faceless figure is the SIGNATURE element of this channel — it carries embodied emotion, the \
+feeling of being a person inside a body. But not every sentence is about a person. Some sentences \
+are about absence, signals, objects, mechanisms, or pure environment. For those, the figure becomes \
+a generic intrusion that dilutes the meaning. Treat the figure as a precious resource you spend, \
+not a default you stamp.
+
+For EACH visual, decide whether the scene meaningfully requires the faceless figure to convey what \
+the sentence is doing. Set `include_figure: true` only when the answer is YES.
+
+INCLUDE the figure when:
+- The sentence is about a person doing, holding, carrying, releasing, collapsing, rising, or \
+  sitting with something.
+- The emotional weight lives in a body — interior burden made physical, embodied tension, \
+  self-confrontation, two states of a self side-by-side.
+- The sentence asks the viewer to FEEL like they are the figure.
+
+OMIT the figure when:
+- The sentence is about an absence ("nothing happened", "no one called", "no funeral").
+- The meaning is a list of objects, places, or signals (an empty chair, an empty mailbox, a \
+  single closed door, a half-empty glass).
+- The sentence describes a psychological mechanism that reads more clearly as an anatomical \
+  cutaway, a cross-section, or a 19th-century scientific diagram than as a person.
+- The scene is pure environment — a hallway, an empty room, a horizon.
+- A symbolic object carries the meaning more powerfully than any body would.
+
+When in doubt, ask: does the sentence want the viewer to see a *person*, or to see *what a person \
+is left with*?
+
+CALIBRATION: across the full set, expect roughly 50–70% include_figure=true. If your output is \
+90%+ figures, you are under-using absence. If 30% or below, you are losing the channel's signature.
 
 ## Beat Sequence & Visual Register
 
@@ -91,9 +126,14 @@ require at least one figure.
 
 ## Character Rules
 
-Every human figure is FACELESS: blank smooth oval head, no eyes, no nose, no mouth, no ears, no hair. \
-Completely androgynous body. Convey ALL emotion through posture and body position only — never describe \
-a facial expression.
+If a scene includes a figure (`include_figure: true`), that figure is FACELESS: blank smooth oval head, \
+no eyes, no nose, no mouth, no ears, no hair. Completely androgynous body. Convey ALL emotion through \
+posture and body position only — never describe a facial expression.
+
+If a scene omits the figure (`include_figure: false`), do not invent body parts or implied silhouettes. \
+The composition stands on its objects, its environment, or its anatomical/diagrammatic structure. \
+Anatomical fragments (a sectioned chest, a cross-section of a hand) are permissible without counting \
+as a "figure" — they live in the diagrammatic register and `include_figure` stays `false`.
 
 ## Framing Rule (CRITICAL)
 
@@ -120,6 +160,8 @@ Examples to avoid:
 
 ## Good Examples (match this specificity and length)
 
+**With figure (`include_figure: true`):**
+
 - "Faceless figure perched on the edge of a bed, one hand resting limp on a face-down phone on the \
 mattress, spine bowed forward, shoulders drawn inward"
 - "Overhead view: faceless figure lying flat on a bare floor, arms spread slightly outward, seen from \
@@ -132,6 +174,21 @@ and open below it"
 the architectural scale"
 - "Faceless figure seated at a desk, one hand flat on a closed book, other arm hanging loose at the side, \
 torso leaning slightly back"
+
+**Without figure (`include_figure: false`):**
+
+- "An empty wooden chair with a straight back angled slightly toward an open empty doorway on a plain \
+bare floor, the doorway framing only hollow white emptiness beyond"
+- "An empty rural mailbox mounted on a weathered wooden post, its small metal door hanging open on a \
+slack hinge, the interior hollow with fine cross-hatched darkness, the red flag lowered and still"
+- "Cross-section anatomical diagram of a human chest cavity in 19th-century scientific etching style, \
+the ribcage opened like a delicate cabinet, each rib finely articulated in cross-hatched ink, a small \
+nested chamber at center"
+- "A tipped antique hourglass on its side with fine sand spilling in a delicate curving stream onto a \
+plain surface, beside it a single glass vessel half-filled with water, one round droplet suspended \
+mid-fall above its surface"
+- "A single closed wooden door at the end of a long bare corridor, no figure, the corridor walls drawn \
+in receding parallel cross-hatched lines, heavy negative space, the door rendered as the sole subject"
 
 ## Script Cleaning
 
@@ -388,9 +445,15 @@ def _clean_script(script_content: str) -> str:
     return text.strip()
 
 
-def _build_imagen_prompt(visual: str) -> str:
-    """Assemble the full Imagen prompt from a visual description."""
-    return CHARACTER_DESCRIPTION + ". " + visual.strip() + ", " + STYLE_SUFFIX
+def _build_imagen_prompt(visual: str, include_figure: bool = True) -> str:
+    """Assemble the full Imagen prompt from a visual description.
+
+    Prepends CHARACTER_DESCRIPTION only when the scene includes the faceless figure.
+    When include_figure is False, the visual stands alone as object/environment/diagram.
+    """
+    if include_figure:
+        return CHARACTER_DESCRIPTION + ". " + visual.strip() + ", " + STYLE_SUFFIX
+    return visual.strip() + ", " + STYLE_SUFFIX
 
 
 def _build_phrases_file(topic: str, items: list[dict]) -> str:
@@ -427,32 +490,26 @@ def _build_prompts_file(topic: str, items: list[dict], architecture: str = "") -
     ]
 
     for i, item in enumerate(items, start=1):
-        imagen_prompt = _build_imagen_prompt(item["visual"])
+        include_figure = bool(item.get("include_figure", True))
+        imagen_prompt = _build_imagen_prompt(item["visual"], include_figure)
         beat = item.get("beat", "").strip()
+        figure_line = f"**Figure:** {'yes' if include_figure else 'no'}"
         header = f"## Image {i:03d}"
+
+        # Beat + Figure rendered as separate field lines so agent9's tolerant
+        # regex `## Image \d+\n(?:\*\*[^*]+\*\*[^\n]*\n)*?\*\*Sentence:\*\*`
+        # keeps working unchanged.
+        entry = ["", header]
         if beat:
-            # Beat rendered on a separate field line so agent9's regex
-            # (## Image \d+\n**Sentence:**) keeps working unchanged.
-            entry = [
-                "",
-                header,
-                f"**Beat:** {beat}",
-                f'**Sentence:** "{item["sentence"].strip()}"',
-                "**Imagen prompt:**",
-                imagen_prompt,
-                "",
-                "---",
-            ]
-        else:
-            entry = [
-                "",
-                header,
-                f'**Sentence:** "{item["sentence"].strip()}"',
-                "**Imagen prompt:**",
-                imagen_prompt,
-                "",
-                "---",
-            ]
+            entry.append(f"**Beat:** {beat}")
+        entry.append(figure_line)
+        entry += [
+            f'**Sentence:** "{item["sentence"].strip()}"',
+            "**Imagen prompt:**",
+            imagen_prompt,
+            "",
+            "---",
+        ]
         lines += entry
 
     return "\n".join(lines) + "\n"

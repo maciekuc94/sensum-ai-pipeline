@@ -91,7 +91,12 @@ def main(slug: str) -> None:
 
     output_path.write_text(output, encoding="utf-8")
 
-    docx_path = export_to_docx(slug, "md/06_script_narration.md", "docx/06_script_narration.docx")
+    docx_path = export_to_docx(
+        slug,
+        "md/06_script_narration.md",
+        "docx/06_script_narration.docx",
+        sentence_per_line=True,
+    )
 
     words = word_count(cleaned_body)
     print(f"=== Agent 6: Narration Script ===")

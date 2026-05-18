@@ -190,7 +190,7 @@ def main() -> None:
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
         print("\nRun Agent 3 first:")
-        print(f'  python tools/agent3_chain.py "{slug}"')
+        print(f'  python tools/agent3.py "{slug}"')
         sys.exit(1)
 
     topic = _extract_topic_from_script(script_content)

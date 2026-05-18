@@ -6,7 +6,7 @@ Two-step process:
   2. Gemini 3 Pro Image Preview (Vertex AI) renders each one
 
 Usage:
-    PYTHONIOENCODING=utf-8 python tools/agent_thumbnails.py <slug>
+    PYTHONIOENCODING=utf-8 python tools/agent10_thumbnails.py <slug>
 """
 
 import sys
@@ -236,7 +236,7 @@ def _generate_image(
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: PYTHONIOENCODING=utf-8 python tools/agent_thumbnails.py <slug> [--no-grain] [--reuse-prompts]")
+        print("Usage: PYTHONIOENCODING=utf-8 python tools/agent10_thumbnails.py <slug> [--no-grain] [--reuse-prompts]")
         sys.exit(1)
 
     slug = sys.argv[1]

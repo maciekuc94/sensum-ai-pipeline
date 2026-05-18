@@ -94,7 +94,7 @@ Slug : emotional-dysregulation-in-adhd
 Saved: outputs/emotional-dysregulation-in-adhd/md/02_verified_research.md
 
 Done. Review the output, then run Agent 3:
-  python tools/agent3_chain.py "emotional-dysregulation-in-adhd"
+  python tools/agent3.py "emotional-dysregulation-in-adhd"
 ```
 
 ---
@@ -247,5 +247,5 @@ claims have been reviewed, run Agent 3 to produce the first draft of the video
 script:
 
 ```bash
-python tools/agent3_chain.py "emotional-dysregulation-in-adhd"
+python tools/agent3.py "emotional-dysregulation-in-adhd"
 ```

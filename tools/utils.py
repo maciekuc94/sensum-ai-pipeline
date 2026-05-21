@@ -16,8 +16,8 @@ from slugify import slugify
 # ---------------------------------------------------------------------------
 
 STYLE_SUFFIX = (
-    "minimalist high-contrast ink illustration on clean flat white background, "
-    "color palette strictly limited to #582F0E dark brown ink lines on white — no other colors whatsoever, "
+    "minimalist high-contrast ink illustration on clean flat #F4E5CA aged vellum paper background, "
+    "color palette strictly limited to #582F0E dark brown ink lines on #F4E5CA sage beige — no other colors whatsoever, "
     "technique: detailed cross-hatching for depth and shadow, fine-liner ink sketch, 2D perspective, heavy negative space, "
     "style: 19th-century scientific journal engraving, zero photorealism, no 3D effects, no gradients, no glows, no blurs, "
     "no green, no golden ochre, no moss green, no watercolor, no color fills, "
@@ -77,8 +77,8 @@ def make_slug(topic: str) -> str:
     Convert a topic string to a filesystem-safe slug.
 
     Examples:
-        "emotional dysregulation in ADHD" -> "emotional-dysregulation-in-adhd"
-        "What is depression?" -> "what-is-depression"
+        "emotional dysregulation in ADHD" -> "emotional_dysregulation_in_adhd"
+        "What is depression?" -> "what_is_depression"
 
     Args:
         topic: The topic string to slugify
@@ -86,7 +86,22 @@ def make_slug(topic: str) -> str:
     Returns:
         A filesystem-safe slug
     """
-    return slugify(topic, separator="-", lowercase=True)
+    return slugify(topic, separator="_", lowercase=True)
+
+
+def next_output_number() -> int:
+    """Return the next sequential video output number by scanning outputs/ for N_ prefixes."""
+    outputs_dir = Path(__file__).parent.parent / "outputs" / "videos"
+    max_n = 0
+    if outputs_dir.exists():
+        for entry in outputs_dir.iterdir():
+            if entry.is_dir():
+                m = re.match(r"^(\d+)_", entry.name)
+                if m:
+                    n = int(m.group(1))
+                    if n > max_n:
+                        max_n = n
+    return max_n + 1
 
 
 def get_output_dir(slug: str) -> Path:
@@ -101,7 +116,7 @@ def get_output_dir(slug: str) -> Path:
     Returns:
         Path to the output directory (e.g., outputs/emotional-dysregulation-in-adhd)
     """
-    output_dir = Path(__file__).parent.parent / "outputs" / slug
+    output_dir = Path(__file__).parent.parent / "outputs" / "videos" / slug
     for subdir in ("images", "md", "docx", "tts"):
         (output_dir / subdir).mkdir(parents=True, exist_ok=True)
     return output_dir
@@ -170,7 +185,7 @@ def load_style_guide(filename: str = "style_guide.md") -> str:
         FileNotFoundError: If the file doesn't exist, with a helpful message.
     """
     project_root = Path(__file__).parent.parent
-    path = project_root / "workflows" / filename
+    path = project_root / "workflows" / "guides" / filename
     if not path.exists():
         raise FileNotFoundError(
             f"Style guide not found at: {path}\n"
@@ -212,7 +227,7 @@ def query_claude(
             }
             return text, usage
         except anthropic.APIStatusError as exc:
-            if exc.status_code in (429, 503) and attempt < 4:
+            if exc.status_code in (429, 503, 529) and attempt < 4:
                 wait = 15 * (2 ** (attempt - 1))
                 print(f"  API rate limited — waiting {wait}s before retry {attempt}/3...")
                 time.sleep(wait)
@@ -246,6 +261,8 @@ def export_to_docx(
     md_filename: str,
     docx_filename: str,
     sentence_per_line: bool = False,
+    no_spacing: bool = False,
+    preserve_blank_lines: bool = False,
 ) -> Path:
     """Convert a markdown file in the output dir to a .docx Word document.
 
@@ -260,6 +277,12 @@ def export_to_docx(
     """
     _sentence_split_re = re.compile(r"(?<=[.!?])\s+(?=\S)")
     from docx import Document
+    from docx.shared import Pt
+
+    def _apply_spacing(para):
+        if no_spacing:
+            para.paragraph_format.space_before = Pt(0)
+            para.paragraph_format.space_after = Pt(0)
 
     md_text = read_output(slug, md_filename)
     doc = Document()
@@ -325,7 +348,7 @@ def export_to_docx(
                 cell.text = ""
                 para = cell.paragraphs[0]
                 _add_inline(para, cell_text)
-        doc.add_paragraph()  # spacer after table
+        _apply_spacing(doc.add_paragraph())  # spacer after table
         table_buffer.clear()
 
     for line in md_text.splitlines():
@@ -343,20 +366,24 @@ def export_to_docx(
         _flush_table()
 
         if stripped.startswith("### "):
-            doc.add_heading(stripped[4:], level=3)
+            _apply_spacing(doc.add_heading(stripped[4:], level=3))
         elif stripped.startswith("## "):
-            doc.add_heading(stripped[3:], level=2)
+            _apply_spacing(doc.add_heading(stripped[3:], level=2))
         elif stripped.startswith("# "):
-            doc.add_heading(stripped[2:], level=1)
+            _apply_spacing(doc.add_heading(stripped[2:], level=1))
         elif stripped.startswith("- ") or stripped.startswith("* "):
             para = doc.add_paragraph(style="List Bullet")
             _add_inline(para, stripped[2:])
+            _apply_spacing(para)
         elif stripped.startswith("---"):
             # Horizontal rule — skip
             continue
         elif stripped == "":
-            # Blank line — skip
-            continue
+            if preserve_blank_lines:
+                blank = doc.add_paragraph()
+                _apply_spacing(blank)
+            else:
+                continue
         else:
             if sentence_per_line:
                 for sentence in _sentence_split_re.split(stripped):
@@ -365,9 +392,17 @@ def export_to_docx(
                         continue
                     para = doc.add_paragraph()
                     _add_inline(para, sentence)
+                    _apply_spacing(para)
+                    if preserve_blank_lines and re.search(r"\[visual pause\]", sentence, re.IGNORECASE):
+                        extra = doc.add_paragraph()
+                        _apply_spacing(extra)
             else:
                 para = doc.add_paragraph()
                 _add_inline(para, stripped)
+                _apply_spacing(para)
+                if preserve_blank_lines and re.search(r"\[visual pause\]", stripped, re.IGNORECASE):
+                    extra = doc.add_paragraph()
+                    _apply_spacing(extra)
 
     _flush_table()  # in case the file ends with a table
 
@@ -375,3 +410,44 @@ def export_to_docx(
     output_path = output_dir / docx_filename
     doc.save(str(output_path))
     return output_path
+
+
+# ---------------------------------------------------------------------------
+# Film grain (shared by agent9_images, agent10_thumbnails, tools/dev/add_grain)
+# ---------------------------------------------------------------------------
+
+GRAIN_INTENSITY_DEFAULT = 12  # SENSUM standard — Gaussian std-dev on 0–255 scale
+
+
+def add_grain(
+    image_path,
+    *,
+    intensity: int = GRAIN_INTENSITY_DEFAULT,
+    out_path=None,
+    rng_seed: int | None = None,
+) -> Path:
+    """
+    Apply Gaussian film grain to a single PNG.
+
+    When `out_path` is None the image is overwritten in place; otherwise the
+    result is written to `out_path` (parent directory must already exist).
+    Set `rng_seed` for deterministic noise — the batch tool uses 42 so re-runs
+    are reproducible.
+    """
+    import numpy as np
+    from PIL import Image
+
+    src = Path(image_path)
+    dst = Path(out_path) if out_path is not None else src
+    img = Image.open(str(src))
+    mode = img.mode if img.mode in ("RGB", "RGBA") else "RGB"
+    arr = np.array(img.convert(mode), dtype=np.int16)
+    rng = np.random.default_rng(rng_seed) if rng_seed is not None else np.random.default_rng()
+    if mode == "RGBA":
+        noise = rng.normal(0, intensity, arr[:, :, :3].shape).astype(np.int16)
+        arr[:, :, :3] = np.clip(arr[:, :, :3] + noise, 0, 255)
+    else:
+        noise = rng.normal(0, intensity, arr.shape).astype(np.int16)
+        arr = np.clip(arr + noise, 0, 255)
+    Image.fromarray(arr.astype(np.uint8), mode).save(str(dst))
+    return dst

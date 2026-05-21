@@ -95,9 +95,8 @@ The final script was shorter than expected. Go back and check `04_script_final.m
 
 ## Next Step
 
-Once you have reviewed the narration script, run Agent 7 (optional) for TTS reference audio, then Agent 8 for the publish package:
+Once you have reviewed the narration script, run Agent 8 for the publish package:
 
 ```bash
-python tools/pipeline/agent7_tts.py "{slug}"       # optional — TTS reference audio
 python tools/pipeline/agent8_publish.py "{slug}"   # titles, hooks, Shorts, metadata
 ```

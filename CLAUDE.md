@@ -59,9 +59,9 @@ This loop is how the framework improves over time.
 ```
 .tmp/                    # Temporary files (scraped data, intermediate exports). Regenerated as needed.
 tools/
-  pipeline/              # Agent scripts 0–10 (the full production chain)
+  pipeline/              # Agent scripts 0–6, 8–10 + align (the full production chain)
   intelligence/          # Agent 11 + intelligence module (analyzer, collector, db, slide_builder, vision)
-  dev/                   # Support tools: add_grain.py, test_visual_approaches.py
+  dev/                   # Support tools: add_grain.py
   utils.py               # Shared utilities (all agents import from here)
 workflows/
   pipeline/              # Numbered SOPs 00–11 (one per agent step)
@@ -80,9 +80,6 @@ outputs/
 **Color palette:** Two colors only — #F4E5CA (Sage Beige, exclusive background, always described as aged vellum paper texture) and #582F0E (Dark Brown, all ink lines, cross-hatching, and silhouettes). No other colors permitted in any generated visual, slide, chart, or asset. The illustration style is Scientific Etching: fine-liner ink sketches with cross-hatching for depth, referencing 19th-century scientific journal engravings. No gradients, no fills, no watercolor. No text, no labels, no words in any generated image.
 
 ## Technical Notes
-
-**Agent 7 TTS — currently blocked**
-`tools/pipeline/agent7_tts.py` sets `MODEL_VERIFIED = False` and refuses to run. The hardcoded `GEMINI_TTS_MODEL = "gemini-3.1-flash-tts-preview"` was authored speculatively and was never confirmed against the Vertex AI catalog. Before next TTS run: confirm the current Flash TTS preview model name (Vertex console or `gcloud ai models list`), update `GEMINI_TTS_MODEL`, and flip `MODEL_VERIFIED = True`. Until then any invocation exits with code 1.
 
 **Claude API routing**
 `query_claude()` in `tools/utils.py` uses the direct Anthropic API (`anthropic.Anthropic` + `ANTHROPIC_API_KEY`), not Vertex AI. `claude-opus-4-7` is not available in the `visual-studio-code-494218` GCP project via Vertex AI — do not revert to `AnthropicVertex` for Claude calls.
@@ -169,13 +166,12 @@ All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelli
 | 4b **(gate)** | `pipeline/agent4b_hook.py` | Claude Sonnet 4.6 | `04_script_final.md` | `md/04b_hook_score.md` + revised `04_script_final.md` in place |
 | 5 | `pipeline/agent5_visuals.py` | Claude Opus 4.7 | `04_script_final.md` | `md/05_image_prompts.md` |
 | 6 | `pipeline/agent6_narration.py` | deterministic | `04_script_final.md` | `md/06_script_narration.md` |
-| 7 (optional, **currently blocked**) | `pipeline/agent7_tts.py` | Gemini Flash TTS / Chirp3 HD | `06_script_narration.md` | `tts/*.wav` |
 | 8 | `pipeline/agent8_publish.py` | Claude Sonnet 4.6 + web scrape | `04`, `06`, `02` outputs | `md/07_publish_package.md` |
 | 9 **(manual)** | `pipeline/agent9_images.py` | Gemini 3 Pro Image Preview | `05_image_prompts.md` | `images/image_*.png` |
 | 10 **(manual)** | `pipeline/agent10_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |
 | Align **(post-record)** | `pipeline/agent_align.py` | faster-whisper (local, free) | `voiceover/voiceover.wav` + `05_image_phrases.md` + `06_script_narration.md` | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` |
 
-**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously. Agent 7 depends on Agent 6. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
+**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
 
 **Manual agents — never run automatically:** Agents 9 and 10 generate images and thumbnails (cost + time). Always stop the pipeline after Agent 8 completes and wait for explicit instruction before running either.
 

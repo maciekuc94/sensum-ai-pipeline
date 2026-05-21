@@ -62,12 +62,6 @@ outputs/videos/{slug}/md/    outputs/videos/{slug}/md/      outputs/videos/{slug
   05_image_prompts.md          06_script_narration.md         07_publish_package.md
   05_image_phrases.md
     │                              │                              │
-    │                              ▼                              │
-    │                       [Agent 7: TTS] (optional, currently blocked)
-    │                              │  Reference audio for pacing
-    │                              ▼
-    │                       outputs/videos/{slug}/tts/*.wav
-    │                              │
     │   ┌──────────────────────────┴──────────────────────────────┘
     │   │  (manual gate — review all three before generating images/thumbs)
     │   │
@@ -210,14 +204,6 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent8_publish.py "emotional-dysreg
 
 Review `05_image_prompts.md` carefully — it is the only gate before image cost. See [05_visuals.md](05_visuals.md) and [08_publish.md](08_publish.md).
 
-### Step 7 — TTS Voice Reference (optional, currently blocked)
-
-```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_tts.py "emotional-dysregulation-in-adhd"
-```
-
-> Currently blocked. `MODEL_VERIFIED = False` because `gemini-3.1-flash-tts-preview` was never confirmed against Vertex. See [07_tts.md](07_tts.md) and the Technical Note in CLAUDE.md.
-
 ### **STOP — manual gate before Agents 9 and 10**
 
 Agents 9 and 10 cost API credits and time. Always pause after Agent 8 completes and wait for explicit instruction before running either. This is a locked invariant.
@@ -270,7 +256,6 @@ All files live in `outputs/videos/{slug}/`.
 | 5 | `md/05_image_prompts.md` | One Imagen prompt per sentence/beat |
 | 5 | `md/05_image_phrases.md` | Short phrase index used by Align |
 | 6 | `md/06_script_narration.md` | Clean teleprompter script |
-| 7 | `tts/*.wav` | TTS reference audio (optional, currently blocked) |
 | 8 | `md/07_publish_package.md` | Titles, hooks, 5 Shorts packages, YouTube metadata |
 | 9 | `images/image_NNN.png` | Generated 16:9 images |
 | 10 | `thumbnails_no_grain/thumbnail_NN.png` | 5 thumbnail concepts at 1920×1080 |
@@ -293,7 +278,6 @@ Every factual claim in the final script must originate from the **Verified Claim
 | `GOOGLE_CLOUD_PROJECT not set` | Add `GOOGLE_CLOUD_PROJECT=your-project-id` to `.env` |
 | `ANTHROPIC_API_KEY not set` | Add `ANTHROPIC_API_KEY=your-key` to `.env` |
 | Agent 2 returns `Verified: 0 claims` | Topic too broad — try a more specific phrasing |
-| Agent 7 exits with code 1 immediately | `MODEL_VERIFIED = False` — see [07_tts.md](07_tts.md) |
 | Agent 9 `--generate`: `md/05_image_prompts.md not found` | Run Agent 5 first |
 | Unicode errors on Windows | Prefix the command with `PYTHONIOENCODING=utf-8` |
 
@@ -310,7 +294,6 @@ workflows/pipeline/04a_edit.md       — Agent 4a (script editing)
 workflows/pipeline/04b_hook.md       — Agent 4b (hook gate)
 workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
 workflows/pipeline/06_narration.md   — Agent 6 (narration strip)
-workflows/pipeline/07_tts.md         — Agent 7 (TTS — currently blocked)
 workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
 workflows/pipeline/09_images.md      — Agent 9 (image generation, manual)
 workflows/pipeline/10_thumbnails.md  — Agent 10 (thumbnails, manual)

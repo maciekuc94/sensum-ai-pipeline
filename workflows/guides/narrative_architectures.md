@@ -42,6 +42,49 @@ Decyzja designerska (2026-05-25): zamiast antycypować polskie cringe frazy teor
 
 ---
 
+## Zbanowane wzorce strukturalne (z polskiego pisania, dopisywane empirycznie)
+
+**Identyfikowane 2026-05-25 z pierwszego polskiego skryptu testowego** — to są wzorce które emergują kiedy model "tłumaczy" angielską strukturę zdania na polski zamiast pisać polski natywnie. Egzekwowane przez 3a (nie pisz), 3b (flaguj), 4a (przepisz).
+
+**1. Zakaz zdań zaczynających się od spójników** (`I`, `Bo`, `A`, `Ale`, `Bowiem`, `Albowiem`)
+- ŹLE: *"I jest to wrażenie. To konkretne."* / *"Bo coś się włączyło w twojej głowie."* / *"A teraz część którą system ukrywa."*
+- DOBRZE: *"To wrażenie jest konkretne."* / *"Coś się włączyło w twojej głowie."* / *"Teraz część którą system ukrywa."*
+- DLACZEGO: Polski edytorski standard unika zdań rozpoczynanych spójnikiem. To kalka z angielskiego "And...", "Because..." która natychmiast sygnalizuje tłumaczenie. W polskim spójnik na początku zdania brzmi jak nieuporządkowana ustna wypowiedź.
+
+**2. Zakaz anthropomorfizacji uczuć i pojęć abstrakcyjnych**
+- ŹLE: *"To wrażenie ma imię w twojej głowie."* / *"Lęk mieszka w twojej klatce piersiowej."* / *"Wstyd krzyczy w tobie."*
+- DOBRZE: *"To wrażenie nazywasz w głowie 'jestem w tyle'."* / *"Lęk czujesz w klatce piersiowej."* / *"Wstyd uderza w tobie głośno."*
+- DLACZEGO: Anthropomorfizacja uczuć ("ma imię", "mieszka", "krzyczy") brzmi po polsku jak Tumblr poetry albo Instagram caption coacha. Polska intymność terapeutyczna mówi *co robisz z uczuciem* (czujesz, nazywasz, zauważasz), nie *co uczucie robi z tobą*.
+
+**3. Zakaz kalk strukturalnych [rzeczownik abstrakcyjny] + [rzeczownik abstrakcyjny]**
+- ŹLE: *"wadą charakteru"* (← character flaw) / *"twoim charakterem"* (← your character) / *"twoja siła woli"* (← your willpower) / *"jakość twojego życia"* (← quality of your life)
+- DOBRZE: *"wadą"* / *"twoją cechą"* lub po prostu *"tobą"* / *"silna wola"* / *"jak żyjesz"*
+- DLACZEGO: Polski nie układa rzeczowników w pary tak jak angielski. "Character flaw" tłumaczy się jako "wada", nie "wada charakteru". Sprawdź każdy genitiv — czy ten drugi rzeczownik faktycznie cokolwiek dodaje, czy jest tłumaczeniem angielskiego rzeczownik+rzeczownik.
+
+**4. Zakaz mieszania semantycznych kategorii w listach uderzających**
+- ŹLE: *"Wyżej. Niżej. Bezpiecznie. Niebezpiecznie."* (hierarchia + stan bezpieczeństwa = różne wymiary)
+- DOBRZE: *"Wyżej. Niżej. Na równi. Daleko."* (wszystko hierarchia/odległość) lub *"Bezpiecznie. Niebezpiecznie. Czujnie. Spokojnie."* (wszystko stan)
+- DLACZEGO: Listy uderzające (krótkie zdania jedno po drugim) działają tylko jeśli wszystkie elementy są tej samej kategorii. Mieszanie kategorii sprawia że widz podświadomie czuje że coś nie pasuje, traci uderzenie.
+
+**5. Zakaz pretensjonalnych metafor mieszających różne domeny**
+- ŹLE: *"Trzysta cudzych szczytów przeciwko twojej pełnej topografii."* (szczyty + topografia + "przeciwko" = trzy domeny niespójnie połączone)
+- DOBRZE: *"Trzysta cudzych zdjęć z wakacji. I twoje wszystkie wieczory na kanapie."* (jedna konkretna domena: zdjęcia vs codzienność)
+- DLACZEGO: Mieszane metafory ("szczyty topografii", "ocean myśli", "labirynt serca") brzmią po polsku jak licealny esej maturalny. Polski reportaż psychologiczny używa JEDNEJ konkretnej domeny per metafora — nigdy nie miesza. Konkret bije ozdobę.
+
+**6. Zakaz literackich ozdobników i "eleganckich synonimów"**
+- ŹLE: *"odczuwa wewnątrz siebie ten ciężar"* / *"doświadcza tej dotkliwej obecności"* / *"manifestuje się w tobie ten stan"*
+- DOBRZE: *"czujesz ten ciężar"* / *"to cię uderza"* / *"to się w tobie dzieje"*
+- DLACZEGO: Polski ma tendencję do "elegantyzacji" — sięgania po dłuższe, bardziej literackie synonimy. To brzmi jak referat semestralny, nie jak ciepły terapeuta. Najprostsze słowo jest zawsze najmocniejsze.
+
+**7. Zakaz meta-zapowiedzi**
+- ŹLE: *"Teraz patrzymy gdzie ten system się psuje."* / *"Teraz spojrzmy na mechanizm."* / *"Zobaczmy razem co się dzieje."* / *"Przyjrzyjmy się temu."*
+- DOBRZE: Po prostu otwórz treść następnej sekcji bez zapowiadania jej. *"System psuje się w jednym miejscu."*
+- DLACZEGO: Meta-zapowiedź zatrzymuje narrację żeby powiedzieć widzowi co za chwilę nastąpi — zamiast żeby to po prostu nastąpiło. Brzmi jak nauczyciel który mówi "teraz omówimy". Skrypt nie zapowiada — działa.
+
+**Test lakmusowy dla całego skryptu:** Czy ten skrypt mógłby napisać ktoś kto myśli po polsku, czy brzmi jak ktoś tłumaczący angielską strukturę? Jeśli choć raz na akapit pojawia się wzorzec 1-7 — to jest tłumaczenie, nie polskie pisanie.
+
+---
+
 ## Cztery Architektury Narracyjne
 
 Agent 3 czyta temat i zweryfikowane badania, potem wybiera pojedynczą architekturę która pasuje najlepiej. Wybór jest deklarowany na **pierwszej linii** outputu skryptu:

@@ -70,4 +70,4 @@ The brand brown is `#582F0E`. In DaVinci's color picker, type the hex directly i
 
 ## Reference frame
 
-Open any shipped video screenshot from past episodes (e.g., `outputs/videos/3_the_grief_for_the_versions_of_you_that_didn_t_happen/`) to eyeball the size and vertical position when calibrating.
+Open any shipped video screenshot from past episodes (e.g., `outputs/videos_en/3_the_grief_for_the_versions_of_you_that_didn_t_happen/`) to eyeball the size and vertical position when calibrating.

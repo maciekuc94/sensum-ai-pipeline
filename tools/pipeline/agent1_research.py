@@ -352,16 +352,19 @@ def build_markdown(
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    if len(sys.argv) < 2:
-        print("Usage: python tools/agent1_research.py \"<topic>\"")
-        sys.exit(1)
+    import argparse
 
-    topic = sys.argv[1].strip()
+    parser = argparse.ArgumentParser(description="Agent 1: Research")
+    parser.add_argument("topic", help="Research topic (in English for best results)")
+    parser.add_argument("--slug", help="Override auto-generated slug (e.g. Polish slug for a Polish video)")
+    args = parser.parse_args()
+
+    topic = args.topic.strip()
     if not topic:
         print("Error: topic argument is empty.")
         sys.exit(1)
 
-    slug = f"{next_output_number()}_{make_slug(topic)}"
+    slug = args.slug.strip() if args.slug else f"{next_output_number()}_{make_slug(topic)}"
     print(f"\n=== Agent 1: Research ===")
     print(f"Topic : {topic}")
     print(f"Slug  : {slug}")

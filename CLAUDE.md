@@ -154,7 +154,7 @@ Agent 11 (weekly niche intelligence) writes a sidecar **`outputs/intelligence/{w
 
 ## Quick Command Reference
 
-All agents (except 0 and 1) take a **slug** — the output directory name under `outputs/videos/`. Never pass the raw topic after Agent 1.
+All agents (except 0 and 1) take a **slug** — the output directory name under `outputs/videos_pl/`. Never pass the raw topic after Agent 1.
 
 ```bash
 # Standard invocation:
@@ -164,17 +164,17 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agentN_name.py "<slug>"
 PYTHONIOENCODING=utf-8 python tools/intelligence/agent11_intelligence.py
 
 # List existing slugs:
-ls outputs/videos/
+ls outputs/videos_pl/
 ```
 
 **Agents that take a TOPIC:** Agent 0 (`--topic` flag), Agent 1 (positional arg). All others take a slug.  
-**Before running any agent:** verify the previous agent's output exists in `outputs/videos/{slug}/md/`.  
+**Before running any agent:** verify the previous agent's output exists in `outputs/videos_pl/{slug}/md/`.  
 **Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously.  
 **For flags and error recovery:** see the matching `workflows/pipeline/NN_name.md` file. Style guides are in `workflows/guides/`.
 
 ## Agent Chain
 
-Complete pipeline — run in this order. Each agent reads its **Input** and writes its **Output** inside `outputs/videos/{slug}/`.
+Complete pipeline — run in this order. Each agent reads its **Input** and writes its **Output** inside `outputs/videos_pl/{slug}/`.
 
 All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelligence/`.
 
@@ -206,7 +206,7 @@ All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelli
 
 **Quality gate — Agent 4b:** Scores opening hook (Tier 1: ≥8/10 at 37 words; Tier 2: ≥7/10 at 200 words). Verdict must be `RECORD` before recording voiceover. Modifies `04_script_final.md` in place; backup saved to `04_script_final.bak.md`.
 
-**Novelty check — Agent 3n:** Compares new draft against all prior `outputs/videos/*/md/06_script_narration.md` files (the shipped corpus). First video ever produces `SKIPPED` verdict automatically — that is correct behavior.
+**Novelty check — Agent 3n:** Compares new draft against all prior `outputs/videos_pl/*/md/06_script_narration.md` files (the shipped corpus). First video ever produces `SKIPPED` verdict automatically — that is correct behavior.
 
 ## Bottom Line
 

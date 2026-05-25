@@ -176,7 +176,7 @@ def _project_root() -> Path:
 def load_corpus(current_slug: str) -> list[tuple[str, str]]:
     """Return list of (slug, narration_text) for every prior shipped script
     except the current slug. Empty list if no prior scripts exist."""
-    root = _project_root() / "outputs" / "videos"
+    root = _project_root() / "outputs" / "videos_pl"
     corpus = []
     for path in sorted(root.glob(CORPUS_GLOB)):
         slug = path.parent.parent.name

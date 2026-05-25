@@ -95,7 +95,7 @@ def make_slug(topic: str) -> str:
 
 def next_output_number() -> int:
     """Return the next sequential video output number by scanning outputs/ for N_ prefixes."""
-    outputs_dir = Path(__file__).parent.parent / "outputs" / "videos"
+    outputs_dir = Path(__file__).parent.parent / "outputs" / "videos_pl"
     max_n = 0
     if outputs_dir.exists():
         for entry in outputs_dir.iterdir():
@@ -120,7 +120,7 @@ def get_output_dir(slug: str) -> Path:
     Returns:
         Path to the output directory (e.g., outputs/emotional-dysregulation-in-adhd)
     """
-    output_dir = Path(__file__).parent.parent / "outputs" / "videos" / slug
+    output_dir = Path(__file__).parent.parent / "outputs" / "videos_pl" / slug
     for subdir in ("images", "md", "docx", "tts"):
         (output_dir / subdir).mkdir(parents=True, exist_ok=True)
     return output_dir

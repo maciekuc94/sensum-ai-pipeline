@@ -1,7 +1,7 @@
 """
 Agent 9b: Image QA (style compliance check)
 
-Audits every PNG in `outputs/videos/{slug}/images/` against the SENSUM style
+Audits every PNG in `outputs/videos_pl/{slug}/images/` against the SENSUM style
 contract using Gemini 2.5 Flash on Vertex AI. Cheap (~$0.04 per 120-image video)
 and roughly 2 minutes per video.
 
@@ -15,7 +15,7 @@ Checks:
   5. No visible text, letters, numbers, or labels anywhere.
 
 Outputs:
-  outputs/videos/{slug}/md/09_image_qa.md  — markdown report
+  outputs/videos_pl/{slug}/md/09_image_qa.md  — markdown report
 
 Usage:
   python tools/pipeline/agent9b_image_qa.py "<slug>"

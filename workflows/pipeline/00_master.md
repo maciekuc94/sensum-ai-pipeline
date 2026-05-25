@@ -15,19 +15,19 @@ Topic (string)
 [Agent 0: Materials] (optional)
     │  Extracts insights from a reference PDF via Gemini 3.1 Pro
     ▼
-outputs/videos/{slug}/md/00_materials_insights.md
+outputs/videos_pl/{slug}/md/00_materials_insights.md
     │
     ▼
 [Agent 1: Research]
     │  Gemini 3.1 Pro (Google Search Grounding) + PubMed
     ▼
-outputs/videos/{slug}/md/01_research.md
+outputs/videos_pl/{slug}/md/01_research.md
     │
     ▼
 [Agent 2: Verify]
     │  Gemini 3.1 Pro classifies every claim: VERIFIED / FLAGGED / REMOVED
     ▼
-outputs/videos/{slug}/md/02_verified_research.md
+outputs/videos_pl/{slug}/md/02_verified_research.md
     │
     ▼
 [Agent 3: Script — orchestrates 3a → 3n → 3b → 3c]
@@ -36,21 +36,21 @@ outputs/videos/{slug}/md/02_verified_research.md
     │  3b Critic  — Sonnet 4.6 names the single weakest moment
     │  3c Rewrite — Opus 4.7 applies the critique
     ▼
-outputs/videos/{slug}/md/03_script_draft.md  (+ 03a/03b/03n intermediates)
+outputs/videos_pl/{slug}/md/03_script_draft.md  (+ 03a/03b/03n intermediates)
     │
     ▼
 [Agent 4a: Edit]
     │  Sonnet 4.6 copy-edits for speech flow, active voice, zero jargon
     ▼
-outputs/videos/{slug}/md/04_script_final.md
+outputs/videos_pl/{slug}/md/04_script_final.md
     │
     ▼
 [Agent 4b: Hook Gate]  ◀──── must verdict RECORD before voiceover
     │  Sonnet 4.6 scores opening 37 words / 200 words; rewrites in place up to 3×
     ▼
-outputs/videos/{slug}/md/04_script_final.md  (modified in place)
-outputs/videos/{slug}/md/04b_hook_score.md
-outputs/videos/{slug}/md/04_script_final.bak.md  (created once, never overwritten)
+outputs/videos_pl/{slug}/md/04_script_final.md  (modified in place)
+outputs/videos_pl/{slug}/md/04b_hook_score.md
+outputs/videos_pl/{slug}/md/04_script_final.bak.md  (created once, never overwritten)
     │
     ├──────────────────────────────┬──────────────────────────────┐
     ▼                              ▼                              ▼
@@ -58,7 +58,7 @@ outputs/videos/{slug}/md/04_script_final.bak.md  (created once, never overwritte
     │  Opus 4.7 writes          │  Deterministic — strips        │  Sonnet 4.6 + YouTube
     │  one prompt per beat      │  EDITOR NOTEs + IMAGE markers  │  autocomplete scraper
     ▼                              ▼                              ▼
-outputs/videos/{slug}/md/    outputs/videos/{slug}/md/      outputs/videos/{slug}/md/
+outputs/videos_pl/{slug}/md/    outputs/videos_pl/{slug}/md/      outputs/videos_pl/{slug}/md/
   05_image_prompts.md          06_script_narration.md         07_publish_package.md
   05_image_phrases.md
     │                              │                              │
@@ -69,7 +69,7 @@ outputs/videos/{slug}/md/    outputs/videos/{slug}/md/      outputs/videos/{slug
 [Agent 9: Images] (manual)             [Agent 10: Thumbnails] (manual)
     │  Gemini 3 Pro Image Preview         │  Opus 4.7 → Gemini 3 Pro Image Preview
     ▼                                     ▼
-outputs/videos/{slug}/images/         outputs/videos/{slug}/thumbnails*/
+outputs/videos_pl/{slug}/images/         outputs/videos_pl/{slug}/thumbnails*/
     │                                     │
     └─────────────┬───────────────────────┘
                   │  (record voiceover → studio_one export → WAV)
@@ -77,7 +77,7 @@ outputs/videos/{slug}/images/         outputs/videos/{slug}/thumbnails*/
 [Align Agent] (post-record)
     │  faster-whisper aligns voiceover.wav to known script
     ▼
-outputs/videos/{slug}/edit/
+outputs/videos_pl/{slug}/edit/
   subtitles.srt + timeline.fcpxml + preview.html + alignment.json
                   │
                   ▼
@@ -146,7 +146,7 @@ Before starting, check `materials/` for any relevant PDF books. Always ask which
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent0_materials.py --topic "emotional dysregulation in ADHD" --pdf "materials/Your Book.pdf"
 ```
 
-Review: `outputs/videos/emotional-dysregulation-in-adhd/md/00_materials_insights.md`. Re-run if extraction looks thin.
+Review: `outputs/videos_pl/emotional-dysregulation-in-adhd/md/00_materials_insights.md`. Re-run if extraction looks thin.
 
 See [00_materials.md](00_materials.md) for the full SOP.
 
@@ -156,7 +156,7 @@ See [00_materials.md](00_materials.md) for the full SOP.
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent1_research.py "emotional dysregulation in ADHD"
 ```
 
-Queries Gemini 3.1 Pro with Google Search Grounding and PubMed (top 10 papers). Review: `outputs/videos/emotional-dysregulation-in-adhd/md/01_research.md`.
+Queries Gemini 3.1 Pro with Google Search Grounding and PubMed (top 10 papers). Review: `outputs/videos_pl/emotional-dysregulation-in-adhd/md/01_research.md`.
 
 ### Step 2 — Verify
 
@@ -226,7 +226,7 @@ Five thumbnail concepts via Opus 4.7 + Gemini 3 Pro Image Preview. Grain added m
 
 ### Align — Post-Record (DaVinci Bundle)
 
-After recording your voiceover in Studio One and exporting to `outputs/videos/{slug}/voiceover/voiceover.wav`:
+After recording your voiceover in Studio One and exporting to `outputs/videos_pl/{slug}/voiceover/voiceover.wav`:
 
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent_align.py "emotional-dysregulation-in-adhd"
@@ -238,7 +238,7 @@ Forced alignment (faster-whisper, local, free) produces an SRT + FCPXML you impo
 
 ## Output File Reference
 
-All files live in `outputs/videos/{slug}/`.
+All files live in `outputs/videos_pl/{slug}/`.
 
 | Agent | File | Description |
 |-------|------|-------------|

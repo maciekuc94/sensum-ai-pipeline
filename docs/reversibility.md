@@ -98,7 +98,7 @@ Jeśli zechcesz prowadzić **oba kanały równolegle** w przyszłości, wracamy 
 
 Te elementy są poza zakresem Git/file backup — są wynikiem świadomych decyzji, nie regresji kodu:
 
-- **Polskie outputy w `outputs/videos/`** — polskie skrypty, voiceovery, napisy wyprodukowane podczas pracy z polską wersją. Pozostają na dysku i nie kolidują z EN (EN zapisuje do tych samych ścieżek).
+- **Polskie outputy w `outputs/videos_pl/`** — polskie skrypty, voiceovery, napisy wyprodukowane podczas pracy z polską wersją. Pozostają na dysku, oddzielone od EN legacy w `outputs/videos_en/`.
 - **Polski 3n corpus** — buduje się od pierwszego polskiego video. Po powrocie do EN, korpus pozostaje (zawiera polskie skrypty), ale Agent 3n na EN będzie porównywał angielski draft z polskim korpusem — false-negatives nieuniknione. Rozwiązanie: po reaktywacji EN, podzielić korpus przez język lub usunąć polskie skrypty z indeksu nowości.
 - **YouTube algorithm momentum** na angielskim kanale — jeśli `@hello.sensum` był dormant przez dłuższy czas, algorytm wycofał creator model. Reaktywacja oznacza algorytmiczny restart (pierwsze EN video po pauzie może mieć słabsze zasięgi).
 

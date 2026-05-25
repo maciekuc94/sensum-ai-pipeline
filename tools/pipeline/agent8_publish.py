@@ -7,13 +7,13 @@ Runs three passes in sequence and produces one master output file:
   3. YouTube Metadata — description (Hook Segment + Explanatory Block with identity-absolution framing), chapters, bibliography (Research & References), 3-hashtag block, and 10–15 multi-word tag block (Tag #1 = exact-match primary keyword extracted from the chosen title; single-word tags prohibited; SENSUM-uppercase brand exception only)
 
 Inputs:
-  outputs/videos/{slug}/md/04_script_final.md   (titles + metadata)
-  outputs/videos/{slug}/md/06_script_narration.md  (shorts clips + quarter splits)
-  outputs/videos/{slug}/md/02_verified_research.md (bibliography)
+  outputs/videos_pl/{slug}/md/04_script_final.md   (titles + metadata)
+  outputs/videos_pl/{slug}/md/06_script_narration.md  (shorts clips + quarter splits)
+  outputs/videos_pl/{slug}/md/02_verified_research.md (bibliography)
 
 Outputs:
-  outputs/videos/{slug}/md/07_publish_package.md
-  outputs/videos/{slug}/docx/07_publish_package.docx
+  outputs/videos_pl/{slug}/md/07_publish_package.md
+  outputs/videos_pl/{slug}/docx/07_publish_package.docx
 
 Usage:
     python tools/pipeline/agent8_publish.py "emotional-dysregulation-in-adhd"

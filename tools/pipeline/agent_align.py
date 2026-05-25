@@ -5,15 +5,15 @@ table, runs faster-whisper to get per-word timestamps, aligns those timestamps
 to the canonical script, and writes everything DaVinci Resolve needs to import
 the timeline:
 
-  outputs/videos/{slug}/edit/subtitles.srt    — drag onto a subtitle track
-  outputs/videos/{slug}/edit/timeline.fcpxml  — File → Import → Final Cut Pro XML
-  outputs/videos/{slug}/edit/alignment.json   — debug data
-  outputs/videos/{slug}/edit/preview.html     — visual sanity check
+  outputs/videos_pl/{slug}/edit/subtitles.srt    — drag onto a subtitle track
+  outputs/videos_pl/{slug}/edit/timeline.fcpxml  — File → Import → Final Cut Pro XML
+  outputs/videos_pl/{slug}/edit/alignment.json   — debug data
+  outputs/videos_pl/{slug}/edit/preview.html     — visual sanity check
 
 Usage:
     PYTHONIOENCODING=utf-8 python tools/pipeline/agent_align.py "<slug>"
     PYTHONIOENCODING=utf-8 python tools/pipeline/agent_align.py "<slug>" \
-        --audio outputs/videos/<slug>/voiceover/voiceover.wav \
+        --audio outputs/videos_pl/<slug>/voiceover/voiceover.wav \
         --model medium --fps 30
 """
 

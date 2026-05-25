@@ -41,11 +41,11 @@ def posterize(src: Path, dst: Path, threshold: int) -> None:
 
 
 def batch(slug: str, threshold: int) -> None:
-    src_dir = Path("outputs") / "videos" / slug / "thumbnails_no_grain"
+    src_dir = Path("outputs") / "videos_pl" / slug / "thumbnails_no_grain"
     if not src_dir.exists():
-        src_dir = Path("outputs") / "videos" / slug / "thumbnails"
+        src_dir = Path("outputs") / "videos_pl" / slug / "thumbnails"
     if not src_dir.exists():
-        print(f"No thumbnails folder found under outputs/videos/{slug}/")
+        print(f"No thumbnails folder found under outputs/videos_pl/{slug}/")
         sys.exit(1)
 
     dst_dir = src_dir.parent / f"{src_dir.name}_posterized"

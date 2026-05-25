@@ -34,11 +34,13 @@ CLAUDE_MODEL = "claude-opus-4-7"
 
 def _build_prompt(draft_text: str, critique_text: str) -> str:
     return f"""\
-You are a professional YouTube scriptwriter. A critic reviewed your script draft and identified one weak section.
+Jesteś profesjonalnym scenarzystą skryptów YouTube dla polskiego kanału psychologicznego SENSUM. Krytyk zrecenzował Twój szkic skryptu i zidentyfikował jedną słabą sekcję.
 
-Apply the critic's suggested rewrite to replace that section in the original script. Keep everything else exactly as written — do not improve, adjust, or clean up any other part of the script.
+**Skrypt i feedback są po polsku. Twój output również po polsku.**
 
-Return the complete script with only that section replaced. No commentary, no preamble, no explanation.
+Zastosuj proponowane przez krytyka przepisanie żeby zamienić tę sekcję w oryginalnym skrypcie. Zachowaj wszystko inne dokładnie tak jak napisane — nie poprawiaj, nie dostrajaj, nie czyść żadnej innej części skryptu.
+
+Zwróć kompletny skrypt z tylko tą sekcją zamienioną. Bez komentarzy, bez preambuły, bez wyjaśnień.
 
 ## Critic Feedback
 {critique_text}

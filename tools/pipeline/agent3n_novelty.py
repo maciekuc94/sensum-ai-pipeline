@@ -258,36 +258,35 @@ def find_literal_matches(
 # ---------------------------------------------------------------------------
 
 SEMANTIC_PROMPT_TEMPLATE = """\
-You are the novelty auditor for a psychology YouTube channel. Your job is to
-flag content reuse between a NEW draft script and a CORPUS of previously
-shipped scripts. A separate n-gram pass already caught literal verbatim
-phrases (those are listed below); your job is to catch what it missed.
+Jesteś audytorem nowości dla polskiego kanału psychologicznego YouTube SENSUM. Twoje zadanie to flagowanie reuse treści między NOWYM szkicem skryptu a KORPUSEM wcześniej shippniętych skryptów. Osobny pass n-gramowy już złapał dosłowne powtórzenia (są wymienione poniżej); Twoje zadanie to złapać to co umknęło.
 
-Flag ONLY these forms of reuse:
-  - paraphrase: a sentence or phrase whose wording differs but whose
-    function and concrete imagery duplicate a corpus sentence
-    (e.g. "Today we conduct a postmortem on this feeling" vs
-    "Today we perform an autopsy on this grief")
-  - metaphor: the same explanatory metaphor template recurs
-    (e.g. "your brain treats X like Y" where Y is a reused vehicle)
-  - structure: a multi-sentence opening or closing follows the same beat
-    pattern as a corpus opener/closer (sensory detail -> temporal trigger ->
-    naming the feeling; or permission -> action -> forward image)
+**Skrypty i korpus są po polsku. Twoja analiza również po polsku (JSON values po polsku).**
 
-Do NOT flag:
-  - generic psychology language (e.g. "the brain", "the body", "research shows")
-  - sentence fragments shorter than 6 words
-  - anything that simply uses the same psychological concept (concepts are
-    expected to recur — only the WORDING/FRAMING is the concern)
+Flaguj TYLKO te formy reuse:
+  - paraphrase: zdanie lub fraza której słownictwo się różni ale której
+    funkcja i konkretne obrazowanie duplikuje zdanie z korpusu
+    (np. "Dzisiaj robimy sekcję zwłok tej żałoby" vs
+    "Dzisiaj przeprowadzamy autopsję tego uczucia")
+  - metaphor: ten sam wzorzec metafory wyjaśniającej się powtarza
+    (np. "twój mózg traktuje X jak Y" gdzie Y jest reused vehicle)
+  - structure: wielo-zdaniowe otwarcie lub zamknięcie podąża za tym samym
+    wzorcem beatów co opener/closer z korpusu (szczegół sensoryczny -> wyzwalacz
+    czasowy -> nazwanie uczucia; lub pozwolenie -> akcja -> forward image)
 
-For each finding, return a JSON object with:
-  "span_in_new_script": the verbatim span as it appears in the new draft
-  "type": one of "paraphrase" | "metaphor" | "structure"
-  "similar_to_in_corpus": short quote from the corpus it echoes
-  "source_slug": the corpus slug it came from
-  "why": one short sentence
+NIE flaguj:
+  - generycznego języka psychologicznego (np. "mózg", "ciało", "układ nerwowy")
+  - fragmentów krótszych niż 6 słów
+  - czegokolwiek co po prostu używa tego samego konceptu psychologicznego
+    (koncepty mają się powtarzać — tylko SŁOWNICTWO/FRAMING jest problemem)
 
-Return a JSON array (possibly empty). Return ONLY the JSON, no preamble.
+Dla każdego findingu, zwróć obiekt JSON z:
+  "span_in_new_script": dokładny span jak pojawia się w nowym szkicu
+  "type": jeden z "paraphrase" | "metaphor" | "structure"
+  "similar_to_in_corpus": krótki cytat z korpusu który echo
+  "source_slug": slug korpusu z którego pochodzi
+  "why": jedno krótkie zdanie po polsku
+
+Zwróć tablicę JSON (potencjalnie pustą). Zwróć WYŁĄCZNIE JSON, bez preambuły.
 
 # Literal duplicates already caught (do NOT re-list these)
 {literal_summary}
@@ -359,22 +358,22 @@ def _parse_json_array(text: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 REWRITE_PROMPT_TEMPLATE = """\
-You are revising a YouTube psychology script to remove content reuse from
-prior scripts in the channel. The draft below contains spans flagged as
-duplicates of earlier scripts. Rewrite ONLY the flagged spans. Do not touch
-unflagged passages. Preserve the script's voice, architecture, paragraph
-breaks, [Visual Pause] markers, and total length.
+Rewizjujesz polski skrypt psychologiczny YouTube SENSUM żeby usunąć reuse treści ze wcześniejszych skryptów kanału. Szkic poniżej zawiera spany flagowane jako duplikaty wcześniejszych skryptów. Przepisz TYLKO flagowane spany. Nie ruszaj nieflagowanych pasaży. Zachowaj voice skryptu, architekturę, podziały akapitów, markery [Visual Pause] i całkowitą długość.
 
-Constraints when rewriting a flagged span:
-  - Replace the exact wording with new wording that performs the same narrative
-    function. Do NOT just shuffle words or substitute synonyms.
-  - If the flagged span is a metaphor, switch to a different concrete vehicle
-    altogether (do not reuse the same metaphor template with new words).
-  - If the flagged span is a structural opening/closing pattern, change the
-    beat ORDER or replace one beat entirely.
-  - Keep the same factual claims (this is a science channel).
-  - No inline citations, no researcher names, no banned phrases ("Have you
-    ever", "many people", "stay tuned", "today we're going to talk about").
+**Skrypt jest po polsku. Output również po polsku.**
+
+Ograniczenia przy przepisywaniu flagowanego span:
+  - Zamień dokładne słownictwo na nowe które pełni tę samą funkcję narracyjną.
+    NIE tasuj słów ani nie podmieniaj synonimów.
+  - Jeśli flagowany span to metafora, zmień na zupełnie inny konkretny vehicle
+    (nie używaj tego samego wzorca metafory z nowymi słowami).
+  - Jeśli flagowany span to wzorzec strukturalny otwarcia/zamknięcia, zmień
+    KOLEJNOŚĆ beatów lub zamień jeden beat całkowicie.
+  - Zachowaj te same twierdzenia faktyczne (to kanał naukowy).
+  - Bez cytatów inline, bez nazwisk badaczy, bez zbanowanego language
+    research-framingowego ("badania pokazują", "naukowcy odkryli"), bez
+    polskich cringe self-help fraz ("po prostu BĄDŹ", "zaufaj procesowi"),
+    bez polskich academic-textbookowych fraz ("warto zauważyć", "kluczowe jest").
 
 # Literal duplicate spans (4+ token n-gram matches against corpus)
 {literal_block}
@@ -385,10 +384,7 @@ Constraints when rewriting a flagged span:
 # Full draft to revise
 {draft}
 
-Return the FULL revised draft and NOTHING else. Do not add a preamble. Do not
-wrap the output in code fences. Preserve the metadata header (lines starting
-with # Script Draft:, Generated:, Model:, Pass:, Estimated duration: and the
---- separator) byte-for-byte if present in the input.
+Zwróć PEŁEN zrewidowany szkic i NIC WIĘCEJ. Nie dodawaj preambuły. Nie owijaj w code fences. Zachowaj nagłówek metadata (linie zaczynające się od # Script Draft:, Generated:, Model:, Pass:, Estimated duration: i separator ---) bajt-po-bajcie jeśli obecny w inputcie.
 """
 
 

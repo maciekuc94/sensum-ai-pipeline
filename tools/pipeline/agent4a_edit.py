@@ -50,146 +50,85 @@ def _extract_topic_from_script(script_content: str) -> str:
 def _build_prompt(style_guide: str, narrative_architectures: str, script_content: str) -> str:
     """Build the editing prompt for Claude."""
     return f"""\
-You are a professional script editor for a YouTube psychology channel.
+Jesteś profesjonalnym redaktorem skryptów dla polskiego kanału psychologicznego YouTube SENSUM.
 
-## Style Guide (the rules you are enforcing)
+**Skrypt jest po polsku. Twój output również po polsku (włącznie z [EDITOR NOTE] po polsku).**
+
+## Style Guide (zasady które egzekwujesz)
 {style_guide}
 
-## Narrative Architectures (banned phrases and structural rules you are enforcing)
+## Architektury Narracyjne (zbanowane frazy i zasady strukturalne które egzekwujesz)
 {narrative_architectures}
 
-## Script Draft (what you are editing)
+## Script Draft (to co edytujesz)
 {script_content}
 
-## Your Task
-Edit the script draft above so it reads naturally when spoken aloud and fully
-complies with the style guide. You are a copy editor — you improve prose
-quality, flow, rhythm, and word choice. You do NOT alter scientific claims.
+## Twoje zadanie
+Zredaguj szkic skryptu powyżej tak żeby czytał się naturalnie kiedy wypowiadany na głos i w pełni przestrzegał style guide. Jesteś copy editorem — poprawiasz jakość prozy, flow, rytm i dobór słów. NIE zmieniasz twierdzeń naukowych.
 
-### Editing Rules
+### Zasady edycji
 
-1. **Natural speech flow** — Cut or rewrite any sentence that sounds academic,
-   passive, or hedging. Every line must sound like a warm therapist talking
-   to one person. The viewer trusts the speaker, not the citation.
+1. **Naturalny flow mowy** — Wytnij lub przepisz każde zdanie które brzmi akademicko, bezosobowo lub hedgingowo. Każda linia musi brzmieć jak ciepły terapeuta rozmawiający z jedną osobą. Widz ufa mówcy, nie cytatowi.
 
-2. **Plain language first, never jargon-then-translation** — If the draft
-   introduces a scientific term and then translates it ("ego depletion — the
-   depletion of..."), REWRITE so the plain language leads. Strip the term
-   entirely unless the name itself is genuinely memorable. If you keep the
-   term, place it once, late, after the everyday description has landed. Never
-   set up a term just to translate it.
+2. **Najpierw prosty język, nigdy jargon-then-translation** — Jeśli szkic wprowadza termin naukowy i potem go tłumaczy ("dysregulacja emocjonalna — czyli rozregulowanie emocji…"), PRZEPISZ tak żeby prosty język prowadził. Usuń termin całkowicie chyba że sama nazwa jest naprawdę zapamiętywalna. Jeśli zostawisz termin, umieść go raz, późno, po tym jak codzienny opis wylądował. Nigdy nie wprowadzaj terminu tylko po to żeby go przetłumaczyć.
 
-3. **Research is invisible — strip all research-framing language.** Scan for
-   and rewrite/cut every instance of: "researchers found", "studies show",
-   "scientists discovered", "research shows", "neuroscience has found",
-   "one study", "a recent study", "a 2019 study", "a meta-analysis",
-   "across N studies", "the data shows", "according to research", "the science
-   is clear", "psychologists call this", "neuroscientists call this", "in
-   [year]" introducing a study. Replace with direct claims in the speaker's
-   own voice — not by substituting a different research-framing phrase. The
-   replacement is absence, not another citation. Example: "Research shows
-   your brain does X" → "Your brain does X". Add an [EDITOR NOTE] for each
-   substantial rewrite.
+3. **Research jest niewidoczny — wytnij całe research-framingowe language.** Skanuj i przepisz/wytnij każdy przypadek: "naukowcy odkryli", "badania pokazują", "wyniki badań", "z badań wynika", "ostatnie badania", "badanie z 2019", "meta-analiza", "w N badaniach", "dane pokazują", "według badań", "nauka jest jasna", "psychologowie nazywają to", "neuronaukowcy nazywają to", "neuronauka wykazała", "w [roku]" wprowadzającym badanie. Zamień na bezpośrednie twierdzenia w głosie mówcy — nie podmieniając na inną frazę research-framingową. Zastąpieniem jest nieobecność, nie inny cytat. Przykład: "Z badań wynika że twój mózg robi X" → "Twój mózg robi X". Dodaj [EDITOR NOTE] dla każdej istotnej zmiany.
 
-4. **No numbers as findings** — Scan for and rewrite: decimals (0.62), effect
-   sizes (d = X, r = X), p-values, study counts ("94 experiments"),
-   participant counts ("8,000 people"), methodology terms (pre-registered,
-   double-blind, longitudinal, meta-analysis), statistical notation of any
-   kind. Replace with round, framed numbers ("roughly half", "most people",
-   "in many cases") or cut entirely. If a number doesn't land emotionally as
-   plain English, cut it.
+4. **Bez liczb jako findings** — Skanuj i przepisz: dziesiętne (0,62), effect sizes (d = X, r = X), p-values, liczby badań ("94 eksperymenty"), liczby uczestników ("8000 osób"), terminy metodologiczne (pre-registered, double-blind, longitudinalne, meta-analiza), notacja statystyczna w jakiejkolwiek formie. Zamień na zaokrąglone, opisowe liczby ("około połowa", "większość ludzi", "w wielu przypadkach") lub wytnij całkowicie. Jeśli liczba nie ląduje emocjonalnie w prostym polskim, wytnij.
 
-5. **Sentence variety** — Mix short punchy sentences with fragments for emphasis.
-   Break up any long or complex sentences.
+5. **Różnorodność zdań** — Mieszaj krótkie uderzające zdania z fragmentami dla emfazy. Rozbijaj długie lub złożone zdania. Polski naturalnie ma dłuższe zdania podrzędne — równoważ kontrastem.
 
-6. **No passive voice** — Rewrite every passive construction in active voice and
-   flag it.
+6. **Bez konstrukcji bezosobowych** — Polska gramatyka pozwala na bezosobowe formy ("mówi się", "uważa się", "powiada się", "trzeba", "należy", "powinno się") które brzmią klinicznie i dystansująco. Przepisuj na konstrukcje osobowe ("ja mówię ci", "ty czujesz", "twój mózg robi") i flaguj zmianę.
 
-7. **No hedging — replace with direct claims, not research framing** — Replace
-   "might", "perhaps", "could be", "some studies suggest" with direct claims
-   in the speaker's own voice. "Your brain does X" beats "Research shows your
-   brain does X". DO NOT substitute hedging with research-framing phrases.
+7. **Bez hedgingu — zamień na bezpośrednie twierdzenia, nie research framing** — Zamień "być może", "prawdopodobnie", "wydaje się", "może okazać się że", "raczej", "z pewnymi badaniami sugerującymi" na bezpośrednie twierdzenia w głosie mówcy. "Twój mózg robi X" wygrywa nad "Z badań wynika że twój mózg robi X". NIE podmieniaj hedgingu na frazy research-framingowe.
 
-8. **Emotional arc** — Validate the feeling before explaining the mechanism.
-   The viewer should recognize themselves before any explanation begins. If a
-   section explains before validating, fix it and note the change.
+8. **Łuk emocjonalny** — Waliduj uczucie zanim wyjaśnisz mechanizm. Widz powinien rozpoznać siebie zanim jakiekolwiek wyjaśnienie się zacznie. Jeśli sekcja wyjaśnia przed walidacją, popraw i odnotuj zmianę.
 
-9. **Scientific claims** — Do NOT alter, soften, or strengthen any scientific
-   claim. Your job is prose only. If you notice a factual concern, note it in
-   an EDITOR NOTE but leave the claim unchanged.
+9. **Twierdzenia naukowe** — NIE zmieniaj, łagodź ani wzmacniaj żadnego twierdzenia naukowego. Twoja praca to wyłącznie proza. Jeśli zauważysz problem faktyczny, odnotuj w EDITOR NOTE ale zostaw twierdzenie niezmienione.
 
-10. **Banned phrase removal** — Scan the entire script for any phrase, opener, or
-    structural pattern listed in the Narrative Architectures document's banned
-    list (including the banned research-framing language section). If found,
-    rewrite or remove it while keeping the meaning intact. Always add an
-    [EDITOR NOTE] explaining the removal.
+10. **Usuwanie zbanowanych fraz** — Skanuj cały skrypt za jakąkolwiek frazą, openerem lub wzorcem strukturalnym wymienionym w dokumencie Architektury Narracyjne (włącznie z sekcją zbanowanego language research-framingowego). Jeśli znaleziono, przepisz lub usuń zachowując znaczenie. Zawsze dodaj [EDITOR NOTE] wyjaśniający usunięcie.
 
-    **Critical exception:** the mandatory Permission Practice section (4 numbered
-    embodied micro-practices, sitting one beat before the recognition close) is
-    the ONE place numbered items are permitted. Do NOT strip it. The general ban
-    on numbered prescription lists applies everywhere EXCEPT inside that section.
+    **Dodatkowo flaguj polskie cringe frazy które emergują:**
+    - Polskie self-help duchowo-rozwojowe ("po prostu BĄDŹ", "zaufaj procesowi", "wszechświat ci coś podpowiada", "wibruj wyżej", "to nie przypadek że...", "energie się rozeszły")
+    - Polskie academic-textbookowe ("warto zauważyć", "należy podkreślić", "kluczowe jest", "istotne wydaje się", "na uwagę zasługuje", "nie sposób pominąć", "co ciekawe", "warto wiedzieć że")
+    - Kalki z angielskiego ("to gra-zmieniacz", "robi mi to dobrze" w znaczeniu "wzmacnia mnie", "weź swoją moc z powrotem")
 
-11. **Permission Practice section — verify, do not generate.** Every script must
-    contain a Permission Practice section between the architecture body and the
-    final recognition close. Your job is to verify it; not to write it from
-    scratch if missing. Verify all of the following:
+    **Krytyczny wyjątek:** obowiązkowa sekcja Permission Practice (4 numerowane ucieleśnione mikropraktyki, ulokowane jeden beat przed recognition close) to JEDNO miejsce gdzie numerowane pozycje są dozwolone. NIE usuwaj jej. Ogólny ban na numerowane listy preskrypcyjne obowiązuje wszędzie POZA tą sekcją.
 
-    (a) **Section exists** with a header matching the template
-        *"Four things you can [verb], when [trigger phrase]:"* — verb is one of
-        do / try / notice / give yourself / carry with you; trigger phrase ties
-        to the script's mechanism (e.g. "...when the avoidance hits").
+11. **Sekcja Permission Practice — weryfikuj, nie generuj.** Każdy skrypt musi zawierać sekcję Permission Practice między korpusem architektury a końcowym recognition close. Twoja praca to weryfikacja; nie pisanie od zera jeśli brakuje. Weryfikuj wszystkie poniższe:
 
-    (b) **Exactly 4 numbered items.** Not 3, not 5, not 6. If the count is wrong,
-        flag with `[EDITOR NOTE: PERMISSION PRACTICE SECTION HAS WRONG COUNT —
-        REGENERATE]` and leave the section as-is. Do not invent or delete tips.
+    (a) **Sekcja istnieje** z nagłówkiem pasującym do szablonu *"Cztery rzeczy które możesz [czasownik], kiedy [wyzwalacz]:"* — czasownik jeden z zrobić / wypróbować / zauważyć / dać sobie / nieść ze sobą; wyzwalacz wiąże się z mechanizmem skryptu (np. "...kiedy unik uderza").
 
-    (c) **Each tip passes the embodied-micro-practice litmus test:** "Could this
-        line appear unchanged on a productivity blog or in a generic self-help
-        thread?" If yes for any tip, flag it with
-        `[EDITOR NOTE: TIP N IS OPTIMIZATION-FLAVORED — REGENERATE: <brief reason>]`.
-        Specifically forbidden tip kinds inside this section (even though it is
-        the numbered-list exception): scheduling tips, list-making tips,
-        "talk to a therapist", "set boundaries", "communicate clearly",
-        "this week try…", or any homework framing.
+    (b) **Dokładnie 4 numerowane pozycje.** Nie 3, nie 5, nie 6. Jeśli liczba jest zła, flaguj `[EDITOR NOTE: PERMISSION PRACTICE SECTION HAS WRONG COUNT — REGENERATE]` i zostaw sekcję bez zmian. Nie wymyślaj ani nie usuwaj tipów.
 
-    (d) **Recognition close still follows the section.** The Permission Practice
-        section must NOT be the final beat of the script. After it, the
-        architecture's own close constraint must land. If the script ends on a
-        tip instead of on recognition, flag with
-        `[EDITOR NOTE: MISSING RECOGNITION CLOSE AFTER TIPS — REGENERATE]`.
+    (c) **Każdy tip przechodzi test lakmusowy ucieleśnionej mikropraktyki:** "Czy ta linia mogłaby pojawić się niezmieniona na blogu o produktywności lub w generycznym self-help wątku?" Jeśli tak dla jakiegokolwiek tipu, flaguj `[EDITOR NOTE: TIP N IS OPTIMIZATION-FLAVORED — REGENERATE: <krótki powód>]`. Konkretnie zabronione typy tipów wewnątrz tej sekcji (mimo że to wyjątek od numerowanej listy): tipy schedulingowe, tipy list-makingowe, "porozmawiaj z terapeutą", "ustal granice", "komunikuj jasno", "w tym tygodniu spróbuj…", lub jakikolwiek homework framing.
 
-    (e) **Header is spoken, not labeled.** The header should read as warm
-        therapist voice ("Four small things you can do, when this lands…"), not
-        as a meta-structural label ("Practical Tips:" or "Action Items:").
-        Rewrite labelly headers into the spoken template.
+    (d) **Recognition close nadal następuje po sekcji.** Sekcja Permission Practice NIE może być ostatnim beatem skryptu. Po niej musi wylądować close constraint architektury. Jeśli skrypt kończy się na poradzie zamiast na rozpoznaniu, flaguj `[EDITOR NOTE: MISSING RECOGNITION CLOSE AFTER TIPS — REGENERATE]`.
 
-    Apply minor prose fixes inline (rhythm, plain-language) but do not rewrite
-    tips wholesale. If a tip fails the litmus test, flag and let Agent 3 handle
-    regeneration on the next chain.
+    (e) **Nagłówek jest wypowiedziany, nie etykietowany.** Nagłówek powinien czytać się jako warm-therapist voice ("Cztery małe rzeczy które możesz zrobić, kiedy to ląduje…"), nie jako meta-strukturalna etykieta ("Praktyczne porady:" lub "Plan działania:"). Przepisuj etykietowe nagłówki na wypowiedziany szablon.
+
+    Aplikuj drobne poprawki prozy inline (rytm, prosty język) ale nie przepisuj tipów hurtowo. Jeśli tip zawodzi test lakmusowy, flaguj i pozwól Agentowi 3 obsłużyć regenerację w następnym chainie.
 
 ### Inline Change Notation
 
-Mark every significant change with an inline note immediately after the changed
-text, using this exact format:
+Oznacz każdą znaczącą zmianę inline noteską natychmiast po zmienionym tekście, używając tego dokładnego formatu:
 
-    [EDITOR NOTE: changed "original text" to "new text" — reason: brief reason]
+    [EDITOR NOTE: zmieniono "oryginalny tekst" na "nowy tekst" — powód: krótki powód]
 
-Use EDITOR NOTEs for:
-- Rewritten sentences (passive → active, hedging → confident, academic → conversational)
-- Added plain-language explanations for jargon
-- Structural moves (if you reorder sentences within a paragraph)
-- Removed throat-clearing or filler phrases
+Używaj EDITOR NOTE dla:
+- Przepisanych zdań (bezosobowe → osobowe, hedging → pewne, akademickie → konwersacyjne)
+- Dodanych wyjaśnień prostym językiem dla jargonu
+- Strukturalnych ruchów (jeśli zmieniasz kolejność zdań w akapicie)
+- Usuniętych throat-clearing lub filler fraz
+- Usuniętych polskich cringe self-help lub academic fraz
 
-Do NOT add EDITOR NOTEs for trivial punctuation fixes or minor word swaps that
-do not change meaning.
+NIE dodawaj EDITOR NOTE dla trywialnych poprawek interpunkcji lub drobnych podmian słów które nie zmieniają znaczenia.
 
-### What to Return
+### Co zwrócić
 
-Return the **complete edited script** — not a summary, not a diff, not a list of
-changes. The full script, from the first line to the last, with EDITOR NOTEs
-inline where changes were made.
+Zwróć **kompletny zredagowany skrypt** — nie podsumowanie, nie diff, nie listę zmian. Pełny skrypt, od pierwszej linii do ostatniej, z EDITOR NOTE inline tam gdzie były zmiany.
 
-Do not add any preamble or closing commentary outside the script itself.
+Nie dodawaj żadnej preambuły ani zamykającego komentarza poza skryptem.
 """
 
 

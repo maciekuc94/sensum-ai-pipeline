@@ -349,7 +349,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", default="large-v3", help="faster-whisper model size (default: large-v3)")
     parser.add_argument("--device", default="cpu", help="cpu or cuda (default: cpu)")
     parser.add_argument("--compute-type", dest="compute_type", default="int8", help="int8 / float16 / float32")
-    parser.add_argument("--language", default="en", help="Audio language code (default: en)")
+    parser.add_argument("--language", default="pl", help="Audio language code (default: pl). Use --language en for legacy English voiceovers.")
     parser.add_argument("--fps", type=int, default=30, help="Timeline frame rate (default: 30)")
     parser.add_argument("--window", type=int, default=10, help="Greedy alignment lookahead (default: 10)")
     parser.add_argument(

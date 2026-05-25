@@ -413,7 +413,7 @@ def _scrape_suggestions(query: str) -> list[str]:
         encoded = urllib.parse.quote(query)
         url = (
             "https://suggestqueries.google.com/complete/search"
-            f"?client=youtube&ds=yt&q={encoded}&hl=en"
+            f"?client=youtube&ds=yt&q={encoded}&hl=pl&gl=PL"
         )
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=5) as resp:

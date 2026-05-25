@@ -35,22 +35,31 @@ CLAUDE_MODEL = "claude-sonnet-4-6"
 
 def _build_prompt(script_text: str) -> str:
     return f"""\
-You are a first-time YouTube viewer who clicked on a psychology video and will close the tab the moment it bores you.
+Jesteś polskim widzem YouTube który po raz pierwszy kliknął na film o psychologii i zamknie kartę w momencie kiedy go znudzi.
 
-Read this script draft carefully. Identify the single weakest moment — where the argument loses momentum, a transition feels forced, the hook fails to pay off, or the viewer is most likely to disengage.
+**Skrypt jest po polsku. Twoja analiza również po polsku.**
 
-**Special attention — Permission Practice section.** Near the end of every script (between the architecture body and the recognition close) there is a section headed *"Four things you can [verb], when [trigger]:"* containing exactly 4 numbered embodied micro-practices. If any of the 4 tips reads as optimization advice, generic self-help, scheduling, list-making, "talk to a therapist", "set boundaries", or anything that could appear on a productivity blog — that is a critical structural weakness. Surface it as the weakest moment and propose a rewrite that is somatic, in-the-moment, body-based (breathing, hand placement, naming one word out loud, micro-thresholds). Also flag if the section is missing entirely, has the wrong count, or the script ends on a tip instead of on the recognition close.
+Przeczytaj ten szkic skryptu uważnie. Zidentyfikuj pojedynczy najsłabszy moment — gdzie argument traci impet, przejście wydaje się wymuszone, hook się nie domyka, lub widz najprawdopodobniej się wyłączy.
 
-Return ONLY the structured analysis below. No preamble, no additional commentary.
+**Specjalna uwaga — sekcja Permission Practice.** Pod koniec każdego skryptu (między korpusem architektury a recognition close) jest sekcja z nagłówkiem *"Cztery rzeczy które możesz [czasownik], kiedy [wyzwalacz]:"* zawierająca dokładnie 4 numerowane ucieleśnione mikropraktyki. Jeśli któraś z 4 wskazówek brzmi jak rada optymalizacyjna, generyczny self-help, scheduling, list-making, "porozmawiaj z terapeutą", "ustal granice", lub cokolwiek co mogłoby pojawić się na blogu o produktywności — to krytyczna słabość strukturalna. Wskaż to jako najsłabszy moment i zaproponuj przepisanie które jest somatyczne, w-momencie, oparte na ciele (oddychanie, umieszczenie dłoni, nazwanie jednego słowa na głos, mikro-progi). Flaguj też jeśli sekcja w ogóle nie istnieje, ma złą liczbę pozycji, lub skrypt kończy się na poradzie zamiast na recognition close.
+
+**Dodatkowo flaguj jako słabości:**
+- Polskie cringe self-help frazy (typu "po prostu BĄDŹ", "zaufaj procesowi", "wszechświat ci coś podpowiada", "wibruj wyżej", "to nie przypadek że...")
+- Polskie academic-textbookowe frazy ("warto zauważyć", "należy podkreślić", "kluczowe jest", "istotne wydaje się", "na uwagę zasługuje")
+- Kalki z angielskiego brzmiące nienaturalnie po polsku
+- Hedging ("być może", "prawdopodobnie", "wydaje się że") — powinien być wycięty
+- Konstrukcje bezosobowe ("mówi się że", "uważa się że") — powinny być wymienione na osobowe
+
+Zwróć WYŁĄCZNIE strukturalną analizę poniżej. Bez preambuły, bez dodatkowych komentarzy.
 
 ## Weakest Moment
-[Quote the exact passage — 1–4 sentences — from the script]
+[Zacytuj dokładny fragment — 1–4 zdania — ze skryptu]
 
 ## Why It's Weak
-[One sentence explaining the problem from a viewer's perspective]
+[Jedno zdanie wyjaśniające problem z perspektywy widza]
 
 ## Suggested Rewrite
-[Your improved version of that passage — match the length and style of the original. This can be edited before the rewrite agent runs.]
+[Twoja ulepszona wersja tego fragmentu — dopasuj długość i styl do oryginału. Można edytować przed uruchomieniem rewrite agenta.]
 
 ---
 

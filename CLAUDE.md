@@ -23,6 +23,16 @@ You're working inside the **WAT framework** (Workflows, Agents, Tools). This arc
 
 **Why this matters:** When AI tries to handle every step directly, accuracy drops fast. If each step is 90% accurate, you're down to 59% success after just five steps. By offloading execution to deterministic scripts, you stay focused on orchestration and decision-making where you excel.
 
+## Channel Language (2026-05-25 — Polish localization)
+
+**This pipeline produces Polish-language SENSUM content.** The channel is `@sensumpolska` on YouTube. All script-writing agents (3a/3b/3c/3n/4a/4b/8) generate Polish output; style guides (`workflows/guides/style_guide.md`, `workflows/guides/narrative_architectures.md`) are in Polish. The English pipeline as it stood on 2026-05-25 is preserved at Git tag `en-pipeline-v1` and English versions of style guides live alongside Polish ones as `.en.md` files. The legacy English channel `@hello.sensum` is dormant.
+
+**To restore English behavior** (any granularity — single file, full pipeline, branch): see `docs/reversibility.md` for ready-to-copy `git checkout en-pipeline-v1 -- <path>` commands.
+
+**Banned-phrase lists for Polish are intentionally empty** in both Polish style guides — they fill in *empirically* as Agent 4a and the user flag real cringe-phrases from shipped Polish scripts. The English guides accumulated their banned-phrase lists across dozens of scripts; the Polish guides start blank and grow the same way.
+
+**Research is still in English.** Agents 1/2 produce `01_research.md` and `02_verified_research.md` in English (PubMed + Gemini sources are English-language). Polish script agents read English research and produce Polish output — this is intentional, not a bug. Do not localize Agents 0/1/2.
+
 ## How to Operate
 
 **1. Look for existing tools first**
@@ -94,8 +104,10 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent3.py "slug"
 **PubMed zero results**
 The auto-derived PubMed query sometimes returns zero results (query too specific or wrong MeSH terms). This is acceptable if the Gemini research section contains solid peer-reviewed references. Agent 2 verifies claims against scientific literature regardless of PubMed results — proceed to Agent 2 as normal.
 
-**Research-invisible script voice (2026-05-21)**
-Scripts must read as a warm therapist talking to one person — research entirely invisible. No researcher names, no study years, AND no research-framing verbs: forbidden in any form are "researchers found / studies show / scientists discovered / research shows / neuroscience has found / one study / a meta-analysis / the data shows / according to research / the science is clear / psychologists call this". The channel is research-*grounded* (Agents 0/1/2 still do PubMed verification) but never research-*forward* in the script. Findings appear as observations about being human, spoken in the speaker's own voice. The viewer trusts the speaker, not the citation. All real bibliographic citations live in the YouTube description (Agent 8 output) — never in the spoken narration.
+**Research-invisible script voice (2026-05-21; Polish equivalents 2026-05-25)**
+Scripts must read as a warm therapist talking to one person — research entirely invisible. The channel is research-*grounded* (Agents 0/1/2 still do PubMed verification) but never research-*forward* in the script. Findings appear as observations about being human, spoken in the speaker's own voice. The viewer trusts the speaker, not the citation. All real bibliographic citations live in the YouTube description (Agent 8 output) — never in the spoken narration.
+
+Polish forbidden phrases (research-framing): "naukowcy odkryli", "badania pokazują", "wyniki badań", "z badań wynika", "ostatnie badania", "neuronauka wykazała", "psychologowie nazywają to", "dane pokazują", "według badań", "nauka jest jasna", "jedno badanie", "meta-analiza", "w [roku]" wprowadzające badanie. English equivalents (preserved for reference): "researchers found / studies show / scientists discovered / research shows / neuroscience has found / one study / a meta-analysis / the data shows / according to research / the science is clear / psychologists call this". Both lists grow empirically as the channel ships content.
 
 **Permission Practice closing section (2026-05-24, locked)**
 Every script ends with a mandatory Permission Practice section sitting between the architecture body and the recognition close. Exactly **4 numbered embodied micro-practices** — somatic acts, noticing, naming, breathing, micro-thresholds. Never optimization, scheduling, list-making, "talk to a therapist", "set boundaries", or anything that could appear unchanged on a productivity blog. Header template: *"Four things you can [verb], when [trigger]:"* — verb varies (do/try/notice/give yourself/carry with you); trigger ties to the script's specific mechanism. The recognition close still has the FINAL word — the tips are a beat, not the destination. Full spec lives in `workflows/guides/narrative_architectures.md` under "Permission Practice closing section (universal)". Agent 3a generates it; Agent 4a verifies (does not regenerate); Agent 3b/3c flag and rewrite optimization-flavored tips. Title doctrine unchanged — still identity-provocation only; tips are inside-the-video payoff, not click bait.

@@ -121,7 +121,7 @@ def get_output_dir(slug: str) -> Path:
         Path to the output directory (e.g., outputs/emotional-dysregulation-in-adhd)
     """
     output_dir = Path(__file__).parent.parent / "outputs" / "videos_pl" / slug
-    for subdir in ("images", "md", "docx", "tts"):
+    for subdir in ("images", "images_grain", "md", "docx", "thumbnails"):
         (output_dir / subdir).mkdir(parents=True, exist_ok=True)
     return output_dir
 

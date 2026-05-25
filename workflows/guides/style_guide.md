@@ -1,155 +1,104 @@
-# YouTube Psychology Script Style Guide
+# Style Guide — Skrypty Psychologiczne SENSUM
 
-Reference guide for Agent 3 (script writer) and Agent 4 (script editor). Defines tone, structure, and writing rules for YouTube psychology video scripts.
+Referencja dla Agenta 3 (script writer) i Agenta 4 (script editor). Definiuje ton, strukturę i zasady pisania skryptów do polskich filmów psychologicznych SENSUM.
 
-## 1. Channel Identity
+**Wersja angielska:** `style_guide.en.md` (referencja, nie używana przez agenty).
 
-- **Channel name:** TBD (psychology/mental health channel similar to UnordinaryMind)
-- **Audience:** General public — curious people with no prior psychology background
-- **Video length:** 10–15 min (target ~1,700 words narration); one image per sentence or two (~40–60 images per video)
-- **Science standard:** Peer-reviewed sources only (no pop-science, no pseudoscience)
+---
 
-## 2. Tone Rules
+## 1. Tożsamość kanału
 
-- **Direct address:** Always "you" and "your" — speak directly to the viewer
-- **Validate before explain:** Land the feeling first. The viewer must recognize themselves before any mechanism is introduced. Empathy is not a hook — it's the whole register.
-- **Voice:** Warm and one-on-one — like a therapist sitting across from the viewer. You don't perform expertise; you offer recognition. The viewer trusts the speaker, not the citation.
-- **Research is invisible:** The writer reads research; the script never references it. No "researchers found", no "studies show", no "scientists discovered", no "neuroscience has found", no "one study", no "the science is clear". Findings appear as observations about being human, not as scientific reports. Real bibliographic citations live in the YouTube description (Agent 8), never in the spoken narration.
-- **Technical terms:** Lead with everyday language. Describe the phenomenon, never the term. Name a scientific concept only if (a) the name itself is genuinely memorable, and (b) it appears once, late, after the idea has already landed in plain words. Default to no name. Do NOT use the jargon-then-translation pattern ("ego depletion — the depletion of…") — it reads like a lecture.
-- **Sentence structure:** Short punchy sentences. Fragments for emphasis
-- **Confidence:** No hedging ("might", "perhaps", "could be") — be direct. Replace hedging with claims spoken in the speaker's own voice. *"Your brain does X"*, not *"Research shows your brain does X"*.
-- **Grammar:** No passive voice
-- **Openings:** No throat-clearing openings ("In this video we will discuss...")
-- **Rhythm:** Alternate between long, complex explanatory sentences and short, brutal ones (2–4 words). Fragments are intentional, not errors. The contrast creates impact.
+- **Nazwa kanału:** SENSUM (handle `@sensumpolska`)
+- **Język:** Polski (kanał angielski `@hello.sensum` jest w stanie dormant — patrz `docs/reversibility.md`)
+- **Odbiorca:** Polskojęzyczny widz zainteresowany psychologią, bez wykształcenia psychologicznego. Osoba, która ma za sobą terapię lub o niej myśli, czyta self-help, ale jest sceptyczna wobec "psychobełkotu".
+- **Długość filmu:** 10–15 min (cel ~1,700 słów narracji); jeden obraz co 1–2 zdania (~40–60 obrazów na film)
+- **Standard naukowy:** Tylko źródła recenzowane (peer-reviewed). Bez pop-psychologii, bez pseudonauki, bez duchowego folkloru.
+- **Pozycjonowanie:** Permission Psychology — naukowo ugruntowane *pozwolenie* na emocje, których widz się wstydzi. Egzonerujemy zamiast informować. Anti-optimization, anti-productivity. Tonacja: kliniczna ciepło.
 
-### Numbers
+## 2. Zasady tonu
 
-Round, framed numbers only. *"Roughly half"*, *"most people"*, *"in many cases"*, *"more often than not"*.
+- **Bezpośredni adres:** Zawsze "ty" i "twój/twoja" — mów do widza bezpośrednio.
+- **Walidacja przed wyjaśnieniem:** Najpierw wyladuj uczucie. Widz musi rozpoznać siebie zanim wprowadzisz jakikolwiek mechanizm. Empatia nie jest hookiem — to cały rejestr.
+- **Voice:** Ciepło i jeden na jednego — jak terapeut(k)a siedzący/a naprzeciwko widza. Nie performujesz eksperckość; oferujesz rozpoznanie. Widz ufa mówcy, nie cytatowi.
+- **Research jest niewidoczny:** Pisarz czyta badania; skrypt ich nigdy nie cytuje. Bez "badania pokazują", bez "naukowcy odkryli", bez "wyniki badań wskazują", bez "psychologowie nazywają to". Odkrycia pojawiają się jako obserwacje o byciu człowiekiem, nie jako raporty naukowe. Prawdziwe cytaty bibliograficzne żyją w opisie YouTube (Agent 8), nigdy w narracji.
+- **Terminy techniczne:** Zaczynaj od języka codziennego. Opisuj zjawisko, nigdy terminu. Nazwij koncept naukowy tylko jeśli (a) sama nazwa jest faktycznie zapamiętywalna i (b) pojawia się raz, późno, po tym jak idea już wylądowała w prostych słowach. Domyślnie: bez nazwy. NIE używaj wzorca jargon-then-translation ("dysregulacja emocjonalna — czyli rozregulowanie emocji…") — to brzmi jak wykład.
+- **Struktura zdań:** Krótkie zdania uderzające. Fragmenty dla emfazy. Polski naturalnie preferuje dłuższe zdania podrzędne — kalibracja: jedno długie wyjaśnienie + jedno krótkie zdanie-cios (3–6 słów).
+- **Pewność:** Bez hedgingu. Mów wprost. Zamiast hedgingu — bezpośrednie twierdzenia w głosie mówcy. *"Twój mózg robi X"*, nie *"Z badań wynika, że twój mózg robi X"*.
+- **Gramatyka:** Unikaj bezosobowych konstrukcji ("mówi się że", "uważa się że", "powiada się"). Mów osobowo i konkretnie.
+- **Otwarcia:** Bez throat-clearing ("W tym filmie omówimy...", "Dzisiaj porozmawiamy o..."). Wejście od razu w treść.
+- **Rytm:** Naprzemiennie długie, złożone zdania wyjaśniające i krótkie, brutalne (2–4 słowa). Fragmenty są intencjonalne, nie błędy. Kontrast tworzy impakt.
 
-Never use:
+### Liczby
 
-- Decimals (`0.62`, `37.4%`)
-- Effect sizes (`d = 0.6`, `r = 0.4`, `Cohen's d`)
-- p-values, confidence intervals, statistical significance
-- Study counts (*"a meta-analysis of 94 experiments"*, *"across 47 studies"*)
-- Participant counts (*"8,000 people"*, *"over twelve thousand subjects"*)
-- Methodology terms (*pre-registered, double-blind, longitudinal, meta-analysis, replication crisis*)
-- Greek letters or statistical notation of any kind
+Zaokrąglone, opisowe liczby tylko. *"Około połowa"*, *"większość ludzi"*, *"w wielu przypadkach"*, *"częściej niż rzadziej"*, *"spora część"*.
 
-If a number doesn't land emotionally as plain English, cut it.
+Nigdy nie używaj:
 
-**Script structure** is defined in `workflows/guides/narrative_architectures.md` — that document replaces any section structure listed here. It also defines the **mandatory Permission Practice closing section** (always exactly 4 embodied micro-practices, sitting one beat before the recognition close). Numbered prescription lists are only permitted inside that section; the final beat of every script still lands on recognition, never on a tip.
+- Dziesiętnych (`0,62`, `37,4%`)
+- Effect sizes (`d = 0,6`, `r = 0,4`, `Cohen's d`)
+- p-values, przedziałów ufności, istotności statystycznej
+- Liczby badań (*"meta-analiza 94 eksperymentów"*, *"w 47 badaniach"*)
+- Liczby uczestników (*"8000 osób"*, *"ponad dwanaście tysięcy badanych"*)
+- Terminów metodologicznych (*pre-registered, double-blind, longitudinalne, meta-analiza, kryzys replikacji*)
+- Greckich liter ani notacji statystycznej w żadnej formie
 
-## 3. Metaphor Guidelines
+Jeśli liczba nie ląduje emocjonalnie w prostym polskim — wytnij ją.
 
-- Every scientific concept should have a metaphor or analogy
-- Metaphors should be modern and relatable (cameras, computers, RAM, high-res screens, etc.)
-- Metaphors from the example: brain as camera (720p vs 8K), dandelion vs orchid, RAM being full
-- One strong metaphor per scientific concept — don't mix metaphors
+**Struktura skryptu** jest zdefiniowana w `workflows/guides/narrative_architectures.md` — ten dokument zastępuje jakąkolwiek strukturę sekcji wymienioną tutaj. Definiuje też **obowiązkową sekcję Permission Practice** (zawsze dokładnie 4 ucieleśnione mikropraktyki, ulokowane jeden beat przed recognition close). Numerowane listy preskrypcyjne są dozwolone TYLKO w tej sekcji; ostatni beat każdego skryptu nadal ląduje na rozpoznaniu, nigdy na poradzie.
 
-## 4. IMAGE Marker Guidelines
+## 3. Wskazówki dotyczące metafor
+
+- Każdy koncept naukowy powinien mieć metaforę lub analogię
+- Metafory powinny być nowoczesne i bliskie (kamery, komputery, RAM, ekrany wysokiej rozdzielczości, etc.)
+- Jedna mocna metafora na koncept — nie mieszaj metafor
+- Unikaj polskich klisz duchowo-rozwojowych ("podróż", "ścieżka", "światło wewnętrzne", "energia") — to brzmi jak New Age, nie psychologia
+
+## 4. Markery IMAGE
 
 - **Format:** `[IMAGE: emotion=EMOTION, perspective=PERSPECTIVE, space=SPACE, scene=description]`
-  See `workflows/style_guide_images.md` for the full visual bible, emotion lookup table, and valid field values.
-- **Frequency:** 1 image every 1–2 sentences — place one at every new idea, statistic, metaphor, or scene shift. Aim for 60–80 markers per video.
-- **Placement:** Every sentence or two — do not save markers for section transitions only.
-- **Scene field:** Free-form body and environment description only. Do NOT include palette, style, or lighting words — those come from the emotion lookup.
-- **Example:** `[IMAGE: emotion=FEAR, perspective=overhead, space=real, scene=A body curled on a bathroom floor, arms wrapped around knees, cool blue light seeping under the door]`
+  Pełna specyfikacja w `workflows/guides/style_guide_images.md` (visual bible, emotion lookup table, valid field values).
+- **Częstość:** 1 obraz co 1–2 zdania — umieść jeden przy każdej nowej idei, statystyce (zaokrąglonej), metaforze, zmianie sceny. Cel: 60–80 markerów na film.
+- **Umieszczenie:** Co zdanie lub dwa — nie oszczędzaj markerów tylko na przejścia między sekcjami.
+- **Pole scene:** Free-form, tylko opis ciała i otoczenia. NIE dodawaj słów dotyczących palety, stylu, oświetlenia — te pochodzą z emotion lookup.
+- **Język scene:** Po angielsku (Gemini Image generuje z angielskich promptów — pełna spec w `style_guide_images.md`).
+- **Przykład:** `[IMAGE: emotion=FEAR, perspective=overhead, space=real, scene=A body curled on a bathroom floor, arms wrapped around knees, cool blue light seeping under the door]`
 
-## 5. Example Transcript
+## 5. Referencja rytmu
 
-Reference for **sentence rhythm and metaphor style only** (verbatim).
+Polski przykładowy transcript zostanie dodany po pierwszym shippnięciu polskiego video (~1,700 słów konkretnego przykładu rytmu po polsku). Do tego czasu, jako referencja rytmu (kontrast krótkich i długich zdań, fragmenty, layering empatii):
 
-**This script is from the old voice — do NOT calibrate voice off it.** It contains research-framing phrases that are now banned (*"Research shows that your brain processes information differently"*, *"Neuroscience has identified three specific upgrades"*, *"the research shows something amazing called vantage sensitivity"*). Under the current voice, those lines would be rewritten as direct claims with no research framing — e.g. *"Your brain processes information differently than most people's"* and *"There are three upgrades in your wiring that explain why life feels so intense."*
+- `style_guide.en.md` — pełny angielski przykład (highly sensitive person / orchid vs dandelion), pokazuje rytmiczny kontrast. **Nie kalibruj voice z tego transcriptu** (zawiera research-framing który jest zbanowany). Czytaj go TYLKO pod kątem: długość zdań, użycie fragmentów, sposób warstwowania empatii, styl metafory.
 
-Use this transcript only for: sentence length contrast, fragment usage, the camera/RAM/dandelion-vs-orchid metaphor style, and how empathy is layered through. Ignore: every "Research shows / Neuroscientists call this / Psychologists call this / the research shows" construction.
+Polski rytm: zdania średnio dłuższe niż angielskie (polski ma zdania podrzędne pakowane gęściej), ale kontrast krótkich/długich pozostaje ten sam — short brutal + long explanatory + short brutal.
 
----
+## 6. Czego unikać (zasady, nie listy fraz)
 
-I know exactly what you have been told your whole life. You have been told that you are too sensitive. You have been told to toughen up.
+Decyzja designerska: listy konkretnych zbanowanych fraz po polsku **nie istnieją z definicji** — zostaną dopisane *empirycznie* na podstawie tego, co Agent 4a oraz użytkownik flagują podczas recenzji rzeczywistych skryptów. EN guide nagromadził listy po dziesiątkach skryptów; polski guide robi to samo, ale zaczyna od zera.
 
-You have been told probably a thousand times not to take things so personally. You have likely spent years apologizing for your tears. But I am here today to tell you that the diagnosis you've been given is wrong.
+**Zasady jakościowe (uniwersalne, niezależne od konkretnych fraz):**
 
-There is nothing wrong with you. You are not weak. And you are certainly not a mistake.
+- NIE zaczynaj od "W tym filmie..." ani podobnego throat-clearing
+- NIE używaj bezosobowych konstrukcji (pasywno-brzmiących) — "mówi się że", "uważa się że", "powiada się że", "trzeba", "należy", "powinno się"
+- NIE wprowadzaj terminu naukowego po to żeby go natychmiast przetłumaczyć. Prowadź prostym językiem i pomijaj termin chyba że jest naprawdę zapamiętywalny.
+- NIE używaj hedgingu ("być może", "prawdopodobnie", "wydaje się że", "raczej"). Zamień hedging na **bezpośrednie twierdzenia w głosie mówcy** — nie cytując badań.
+- NIE pisz długich akapitów — max 1–3 zdania na akapit
+- NIE używaj więcej niż jednej metafory na koncept
+- NIE używaj **żadnego** language research-framingowego — bez "badania pokazują", "naukowcy odkryli", "z badań wynika", "ostatnie badania", "psychologowie nazywają to", "neuronauka wykazała", "dane wskazują", "według badań", "nauka jest jasna". Research informuje pisarza; nigdy nie pojawia się w skrypcie. Prezentuj odkrycia jako obserwacje o byciu człowiekiem.
+- NIE cytuj nazwisk badaczy, zespołów autorskich ani lat publikacji w narracji — nigdy nie pisz "badanie Sonnentag i in." albo "badania Smith (2020)". Wszystkie prawdziwe cytaty bibliograficzne żyją w opisie YouTube (Agent 8), nie w narracji.
+- NIE używaj notacji statystycznej, dziesiętnych, effect sizes, liczb badań, liczb uczestników, p-values, terminów metodologicznych (*pre-registered, double-blind, longitudinalne, meta-analiza*). Patrz sekcja **Liczby**.
+- NIE używaj polskiego duchowo-rozwojowego rejestru ("wszechświat", "energia", "wibracje", "to nie przypadek że...", "podróż", "ścieżka", "zaufaj procesowi") — to nie jest nasz brand.
+- NIE używaj polskiego academic-textbookowego rejestru ("warto zauważyć że", "należy podkreślić że", "kluczowe jest", "istotne wydaje się", "na uwagę zasługuje", "nie sposób pominąć") — to brzmi jak referat.
 
-You are what psychologists call a highly sensitive person. But I prefer a different term. You are a super sensor.
+## 7. Lista fraz do zbanowania (pusta — wypełniana w praniu)
 
-While others are recording the world in standard definition, your brain is recording in 8k resolution. And today we're going to look at the neuroscience that proves your sensitivity is not a defect. It is a high performance radar system that the world desperately needs.
+Ta sekcja zaczyna pustą i rośnie z każdym shippniętym filmem. Po każdej recenzji skryptu (Agent 4a flaguje lub Ty flagujesz podczas czytania), dopisujemy konkretne polskie frazy które brzmią cringe lub łamią voice rules.
 
-To understand yourself, we have to look at your hardware. Because this isn't just a personality quirk, it is biology. Research shows that your brain processes information differently than the other 80% of the population.
+**Format dopisu:**
 
-Think of the human brain like a camera. Most people's brains are recording the world in standard definition, maybe 720p. It's a good picture.
+```
+- "konkretna fraza" — dlaczego źle brzmi (1 linia kontekstu)
+```
 
-It's efficient. It gets the job done without taking up too much memory. But your brain? Your brain is recording in 8k resolution.
+**Dotychczas zidentyfikowane (na 2026-05-25, przed pierwszym polskim skryptem):**
 
-Neuroscience has identified three specific upgrades in your hardware that explain why life feels so intense. First, your brain lacks a filter. Neuroscientists call this low latent inhibition.
-
-Most brains are designed to ignore 90% of what they see to save energy. They treat the background noise as irrelevant. But your brain treats everything as relevant.
-
-You process the texture of the chair, the hum of the refrigerator, and the mood of the person sitting next to you all at once. This is why you get overwhelmed. But it is also why you notice the beauty, the patterns, and the solutions that everyone else misses.
-
-Second, your mirror neurons are hyperactive. These are the neurons that allow us to empathize. But for you, you don't just understand that someone is sad.
-
-You physically feel their sadness in your own body. You are not imagining it. Your brain is literally simulating their emotional state.
-
-You are an emotional sponge in a world full of spills. And third, this leads to the most misunderstood feature of your hardware. Depth of processing.
-
-Psychologists call this the pause to check strategy. In a conversation or when making a decision, you might feel like you are slower than others. You might beat yourself up for hesitating or overthinking.
-
-But here is the science. You are not slow. You are thorough.
-
-While others are engaging in shallow processing, just reacting to what is right in front of them, your brain is engaging in deep semantic encoding. You are unconsciously connecting the current moment to your past. Memories.
-
-Predicting future outcomes and analyzing the meaning behind the words. You aren't hesitating because you are confused. You are hesitating because your brain is running a complex simulation to ensure the best possible outcome.
-
-That is not a bug. That is high-level computation. Now, you might be asking, if this makes life so hard, why did evolution keep this trait? This is the most important part.
-
-If being sensitive was a weakness, natural selection would have eliminated it thousands of years ago. But it didn't. It kept it.
-
-Why? Because the tribe needs you. In ancient times, the warriors, the non-sensitive majority, were essential for hunting and fighting. They were bold and risk-taking.
-
-But a tribe of only warriors would die. They would rush into danger without a plan. The tribe needed royal advisors.
-
-That is you. You were the one who noticed the weather changing before the storm hit. You were the one who sensed that the neighboring tribe was lying.
-
-Your weakness is actually a sophisticated early warning system. Society today is loud, fast, and aggressive. It is built for the warriors.
-
-That is why you feel out of place. But do not mistake being out of place for being without value. I know that carrying this radar comes with a cost.
-
-Because you process everything so deeply, you reach your limit faster. When you suddenly shut down or need to hide in a dark room, that is not you being dramatic. That is your RAM being full.
-
-Your system has overheated. But science has a beautiful metaphor for this. Most people are like dandelions.
-
-They are resilient. They can grow anywhere. In a crack in the sidewalk or a beautiful garden.
-
-They are fine, regardless of the environment. But you? You are an orchid. If you try to grow in a harsh, noisy, or toxic environment, you will wither.
-
-You will struggle more than the dandelions. And for years, you've probably blamed yourself for not being a dandelion. But the research shows something amazing called vantage sensitivity.
-
-When an orchid is placed in the right environment, with the right light, the right soil, and the right care, it doesn't just survive. It blooms with a complexity and beauty that the dandelion can never achieve. You don't need to toughen up to survive the sidewalk.
-
-You need to move yourself to the greenhouse. When you curate your life to support your sensitivity, you don't just catch up to others. You surpass them.
-
-So, here is my prescription for you. Stop trying to install a tougher filter. You cannot change your biology.
-
-And you shouldn't want to. The world has enough numbness. We don't need you to be thicker skinned.
-
-We need you to be exactly who you are. But you must protect your gift, build your boundaries, honor your need for silence. And the next time someone tells you that you are too sensitive, take a breath, smile internally, and remember the truth.
-
-You do not have a defect. You are just seeing the world in 8K resolution. And in a world that is increasingly disconnected, your ability to feel is not a burden.
-
-It is the very thing that makes you human.
-
----
-
-## 6. What to Avoid
-
-- Do NOT start with "In this video..."
-- Do NOT use passive voice
-- Do NOT introduce a scientific term and then translate it. Lead with plain language and skip the term entirely unless it's genuinely memorable.
-- Do NOT use hedging language ("it might be", "some studies suggest", "could be", "perhaps"). Replace hedging with **direct claims spoken in the speaker's own voice** — not by citing research. *"Your brain does X"* beats *"Research shows your brain does X"*.
-- Do NOT write long paragraphs — keep to 1–3 sentences max per paragraph
-- Do NOT use more than one metaphor per concept
-- Do NOT use any research-framing language at all — no *"researchers found"*, no *"studies show"*, no *"scientists discovered"*, no *"neuroscience has found"*, no *"one study"*, no *"a meta-analysis"*, no *"the data shows"*, no *"according to research"*, no *"the science is clear"*. The research informs the writer; it never appears in the script. Present findings as observations about being human.
-- Do NOT cite researcher names, author teams, or study years inline — never write *"a study by Sonnentag et al."* or *"research by Smith (2020)"*. All real bibliographic citations live in the YouTube description (Agent 8), not in the spoken narration.
-- Do NOT use statistical notation, decimals, effect sizes, study counts, participant counts, p-values, or methodology terms (*pre-registered, double-blind, longitudinal, meta-analysis*). See the **Numbers** section above.
+*(pusta — wypełniamy po pierwszym polskim skrypcie)*

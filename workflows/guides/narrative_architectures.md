@@ -1,202 +1,191 @@
-# Narrative Architectures — Sensum Script SOP
+# Architektury Narracyjne — SENSUM Skrypt SOP
 
-This document defines how Agent 3 structures scripts. It replaces the previous 6-section template. Both Agent 3 (writing) and Agent 4 (editing) enforce these rules.
+Ten dokument definiuje jak Agent 3 strukturyzuje skrypty. Zastępuje poprzedni 6-sekcyjny szablon. Zarówno Agent 3 (pisanie) jak i Agent 4 (edycja) egzekwują te zasady.
 
----
-
-## Thematic Constraint
-
-Every script must surface the gap between *what the brain does automatically* and *who the person believes they are*. This is the channel's core identity. The viewer should finish the video understanding something about themselves that they couldn't quite name before.
+**Wersja angielska:** `narrative_architectures.en.md` (referencja, nie używana przez agenty).
 
 ---
 
-## Banned Phrases
+## Ograniczenie tematyczne
 
-These are hard bans. Agent 3 must not write them. Agent 4 must catch and remove any that appear.
-
-**Banned openers:**
-- "You are scrolling through your phone..."
-- "You just closed the tab..."
-- "I know that feeling"
-- Any opener that starts with the viewer performing a mundane digital action
-
-**Banned inline phrases:**
-- "Read that again"
-- "Take a breath"
-- "Let that sink in"
-- "Wondering what is wrong with you"
-- "You are not alone" (as a standalone reassurance line — this can appear naturally in context, but not as an isolated comfort statement)
-
-**Banned structural patterns:**
-- Numbered prescription lists ANYWHERE except inside the mandatory Permission Practice section described below (see "Permission Practice closing section (universal)"). The Permission Practice section is the *only* place numbered items are permitted, and the final beat after it must still land on recognition — never on a tip.
-- Ending the entire script on a tip, a step, or any "go do this" instruction. The recognition close still has the last word.
-- Homework framing — "this week, try…", "your assignment is…", "make a list of…". The Permission Practice section uses present-moment, in-the-body language ("when this hits, place your hand on your chest…"), never future-task language.
-- Any section header used as narration (do not say "Now let's look at the science" or similar). The Permission Practice section's header *is* spoken, but it is part of the warm-therapist voice — it is not a meta-structural label.
-
-**Banned research-framing language (research is invisible):**
-
-The script never references the research apparatus. The writer reads research; the script does not. The viewer trusts the speaker, not the citation. Banned in any form:
-
-- "researchers found", "scientists discovered", "studies show", "research shows", "neuroscience has found", "the data shows", "according to research", "the science is clear"
-- "one study", "a study", "a recent study", "a 2019 study", "a longitudinal study", "a landmark study"
-- "a meta-analysis", "a systematic review", "across 47 studies", "a meta-analysis of 94 experiments"
-- "pre-registered protocol", "double-blind", "randomized controlled", "longitudinal", "replication crisis"
-- "psychologists call this", "neuroscientists call this", "researchers have a name for this" *(naming a term as a research artifact)*
-- Statistical notation in any form: `d = 0.62`, `r = 0.4`, `p < 0.05`, effect sizes, p-values, confidence intervals
-- Decimals or precise counts dressed as findings: *"37.4% of people"*, *"over eight thousand participants"*, *"in 2010"* introducing a study
-
-**Darwin exception:** Historical Reversal scripts may name Darwin as the structural antagonist (the "wrong view" being overturned). This is a narrative device, not a citation. All other historical figures, researchers, and studies stay invisible.
-
-**The replacement is not another phrase — it's absence.** Don't substitute "research shows X" with "studies suggest X". State X. The speaker simply knows.
+Każdy skrypt musi wydobyć przepaść między *tym co mózg robi automatycznie* a *tym kim człowiek wierzy że jest*. To jest rdzenna tożsamość kanału. Widz powinien skończyć film rozumiejąc coś o sobie czego wcześniej nie potrafił nazwać.
 
 ---
 
-## The Four Narrative Architectures
+## Zbanowane frazy
 
-Agent 3 reads the topic and verified research, then picks the single architecture that best fits. The choice is declared on the **first line** of the script output:
+**Lista pusta — wypełniana empirycznie.**
+
+Decyzja designerska (2026-05-25): zamiast antycypować polskie cringe frazy teoretycznie, listy zbanowanych fraz rosną z każdym shippniętym polskim filmem. Po recenzji każdego skryptu Agent 4a lub użytkownik flaguje konkretne polskie frazy które łamią voice — i dopisujemy je tutaj. Wersja angielska (`narrative_architectures.en.md`) zawiera obszerną listę EN która emergowała z dziesiątek skryptów; polska wersja zaczyna pustą i rośnie organicznie.
+
+**Zasady wysokopoziomowe które obowiązują od dnia 1 (bez listy konkretnych fraz):**
+
+- **Research jest niewidoczny.** Skrypt nigdy nie odwołuje się do aparatury naukowej. Bez "badania pokazują", bez "naukowcy odkryli", bez "psychologowie nazywają to". Pisarz czyta badania; skrypt nie. Widz ufa mówcy, nie cytatowi.
+- **Bez bezosobowych konstrukcji.** Mów osobowo i konkretnie. "Twój mózg robi X" zamiast "Mózg człowieka robi X".
+- **Bez hedgingu.** Bezpośrednie twierdzenia w głosie mówcy, nie cytując badań.
+- **Bez polskiego duchowo-rozwojowego rejestru** ("wszechświat", "energia", "wibracje", "podróż", "ścieżka", "zaufaj procesowi"). To nie jest nasz brand.
+- **Bez polskiego academic-textbookowego rejestru** ("warto zauważyć", "należy podkreślić", "kluczowe jest", "istotne wydaje się", "na uwagę zasługuje").
+- **Bez throat-clearing openerów** ("W tym filmie omówimy...", "Dzisiaj porozmawiamy o...").
+- **Bez nazwisk badaczy ani lat publikacji w narracji.** Wszystkie cytaty bibliograficzne w opisie YouTube (Agent 8).
+- **Bez notacji statystycznej, dziesiętnych, effect sizes, p-values.** Tylko zaokrąglone, opisowe liczby ("około połowa", "większość").
+
+**Banowane wzorce strukturalne (obowiązujące od dnia 1):**
+
+- Numerowane listy preskrypcyjne GDZIEKOLWIEK poza obowiązkową sekcją Permission Practice opisaną niżej. Permission Practice to *jedyne* miejsce gdzie numerowane listy są dozwolone, a ostatni beat po niej musi nadal lądować na rozpoznaniu — nigdy na poradzie.
+- Kończenie całego skryptu na poradzie, kroku lub jakiejkolwiek instrukcji "zrób to". Recognition close ma ostatnie słowo.
+- Homework framing — "w tym tygodniu spróbuj…", "twoje zadanie to…", "zrób listę…". Sekcja Permission Practice używa języka *teraźniejszego, w ciele* ("kiedy to uderza, połóż dłoń na klatce piersiowej…"), nigdy języka future-task.
+- Jakikolwiek nagłówek sekcji wypowiedziany jako narracja (nie mów "Teraz spójrzmy na naukę" ani podobnie). Nagłówek sekcji Permission Practice *jest* wypowiedziany, ale jest częścią warm-therapist voice — nie jest meta-strukturalną etykietą.
+
+**Wyjątek Darwin:** Skrypty Historical Reversal mogą wymieniać Darwina jako strukturalnego antagonistę ("błędny pogląd" który jest odwracany). To narracyjny zabieg, nie cytat. Wszyscy inni historyczni figurzy, badacze i badania pozostają niewidoczni.
+
+**Zastępstwo to nie inna fraza — to nieobecność.** Nie zamieniaj "badania pokazują X" na "z analiz wynika X". Stwierdź X. Mówca po prostu wie.
+
+---
+
+## Cztery Architektury Narracyjne
+
+Agent 3 czyta temat i zweryfikowane badania, potem wybiera pojedynczą architekturę która pasuje najlepiej. Wybór jest deklarowany na **pierwszej linii** outputu skryptu:
 
 ```
 ARCHITECTURE: [Forensic Case Study | Historical Reversal | Socratic Challenge | Systems Audit]
 ```
 
-The architecture is a **shape**, not a rigid template. Use it to determine the entry point and the through-line — not as a checklist.
+(Nazwy architektur pozostają po angielsku jako wewnętrzne identyfikatory używane przez agenty downstream.)
+
+Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia punktu wejścia i przewodniej osi — nie jako checklisty.
 
 ---
 
-### Architecture 1 — The Forensic Case Study
+### Architektura 1 — Forensic Case Study (Studium Kryminalistyczne)
 
-**When to use:** The topic has a strange, counterintuitive, or extreme manifestation — a symptom, a case study, a behavior that seems impossible until you understand the mechanism.
+**Kiedy używać:** Temat ma dziwną, kontrintuicyjną lub ekstremalną manifestację — symptom, studium przypadku, zachowanie które wydaje się niemożliwe dopóki nie zrozumiesz mechanizmu.
 
-**Entry point:** Open with a specific strange symptom, a documented case, or a biological anomaly. Something that makes the viewer think: *that can't be right.*
+**Punkt wejścia:** Otwórz konkretnym dziwnym symptomem, udokumentowanym przypadkiem lub anomalią biologiczną. Czymś co sprawia że widz myśli: *to nie może być prawda*.
 
-**Required content nodes:**
-1. The symptom or case — described in precise, concrete detail
-2. The mechanism inside — what's actually happening in the brain or body, described as plain reality. Not *"what researchers found"*; the speaker simply knows.
-3. The culprit — the specific cause, explained in everyday language, no jargon-first translations.
-4. The ordinary implication — what this extreme case reveals about the viewer's own everyday experience
+**Wymagane węzły treściowe:**
+1. Symptom lub przypadek — opisany w precyzyjnym, konkretnym szczególe
+2. Mechanizm wewnątrz — co naprawdę dzieje się w mózgu lub ciele, opisane jako zwykła rzeczywistość. Nie *"co naukowcy odkryli"*; mówca po prostu wie.
+3. Sprawca — konkretna przyczyna, wyjaśniona językiem codziennym, bez jargon-first translations.
+4. Zwyczajna implikacja — co ten ekstremalny przypadek ujawnia o codziennym doświadczeniu widza
 
-**Close constraint:** After the Permission Practice section (see universal section below), end on the implication for the viewer's life. The moment of recognition is the FINAL beat — the tips are a beat before it, not the destination.
-
----
-
-### Architecture 2 — The Historical Reversal
-
-**When to use:** There is a belief that was treated as settled truth 30–50 years ago and has been substantially overturned by 2020–2026 research.
-
-**Entry point:** State the old "truth" as if it were still true — then reveal that it isn't. The shock of that reversal is the hook.
-
-**Required content nodes:**
-1. The old belief — stated plainly, as most people still hold it
-2. The truth that overturns it — stated as inevitable fact, not as recent finding. Not *"a 2019 study revealed"* or *"the research now shows"* — just the new truth, spoken plainly. (Darwin exception: the *historical* figure being overturned may be named as a narrative device.)
-3. How it actually works — described as everyday observation, never as *"what new research reveals"*. The mechanism appears as obvious in hindsight.
-4. The rewrite — what the viewer now understands that contradicts what they were taught
-
-**Close constraint:** After the Permission Practice section (see universal section below), end on what the viewer now knows that most people don't. The weight of knowing it is the FINAL beat — the tips are a beat before it.
+**Ograniczenie close:** Po sekcji Permission Practice (patrz universal section niżej), zakończ implikacją dla życia widza. Moment rozpoznania jest OSTATNIM beatem — tipy są beatem przed nim, nie destynacją.
 
 ---
 
-### Architecture 3 — The Socratic Challenge
+### Architektura 2 — Historical Reversal (Odwrócenie Historyczne)
 
-**When to use:** The topic has a question at its core — something the viewer has probably asked themselves but never got a satisfying answer to. The question is hard enough that it can't be answered immediately.
+**Kiedy używać:** Istnieje przekonanie traktowane jako ustalona prawda 30–50 lat temu, które zostało znacząco obalone przez badania 2020–2026.
 
-**Entry point:** Ask the question directly. Do not soften it. Do not immediately begin answering it.
+**Punkt wejścia:** Stwierdź starą "prawdę" jakby nadal była prawdziwa — potem ujawnij że nie jest. Szok tego odwrócenia jest hookiem.
 
-**Required content nodes:**
-1. The question — posed cleanly and left open
-2. Logical step 1 — the first thing you need to understand to approach the answer
-3. Logical step 2 — the next layer
-4. Logical step 3 — the piece that makes the answer inevitable
-5. The answer — it should feel like the viewer worked it out themselves
-6. The question reframed — return to the opening question, now with a different meaning
+**Wymagane węzły treściowe:**
+1. Stare przekonanie — wypowiedziane prosto, tak jak większość ludzi nadal je trzyma
+2. Prawda która je obala — wypowiedziana jako nieuchronny fakt, nie jako ostatnie odkrycie. Nie *"badanie z 2019 ujawniło"* ani *"badania teraz pokazują"* — po prostu nowa prawda, wypowiedziana wprost. (Wyjątek Darwin: *historyczna* postać która jest obalana może być nazwana jako narracyjny zabieg.)
+3. Jak to naprawdę działa — opisane jako codzienna obserwacja, nigdy jako *"co nowe badania ujawniają"*. Mechanizm pojawia się jako oczywisty z perspektywy czasu.
+4. Przepisanie — co widz teraz rozumie co przeczy temu czego go uczono
 
-**Close constraint:** After the Permission Practice section (see universal section below), the final line should echo the opening question, but the answer is now obvious. The reframed question is the FINAL beat — the tips are a beat before it.
+**Ograniczenie close:** Po sekcji Permission Practice, zakończ na tym co widz teraz wie czego większość ludzi nie wie. Ciężar wiedzy o tym jest OSTATNIM beatem — tipy są beatem przed nim.
 
 ---
 
-### Architecture 4 — The Systems Audit
+### Architektura 3 — Socratic Challenge (Wyzwanie Sokratejskie)
 
-**When to use:** The topic involves a recurring pattern, a feedback loop, or a behavioral mechanism that can be understood as a system with inputs, outputs, and failure modes.
+**Kiedy używać:** Temat ma pytanie w rdzeniu — coś co widz prawdopodobnie zadawał sobie ale nigdy nie dostał satysfakcjonującej odpowiedzi. Pytanie wystarczająco trudne że nie można na nie odpowiedzieć od razu.
 
-**Entry point:** Describe the brain or the behavior as a complex system. Use plain-English engineering terms — latency, recursive loop, cache, bandwidth, failure mode, signal, override. Keep the tone precise and cool, not clinical.
+**Punkt wejścia:** Zadaj pytanie bezpośrednio. Nie łagodź go. Nie zaczynaj natychmiast odpowiadać.
 
-**Required content nodes:**
-1. The system description — what it is and what it is designed to do
-2. The failure mode being examined — what goes wrong and how
-3. The trigger — what activates the failure mode
-4. What the system is actually optimizing for — often different from what the person thinks
-5. The diagnostic conclusion — what the system's behavior reveals
+**Wymagane węzły treściowe:**
+1. Pytanie — postawione czysto i pozostawione otwarte
+2. Krok logiczny 1 — pierwsza rzecz którą musisz zrozumieć żeby zbliżyć się do odpowiedzi
+3. Krok logiczny 2 — następna warstwa
+4. Krok logiczny 3 — element który sprawia że odpowiedź jest nieuchronna
+5. Odpowiedź — powinna wyglądać jakby widz sam ją wypracował
+6. Pytanie przeformułowane — wróć do pytania otwierającego, teraz z innym znaczeniem
 
-**Close constraint:** After the Permission Practice section (see universal section below), end with what the system *needs* — not what the *person should do*. The system has its own logic. Respect it. This statement of the system's logic is the FINAL beat — the tips are a beat before it.
+**Ograniczenie close:** Po sekcji Permission Practice, ostatnia linia powinna echo otwierającego pytania, ale odpowiedź jest teraz oczywista. Przeformułowane pytanie jest OSTATNIM beatem — tipy są beatem przed nim.
 
 ---
 
-## Permission Practice closing section (universal)
+### Architektura 4 — Systems Audit (Audyt Systemu)
 
-**Every script — regardless of architecture — must include a Permission Practice section between the architecture body and the final recognition close.** This is the channel's locked structural rule. The section gives the viewer something concrete to carry into their week without breaking the channel's anti-optimization positioning.
+**Kiedy używać:** Temat dotyczy powtarzającego się wzorca, pętli sprzężenia zwrotnego, lub mechanizmu behawioralnego który można zrozumieć jako system z wejściami, wyjściami i trybami awarii.
 
-### Placement
+**Punkt wejścia:** Opisz mózg lub zachowanie jako złożony system. Używaj terminów inżynieryjnych w prostym polskim — opóźnienie (latency), pętla rekurencyjna, cache, przepustowość, tryb awarii, sygnał, override. Trzymaj ton precyzyjny i chłodny, nie kliniczny.
+
+**Wymagane węzły treściowe:**
+1. Opis systemu — czym jest i co jest zaprojektowany żeby robić
+2. Tryb awarii pod lupą — co się psuje i jak
+3. Wyzwalacz — co aktywuje tryb awarii
+4. Co system *naprawdę* optymalizuje — często inne niż osoba myśli
+5. Diagnostyczna konkluzja — co zachowanie systemu ujawnia
+
+**Ograniczenie close:** Po sekcji Permission Practice, zakończ tym czego system *potrzebuje* — nie tym co *osoba powinna zrobić*. System ma własną logikę. Uszanuj ją. To stwierdzenie logiki systemu jest OSTATNIM beatem — tipy są beatem przed nim.
+
+---
+
+## Sekcja Permission Practice (uniwersalna, zamykająca)
+
+**Każdy skrypt — niezależnie od architektury — musi zawierać sekcję Permission Practice między korpusem architektury a końcowym recognition close.** To zablokowana reguła strukturalna kanału. Sekcja daje widzowi coś konkretnego do zabrania do swojego tygodnia bez łamania anti-optimization pozycjonowania kanału.
+
+### Umieszczenie
 
 ```
-Architecture body (Forensic / Historical / Socratic / Systems)
+Korpus architektury (Forensic / Historical / Socratic / Systems)
   ↓
-Permission Practice section  ← NEW (this section)
+Sekcja Permission Practice  ← (ta sekcja)
   ↓
-Recognition close (the architecture's own close constraint — the FINAL beat)
+Recognition close (własny close constraint architektury — OSTATNI beat)
 ```
 
-### Specification
+### Specyfikacja
 
-- **Header template:** *"Four things you can [verb], when [trigger phrase tied to the script's mechanism]:"*
-  - verb varies: do / try / notice / give yourself / carry with you
-  - trigger phrase ties to the script's phenomenon — e.g. *"...when the avoidance hits"*, *"...when this lands in your body"*, *"...when the shame starts"*, *"...when the loop begins"*
-- **Exactly 4 numbered items.** Not 3. Not 5. Always 4.
-- **Each item:** one declarative line + one short unpack line. Roughly 15–35 words per item.
-- **Voice = embodied micro-practice.** Somatic acts, noticing, naming, micro-thresholds. Things the body can do in the moment, not behavioral plans for later.
-- **All existing voice rules still apply** inside this section: no researcher names, no "studies show", no decimals, round numbers only, plain language first.
-- **The recognition close still has the last word.** The tips are a beat, not the destination.
+- **Szablon nagłówka:** *"Cztery rzeczy które możesz [czasownik], kiedy [wyzwalacz powiązany z mechanizmem skryptu]:"*
+  - czasownik varies: zrobić / wypróbować / zauważyć / dać sobie / nieść ze sobą
+  - wyzwalacz wiąże się ze zjawiskiem skryptu — np. *"...kiedy unik uderza"*, *"...kiedy to ląduje w ciele"*, *"...kiedy wstyd się zaczyna"*, *"...kiedy pętla się włącza"*
+- **Dokładnie 4 numerowane pozycje.** Nie 3. Nie 5. Zawsze 4.
+- **Każda pozycja:** jedna linia deklaratywna + jedna krótka linia unpack. Mniej więcej 15–35 słów na pozycję.
+- **Voice = ucieleśniona mikropraktyka.** Akty somatyczne, zauważanie, nazywanie, mikro-progi. Rzeczy które ciało może zrobić w danym momencie, nie behawioralne plany na później.
+- **Wszystkie istniejące voice rules nadal obowiązują** wewnątrz tej sekcji: bez nazwisk badaczy, bez "badania pokazują", bez dziesiętnych, tylko zaokrąglone liczby, najpierw prosty język.
+- **Recognition close nadal ma ostatnie słowo.** Tipy są beatem, nie destynacją.
 
-### The litmus test
+### Test lakmusowy
 
-For every tip, ask: *"Could this line appear unchanged on a productivity blog or in a generic self-help thread?"* If yes — wrong. Rewrite as a somatic, noticing, or micro-threshold act.
+Dla każdego tipu zapytaj: *"Czy ta linia mogłaby pojawić się niezmieniona na blogu o produktywności lub w generycznym self-help wątku?"* Jeśli tak — źle. Przepisz jako somatyczny, zauważający lub mikro-progowy akt.
 
-### Correct examples (embodied micro-practice voice)
+### Poprawne przykłady (głos ucieleśnionej mikropraktyki)
 
 ```
-Four things you can do, when the avoidance hits:
+Cztery rzeczy które możesz zrobić, kiedy unik uderza:
 
-1. Name what you feel out loud, in one word. Sound externalizes
-   it in a way thinking never can.
-2. Hand on chest, exhale longer than you inhale. Your nervous
-   system reads slow exhales as safety.
-3. Write the first sentence you'd say, then close the notebook.
-   The threshold matters more than the action.
-4. Notice where the resistance lives in your body. Just notice.
-   You don't have to move it.
+1. Nazwij to co czujesz na głos, jednym słowem. Dźwięk wynosi
+   to na zewnątrz w sposób w jaki myślenie nigdy nie potrafi.
+2. Dłoń na klatce piersiowej, wydech dłuższy niż wdech. Twój
+   układ nerwowy odczytuje powolne wydechy jako bezpieczeństwo.
+3. Napisz pierwsze zdanie które byś powiedział/a, potem zamknij
+   notes. Próg ma większe znaczenie niż akcja.
+4. Zauważ gdzie opór mieszka w twoim ciele. Po prostu zauważ.
+   Nie musisz tego ruszać.
 ```
 
-### Wrong examples (would be stripped by Agent 4a — do not write these)
+### Złe przykłady (Agent 4a usunie te — nie pisz)
 
-- *"Schedule the conversation — don't wait for the right moment."* ← scheduling tip, optimization framing
-- *"Write down 3 things you're grateful for."* ← list-making tip, generic self-help
-- *"Talk to a therapist about it."* ← outsourced action, not embodied
-- *"Set clear boundaries with your boss."* ← generic advice, not somatic
-- *"This week, try saying no once a day."* ← homework framing
-- *"Practice mindfulness for 10 minutes a day."* ← prescriptive routine, not in-the-moment
-
-### What changes vs. the old script shape
-
-Before this rule existed, every architecture ended directly on its close constraint with no numbered prescription. Now the architecture body runs as before, then the Permission Practice section appears, then the architecture's own close constraint lands as the FINAL beat. The recognition close is unchanged — only its placement shifts one beat later.
+- *"Zaplanuj tę rozmowę — nie czekaj na właściwy moment."* ← scheduling tip, optimization framing
+- *"Zapisz 3 rzeczy za które jesteś wdzięczny/a."* ← list-making tip, generic self-help
+- *"Porozmawiaj o tym z terapeutą."* ← outsourced action, not embodied
+- *"Ustal jasne granice z szefem."* ← generic advice, not somatic
+- *"W tym tygodniu spróbuj raz dziennie powiedzieć nie."* ← homework framing
+- *"Praktykuj uważność 10 minut dziennie."* ← prescriptive routine, not in-the-moment
 
 ---
 
-## `[Visual Pause]` Marker
+## Marker `[Visual Pause]`
 
-Use `[Visual Pause]` on its own line to indicate a moment where silence carries more weight than words. The narration pauses. The image holds.
+Używaj `[Visual Pause]` w osobnej linii żeby oznaczyć moment w którym cisza niesie więcej wagi niż słowa. Narracja milknie. Obraz trzyma.
 
-- Maximum **3–4 per script**
-- Place it between sentences, on its own line
-- Use it only at moments of genuine weight — a revelation, a stark truth, a shift in perspective
-- Agent 9 (image generation) ignores this marker completely; it is for narration timing and video editing only
+- Maksymalnie **3–4 na skrypt**
+- Umieść między zdaniami, w osobnej linii
+- Używaj tylko w momentach prawdziwej wagi — objawienie, brutalna prawda, przesunięcie perspektywy
+- Agent 9 (generowanie obrazów) ignoruje ten marker całkowicie; służy tylko do timingu narracji i montażu wideo
 
 **Format:**
 ```
@@ -205,11 +194,13 @@ Use `[Visual Pause]` on its own line to indicate a moment where silence carries 
 
 ---
 
-## Visual Register Maps
+## Mapy Rejestru Wizualnego
 
-Agent 5 reads the `ARCHITECTURE:` line on top of the script and applies a **beat-specific visual register** to each section. The register is a *direction*, not a checklist — its job is to keep the symptom-beat from looking like the mechanism-beat from looking like the close.
+Agent 5 czyta linię `ARCHITECTURE:` na górze skryptu i aplikuje **rejestr wizualny specyficzny dla beatu** do każdej sekcji. Rejestr jest *kierunkiem*, nie checklistą — jego zadanie to zapewnić żeby beat-symptom nie wyglądał jak beat-mechanizm który nie wygląda jak close.
 
-Each register specifies: *Mood*, *Preferred Compositions*, *Metaphor Families*, *Scale*, and what to *Avoid*. Agent 5 still has to invent the specific shot.
+Każdy rejestr specyfikuje: *Nastrój (Mood)*, *Preferowane kompozycje*, *Rodziny metafor*, *Skala*, i czego *unikać (Avoid)*. Agent 5 nadal musi wymyślić konkretne ujęcie.
+
+**Uwaga:** Pola Mood/Compositions/Metaphors/Avoid pozostają po angielsku — Agent 5 generuje prompty obrazów dla Gemini po angielsku, więc słownictwo wizualne jest w EN dla spójności z prompt pipeline.
 
 ---
 
@@ -362,4 +353,4 @@ Each register specifies: *Mood*, *Preferred Compositions*, *Metaphor Families*, 
 
 ---
 
-**Note for Agent 5:** Each beat above is a *direction*, not a checklist. Use the composition + metaphor + scale as starting points and invent the specific shot. The register exists to ensure that the symptom-beat does not look like the mechanism-beat does not look like the close.
+**Uwaga dla Agenta 5:** Każdy beat powyżej jest *kierunkiem*, nie checklistą. Użyj composition + metaphor + scale jako punktów startowych i wymyśl konkretne ujęcie. Rejestr istnieje żeby zapewnić, że beat-symptom nie wygląda jak beat-mechanizm nie wygląda jak close.

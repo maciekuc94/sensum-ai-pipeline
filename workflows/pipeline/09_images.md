@@ -116,6 +116,11 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "<slug>" --generat
 Optional flags:
 - `--start N` — start from prompt N (1-based).
 - `--limit N` — render only N prompts.
+- `--indices "22,26,35"` — regenerate only the listed 1-based indices.
+  Overrides `--start`/`--limit` and **overwrites existing PNGs** at those
+  indices (the normal flow skips existing files; with `--indices` the user is
+  explicitly asking for replacements). Use this to re-render specific bad
+  images without redoing the whole set.
 - `--grain N` — apply film grain at intensity N to freshly-generated images.
 
 Expected output:

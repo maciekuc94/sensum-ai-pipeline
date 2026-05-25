@@ -34,6 +34,8 @@ from tools.pipeline.lib.aligner import (  # noqa: E402
     AlignedWord,
     align_script_to_audio,
     aligned_to_dict,
+    read_script_docx,
+    transcribe_audio,
 )
 from tools.pipeline.lib.phrase_mapper import (  # noqa: E402
     map_phrases_to_timings,
@@ -105,7 +107,11 @@ def main(args: argparse.Namespace) -> None:
     edit_dir = base / "edit"
     edit_dir.mkdir(parents=True, exist_ok=True)
 
-    script_path = base / "md" / "06_script_narration.md"
+    # Script source: prefer the .docx in docx/ (the user's working copy edited
+    # before recording), fall back to the .md if the docx isn't present.
+    script_docx_path = base / "docx" / "06_script_narration.docx"
+    script_md_path = base / "md" / "06_script_narration.md"
+    script_path = script_docx_path if script_docx_path.exists() else script_md_path
     phrases_path = base / "md" / "05_image_phrases.md"
     images_dir = base / "images_grain" if (base / "images_grain").exists() else base / "images"
 
@@ -133,10 +139,6 @@ def main(args: argparse.Namespace) -> None:
         print(f"Error: phrase table not found: {phrases_path}\n  Run Agent 5 first.")
         sys.exit(1)
 
-    image_paths = _discover_images(images_dir)
-    if not image_paths:
-        print(f"Warning: no images found in {images_dir}. The timeline will have no V3 clips.")
-
     background_path = _find_background()
     ambient_path = CHANNEL_ASSETS_DIR / AMBIENT_MUSIC_FILENAME
     if not ambient_path.exists():
@@ -152,10 +154,14 @@ def main(args: argparse.Namespace) -> None:
         if not alignment_path.exists():
             print(f"Error: --from-alignment requires {alignment_path} — run the full agent first.")
             sys.exit(1)
-        print(f"=== Agent Align: Rebuild SRT from alignment.json ===")
+        print(f"=== Agent Align: Rebuild SRT + FCPXML from alignment.json ===")
         print(f"Slug : {slug}")
         payload = json.loads(alignment_path.read_text(encoding="utf-8"))
         align_stats = payload["stats"]
+        if audio_path is None:
+            payload_audio = payload.get("audio_path")
+            if payload_audio:
+                audio_path = Path(payload_audio)
         aligned = [
             AlignedWord(
                 index=w["index"],
@@ -182,15 +188,36 @@ def main(args: argparse.Namespace) -> None:
         print(f"Audio         : {audio_path}")
         print(f"Script        : {script_path}")
         print(f"Phrase table  : {phrases_path}")
-        print(f"Images found  : {len(image_paths)}")
         print(f"Whisper model : {args.model} ({args.device}/{args.compute_type})")
         print(f"FPS           : {args.fps}")
         print()
 
         # 1) Forced alignment
-        print("Step 1/5: Transcribing audio with faster-whisper...")
+        whisper_cache_path = edit_dir / "whisper_words.json"
+        if script_path.suffix.lower() == ".docx":
+            script_md = read_script_docx(script_path)
+        else:
+            script_md = script_path.read_text(encoding="utf-8")
+        whisper_tokens: list[dict] | None = None
+        if not args.fresh_whisper and whisper_cache_path.exists():
+            print(f"Step 1/5: Loading cached Whisper output from {whisper_cache_path.name}...")
+            whisper_tokens = json.loads(whisper_cache_path.read_text(encoding="utf-8"))
+            print(f"  Loaded {len(whisper_tokens)} cached whisper words (skip transcription; pass --fresh-whisper to override).")
+        else:
+            print("Step 1/5: Transcribing audio with faster-whisper...")
+            t0 = time.time()
+            whisper_tokens = transcribe_audio(
+                audio_path,
+                model_size=args.model,
+                language=args.language,
+                device=args.device,
+                compute_type=args.compute_type,
+            )
+            t_transcribe = time.time() - t0
+            whisper_cache_path.write_text(json.dumps(whisper_tokens), encoding="utf-8")
+            print(f"  Transcribed {len(whisper_tokens)} whisper words in {t_transcribe:.1f}s → cached to {whisper_cache_path.name}")
+
         t0 = time.time()
-        script_md = script_path.read_text(encoding="utf-8")
         aligned, align_stats = align_script_to_audio(
             audio_path=audio_path,
             script_md_text=script_md,
@@ -199,6 +226,7 @@ def main(args: argparse.Namespace) -> None:
             device=args.device,
             compute_type=args.compute_type,
             window=args.window,
+            whisper_tokens=whisper_tokens,
         )
         align_elapsed = time.time() - t0
         print(
@@ -207,10 +235,10 @@ def main(args: argparse.Namespace) -> None:
             f"({align_stats['matched']} matched / {align_stats['interpolated']} interpolated, "
             f"{align_stats['match_rate'] * 100:.1f}%) in {align_elapsed:.1f}s"
         )
-        if align_stats["match_rate"] < 0.90:
+        if align_stats["match_rate"] < 0.95:
             print(
-                "  WARNING: match rate below 90% — alignment may be unreliable. "
-                "Check that the audio reads the same script and verify preview.html before importing to DaVinci."
+                f"  WARNING: match rate {align_stats['match_rate'] * 100:.1f}% below 95% target — "
+                "alignment may be unreliable. Verify preview.html before importing to DaVinci."
             )
 
         # 2) Phrase mapping
@@ -224,7 +252,7 @@ def main(args: argparse.Namespace) -> None:
     # ------------------------------------------------------------------
     # 3) Subtitle chunks
     # ------------------------------------------------------------------
-    step = "Step 2/3" if args.from_alignment else "Step 3/5"
+    step = "Step 2/4" if args.from_alignment else "Step 3/5"
     print(f"{step}: Building subtitle chunks...")
     chunks = build_chunks(aligned)
     srt_text = render_srt(chunks)
@@ -235,28 +263,33 @@ def main(args: argparse.Namespace) -> None:
     # ------------------------------------------------------------------
     # 4) FCPXML
     # ------------------------------------------------------------------
-    if args.from_alignment:
-        print("Skipping FCPXML regeneration (existing timeline.fcpxml unchanged).")
-    else:
-        print("Step 4/5: Generating FCPXML timeline...")
-        fcpxml_inputs = FCPXMLInputs(
-            slug=slug,
-            voiceover_wav=audio_path,
-            ambient_wav=ambient_path,
-            background_png=background_path,
-            image_paths=image_paths,
-            phrase_timings=[p for p in phrase_timings if p.matched],
-            fps=args.fps,
-        )
-        fcpxml_text = render_fcpxml(fcpxml_inputs)
-        fcpxml_path = edit_dir / "timeline.fcpxml"
-        fcpxml_path.write_text(fcpxml_text, encoding="utf-8")
-        print(f"  Wrote timeline.fcpxml with {len([p for p in phrase_timings if p.matched])} image clips")
+    # Re-discover images at the last possible moment — defends against a
+    # grain/image job still writing into images_grain/ when this agent started.
+    image_paths = _discover_images(images_dir)
+    if not image_paths:
+        print(f"Warning: no images found in {images_dir}. The timeline will have no V3 clips.")
+
+    step = "Step 3/4" if args.from_alignment else "Step 4/5"
+    print(f"{step}: Generating FCPXML timeline...")
+    print(f"  Images found: {len(image_paths)} (from {images_dir.name}/)")
+    fcpxml_inputs = FCPXMLInputs(
+        slug=slug,
+        voiceover_wav=audio_path,
+        ambient_wav=ambient_path,
+        background_png=background_path,
+        image_paths=image_paths,
+        phrase_timings=[p for p in phrase_timings if p.matched],
+        fps=args.fps,
+    )
+    fcpxml_text = render_fcpxml(fcpxml_inputs)
+    fcpxml_path = edit_dir / "timeline.fcpxml"
+    fcpxml_path.write_text(fcpxml_text, encoding="utf-8")
+    print(f"  Wrote timeline.fcpxml with {len([p for p in phrase_timings if p.matched])} image clips")
 
     # ------------------------------------------------------------------
     # 5) Debug + preview
     # ------------------------------------------------------------------
-    step = "Step 3/3" if args.from_alignment else "Step 5/5"
+    step = "Step 4/4" if args.from_alignment else "Step 5/5"
     print(f"{step}: Writing alignment.json + preview.html...")
     alignment_payload = {
         "slug": slug,
@@ -321,7 +354,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--window", type=int, default=10, help="Greedy alignment lookahead (default: 10)")
     parser.add_argument(
         "--from-alignment", dest="from_alignment", action="store_true",
-        help="Skip Whisper transcription — rebuild SRT from existing alignment.json (fast, seconds)",
+        help="Skip Whisper transcription — rebuild SRT + FCPXML from existing alignment.json (fast, seconds)",
+    )
+    parser.add_argument(
+        "--fresh-whisper", dest="fresh_whisper", action="store_true",
+        help="Force re-transcription even if whisper_words.json cache exists",
     )
     return parser.parse_args()
 

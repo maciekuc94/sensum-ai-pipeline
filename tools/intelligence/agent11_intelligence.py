@@ -43,14 +43,14 @@ def _write_tag_signals(results: dict, week_label: str, intel_dir: Path) -> Path:
     """Emit a single-word tag-signals MD sidecar for Agent 8 to consume."""
     from collections import Counter
 
-    # Top competitor tags: parse `videos.tags` CSV column, keep single-word entries.
+    # Top competitor tags: `videos[*].tags` is a list (YouTube API shape); keep single-word entries.
     raw_tag_counter: Counter = Counter()
     for v in results.get("videos", []):
-        tags_csv = (v.get("tags") or "").strip()
-        if not tags_csv:
-            continue
-        for raw in tags_csv.split(","):
-            tag = raw.strip().lower()
+        tags = v.get("tags") or []
+        if isinstance(tags, str):
+            tags = [t for t in tags.split(",")]
+        for raw in tags:
+            tag = (raw or "").strip().lower()
             if tag and " " not in tag and "-" not in tag and len(tag) > 2:
                 raw_tag_counter[tag] += 1
     top_tags = [t for t, _ in raw_tag_counter.most_common(30)]

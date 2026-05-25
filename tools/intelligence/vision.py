@@ -52,7 +52,7 @@ def classify_thumbnails(thumbnail_paths: dict[str, Path], project: str) -> dict[
             b64 = base64.b64encode(img_bytes).decode()
 
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model="gemini-2.5-flash",
                 contents=[
                     genai_types.Part.from_bytes(
                         data=base64.b64decode(b64),

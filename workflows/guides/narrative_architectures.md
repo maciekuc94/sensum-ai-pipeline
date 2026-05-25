@@ -28,9 +28,10 @@ These are hard bans. Agent 3 must not write them. Agent 4 must catch and remove 
 - "You are not alone" (as a standalone reassurance line — this can appear naturally in context, but not as an isolated comfort statement)
 
 **Banned structural patterns:**
-- Numbered prescription lists at the close (1st, 2nd, 3rd...)
-- Ending with "This week, try..." or any challenge framed as a homework assignment
-- Any section header used as narration (do not say "Now let's look at the science" or similar)
+- Numbered prescription lists ANYWHERE except inside the mandatory Permission Practice section described below (see "Permission Practice closing section (universal)"). The Permission Practice section is the *only* place numbered items are permitted, and the final beat after it must still land on recognition — never on a tip.
+- Ending the entire script on a tip, a step, or any "go do this" instruction. The recognition close still has the last word.
+- Homework framing — "this week, try…", "your assignment is…", "make a list of…". The Permission Practice section uses present-moment, in-the-body language ("when this hits, place your hand on your chest…"), never future-task language.
+- Any section header used as narration (do not say "Now let's look at the science" or similar). The Permission Practice section's header *is* spoken, but it is part of the warm-therapist voice — it is not a meta-structural label.
 
 **Banned research-framing language (research is invisible):**
 
@@ -74,7 +75,7 @@ The architecture is a **shape**, not a rigid template. Use it to determine the e
 3. The culprit — the specific cause, explained in everyday language, no jargon-first translations.
 4. The ordinary implication — what this extreme case reveals about the viewer's own everyday experience
 
-**Close constraint:** End on the implication for the viewer's life. Not steps. Not a list. The moment of recognition.
+**Close constraint:** After the Permission Practice section (see universal section below), end on the implication for the viewer's life. The moment of recognition is the FINAL beat — the tips are a beat before it, not the destination.
 
 ---
 
@@ -90,7 +91,7 @@ The architecture is a **shape**, not a rigid template. Use it to determine the e
 3. How it actually works — described as everyday observation, never as *"what new research reveals"*. The mechanism appears as obvious in hindsight.
 4. The rewrite — what the viewer now understands that contradicts what they were taught
 
-**Close constraint:** End on what the viewer now knows that most people don't. Not what they should do with it — just the weight of knowing it.
+**Close constraint:** After the Permission Practice section (see universal section below), end on what the viewer now knows that most people don't. The weight of knowing it is the FINAL beat — the tips are a beat before it.
 
 ---
 
@@ -108,7 +109,7 @@ The architecture is a **shape**, not a rigid template. Use it to determine the e
 5. The answer — it should feel like the viewer worked it out themselves
 6. The question reframed — return to the opening question, now with a different meaning
 
-**Close constraint:** The final line should echo the opening question, but the answer is now obvious. No additional instruction needed.
+**Close constraint:** After the Permission Practice section (see universal section below), the final line should echo the opening question, but the answer is now obvious. The reframed question is the FINAL beat — the tips are a beat before it.
 
 ---
 
@@ -125,7 +126,66 @@ The architecture is a **shape**, not a rigid template. Use it to determine the e
 4. What the system is actually optimizing for — often different from what the person thinks
 5. The diagnostic conclusion — what the system's behavior reveals
 
-**Close constraint:** End with what the system *needs* — not what the *person should do*. This is a subtle but important distinction. The system has its own logic. Respect it.
+**Close constraint:** After the Permission Practice section (see universal section below), end with what the system *needs* — not what the *person should do*. The system has its own logic. Respect it. This statement of the system's logic is the FINAL beat — the tips are a beat before it.
+
+---
+
+## Permission Practice closing section (universal)
+
+**Every script — regardless of architecture — must include a Permission Practice section between the architecture body and the final recognition close.** This is the channel's locked structural rule. The section gives the viewer something concrete to carry into their week without breaking the channel's anti-optimization positioning.
+
+### Placement
+
+```
+Architecture body (Forensic / Historical / Socratic / Systems)
+  ↓
+Permission Practice section  ← NEW (this section)
+  ↓
+Recognition close (the architecture's own close constraint — the FINAL beat)
+```
+
+### Specification
+
+- **Header template:** *"Four things you can [verb], when [trigger phrase tied to the script's mechanism]:"*
+  - verb varies: do / try / notice / give yourself / carry with you
+  - trigger phrase ties to the script's phenomenon — e.g. *"...when the avoidance hits"*, *"...when this lands in your body"*, *"...when the shame starts"*, *"...when the loop begins"*
+- **Exactly 4 numbered items.** Not 3. Not 5. Always 4.
+- **Each item:** one declarative line + one short unpack line. Roughly 15–35 words per item.
+- **Voice = embodied micro-practice.** Somatic acts, noticing, naming, micro-thresholds. Things the body can do in the moment, not behavioral plans for later.
+- **All existing voice rules still apply** inside this section: no researcher names, no "studies show", no decimals, round numbers only, plain language first.
+- **The recognition close still has the last word.** The tips are a beat, not the destination.
+
+### The litmus test
+
+For every tip, ask: *"Could this line appear unchanged on a productivity blog or in a generic self-help thread?"* If yes — wrong. Rewrite as a somatic, noticing, or micro-threshold act.
+
+### Correct examples (embodied micro-practice voice)
+
+```
+Four things you can do, when the avoidance hits:
+
+1. Name what you feel out loud, in one word. Sound externalizes
+   it in a way thinking never can.
+2. Hand on chest, exhale longer than you inhale. Your nervous
+   system reads slow exhales as safety.
+3. Write the first sentence you'd say, then close the notebook.
+   The threshold matters more than the action.
+4. Notice where the resistance lives in your body. Just notice.
+   You don't have to move it.
+```
+
+### Wrong examples (would be stripped by Agent 4a — do not write these)
+
+- *"Schedule the conversation — don't wait for the right moment."* ← scheduling tip, optimization framing
+- *"Write down 3 things you're grateful for."* ← list-making tip, generic self-help
+- *"Talk to a therapist about it."* ← outsourced action, not embodied
+- *"Set clear boundaries with your boss."* ← generic advice, not somatic
+- *"This week, try saying no once a day."* ← homework framing
+- *"Practice mindfulness for 10 minutes a day."* ← prescriptive routine, not in-the-moment
+
+### What changes vs. the old script shape
+
+Before this rule existed, every architecture ended directly on its close constraint with no numbered prescription. Now the architecture body runs as before, then the Permission Practice section appears, then the architecture's own close constraint lands as the FINAL beat. The recognition close is unchanged — only its placement shifts one beat later.
 
 ---
 

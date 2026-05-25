@@ -29,25 +29,31 @@ Agent 4 reads `md/03_script_draft.md` — same interface as before.
 python tools/pipeline/agent3a_draft.py "emotional-dysregulation-in-adhd"
 ```
 
-Claude reads the verified research + style guide + narrative architectures and writes a ~1,700-word narration script. On the first line it declares the chosen architecture:
+Claude reads the verified research + style guide + narrative architectures and writes a ~1,850-word narration script. On the first line it declares the chosen architecture:
 
 ```
 ARCHITECTURE: Forensic Case Study
 ```
 
 The four architectures (defined in `workflows/guides/narrative_architectures.md`):
+
 - **Forensic Case Study** — Opens with a strange symptom → investigation → mechanism → ordinary implication
 - **Historical Reversal** — Old "truth" → study that broke it → mechanism → what viewer now knows
 - **Socratic Challenge** — Opens with a hard question → logical steps → answer → question reframed
 - **Systems Audit** — Brain/behavior as system → failure mode → trigger → what system optimizes for
 
+After the architecture body, every script ends with a **mandatory Permission Practice section** (exactly 4 numbered embodied micro-practices, header *"Four things you can [verb], when [trigger]:"*), then the architecture's own recognition close. The recognition still has the final word — the tips are a beat before it. Full spec in `workflows/guides/narrative_architectures.md` under "Permission Practice closing section (universal)".
+
 **Review `md/03a_draft.md`:**
+
 - Architecture declared on line 1?
 - Hook opens with empathy and names the viewer's specific experience?
 - Written in second person throughout?
-- Word count ~1,400–2,000?
+- Word count ~1,500–2,100 (bumped from prior ~1,400–2,000 to absorb the Permission Practice section)?
 - All claims come from Verified Claims in `02_verified_research.md`?
 - No `[IMAGE: ...]` markers (Agent 5 handles those separately)?
+- **Permission Practice section present**, exactly 4 numbered items, header matches template, each tip is embodied (somatic / noticing / naming / micro-threshold — not scheduling, list-making, "talk to a therapist", or any productivity-blog-flavored advice)?
+- **Recognition close still after** the Permission Practice section — the script does NOT end on a tip?
 
 Edit the file directly before running 3n. The novelty agent reads whatever is in `03a_draft.md`.
 

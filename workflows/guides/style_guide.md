@@ -38,7 +38,7 @@ Never use:
 
 If a number doesn't land emotionally as plain English, cut it.
 
-**Script structure** is defined in `workflows/narrative_architectures.md` — that document replaces any section structure listed here.
+**Script structure** is defined in `workflows/guides/narrative_architectures.md` — that document replaces any section structure listed here. It also defines the **mandatory Permission Practice closing section** (always exactly 4 embodied micro-practices, sitting one beat before the recognition close). Numbered prescription lists are only permitted inside that section; the final beat of every script still lands on recognition, never on a tip.
 
 ## 3. Metaphor Guidelines
 

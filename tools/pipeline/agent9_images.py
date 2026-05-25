@@ -141,14 +141,28 @@ def extract_and_save_prompts(slug: str) -> None:
 # ---------------------------------------------------------------------------
 
 
-def generate_images(slug: str, limit: int | None = None, start: int = 1, grain: int = 0) -> None:
-    """Phase 2: read approved prompts and call Vertex AI Imagen for each."""
+def generate_images(
+    slug: str,
+    limit: int | None = None,
+    start: int = 1,
+    grain: int = 0,
+    indices: list[int] | None = None,
+) -> None:
+    """Phase 2: read approved prompts and call Vertex AI Imagen for each.
+
+    If `indices` is supplied (1-based list), only those exact prompts are
+    rendered and `start`/`limit` are ignored. Used for selective re-rendering
+    of specific bad images without touching the rest of the set.
+    """
     print(f"\n=== Agent 9: Image Generation — Phase 2 (Generate Images) ===")
     print(f"Slug : {slug}")
-    if start > 1:
-        print(f"Start: image {start:03d}")
-    if limit:
-        print(f"Limit: {limit} images")
+    if indices:
+        print(f"Indices: {indices}")
+    else:
+        if start > 1:
+            print(f"Start: image {start:03d}")
+        if limit:
+            print(f"Limit: {limit} images")
     print()
 
     # Step 1 — Read the prompts file
@@ -180,13 +194,23 @@ def generate_images(slug: str, limit: int | None = None, start: int = 1, grain: 
                 f"         Proceeding with {actual} parsed prompts."
             )
 
-    if start > len(prompts):
-        print(f"\nError: --start={start} exceeds {len(prompts)} parsed prompt(s).")
-        sys.exit(1)
-    prompts = prompts[start - 1:]
-    if limit:
-        prompts = prompts[:limit]
-    print(f"  Loaded {len(prompts)} prompt(s)")
+    # Build a list of (image_num, prompt_text) pairs honoring either --indices
+    # or --start/--limit (mutually exclusive in practice; indices wins).
+    if indices:
+        bad = [i for i in indices if i < 1 or i > len(prompts)]
+        if bad:
+            print(f"\nError: --indices contains values outside 1..{len(prompts)}: {bad}")
+            sys.exit(1)
+        prompt_jobs: list[tuple[int, str]] = [(i, prompts[i - 1]) for i in indices]
+    else:
+        if start > len(prompts):
+            print(f"\nError: --start={start} exceeds {len(prompts)} parsed prompt(s).")
+            sys.exit(1)
+        selected = prompts[start - 1:]
+        if limit:
+            selected = selected[:limit]
+        prompt_jobs = [(start + i, p) for i, p in enumerate(selected)]
+    print(f"  Loaded {len(prompt_jobs)} prompt(s)")
 
     # Step 2 — Initialise Vertex AI
     print(f"\n[2/3] Initialising Vertex AI Imagen...")
@@ -218,27 +242,31 @@ def generate_images(slug: str, limit: int | None = None, start: int = 1, grain: 
     print(f"  Model    : {IMAGE_MODEL}")
 
     # Step 3 — Generate images
-    print(f"\n[3/3] Generating {len(prompts)} image(s)...")
+    print(f"\n[3/3] Generating {len(prompt_jobs)} image(s)...")
     output_dir = get_output_dir(slug)
     images_dir = output_dir / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
 
-    total = len(prompts)
+    total = len(prompt_jobs)
     success = 0
     REQUEST_DELAY = 20  # seconds between requests to stay under QPM quota
 
     NEGATIVE_TEXT = (
         "\n\nAvoid in this image: face, eyes, nose, mouth, facial features, "
         "photorealistic face, 3D render, green/dark/colored background, "
-        "cropped head, head out of frame."
+        "cropped head, head out of frame, paper texture, vellum, parchment, "
+        "decorative border, frame around image, inner panel."
     )
 
-    for seq, prompt_text in enumerate(prompts, start=1):
-        image_num = start + seq - 1
+    # When --indices is supplied, the user wants those exact images regenerated;
+    # don't skip existing files in that mode.
+    overwrite_existing = bool(indices)
+
+    for seq, (image_num, prompt_text) in enumerate(prompt_jobs, start=1):
         filename = f"image_{image_num:03d}.png"
         output_path = images_dir / filename
 
-        if output_path.exists():
+        if output_path.exists() and not overwrite_existing:
             print(f"  [{seq}/{total}] Skipping {filename} (already exists)")
             success += 1
             continue
@@ -483,6 +511,10 @@ def _parse_args() -> argparse.Namespace:
                         help="Limit number of prompts/images processed.")
     parser.add_argument("--start", type=int, default=1,
                         help="1-based index to start from (default: 1).")
+    parser.add_argument("--indices", type=str, default=None,
+                        help="Comma-separated 1-based indices to (re)generate. "
+                             "Overrides --start/--limit; overwrites existing files. "
+                             "Example: --indices \"22,26,35,97\"")
     parser.add_argument("--grain", type=int, default=0,
                         help="Apply grain at intensity N to freshly-generated images.")
 
@@ -503,7 +535,23 @@ def main() -> None:
     elif args.apply_grain > 0:
         apply_grain_pass(slug, args.apply_grain, limit=args.limit, start=args.start)
     elif args.generate:
-        generate_images(slug, limit=args.limit, start=args.start, grain=args.grain)
+        indices_list: list[int] | None = None
+        if args.indices:
+            try:
+                indices_list = [int(x.strip()) for x in args.indices.split(",") if x.strip()]
+            except ValueError:
+                print(f"Error: --indices must be comma-separated integers, got: {args.indices!r}")
+                sys.exit(1)
+            if not indices_list:
+                print("Error: --indices was supplied but parsed to an empty list.")
+                sys.exit(1)
+        generate_images(
+            slug,
+            limit=args.limit,
+            start=args.start,
+            grain=args.grain,
+            indices=indices_list,
+        )
     else:
         extract_and_save_prompts(slug)
 

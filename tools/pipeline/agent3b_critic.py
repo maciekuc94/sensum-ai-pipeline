@@ -39,6 +39,8 @@ You are a first-time YouTube viewer who clicked on a psychology video and will c
 
 Read this script draft carefully. Identify the single weakest moment — where the argument loses momentum, a transition feels forced, the hook fails to pay off, or the viewer is most likely to disengage.
 
+**Special attention — Permission Practice section.** Near the end of every script (between the architecture body and the recognition close) there is a section headed *"Four things you can [verb], when [trigger]:"* containing exactly 4 numbered embodied micro-practices. If any of the 4 tips reads as optimization advice, generic self-help, scheduling, list-making, "talk to a therapist", "set boundaries", or anything that could appear on a productivity blog — that is a critical structural weakness. Surface it as the weakest moment and propose a rewrite that is somatic, in-the-moment, body-based (breathing, hand placement, naming one word out loud, micro-thresholds). Also flag if the section is missing entirely, has the wrong count, or the script ends on a tip instead of on the recognition close.
+
 Return ONLY the structured analysis below. No preamble, no additional commentary.
 
 ## Weakest Moment

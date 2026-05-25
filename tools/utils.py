@@ -16,7 +16,11 @@ from slugify import slugify
 # ---------------------------------------------------------------------------
 
 STYLE_SUFFIX = (
-    "minimalist high-contrast ink illustration on clean flat #F4E5CA aged vellum paper background, "
+    "minimalist high-contrast ink illustration on a flat solid #F4E5CA sage beige background — "
+    "the background is one continuous solid color with no texture, no paper grain, no mottling, "
+    "no aged-paper effects, no parchment look, no fibers, no stains, no discoloration, "
+    "no border, no frame, no decorative outline around the image, no inner rectangle or panel containing the illustration, "
+    "full-bleed composition where the background extends edge-to-edge, "
     "color palette strictly limited to #582F0E dark brown ink lines on #F4E5CA sage beige — no other colors whatsoever, "
     "technique: detailed cross-hatching for depth and shadow, fine-liner ink sketch, 2D perspective, heavy negative space, "
     "style: 19th-century scientific journal engraving, zero photorealism, no 3D effects, no gradients, no glows, no blurs, "

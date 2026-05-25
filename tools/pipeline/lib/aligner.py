@@ -29,6 +29,7 @@ class AlignedWord:
     start: float     # seconds
     end: float       # seconds
     matched: bool    # True if directly matched to a Whisper word; False if interpolated
+    force_break_before: bool = False   # token was preceded by a newline in the source script
 
 
 _WORD_SPLIT_RE = re.compile(r"\S+")
@@ -42,7 +43,7 @@ def _normalize(word: str) -> str:
 
 _SKIP_LINE_RE = re.compile(
     r"^\s*("
-    r"[A-Z][A-Z ]+:\s*\S"   # metadata lines like "ARCHITECTURE: Historical Reversal"
+    r"[A-Z][A-Z ]+:.*"       # metadata lines like "ARCHITECTURE: Systems Audit"
     r"|"
     r"\[.*?\]"               # stage directions like "[Visual Pause]"
     r")\s*$"
@@ -57,10 +58,39 @@ def _extract_narration_body(md_text: str) -> str:
     return "\n".join(filtered)
 
 
-def tokenize_script(script_text: str) -> list[str]:
-    """Split narration markdown into an ordered list of word tokens."""
+def read_script_docx(docx_path: Path) -> str:
+    """Read a narration script from a .docx file and return it as plain text.
+
+    Skips Heading-styled paragraphs (title, subheadings). Joins remaining
+    paragraphs with newlines so paragraph breaks are preserved for the
+    force_break_before detection downstream.
+    """
+    from docx import Document  # lazy import — only needed when reading docx
+    doc = Document(str(docx_path))
+    lines: list[str] = []
+    for p in doc.paragraphs:
+        if p.style is not None and p.style.name and p.style.name.startswith("Heading"):
+            continue
+        lines.append(p.text)
+    return "\n".join(lines)
+
+
+def tokenize_script(script_text: str) -> list[tuple[str, bool]]:
+    """Tokenize narration into (word, force_break_before) tuples.
+
+    `force_break_before` is True when a newline character separates the token
+    from its predecessor — i.e. a line / paragraph boundary in the source script.
+    The first token always has `force_break_before=False`.
+    """
     body = _extract_narration_body(script_text)
-    return _WORD_SPLIT_RE.findall(body)
+    tokens: list[tuple[str, bool]] = []
+    last_end = 0
+    for m in _WORD_SPLIT_RE.finditer(body):
+        gap = body[last_end:m.start()]
+        force_break = bool(tokens) and "\n" in gap
+        tokens.append((m.group(0), force_break))
+        last_end = m.end()
+    return tokens
 
 
 def transcribe_audio(
@@ -97,7 +127,11 @@ def _greedy_align(
     whisper_tokens: list[dict],
     window: int = 10,
 ) -> list[tuple[int, int | None]]:
-    """Walk both sequences in order, looking ahead `window` Whisper tokens for a match."""
+    """Walk both sequences in order, looking ahead `window` Whisper tokens for a match.
+
+    Kept for reference / fallback. Production path uses `_dp_align`, which is robust
+    to Whisper insertions/deletions that throw a pure greedy walker out of sync.
+    """
     script_norm = [_normalize(t) for t in script_tokens]
     whisper_norm = [_normalize(t["word"]) for t in whisper_tokens]
 
@@ -119,6 +153,82 @@ def _greedy_align(
         else:
             pairs.append((i, None))
     return pairs
+
+
+def _dp_align(
+    script_tokens: list[str],
+    whisper_tokens: list[dict],
+    match_score: int = 2,
+    gap_penalty: int = -1,
+    mismatch_penalty: int = -2,
+) -> list[tuple[int, int | None]]:
+    """Global Needleman-Wunsch-style alignment.
+
+    Finds the optimal alignment that maximizes script-word → whisper-word matches
+    across the whole sequence. Resilient to local Whisper transcription errors:
+    a misheard word or an inserted/dropped word does not knock subsequent words
+    out of sync (which is what kills the greedy walker on long voiceovers).
+
+    Returns one (script_idx, whisper_idx | None) tuple per script token, in order.
+    """
+    script_norm = [_normalize(t) for t in script_tokens]
+    whisper_norm = [_normalize(t["word"]) for t in whisper_tokens]
+    n = len(script_norm)
+    m = len(whisper_norm)
+
+    # DP matrix: dp[i][j] = best score aligning script[:i] against whisper[:j]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        dp[i][0] = dp[i - 1][0] + gap_penalty
+    for j in range(1, m + 1):
+        dp[0][j] = dp[0][j - 1] + gap_penalty
+
+    for i in range(1, n + 1):
+        s = script_norm[i - 1]
+        row = dp[i]
+        prev_row = dp[i - 1]
+        for j in range(1, m + 1):
+            if s and s == whisper_norm[j - 1]:
+                diag = prev_row[j - 1] + match_score
+            else:
+                diag = prev_row[j - 1] + mismatch_penalty
+            up = prev_row[j] + gap_penalty       # skip script word (no whisper consumed)
+            left = row[j - 1] + gap_penalty      # skip whisper word (no script consumed)
+            best = diag
+            if up > best:
+                best = up
+            if left > best:
+                best = left
+            row[j] = best
+
+    # Traceback to recover the alignment
+    pairs_rev: list[tuple[int, int | None]] = []
+    i, j = n, m
+    while i > 0 and j > 0:
+        s = script_norm[i - 1]
+        w = whisper_norm[j - 1]
+        diag = dp[i - 1][j - 1] + (match_score if s and s == w else mismatch_penalty)
+        up = dp[i - 1][j] + gap_penalty
+        left = dp[i][j - 1] + gap_penalty
+        if dp[i][j] == diag:
+            # Only count as a match if the words actually equal — otherwise it's a paired mismatch
+            if s and s == w:
+                pairs_rev.append((i - 1, j - 1))
+            else:
+                pairs_rev.append((i - 1, None))
+            i -= 1
+            j -= 1
+        elif dp[i][j] == up:
+            pairs_rev.append((i - 1, None))
+            i -= 1
+        else:  # left
+            j -= 1
+    while i > 0:
+        pairs_rev.append((i - 1, None))
+        i -= 1
+
+    pairs_rev.reverse()
+    return pairs_rev
 
 
 def _interpolate_unmatched(aligned: list[AlignedWord], audio_duration: float) -> list[AlignedWord]:
@@ -145,6 +255,7 @@ def _interpolate_unmatched(aligned: list[AlignedWord], audio_duration: float) ->
                     start=start,
                     end=end,
                     matched=False,
+                    force_break_before=result[i + k].force_break_before,
                 )
             i = j
         else:
@@ -160,23 +271,33 @@ def align_script_to_audio(
     device: str = "cpu",
     compute_type: str = "int8",
     window: int = 10,
+    whisper_tokens: list[dict] | None = None,
 ) -> tuple[list[AlignedWord], dict]:
-    """Run forced alignment and return (aligned_words, stats)."""
-    script_tokens = tokenize_script(script_md_text)
-    if not script_tokens:
-        raise ValueError("Script is empty after tokenization.")
+    """Run forced alignment and return (aligned_words, stats).
 
-    whisper_tokens = transcribe_audio(
-        audio_path,
-        model_size=model_size,
-        language=language,
-        device=device,
-        compute_type=compute_type,
-    )
+    If `whisper_tokens` is provided, skips Whisper and uses those tokens directly
+    — useful for iterating on the alignment algorithm without re-transcribing.
+    """
+    script_pairs = tokenize_script(script_md_text)
+    if not script_pairs:
+        raise ValueError("Script is empty after tokenization.")
+    script_words = [w for w, _ in script_pairs]
+    force_breaks = [fb for _, fb in script_pairs]
+
+    if whisper_tokens is None:
+        whisper_tokens = transcribe_audio(
+            audio_path,
+            model_size=model_size,
+            language=language,
+            device=device,
+            compute_type=compute_type,
+        )
     if not whisper_tokens:
         raise ValueError("Whisper produced no words from the audio.")
 
-    pairs = _greedy_align(script_tokens, whisper_tokens, window=window)
+    pairs = _dp_align(script_words, whisper_tokens)
+    # `window` arg retained for CLI compatibility; greedy fallback is no longer used.
+    _ = window
 
     aligned: list[AlignedWord] = []
     for script_idx, whisper_idx in pairs:
@@ -184,10 +305,11 @@ def align_script_to_audio(
             aligned.append(
                 AlignedWord(
                     index=script_idx,
-                    word=script_tokens[script_idx],
+                    word=script_words[script_idx],
                     start=0.0,
                     end=0.0,
                     matched=False,
+                    force_break_before=force_breaks[script_idx],
                 )
             )
         else:
@@ -195,10 +317,11 @@ def align_script_to_audio(
             aligned.append(
                 AlignedWord(
                     index=script_idx,
-                    word=script_tokens[script_idx],
+                    word=script_words[script_idx],
                     start=w["start"],
                     end=w["end"],
                     matched=True,
+                    force_break_before=force_breaks[script_idx],
                 )
             )
 
@@ -207,7 +330,7 @@ def align_script_to_audio(
 
     matched_count = sum(1 for w in aligned if w.matched)
     stats = {
-        "script_words": len(script_tokens),
+        "script_words": len(script_words),
         "whisper_words": len(whisper_tokens),
         "matched": matched_count,
         "interpolated": len(aligned) - matched_count,

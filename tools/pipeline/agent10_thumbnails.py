@@ -53,11 +53,17 @@ def _resize_to_target(image_path: Path) -> None:
 
 
 def _enforce_background_color(image_path: Path) -> None:
-    """Replace near-white pixels with exact brand background color (#F4E5CA)."""
+    """Replace all light background pixels with exact brand color (#F4E5CA).
+
+    Threshold of 170 catches off-brand beiges (e.g. Gemini's #E7D7B5 drift,
+    min channel ~181) that the old >240 threshold silently missed. Ink is
+    #582F0E (min channel ~14) and cross-hatch mid-tones have min channel
+    ~100-160, so 170 leaves shading intact. Mirrors agent9_images.py.
+    """
     import numpy as np
     from PIL import Image
     arr = np.array(Image.open(str(image_path)).convert("RGB"))
-    mask = (arr[:, :, 0] > 240) & (arr[:, :, 1] > 240) & (arr[:, :, 2] > 240)
+    mask = (arr[:, :, 0] > 170) & (arr[:, :, 1] > 170) & (arr[:, :, 2] > 170)
     arr[mask] = TARGET_BACKGROUND
     Image.fromarray(arr).save(str(image_path))
 
@@ -266,9 +272,16 @@ def main():
     thumbnails_dir.mkdir(parents=True, exist_ok=True)
 
     if reuse_prompts:
-        # Load prompts saved by a previous run
-        src_dir = output_dir / "thumbnails"
-        print(f"\n[1/3] Loading saved prompts from thumbnails/thumbnail_prompts.md...")
+        # Load prompts saved by a previous run. Prompts live alongside the
+        # images, so the source folder must match the grain mode of the run
+        # that originally generated them (thumbnails/ vs thumbnails_no_grain/).
+        src_dir = thumbnails_dir
+        if not (src_dir / "thumbnail_prompts.md").exists():
+            # Fallback: check the other folder in case grain mode differs across runs
+            alt = output_dir / ("thumbnails_no_grain" if apply_grain else "thumbnails")
+            if (alt / "thumbnail_prompts.md").exists():
+                src_dir = alt
+        print(f"\n[1/3] Loading saved prompts from {src_dir.name}/thumbnail_prompts.md...")
         prompts = _load_saved_prompts(src_dir)
         print(f"  Loaded {len(prompts)} prompts.")
         # Copy prompts file into new folder for traceability

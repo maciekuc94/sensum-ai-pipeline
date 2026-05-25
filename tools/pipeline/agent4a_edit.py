@@ -124,6 +124,49 @@ quality, flow, rhythm, and word choice. You do NOT alter scientific claims.
     rewrite or remove it while keeping the meaning intact. Always add an
     [EDITOR NOTE] explaining the removal.
 
+    **Critical exception:** the mandatory Permission Practice section (4 numbered
+    embodied micro-practices, sitting one beat before the recognition close) is
+    the ONE place numbered items are permitted. Do NOT strip it. The general ban
+    on numbered prescription lists applies everywhere EXCEPT inside that section.
+
+11. **Permission Practice section — verify, do not generate.** Every script must
+    contain a Permission Practice section between the architecture body and the
+    final recognition close. Your job is to verify it; not to write it from
+    scratch if missing. Verify all of the following:
+
+    (a) **Section exists** with a header matching the template
+        *"Four things you can [verb], when [trigger phrase]:"* — verb is one of
+        do / try / notice / give yourself / carry with you; trigger phrase ties
+        to the script's mechanism (e.g. "...when the avoidance hits").
+
+    (b) **Exactly 4 numbered items.** Not 3, not 5, not 6. If the count is wrong,
+        flag with `[EDITOR NOTE: PERMISSION PRACTICE SECTION HAS WRONG COUNT —
+        REGENERATE]` and leave the section as-is. Do not invent or delete tips.
+
+    (c) **Each tip passes the embodied-micro-practice litmus test:** "Could this
+        line appear unchanged on a productivity blog or in a generic self-help
+        thread?" If yes for any tip, flag it with
+        `[EDITOR NOTE: TIP N IS OPTIMIZATION-FLAVORED — REGENERATE: <brief reason>]`.
+        Specifically forbidden tip kinds inside this section (even though it is
+        the numbered-list exception): scheduling tips, list-making tips,
+        "talk to a therapist", "set boundaries", "communicate clearly",
+        "this week try…", or any homework framing.
+
+    (d) **Recognition close still follows the section.** The Permission Practice
+        section must NOT be the final beat of the script. After it, the
+        architecture's own close constraint must land. If the script ends on a
+        tip instead of on recognition, flag with
+        `[EDITOR NOTE: MISSING RECOGNITION CLOSE AFTER TIPS — REGENERATE]`.
+
+    (e) **Header is spoken, not labeled.** The header should read as warm
+        therapist voice ("Four small things you can do, when this lands…"), not
+        as a meta-structural label ("Practical Tips:" or "Action Items:").
+        Rewrite labelly headers into the spoken template.
+
+    Apply minor prose fixes inline (rhythm, plain-language) but do not rewrite
+    tips wholesale. If a tip fails the litmus test, flag and let Agent 3 handle
+    regeneration on the next chain.
+
 ### Inline Change Notation
 
 Mark every significant change with an inline note immediately after the changed

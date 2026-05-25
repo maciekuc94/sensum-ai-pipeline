@@ -87,6 +87,13 @@ The Claude prompt instructs the editor to enforce every rule in the style guide:
   fixes sections that break this arc
 - **Scientific claims preserved** — Does not alter, soften, or strengthen any
   factual claim; flags concerns in EDITOR NOTEs but leaves the text unchanged
+- **Permission Practice section — verify, do not generate.** Confirms the
+  mandatory closing section is present with the right header template, exactly
+  4 numbered embodied micro-practices, and the recognition close still following
+  it as the final beat. The editor does NOT rewrite tips wholesale — it flags
+  failures (wrong count, optimization-flavored tip, missing recognition close)
+  for Agent 3 to regenerate on the next chain. The general ban on numbered
+  prescription lists is suspended inside this one section only.
 
 Every significant change is marked inline:
 

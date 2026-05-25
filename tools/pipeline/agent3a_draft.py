@@ -1,7 +1,8 @@
 """
 Agent 3a: Script Draft (Pass 1 of 3)
 Reads the verified research document produced by Agent 2 and writes a complete
-~1,700-word narration script using one of the four narrative architectures.
+~1,850-word narration script using one of the four narrative architectures,
+followed by a mandatory Permission Practice closing section and recognition close.
 
 Review outputs/[slug]/md/03a_draft.md before running Agent 3b.
 
@@ -78,12 +79,32 @@ You are a professional YouTube scriptwriter for a psychology channel.
 Write a complete video narration script on the topic covered in the Verified Research above.
 
 Requirements:
-- Target length: ~1,700 words (approximately 13 minutes at 130 wpm)
+- Target length: ~1,850 words (approximately 14 minutes at 130 wpm) — the bump from the older ~1,700 target absorbs the mandatory Permission Practice section described below.
 - Read the Narrative Architectures document above. Choose the single architecture that best fits this topic and research. Declare your choice on the FIRST LINE of your script:
   ARCHITECTURE: [Forensic Case Study | Historical Reversal | Socratic Challenge | Systems Audit]
   Then write the script following that architecture's entry point, required content nodes, and close constraint. Treat the architecture as a shape, not a rigid template.
 - Avoid all banned phrases and structural patterns listed in the Narrative Architectures document.
 - Use [Visual Pause] on its own line (maximum 3–4 times per script) at moments that require silence for impact.
+
+**Mandatory Permission Practice closing section.** Every script — regardless of architecture — must include a Permission Practice section AFTER the architecture body and BEFORE the final recognition close. This is the channel's locked structural rule.
+
+- Header template: *"Four things you can [verb], when [trigger phrase tied to the script's specific mechanism]:"*
+  - verb varies: do / try / notice / give yourself / carry with you
+  - trigger phrase ties to the script's phenomenon — e.g. *"...when the avoidance hits"*, *"...when this lands in your body"*, *"...when the shame starts"*, *"...when the loop begins"*
+- Exactly **4 numbered items**. Not 3. Not 5. Always 4.
+- Each item = one declarative line + one short unpack line. Roughly 15–35 words per item.
+- Voice = **embodied micro-practice**: somatic acts (breathing, hand placement, posture), noticing (locating sensation in the body), naming (saying one word out loud), micro-thresholds (write the first sentence, then stop). The tips are *practices*, not *advice*.
+- **Forbidden tip kinds** (these break the channel):
+  - Scheduling tips ("set a time", "block your calendar")
+  - List-making tips ("write down 3 things…")
+  - Optimization tips ("be more productive", "stop overthinking")
+  - Generic self-help tips ("talk to a therapist", "set boundaries", "communicate clearly")
+  - Homework framing ("this week, try…", "your assignment is…")
+  - Anything that could appear unchanged on a productivity blog
+- **Litmus test for each tip:** Could this line appear word-for-word on a productivity blog or in a generic self-help thread? If yes — wrong. Rewrite as a somatic, noticing, or micro-threshold act.
+- All existing voice rules still apply inside this section: no researcher names, no "studies show", no decimals, round numbers only, plain language first.
+
+**Then write the recognition close after the section.** The tips are a beat, not the destination. The FINAL line of the script must still land on implication / recognition — never on a tip and never on a "go do this" instruction. The architecture's close constraint still governs the recognition beat; the Permission Practice section sits one beat before it.
 
 **Voice — warm therapist talking to one person.** You sit across from the viewer. You validate the feeling before explaining the mechanism. You don't perform expertise; you offer recognition.
 
@@ -115,7 +136,7 @@ def build_output(topic: str, script_text: str) -> str:
         f"Generated: {today}\n"
         f"Model: {CLAUDE_MODEL}\n"
         f"Pass: 1 of 3 (Draft)\n"
-        f"Estimated duration: ~13 min (~1,700 words)\n"
+        f"Estimated duration: ~14 min (~1,850 words)\n"
         f"\n"
         f"---\n"
         f"\n"

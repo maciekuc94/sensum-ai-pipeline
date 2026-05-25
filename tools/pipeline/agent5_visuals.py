@@ -596,8 +596,8 @@ def main() -> None:
         script_content = read_output(slug, SCRIPT_FILENAME)
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
-        print("\nRun Agent 4 first:")
-        print(f'  python tools/agent4a_edit.py "{slug}"')
+        print("\nRun Agent 3 chain first (produces 04_script_final.md):")
+        print(f'  python tools/pipeline/agent3.py "{slug}"')
         sys.exit(1)
 
     topic = _extract_topic_from_script(script_content)

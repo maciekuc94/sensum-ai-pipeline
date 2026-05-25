@@ -801,7 +801,7 @@ def main() -> None:
         script = read_output(slug, SCRIPT_FILENAME)
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
-        print(f'\nRun Agent 4 first:\n  python tools/agent4a_edit.py "{slug}"')
+        print(f'\nRun Agent 3 chain first (produces 04_script_final.md):\n  python tools/pipeline/agent3.py "{slug}"')
         sys.exit(1)
 
     try:

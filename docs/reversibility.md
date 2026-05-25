@@ -102,13 +102,66 @@ Te elementy są poza zakresem Git/file backup — są wynikiem świadomych decyz
 - **Polski 3n corpus** — buduje się od pierwszego polskiego video. Po powrocie do EN, korpus pozostaje (zawiera polskie skrypty), ale Agent 3n na EN będzie porównywał angielski draft z polskim korpusem — false-negatives nieuniknione. Rozwiązanie: po reaktywacji EN, podzielić korpus przez język lub usunąć polskie skrypty z indeksu nowości.
 - **YouTube algorithm momentum** na angielskim kanale — jeśli `@hello.sensum` był dormant przez dłuższy czas, algorytm wycofał creator model. Reaktywacja oznacza algorytmiczny restart (pierwsze EN video po pauzie może mieć słabsze zasięgi).
 
+## Mechanizm czwartorzędny — Git tag `agent-chain-v1-prerevisor`
+
+Niezależnie od EN/PL lokalizacji, **script chain** (Agent 3a → 3n → 3b → 3c → 4a) został zrefaktorowany do B++ v2 (3a Drafter → 3b Revisor → 3c Reviewer loop) w 2026-05-25. Stara architektura jest zachowana w tagu `agent-chain-v1-prerevisor`.
+
+Zmiany:
+- **Usunięte:** `agent3n_novelty.py`, `agent3b_critic.py`, `agent3c_rewrite.py`, `agent4a_edit.py`, `workflows/pipeline/04a_edit.md`
+- **Dodane:** `agent3b_revisor.py` (Sonnet, full-script revision), `agent3c_reviewer.py` (Sonnet, PASS/FLAG judge)
+- **Zmodyfikowane:** `agent3.py` (loop orchestrator), `agent3a_draft.py` (3 nowe wzorce w promptie), `workflows/guides/style_guide.md` (sekcja Anti-patterns), `workflows/pipeline/03_script.md` (nowy SOP)
+
+### Sprawdzenie zawartości tagu
+
+```bash
+git show agent-chain-v1-prerevisor:tools/pipeline/agent3b_critic.py
+git show agent-chain-v1-prerevisor:tools/pipeline/agent4a_edit.py
+git ls-tree -r agent-chain-v1-prerevisor --name-only | grep -E "agent3|agent4a"
+git diff agent-chain-v1-prerevisor -- tools/pipeline/
+```
+
+### Przywrócenie starego chainu (Drafter + Critic + Rewrite + Edit)
+
+```bash
+# Opcja A — przywrócenie samych python skryptów (zostaje na bieżącej gałęzi):
+git checkout agent-chain-v1-prerevisor -- tools/pipeline/agent3.py tools/pipeline/agent3a_draft.py tools/pipeline/agent3n_novelty.py tools/pipeline/agent3b_critic.py tools/pipeline/agent3c_rewrite.py tools/pipeline/agent4a_edit.py workflows/pipeline/04a_edit.md workflows/pipeline/03_script.md
+
+# Następnie usuń nowe agenty (które już są niepotrzebne w v1):
+rm tools/pipeline/agent3b_revisor.py tools/pipeline/agent3c_reviewer.py
+
+# Commit:
+git add -A && git commit -m "restore agent chain v1 (drafter+critic+rewrite+edit)"
+```
+
+```bash
+# Opcja B — branch z taga (bezpieczne, działasz na nowej gałęzi):
+git checkout -b restore-chain-v1 agent-chain-v1-prerevisor
+# Teraz jesteś na branchu `restore-chain-v1` z pełnym v1 chainem.
+
+# Opcja C — twardy reset (DESTRUCTIVE):
+# git reset --hard agent-chain-v1-prerevisor
+# UWAGA: traci wszystkie commity po tagu.
+```
+
+Style guide też trzeba cofnąć (sekcja Anti-patterns została dodana w v2):
+
+```bash
+git checkout agent-chain-v1-prerevisor -- workflows/guides/style_guide.md
+```
+
+Po restore pipeline znowu używa starego flow: `python tools/pipeline/agent3.py "<slug>"` uruchamia 3a → 3n → 3b → 3c (jak przed), a `agent4a_edit.py` znowu istnieje jako osobny krok po Agent 3.
+
+---
+
 ## Tag inventory
 
 Dla referencji — wszystkie tagi związane z reversibility:
 
 ```bash
-git tag -l 'en-pipeline-*'
-# en-pipeline-v1  ← obecny baseline (przed polską lokalizacją)
+git tag -l 'en-pipeline-*' 'agent-chain-*'
+# en-pipeline-v1            ← angielski pipeline baseline (przed polską lokalizacją)
+# agent-chain-v1-prerevisor ← stary script chain (Drafter+Critic+Rewrite+Edit, przed B++ v2)
+# agent-chain-v2-revisor    ← (TBA) nowy script chain (Drafter+Revisor+Reviewer) — taguje się po pomyślnej weryfikacji
 ```
 
 Przyszłe tagi (jeśli zostaną dodane):

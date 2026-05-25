@@ -25,11 +25,11 @@ You're working inside the **WAT framework** (Workflows, Agents, Tools). This arc
 
 ## Channel Language (2026-05-25 — Polish localization)
 
-**This pipeline produces Polish-language SENSUM content.** The channel is `@sensumpolska` on YouTube. All script-writing agents (3a/3b/3c/3n/4a/4b/8) generate Polish output; style guides (`workflows/guides/style_guide.md`, `workflows/guides/narrative_architectures.md`) are in Polish. The English pipeline as it stood on 2026-05-25 is preserved at Git tag `en-pipeline-v1` and English versions of style guides live alongside Polish ones as `.en.md` files. The legacy English channel `@hello.sensum` is dormant.
+**This pipeline produces Polish-language SENSUM content.** The channel is `@sensumpolska` on YouTube. All script-writing agents (3a/3b/3c/4b/8) generate Polish output; style guides (`workflows/guides/style_guide.md`, `workflows/guides/narrative_architectures.md`) are in Polish. The English pipeline as it stood on 2026-05-25 is preserved at Git tag `en-pipeline-v1` and English versions of style guides live alongside Polish ones as `.en.md` files. The legacy English channel `@hello.sensum` is dormant.
 
 **To restore English behavior** (any granularity — single file, full pipeline, branch): see `docs/reversibility.md` for ready-to-copy `git checkout en-pipeline-v1 -- <path>` commands.
 
-**Banned-phrase lists for Polish are intentionally empty** in both Polish style guides — they fill in *empirically* as Agent 4a and the user flag real cringe-phrases from shipped Polish scripts. The English guides accumulated their banned-phrase lists across dozens of scripts; the Polish guides start blank and grow the same way.
+**Banned-phrase lists for Polish are intentionally empty** in both Polish style guides — they fill in *empirically* as the Reviewer (Agent 3c) and the user flag real cringe-phrases from shipped Polish scripts. The English guides accumulated their banned-phrase lists across dozens of scripts; the Polish guides start blank and grow the same way.
 
 **Research is still in English.** Agents 1/2 produce `01_research.md` and `02_verified_research.md` in English (PubMed + Gemini sources are English-language). Polish script agents read English research and produce Polish output — this is intentional, not a bug. Do not localize Agents 0/1/2.
 
@@ -110,7 +110,7 @@ Scripts must read as a warm therapist talking to one person — research entirel
 Polish forbidden phrases (research-framing): "naukowcy odkryli", "badania pokazują", "wyniki badań", "z badań wynika", "ostatnie badania", "neuronauka wykazała", "psychologowie nazywają to", "dane pokazują", "według badań", "nauka jest jasna", "jedno badanie", "meta-analiza", "w [roku]" wprowadzające badanie. English equivalents (preserved for reference): "researchers found / studies show / scientists discovered / research shows / neuroscience has found / one study / a meta-analysis / the data shows / according to research / the science is clear / psychologists call this". Both lists grow empirically as the channel ships content.
 
 **Permission Practice closing section (2026-05-24, locked)**
-Every script ends with a mandatory Permission Practice section sitting between the architecture body and the recognition close. Exactly **4 numbered embodied micro-practices** — somatic acts, noticing, naming, breathing, micro-thresholds. Never optimization, scheduling, list-making, "talk to a therapist", "set boundaries", or anything that could appear unchanged on a productivity blog. Header template: *"Four things you can [verb], when [trigger]:"* — verb varies (do/try/notice/give yourself/carry with you); trigger ties to the script's specific mechanism. The recognition close still has the FINAL word — the tips are a beat, not the destination. Full spec lives in `workflows/guides/narrative_architectures.md` under "Permission Practice closing section (universal)". Agent 3a generates it; Agent 4a verifies (does not regenerate); Agent 3b/3c flag and rewrite optimization-flavored tips. Title doctrine unchanged — still identity-provocation only; tips are inside-the-video payoff, not click bait.
+Every script ends with a mandatory Permission Practice section sitting between the architecture body and the recognition close. Exactly **4 numbered embodied micro-practices** — somatic acts, noticing, naming, breathing, micro-thresholds. Never optimization, scheduling, list-making, "talk to a therapist", "set boundaries", or anything that could appear unchanged on a productivity blog. Header template: *"Four things you can [verb], when [trigger]:"* — verb varies (do/try/notice/give yourself/carry with you); trigger ties to the script's specific mechanism. The recognition close still has the FINAL word — the tips are a beat, not the destination. Full spec lives in `workflows/guides/narrative_architectures.md` under "Permission Practice closing section (universal)". Agent 3a generates it; Agent 3b (Revisor) applies all revision moves including PP agency verbs; Agent 3c (Reviewer) flags PP integrity violations. Title doctrine unchanged — still identity-provocation only; tips are inside-the-video payoff, not click bait.
 
 **Number policy:** Round, framed numbers only ("roughly half", "most people"). Banned in scripts: decimals (0.62), effect sizes (d = X, r = X), p-values, study counts ("94 experiments"), participant counts ("8,000 people"), methodology terms (pre-registered, double-blind, longitudinal, meta-analysis). If a number doesn't land emotionally as plain English, cut it.
 
@@ -149,6 +149,13 @@ Agent 8 operates as an **Advanced YouTube Metadata Engineer / NLP Optimization P
 
 The Agent 8 metadata prompt frames Claude as an Advanced YouTube Metadata Engineer / NLP Optimization Pipeline operating with cold, empirical, mathematical precision (long-form titles in identity-provocation voice; description body and Shorts descriptions remain warm/validating).
 
+**Script revision architecture (B++ v2) — 2026-05-25**
+Agent 3 orchestrates a Drafter + Revisor↔Reviewer loop derived from analyzing the diff between a pipeline-generated script and a manually Copilot-revised version. Architecture: 1 Opus call (3a Drafter) followed by a Sonnet-only loop (3b Revisor ↔ 3c Reviewer, max 2 iterations). The loop never returns to the Drafter — cost capped at 1 Opus + 2–4 Sonnet calls per script (~$0.55/script target).
+
+The Revisor (3b) applies 8 diff-derived revision moves across the full script (embodied clarity, cut redundancy, de-judging tone, generalization, symbolic metaphor, diagnostic framing, PP agency verbs, softening pressure). The Reviewer (3c) judges PASS/FLAG against 7 critical-issue categories without rewriting. On FLAG + iter < max, Revisor re-runs addressing only the Reviewer's flagged issues. Loop exits on PASS or max iterations; if still FLAG at max iterations, `04_script_final.md` is prepended with a warning header — review `03_review.md` before recording.
+
+The old chain (3a/3n/3b_critic/3c_rewrite/4a — 3 Opus calls, ~$1.20/script) is preserved at Git tag `agent-chain-v1-prerevisor`. See `docs/reversibility.md` for restore commands.
+
 **Niche Trend Signals — Agent 11 ↔ Agent 8 integration**
 Agent 11 (weekly niche intelligence) writes a sidecar **`outputs/intelligence/{week_label}_tag_signals.md`** alongside its PPTX deck. The file is single-word-only and has four sections: Top Trending Tags / Top Trending Title Topics / Top Title Words / Content Gaps. Agent 8 automatically reads the latest sidecar (newest by filename sort) via `_load_niche_signals()` and injects it into the metadata prompt as `## Niche Trend Signals (latest weekly intelligence report)`. The prompt treats this block as a **supporting reference for the back half of the tag list** (post 2026-05-24 doctrine shift — previously it was "highest-priority", but Tag #1 must now be the exact-match primary keyword extracted from the chosen long-form title, since YouTube's algorithm front-loads semantic weight on Tag #1). The integration fails soft — if no sidecar exists, Agent 8 still works as before. Agent 11's `PROJECT_ROOT` is `Path(__file__).parent.parent.parent` (three levels up, not two) — a prior bug used `.parent.parent` which resolved to `tools/` and broke `outputs/intelligence/` pathing.
 
@@ -169,7 +176,8 @@ ls outputs/videos_pl/
 
 **Agents that take a TOPIC:** Agent 0 (`--topic` flag), Agent 1 (positional arg). All others take a slug.  
 **Before running any agent:** verify the previous agent's output exists in `outputs/videos_pl/{slug}/md/`.  
-**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously.  
+**Parallel-safe after Agent 3 (script chain):** Agents 5, 6, and 8 can run simultaneously.  
+**Agent 3 flags:** `--max-iterations N` (cap Revisor↔Reviewer loops, default 2), `--skip-drafter` (start from existing `03a_draft.md`).  
 **For flags and error recovery:** see the matching `workflows/pipeline/NN_name.md` file. Style guides are in `workflows/guides/`.
 
 ## Agent Chain
@@ -183,12 +191,10 @@ All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelli
 | 0 (optional) | `pipeline/agent0_materials.py` | Gemini 3.1 Pro | PDF + topic | `md/00_materials_insights.md` |
 | 1 | `pipeline/agent1_research.py` | Gemini 3.1 Pro + PubMed | topic string | `md/01_research.md` |
 | 2 | `pipeline/agent2_verify.py` | Gemini 3.1 Pro | `01_research.md` | `md/02_verified_research.md` |
-| 3 | `pipeline/agent3.py` | runs 3a → 3n → 3b → 3c | slug | all `03_*.md` files |
+| 3 | `pipeline/agent3.py` | runs 3a → 3b↔3c loop | slug | all `03_*.md` files + `md/04_script_final.md` |
 | 3a | `pipeline/agent3a_draft.py` | Claude Opus 4.7 | `02_verified_research.md` | `md/03a_draft.md` |
-| 3n | `pipeline/agent3n_novelty.py` | Claude Sonnet 4.6 | `03a_draft.md` + prior corpus | `md/03_novelty_report.md` + revised `03a_draft.md` |
-| 3b | `pipeline/agent3b_critic.py` | Claude Sonnet 4.6 | `03a_draft.md` | `md/03b_critique.md` |
-| 3c | `pipeline/agent3c_rewrite.py` | Claude Opus 4.7 | `03a_draft.md` + `03b_critique.md` | `md/03_script_draft.md` |
-| 4a | `pipeline/agent4a_edit.py` | Claude Sonnet 4.6 | `03_script_draft.md` | `md/04_script_final.md` |
+| 3b | `pipeline/agent3b_revisor.py` | Claude Sonnet 4.6 | `03a_draft.md` (+ `03_review.md` on iter 2) | `md/03_script_draft.md` |
+| 3c | `pipeline/agent3c_reviewer.py` | Claude Sonnet 4.6 | `03_script_draft.md` | `md/03_review.md` |
 | 4b **(gate)** | `pipeline/agent4b_hook.py` | Claude Sonnet 4.6 | `04_script_final.md` | `md/04b_hook_score.md` + revised `04_script_final.md` in place |
 | 5 | `pipeline/agent5_visuals.py` | Claude Opus 4.7 | `04_script_final.md` | `md/05_image_prompts.md` |
 | 6 | `pipeline/agent6_narration.py` | deterministic | `04_script_final.md` | `md/06_script_narration.md` |
@@ -198,15 +204,13 @@ All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelli
 | 10 **(manual)** | `pipeline/agent10_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |
 | Align **(post-record)** | `pipeline/agent_align.py` | faster-whisper (local, free) | `voiceover/voiceover.wav` + `05_image_phrases.md` + `06_script_narration.md` | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` |
 
-**Parallel-safe after Agent 4a:** Agents 5, 6, and 8 can run simultaneously. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
+**Parallel-safe after Agent 3 (script chain):** Agents 5, 6, and 8 can run simultaneously. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
 
 **Manual agents — never run automatically:** Agents 9 and 10 generate images and thumbnails (cost + time). Always stop the pipeline after Agent 8 completes and wait for explicit instruction before running either.
 
 **Align Agent — Forced Alignment & DaVinci Bundle:** Runs *after* voiceover recording (Studio One → exported WAV at `voiceover/voiceover.wav`). Uses faster-whisper to align audio to the known script, then emits an SRT + FCPXML the user imports into DaVinci Resolve. Eliminates ~2-4 hours of manual subtitle syncing and image placement per video. Local-only, no API costs. Naming: file is `tools/pipeline/agent_align.py` (no number — avoids confusion with the unrelated `agent11_intelligence.py` analysis tool). See `workflows/pipeline/align.md` and one-time `workflows/guides/davinci_subtitle_preset.md` for setup.
 
 **Quality gate — Agent 4b:** Scores opening hook (Tier 1: ≥8/10 at 37 words; Tier 2: ≥7/10 at 200 words). Verdict must be `RECORD` before recording voiceover. Modifies `04_script_final.md` in place; backup saved to `04_script_final.bak.md`.
-
-**Novelty check — Agent 3n:** Compares new draft against all prior `outputs/videos_pl/*/md/06_script_narration.md` files (the shipped corpus). First video ever produces `SKIPPED` verdict automatically — that is correct behavior.
 
 ## Bottom Line
 

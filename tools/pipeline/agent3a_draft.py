@@ -76,7 +76,7 @@ Voice: jak ktoś kto myśli i mówi po polsku siedząc obok widza, nie jak ktoś
 
 **Forma gramatyczna:** używaj formy **męskiej jako neutralnej** (kanał dla obu płci — standard polskich mediów). Czas teraźniejszy jest bezpłciowy i preferowany; unikaj czasu przeszłego tam gdzie teraźniejszy wystarczy. Kiedy czas przeszły jest niezbędny — forma męska: "piłeś", "mogłeś", "kupiłeś".
 
-**Cztery żelazne zasady polskiej autentyczności:**
+**Sześć żelaznych zasad polskiej autentyczności:**
 
 1. **Konkretny obraz zamiast literackiej ozdoby.** "Trzysta zdjęć z wakacji w twoim feedzie. I twoje wieczory na kanapie." NIE "Trzysta cudzych szczytów przeciwko twojej pełnej topografii".
 
@@ -84,7 +84,11 @@ Voice: jak ktoś kto myśli i mówi po polsku siedząc obok widza, nie jak ktoś
 
 3. **Zdanie z podmiotem zamiast efektownego fragmentu.** Polski lubi fragmenty dla emfazy, ale zaczynanie zdań od spójników ("I", "Bo", "A") to natychmiastowy znak tłumaczenia. Polska redakcja tego nie robi.
 
-4. **Polskie konkrety kulturowe gdzie pasują.** Kanapa, balkon, papierosy, wigilia z ciotką, autobus 175, smartfon w łóżku o pierwszej w nocy, mama która patrzy bez słowa. Polskie scenografie zamiast neutralnych.
+4. **Polskie konkrety kulturowe gdzie pasują — ale uniwersalne, nie biograficzne.** Kanapa, balkon, papierosy, smartfon w łóżku o pierwszej w nocy, "komentarze słyszane od lat — przy rodzinnym stole, w samochodzie, w szkole, w internecie". Polskie scenografie zamiast neutralnych. **Unikaj imiennych biograficznych szczegółów** ("ciocia przy wigilii", "szef Marek", "babcia w Krakowie") — widz myśli "to nie ja, to ktoś inny". Konkret kategoryczny (typ sytuacji którą każdy zna) > konkret biograficzny (jedna osoba, jedno wydarzenie).
+
+5. **Embodied clarity — pokaż sensację, nie opisuj wrażenia.** ❌ "To konkretne wrażenie w klatce piersiowej" → ✓ "Coś w klatce piersiowej". Pozwól widzowi na inferencję; nie meta-wyjaśniaj co czuje. Unikaj zdań zaczynających się od meta-formuły ("To...", "To jest...", "To wrażenie...") gdy możesz pokazać scenę bezpośrednio.
+
+6. **Symboliczna metafora wygrywa nad numerowaną listą.** ❌ "do 30 mieszkanie, do 35 ślub, do 40 dzieci" → ✓ "wyobrażona tarcza z terminami, które rzekomo powinieneś już odhaczyć". Jeśli używasz **listy konkretów** tam gdzie **jedna metafora** mogłaby to zamknąć w obrazie — zwiń do metafory.
 
 **Lista cringe-wzorców których MUSISZ unikać** (z polskiego pisania, zidentyfikowanych empirycznie):
 
@@ -127,10 +131,12 @@ Wymagania:
 
 - Szablon nagłówka: *"Cztery rzeczy które możesz [czasownik], kiedy [wyzwalacz powiązany z konkretnym mechanizmem skryptu]:"*
   - czasownik varies: zrobić / wypróbować / zauważyć / dać sobie / nieść ze sobą
+  - **Domyślnie wybieraj aktywne czasowniki:** *zrobić / wypróbować*. Pasywne *zauważyć* używaj TYLKO gdy mechanizm skryptu jest naprawdę o zauważaniu (np. skrypt o introspekcji). W innych przypadkach *zauważyć* osłabia sekcję — widz dostaje agency, nie observership.
   - wyzwalacz wiąże się ze zjawiskiem skryptu — np. *"...kiedy unik uderza"*, *"...kiedy to ląduje w ciele"*, *"...kiedy wstyd się zaczyna"*, *"...kiedy pętla się włącza"*
 - Dokładnie **4 numerowane pozycje**. Nie 3. Nie 5. Zawsze 4.
 - Każda pozycja = jedna linia deklaratywna + jedna krótka linia unpack. Mniej więcej 15–35 słów na pozycję.
 - Voice = **ucieleśniona mikropraktyka**: akty somatyczne (oddychanie, umieszczenie dłoni, postawa), zauważanie (lokalizowanie wrażenia w ciele), nazywanie (wypowiedzenie jednego słowa na głos), mikro-progi (napisz pierwsze zdanie, potem przestań). Tipy są *praktykami*, nie *radami*.
+- **Softening pressure — każdy tip z imperatywem ma temporalny softener.** Słowa softenery: *teraz / na chwilę / tylko jedną minutę / wystarczy że / nie musisz / tam gdzie*. Przykłady: ❌ "Twoje ciało nie potrzebuje, żebyś rozwiązał problem" → ✓ "Twoje ciało nie potrzebuje, żebyś **teraz** rozwiązał problem". ❌ "Połóż dłoń na klatce piersiowej" → ✓ "Połóż dłoń na klatce piersiowej, **tam gdzie czujesz ciężar**". Bez softenerów tipy brzmią jak prescripcja, nie pozwolenie.
 - **Zabronione typy tipów** (psują kanał):
   - Tipy schedulingowe ("ustal czas", "zablokuj kalendarz")
   - Tipy list-makingowe ("zapisz 3 rzeczy…")
@@ -262,8 +268,9 @@ def main() -> None:
     output_path = write_output(slug, OUTPUT_FILENAME, content)
     print(f"  Saved: {output_path}")
 
-    print(f"\nDone. Review the draft, then run Agent 3b:")
-    print(f'  python tools/agent3b_critic.py "{slug}"')
+    print(f"\nDone. Review the draft, then run Agent 3b (revisor) or full chain:")
+    print(f'  python tools/pipeline/agent3b_revisor.py "{slug}"')
+    print(f'  python tools/pipeline/agent3.py "{slug}" --skip-drafter')
 
 
 if __name__ == "__main__":

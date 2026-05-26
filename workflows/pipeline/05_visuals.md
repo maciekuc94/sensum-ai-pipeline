@@ -29,8 +29,8 @@ sentence-level coverage.
 
 ## Prerequisites
 
-1. **Agent 4 must have run successfully.** The file
-   `outputs/videos/{slug}/md/04_script_final.md` must exist.
+1. **Agent 3 must have run successfully.** The file
+   `outputs/videos_pl/{slug}/md/04_script_final.md` must exist (orchestrator copies it after the Revisor↔Reviewer loop exits).
 
 2. **Anthropic API key** — set in `.env` at the project root:
    ```
@@ -103,10 +103,10 @@ for the full table.
 
 ```
 outputs/
-└── videos/
+└── videos_pl/
     └── emotional-dysregulation-in-adhd/
         └── md/
-            ├── 04_script_final.md         (Agent 4 output — input for Agent 5)
+            ├── 04_script_final.md         (Agent 3 finalize — input for Agent 5)
             └── 05_image_prompts.md        (Agent 5 output — review before Agent 9)
 ```
 
@@ -185,10 +185,10 @@ the `**Imagen prompt:**` line are what Imagen receives.
 
 **"Output file not found" error on startup**
 
-Agent 4 has not been run yet for this slug, or the slug is misspelled.
+Agent 3 has not been run yet for this slug, or the slug is misspelled. The orchestrator writes `04_script_final.md` automatically when the Revisor↔Reviewer loop exits.
 
 ```bash
-python tools/pipeline/agent4a_edit.py "emotional-dysregulation-in-adhd"
+python tools/pipeline/agent3.py "emotional-dysregulation-in-adhd"
 python tools/pipeline/agent5_visuals.py "emotional-dysregulation-in-adhd"
 ```
 

@@ -30,18 +30,14 @@ outputs/videos_pl/{slug}/md/01_research.md
 outputs/videos_pl/{slug}/md/02_verified_research.md
     │
     ▼
-[Agent 3: Script — orchestrates 3a → 3n → 3b → 3c]
-    │  3a Draft   — Claude Opus 4.7 writes ~1,700-word narration
-    │  3n Novelty — Sonnet 4.6 dedupes against prior shipped scripts
-    │  3b Critic  — Sonnet 4.6 names the single weakest moment
-    │  3c Rewrite — Opus 4.7 applies the critique
+[Agent 3: Script — orchestrates 3a Drafter → loop[3b Revisor ↔ 3c Reviewer]]
+    │  3a Drafter   — Claude Opus 4.7 writes ~1,700-word narration (one-shot)
+    │  3b Revisor   — Sonnet 4.6 applies 8 diff-derived revision moves (iter 1-N)
+    │  3c Reviewer  — Sonnet 4.6 verdicts PASS/FLAG (no rewrite)
+    │  Loop: max 2 iterations; on PASS or exhaust → copy 03_script_draft.md → 04_script_final.md
     ▼
-outputs/videos_pl/{slug}/md/03_script_draft.md  (+ 03a/03b/03n intermediates)
-    │
-    ▼
-[Agent 4a: Edit]
-    │  Sonnet 4.6 copy-edits for speech flow, active voice, zero jargon
-    ▼
+outputs/videos_pl/{slug}/md/03_script_draft.md  (+ 03a_draft.md, 03_review.md intermediates)
+                                  →  copied by orchestrator to:
 outputs/videos_pl/{slug}/md/04_script_final.md
     │
     ▼
@@ -166,21 +162,13 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "emotional-dysregu
 
 Gemini 3.1 Pro fact-checks every claim against peer-reviewed sources. Review every Flagged claim before continuing.
 
-### Step 3 — Script (Draft → Novelty → Critic → Rewrite)
+### Step 3 — Script (Drafter → Revisor ↔ Reviewer loop, B++ v2)
 
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent3.py "emotional-dysregulation-in-adhd"
 ```
 
-Runs all four sub-passes automatically. Review `md/03_novelty_report.md` and `md/03_script_draft.md`. Run the sub-agents individually (`agent3a_draft.py`, `agent3n_novelty.py`, `agent3b_critic.py`, `agent3c_rewrite.py`) if you want to inspect or edit an intermediate file.
-
-### Step 4a — Edit
-
-```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent4a_edit.py "emotional-dysregulation-in-adhd"
-```
-
-Opens with `[EDITOR NOTE: ...]` annotations. Review for prose-only changes (no scientific claim alterations).
+Runs Drafter (3a, Opus) once, then loops Revisor↔Reviewer (3b↔3c, Sonnet) up to 2 iterations. Loop exits on Reviewer PASS or max iterations; orchestrator then copies `md/03_script_draft.md` → `md/04_script_final.md`. Review `md/03_review.md` (Reviewer verdict) and `md/04_script_final.md`. Run sub-agents individually (`agent3a_draft.py`, `agent3b_revisor.py`, `agent3c_reviewer.py`) to inspect or edit an intermediate file. Useful flags: `--max-iterations N`, `--skip-drafter`. See [03_script.md](03_script.md).
 
 ### Step 4b — Hook Gate
 
@@ -245,12 +233,10 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 0 | `md/00_materials_insights.md` | Book insights extracted from reference PDF (optional) |
 | 1 | `md/01_research.md` | Raw research from Gemini and PubMed |
 | 2 | `md/02_verified_research.md` | Claims categorised as Verified, Flagged, or Removed |
-| 3a | `md/03a_draft.md` | First-pass narration (rewritten in place by 3n) |
-| 3n | `md/03_novelty_report.md` | Per-iteration n-gram + semantic dedupe log |
-| 3n | `md/03a_draft.bak.md` | Pre-novelty backup of `03a_draft.md` (first run only) |
-| 3b | `md/03b_critique.md` | Critic analysis — editable before 3c |
-| 3c | `md/03_script_draft.md` | Rewritten script — feeds 4a |
-| 4a | `md/04_script_final.md` | Copy-edited script |
+| 3a | `md/03a_draft.md` | First-pass narration (input to 3b Revisor) |
+| 3b | `md/03_script_draft.md` | Revised script (overwritten each Revisor iteration) |
+| 3c | `md/03_review.md` | Reviewer verdict (PASS / FLAG) with per-issue notes |
+| 3 (finalize) | `md/04_script_final.md` | Orchestrator copies `03_script_draft.md` after loop exits |
 | 4b | `md/04b_hook_score.md` | Hook score per attempt + final verdict |
 | 4b | `md/04_script_final.bak.md` | Pre-hook-refine backup (first run only) |
 | 5 | `md/05_image_prompts.md` | One Imagen prompt per sentence/beat |
@@ -260,7 +246,7 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 9 | `images/image_NNN.png` | Generated 16:9 images |
 | 10 | `thumbnails_no_grain/thumbnail_NN.png` | 5 thumbnail concepts at 1920×1080 |
 | Align | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` | DaVinci bundle |
-| 4a, 5, 6, 8 | `docx/*.docx` | Word exports of the corresponding markdown |
+| 3, 5, 6, 8 | `docx/*.docx` | Word exports of the corresponding markdown |
 
 ---
 
@@ -289,8 +275,7 @@ Every factual claim in the final script must originate from the **Verified Claim
 workflows/pipeline/00_materials.md   — Agent 0 (reference book extraction)
 workflows/pipeline/01_research.md    — Agent 1
 workflows/pipeline/02_verify.md      — Agent 2
-workflows/pipeline/03_script.md      — Agents 3a / 3n / 3b / 3c
-workflows/pipeline/04a_edit.md       — Agent 4a (script editing)
+workflows/pipeline/03_script.md      — Agents 3a (Drafter) / 3b (Revisor) / 3c (Reviewer) — B++ v2 loop
 workflows/pipeline/04b_hook.md       — Agent 4b (hook gate)
 workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
 workflows/pipeline/06_narration.md   — Agent 6 (narration strip)

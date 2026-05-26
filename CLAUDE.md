@@ -77,7 +77,7 @@ workflows/
   pipeline/              # Numbered SOPs 00–11 (one per agent step)
   guides/                # style_guide.md, style_guide_images.md, narrative_architectures.md
 outputs/
-  videos/                # One folder per produced video (slug-named)
+  videos_pl/             # Polish-channel videos (one folder per slug). videos_en/ exists for legacy English content.
   channel_assets/        # Shared brand assets (logo, fonts, colors)
   intelligence/          # Agent 11 analysis outputs
 .env                     # API keys and environment variables (NEVER store secrets anywhere else)

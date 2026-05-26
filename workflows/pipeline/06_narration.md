@@ -10,7 +10,7 @@ This step produces no images and makes no AI calls. It is deterministic, free, a
 
 ## Prerequisites
 
-1. **Agent 4 must have run successfully.** The file `outputs/videos/{slug}/md/04_script_final.md` must exist.
+1. **Agent 3 must have run successfully.** The file `outputs/videos_pl/{slug}/md/04_script_final.md` must exist (orchestrator copies it after the Revisor↔Reviewer loop exits).
 
 2. **No API keys required.** This tool is pure Python with no external dependencies.
 
@@ -29,8 +29,8 @@ Example output:
 ```
 === Agent 6: Narration Script ===
 Slug  : emotional-dysregulation-in-adhd
-Input : outputs/videos/emotional-dysregulation-in-adhd/md/04_script_final.md
-Output: outputs/videos/emotional-dysregulation-in-adhd/md/06_script_narration.md
+Input : outputs/videos_pl/emotional-dysregulation-in-adhd/md/04_script_final.md
+Output: outputs/videos_pl/emotional-dysregulation-in-adhd/md/06_script_narration.md
 Words : 1,712
 
 Done. Review the narration script before recording voiceover.
@@ -51,7 +51,7 @@ Blank lines are collapsed so no double-blank gaps remain.
 
 ## Reviewer Checklist
 
-Open `outputs/videos/{slug}/md/06_script_narration.md` and confirm:
+Open `outputs/videos_pl/{slug}/md/06_script_narration.md` and confirm:
 
 - No `[IMAGE:` or `[EDITOR NOTE:` text anywhere in the file
 - Word count printed by the tool falls between **1,500 and 2,000 words**
@@ -67,10 +67,10 @@ If you find a stray marker, check whether it used an unusual bracket format (e.g
 
 ```
 outputs/
-└── videos/
+└── videos_pl/
     └── {slug}/
         └── md/
-            ├── 04_script_final.md       (Agent 4 output — input for this step)
+            ├── 04_script_final.md       (Agent 3 finalize — input for this step)
             └── 06_script_narration.md   (Agent 6 output — clean narration)
 ```
 
@@ -78,12 +78,12 @@ outputs/
 
 ## Common Issues
 
-**"Error: outputs/videos/{slug}/md/04_script_final.md not found"**
+**"Error: outputs/videos_pl/{slug}/md/04_script_final.md not found"**
 
-Agent 4 has not been run yet for this slug, or the slug is misspelled.
+Agent 3 has not been run yet for this slug, or the slug is misspelled. The orchestrator writes `04_script_final.md` automatically when the Revisor↔Reviewer loop exits.
 
 ```bash
-python tools/pipeline/agent4a_edit.py "{slug}"
+python tools/pipeline/agent3.py "{slug}"
 python tools/pipeline/agent6_narration.py "{slug}"
 ```
 

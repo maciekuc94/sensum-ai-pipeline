@@ -17,7 +17,7 @@ import os
 from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import read_output, write_output, load_style_guide, query_claude
+from tools.utils import read_output, write_output, load_style_guide, query_gemini_text
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -26,7 +26,7 @@ from tools.utils import read_output, write_output, load_style_guide, query_claud
 REVISED_FILENAME = "md/03_script_draft.md"
 OUTPUT_FILENAME = "md/03_review.md"
 
-CLAUDE_MODEL = "claude-sonnet-4-6"
+GEMINI_MODEL = "gemini-3.1-pro-preview"
 
 # ---------------------------------------------------------------------------
 # Prompt
@@ -143,7 +143,7 @@ def build_output(topic: str, review_text: str) -> str:
     return (
         f"# Script Review: {topic}\n"
         f"Generated: {today}\n"
-        f"Model: {CLAUDE_MODEL}\n"
+        f"Model: {GEMINI_MODEL}\n"
         f"Pass: Reviewer\n"
         f"\n"
         f"---\n"
@@ -225,17 +225,17 @@ def main() -> None:
     print(f"  Topic : {topic}")
     print(f"  Revised script length: {len(revised_content):,} characters")
 
-    # Step 3 — Call Claude
-    print(f"\n[3/4] Calling Claude API for review...")
+    # Step 3 — Call Gemini
+    print(f"\n[3/4] Calling Gemini API for review...")
     prompt = _build_prompt(style_guide, narrative_architectures, revised_content)
 
     try:
-        review_text, usage = query_claude(prompt, CLAUDE_MODEL, 2048, "review")
+        review_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 2048, "review")
     except EnvironmentError as exc:
         print(f"\nError: {exc}")
         sys.exit(1)
     except Exception as exc:
-        print(f"\nError: Claude API call failed — {exc}")
+        print(f"\nError: Gemini API call failed — {exc}")
         sys.exit(1)
 
     print(f"  Review received ({len(review_text):,} characters)")

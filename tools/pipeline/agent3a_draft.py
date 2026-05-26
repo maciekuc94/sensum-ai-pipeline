@@ -15,7 +15,7 @@ import os
 from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import read_output, write_output, load_style_guide, query_gemini_text
+from tools.utils import read_output, write_output, load_style_guide, query_claude
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -25,7 +25,7 @@ RESEARCH_FILENAME = "md/02_verified_research.md"
 MATERIALS_FILENAME = "md/00_materials_insights.md"
 OUTPUT_FILENAME = "md/03a_draft.md"
 
-GEMINI_MODEL = "gemini-3.1-pro-preview"
+CLAUDE_MODEL = "claude-opus-4-7"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -179,7 +179,7 @@ def build_output(topic: str, script_text: str) -> str:
     return (
         f"# Script Draft: {topic}\n"
         f"Generated: {today}\n"
-        f"Model: {GEMINI_MODEL}\n"
+        f"Model: {CLAUDE_MODEL}\n"
         f"Pass: 1 of 3 (Draft)\n"
         f"Estimated duration: ~14 min (~1,850 words)\n"
         f"\n"
@@ -241,17 +241,17 @@ def main() -> None:
     else:
         print(f"  No book insights found (run Agent 0 to add a reference book)")
 
-    # Step 3 — Call Gemini
-    print(f"\n[3/4] Calling Gemini API to write the draft...")
+    # Step 3 — Call Claude
+    print(f"\n[3/4] Calling Claude API to write the draft...")
     prompt = _build_prompt(style_guide, narrative_architectures, research_content, materials_insights)
 
     try:
-        script_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 8192, "script draft")
+        script_text, usage = query_claude(prompt, CLAUDE_MODEL, 8192, "script draft")
     except EnvironmentError as exc:
         print(f"\nError: {exc}")
         sys.exit(1)
     except Exception as exc:
-        print(f"\nError: Gemini API call failed — {exc}")
+        print(f"\nError: Claude API call failed — {exc}")
         sys.exit(1)
 
     print(f"  Draft received ({len(script_text):,} characters)")

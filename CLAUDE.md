@@ -192,9 +192,9 @@ All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelli
 | 1 | `pipeline/agent1_research.py` | Gemini 3.1 Pro + PubMed | topic string | `md/01_research.md` |
 | 2 | `pipeline/agent2_verify.py` | Gemini 3.1 Pro | `01_research.md` | `md/02_verified_research.md` |
 | 3 | `pipeline/agent3.py` | runs 3a → 3b↔3c loop | slug | all `03_*.md` files + `md/04_script_final.md` |
-| 3a | `pipeline/agent3a_draft.py` | Gemini 3.1 Pro | `02_verified_research.md` | `md/03a_draft.md` |
+| 3a | `pipeline/agent3a_draft.py` | Claude Opus 4.7 | `02_verified_research.md` | `md/03a_draft.md` |
 | 3b | `pipeline/agent3b_revisor.py` | Gemini 3.1 Pro | `03a_draft.md` (+ `03_review.md` on iter 2) | `md/03_script_draft.md` |
-| 3c | `pipeline/agent3c_reviewer.py` | Claude Sonnet 4.6 | `03_script_draft.md` | `md/03_review.md` |
+| 3c | `pipeline/agent3c_reviewer.py` | Gemini 3.1 Pro | `03_script_draft.md` | `md/03_review.md` |
 | 4b **(gate)** | `pipeline/agent4b_hook.py` | Gemini 3.1 Pro | `04_script_final.md` | `md/04b_hook_score.md` + revised `04_script_final.md` in place |
 | 5 | `pipeline/agent5_visuals.py` | Claude Opus 4.7 | `04_script_final.md` | `md/05_image_prompts.md` |
 | 6 | `pipeline/agent6_narration.py` | deterministic | `04_script_final.md` | `md/06_script_narration.md` |

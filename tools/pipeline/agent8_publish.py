@@ -30,7 +30,7 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import export_to_docx, get_env, read_output, write_output, query_claude as _query_claude_base
+from tools.utils import export_to_docx, get_env, read_output, write_output, query_gemini_text as _query_gemini_base
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -41,11 +41,11 @@ NARRATION_FILENAME = "md/06_script_narration.md"
 RESEARCH_FILENAME = "md/02_verified_research.md"
 OUTPUT_FILENAME = "md/07_publish_package.md"
 
-CLAUDE_MODEL = "claude-sonnet-4-6"
+GEMINI_MODEL = "gemini-3.1-pro-preview"
 
 # Per-prompt context budgets for the metadata pass. The pass uses script + research
 # as reference for tags/bibliography; full files would balloon the prompt without
-# improving output quality. Tuned to stay well under Claude's input window on low-cost runs.
+# improving output quality. Tuned to stay well under Gemini's input window on low-cost runs.
 SCRIPT_CONTEXT_CHARS = 6000
 RESEARCH_CONTEXT_CHARS = 4000
 
@@ -84,8 +84,8 @@ def _extract_topic(script_content: str) -> str:
     return "Unknown Topic"
 
 
-def _query_claude(prompt: str, step_label: str, max_tokens: int = 4096) -> tuple[str, dict]:
-    return _query_claude_base(prompt, CLAUDE_MODEL, max_tokens, step_label)
+def _query_gemini(prompt: str, step_label: str, max_tokens: int = 4096) -> tuple[str, dict]:
+    return _query_gemini_base(prompt, GEMINI_MODEL, max_tokens, step_label)
 
 
 # ---------------------------------------------------------------------------
@@ -134,7 +134,7 @@ Return ONLY the 5 numbered titles. No preamble, no commentary, no opening hooks,
 
 def run_titles_pass(script_content: str) -> str:
     prompt = _build_titles_prompt(script_content)
-    text, _ = _query_claude(prompt, "pass 1 — titles", max_tokens=1024)
+    text, _ = _query_gemini(prompt, "pass 1 — titles", max_tokens=1024)
     return text
 
 
@@ -393,9 +393,9 @@ def _validate_shorts_clip_blocks(shorts_text: str) -> tuple[str, list[int]]:
 
 
 def run_shorts_pass(narration: str) -> str:
-    analysis, _ = _query_claude(_build_shorts_pass1_prompt(narration), "shorts pass 1 — candidate mapping")
-    shorts_text, _ = _query_claude(_build_shorts_pass2_prompt(narration, analysis), "shorts pass 2 — selection")
-    enhanced, _ = _query_claude(_build_shorts_pass3_prompt(narration, shorts_text), "shorts pass 3 — titles and descriptions")
+    analysis, _ = _query_gemini(_build_shorts_pass1_prompt(narration), "shorts pass 1 — candidate mapping")
+    shorts_text, _ = _query_gemini(_build_shorts_pass2_prompt(narration, analysis), "shorts pass 2 — selection")
+    enhanced, _ = _query_gemini(_build_shorts_pass3_prompt(narration, shorts_text), "shorts pass 3 — titles and descriptions")
     annotated = _annotate_script_quarters(narration, enhanced)
     validated, broken = _validate_shorts_clip_blocks(annotated)
     if broken:
@@ -641,14 +641,14 @@ def _parse_metadata(response: str) -> dict:
     match = re.search(r"\{[\s\S]+\}", response)
     if match:
         return json.loads(match.group(0))
-    raise ValueError("No JSON found in Claude response.")
+    raise ValueError("No JSON found in Gemini response.")
 
 
 def _trim_tags_to_budget(tags: list[str], char_budget: int = 450) -> list[str]:
     """Trim tags from the END of the list until the comma-joined string fits.
 
     Preserves the SENSUM brand-exception slot regardless of position. Trims
-    non-SENSUM entries from the tail inward — the prompt instructs Claude to
+    non-SENSUM entries from the tail inward — the prompt instructs Gemini to
     front-load by algorithmic weight (Tag #1 = exact-match primary keyword,
     Tags #2–#5 = strongest variations, tail = broader anchors), so end-trimming
     preserves the highest-weight slots. Budget defaults to 450 to leave
@@ -692,7 +692,7 @@ def run_metadata_pass(topic: str, script: str, research: str, titles_text: str =
         print("  No niche tag signals found (Agent 11 sidecar absent — skipping)")
 
     prompt = _build_metadata_prompt(topic, script, research, suggestions, competitor_tags, niche_signals, titles_text)
-    raw, _ = _query_claude(prompt, "pass 3 — YouTube metadata", max_tokens=4096)
+    raw, _ = _query_gemini(prompt, "pass 3 — YouTube metadata", max_tokens=4096)
 
     meta = _parse_metadata(raw)
 

@@ -150,7 +150,7 @@ Agent 8 operates as an **Advanced YouTube Metadata Engineer / NLP Optimization P
 The Agent 8 metadata prompt frames Claude as an Advanced YouTube Metadata Engineer / NLP Optimization Pipeline operating with cold, empirical, mathematical precision (long-form titles in identity-provocation voice; description body and Shorts descriptions remain warm/validating).
 
 **Script revision architecture (B++ v2) — 2026-05-25**
-Agent 3 orchestrates a Drafter + Revisor↔Reviewer loop derived from analyzing the diff between a pipeline-generated script and a manually Copilot-revised version. Architecture: 1 Opus call (3a Drafter) followed by a Sonnet-only loop (3b Revisor ↔ 3c Reviewer, max 2 iterations). The loop never returns to the Drafter — cost capped at 1 Opus + 2–4 Sonnet calls per script (~$0.55/script target).
+Agent 3 orchestrates a Drafter + Revisor↔Reviewer loop derived from analyzing the diff between a pipeline-generated script and a manually Copilot-revised version. Architecture: 1 Gemini call (3a Drafter) followed by a Gemini+Claude loop (3b Revisor Gemini ↔ 3c Reviewer Claude Sonnet, max 2 iterations). The loop never returns to the Drafter — cost capped at 1 Gemini (3a) + 2–4 Gemini/Sonnet calls per script.
 
 The Revisor (3b) applies 8 diff-derived revision moves across the full script (embodied clarity, cut redundancy, de-judging tone, generalization, symbolic metaphor, diagnostic framing, PP agency verbs, softening pressure). The Reviewer (3c) judges PASS/FLAG against 7 critical-issue categories without rewriting. On FLAG + iter < max, Revisor re-runs addressing only the Reviewer's flagged issues. Loop exits on PASS or max iterations; if still FLAG at max iterations, `04_script_final.md` is prepended with a warning header — review `03_review.md` before recording.
 
@@ -192,13 +192,13 @@ All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelli
 | 1 | `pipeline/agent1_research.py` | Gemini 3.1 Pro + PubMed | topic string | `md/01_research.md` |
 | 2 | `pipeline/agent2_verify.py` | Gemini 3.1 Pro | `01_research.md` | `md/02_verified_research.md` |
 | 3 | `pipeline/agent3.py` | runs 3a → 3b↔3c loop | slug | all `03_*.md` files + `md/04_script_final.md` |
-| 3a | `pipeline/agent3a_draft.py` | Claude Opus 4.7 | `02_verified_research.md` | `md/03a_draft.md` |
-| 3b | `pipeline/agent3b_revisor.py` | Claude Sonnet 4.6 | `03a_draft.md` (+ `03_review.md` on iter 2) | `md/03_script_draft.md` |
+| 3a | `pipeline/agent3a_draft.py` | Gemini 3.1 Pro | `02_verified_research.md` | `md/03a_draft.md` |
+| 3b | `pipeline/agent3b_revisor.py` | Gemini 3.1 Pro | `03a_draft.md` (+ `03_review.md` on iter 2) | `md/03_script_draft.md` |
 | 3c | `pipeline/agent3c_reviewer.py` | Claude Sonnet 4.6 | `03_script_draft.md` | `md/03_review.md` |
-| 4b **(gate)** | `pipeline/agent4b_hook.py` | Claude Sonnet 4.6 | `04_script_final.md` | `md/04b_hook_score.md` + revised `04_script_final.md` in place |
+| 4b **(gate)** | `pipeline/agent4b_hook.py` | Gemini 3.1 Pro | `04_script_final.md` | `md/04b_hook_score.md` + revised `04_script_final.md` in place |
 | 5 | `pipeline/agent5_visuals.py` | Claude Opus 4.7 | `04_script_final.md` | `md/05_image_prompts.md` |
 | 6 | `pipeline/agent6_narration.py` | deterministic | `04_script_final.md` | `md/06_script_narration.md` |
-| 8 | `pipeline/agent8_publish.py` | Claude Sonnet 4.6 + web scrape | `04`, `06`, `02` outputs | `md/07_publish_package.md` |
+| 8 | `pipeline/agent8_publish.py` | Gemini 3.1 Pro + web scrape | `04`, `06`, `02` outputs | `md/07_publish_package.md` |
 | 9 **(manual)** | `pipeline/agent9_images.py` | Gemini 3 Pro Image Preview | `05_image_prompts.md` | `images/image_*.png` |
 | 9b **(QA, optional)** | `pipeline/agent9b_image_qa.py` | Gemini 2.5 Flash | `images/*.png` | `md/09_image_qa.md` |
 | 10 **(manual)** | `pipeline/agent10_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |

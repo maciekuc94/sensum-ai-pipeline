@@ -26,7 +26,10 @@ import os
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import read_output, write_output, get_output_dir, get_env, add_grain
+from tools.utils import (
+    read_output, write_output, get_output_dir, get_env,
+    add_grain, resize_to_target, enforce_background_color,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -49,36 +52,6 @@ NEGATIVE_PROMPT = (
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-
-# Exact sage beige background color from SENSUM palette
-TARGET_BACKGROUND = (244, 229, 202)  # #F4E5CA
-TARGET_SIZE = (1920, 1080)
-
-
-def _resize_to_target(image_path) -> None:
-    """Scale to fit inside 1920x1080, pad remainder with sage beige — no cropping, no stretching."""
-    from PIL import Image, ImageOps
-    img = Image.open(str(image_path)).convert("RGB")
-    if img.size != TARGET_SIZE:
-        img = ImageOps.pad(img, TARGET_SIZE, color=TARGET_BACKGROUND, centering=(0.5, 0.5))
-        img.save(str(image_path))
-
-
-def _enforce_background_color(image_path) -> None:
-    """Replace all light background pixels with exact brand color (#F4E5CA).
-
-    Threshold of 170 catches off-brand beiges (e.g. #F4DCB5, min channel ~175)
-    that the old >248 threshold missed. Ink is #582F0E (min channel ~14) and
-    cross-hatch mid-tones have min channel ~100-160, so 170 leaves shading intact.
-    """
-    import numpy as np
-    from PIL import Image
-
-    arr = np.array(Image.open(str(image_path)).convert("RGB"))
-    mask = (arr[:, :, 0] > 170) & (arr[:, :, 1] > 170) & (arr[:, :, 2] > 170)
-    arr[mask] = TARGET_BACKGROUND
-    Image.fromarray(arr).save(str(image_path))
 
 
 def _parse_prompts_from_file(content: str) -> list[str]:
@@ -294,8 +267,8 @@ def generate_images(
 
             with open(str(output_path), "wb") as f:
                 f.write(img_bytes)
-            _resize_to_target(output_path)
-            _enforce_background_color(output_path)
+            resize_to_target(output_path)
+            enforce_background_color(output_path)
             if grain > 0:
                 add_grain(output_path, intensity=grain)
             print(f"  Saved: {output_path}")
@@ -384,7 +357,7 @@ def correct_background(slug: str) -> None:
         dst_path = corrected_dir / src_path.name
         print(f"  [{i}/{total}] Correcting {src_path.name}...")
         shutil.copy2(str(src_path), str(dst_path))
-        _enforce_background_color(dst_path)
+        enforce_background_color(dst_path)
         print(f"    Saved: {dst_path}")
 
     print(f"\nDone. {total} corrected image(s) saved to {corrected_dir}")

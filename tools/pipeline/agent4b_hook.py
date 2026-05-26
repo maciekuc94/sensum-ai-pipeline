@@ -23,7 +23,7 @@ import os
 from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import read_output, write_output, query_claude
+from tools.utils import read_output, write_output, query_gemini_text
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -33,7 +33,7 @@ INPUT_FILENAME = "md/04_script_final.md"
 BACKUP_FILENAME = "md/04_script_final.bak.md"
 LOG_FILENAME = "md/04b_hook_score.md"
 
-CLAUDE_MODEL = "claude-sonnet-4-6"
+GEMINI_MODEL = "gemini-3.1-pro-preview"
 
 WORDS_15S = 37          # ~15 seconds at 150 wpm
 WORDS_30S = 200         # full hook window
@@ -305,12 +305,12 @@ def _ensure_backup(slug: str, original_content: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Claude response parsing
+# Gemini response parsing
 # ---------------------------------------------------------------------------
 
 
 def _parse_response(text: str) -> dict:
-    """Parse the structured response from Claude. Tolerant of minor drift."""
+    """Parse the structured response from Gemini. Tolerant of minor drift."""
     def _grab_int(pattern: str, fallback: int = 0) -> int:
         m = re.search(pattern, text)
         return int(m.group(1)) if m else fallback
@@ -427,7 +427,7 @@ def main() -> None:
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
         attempts_used = attempt
-        print(f"\n[2.{attempt}] Scoring with Claude (attempt {attempt}/{MAX_ATTEMPTS})...")
+        print(f"\n[2.{attempt}] Scoring with Gemini (attempt {attempt}/{MAX_ATTEMPTS})...")
 
         hook15 = _extract_15s_window(script)
         hook30 = _extract_30s_window(script)
@@ -440,12 +440,12 @@ def main() -> None:
         )
 
         try:
-            response_text, _ = query_claude(prompt, CLAUDE_MODEL, 2048, "hook refiner")
+            response_text, _ = query_gemini_text(prompt, GEMINI_MODEL, 2048, "hook refiner")
         except EnvironmentError as exc:
             print(f"\nError: {exc}")
             sys.exit(1)
         except Exception as exc:
-            print(f"\nError: Claude API call failed — {exc}")
+            print(f"\nError: Gemini API call failed — {exc}")
             sys.exit(1)
 
         parsed = _parse_response(response_text)
@@ -503,7 +503,7 @@ def main() -> None:
     log = (
         f"# Hook Refiner Log: {topic}\n"
         f"Generated: {today}\n"
-        f"Model: {CLAUDE_MODEL}\n"
+        f"Model: {GEMINI_MODEL}\n"
         f"Source: {INPUT_FILENAME}\n"
         f"Backup: {BACKUP_FILENAME}\n"
         f"\n---\n\n"

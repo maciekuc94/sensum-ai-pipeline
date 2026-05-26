@@ -20,7 +20,7 @@ import os
 from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import read_output, write_output, load_style_guide, query_claude
+from tools.utils import read_output, write_output, load_style_guide, query_gemini_text
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -31,7 +31,7 @@ REVIEW_FILENAME = "md/03_review.md"
 PREV_REVISION_FILENAME = "md/03_script_draft.md"
 OUTPUT_FILENAME = "md/03_script_draft.md"
 
-CLAUDE_MODEL = "claude-sonnet-4-6"
+GEMINI_MODEL = "gemini-3.1-pro-preview"
 
 # ---------------------------------------------------------------------------
 # Prompt
@@ -156,7 +156,7 @@ def build_output(topic: str, script_text: str, iteration: int) -> str:
     return (
         f"# Script Revision: {topic}\n"
         f"Generated: {today}\n"
-        f"Model: {CLAUDE_MODEL}\n"
+        f"Model: {GEMINI_MODEL}\n"
         f"Pass: Revisor (iteration {iteration})\n"
         f"\n"
         f"---\n"
@@ -242,8 +242,8 @@ def main() -> None:
             prior_review = None
             prior_revision = None
 
-    # Step 3 — Call Claude
-    print(f"\n[3/4] Calling Claude API for revision pass (iteration {iteration})...")
+    # Step 3 — Call Gemini
+    print(f"\n[3/4] Calling Gemini API for revision pass (iteration {iteration})...")
     prompt = _build_prompt(
         style_guide,
         narrative_architectures,
@@ -254,12 +254,12 @@ def main() -> None:
     )
 
     try:
-        script_text, usage = query_claude(prompt, CLAUDE_MODEL, 8192, f"revision iter {iteration}")
+        script_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 8192, f"revision iter {iteration}")
     except EnvironmentError as exc:
         print(f"\nError: {exc}")
         sys.exit(1)
     except Exception as exc:
-        print(f"\nError: Claude API call failed — {exc}")
+        print(f"\nError: Gemini API call failed — {exc}")
         sys.exit(1)
 
     print(f"  Revised script received ({len(script_text):,} characters)")

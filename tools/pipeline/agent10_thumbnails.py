@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from tools.utils import (
     read_output, get_output_dir, get_env,
     query_claude, STYLE_SUFFIX, CHARACTER_DESCRIPTION,
-    add_grain,
+    add_grain, resize_to_target, enforce_background_color,
 )
 
 # ---------------------------------------------------------------------------
@@ -29,44 +29,11 @@ IMAGE_MODEL = "gemini-3-pro-image-preview"
 GRAIN_INTENSITY = 12  # project standard (Gaussian std dev on 0–255)
 REQUEST_DELAY = 20    # seconds between Vertex AI calls to stay under QPM quota
 
-TARGET_BACKGROUND = (244, 229, 202)  # #F4E5CA sage beige
-TARGET_SIZE = (1920, 1080)
-
 NEGATIVE_TEXT = (
     "\n\nAvoid in this image: face, eyes, nose, mouth, facial features, "
     "photorealistic face, 3D render, green/dark/colored background, "
     "cropped head, text, words, labels, numbers, captions."
 )
-
-# ---------------------------------------------------------------------------
-# Post-processing (mirrors agent9_images.py)
-# ---------------------------------------------------------------------------
-
-
-def _resize_to_target(image_path: Path) -> None:
-    """Scale to fit inside 1920×1080, pad remainder with sage beige — no cropping."""
-    from PIL import Image, ImageOps
-    img = Image.open(str(image_path)).convert("RGB")
-    if img.size != TARGET_SIZE:
-        img = ImageOps.pad(img, TARGET_SIZE, color=TARGET_BACKGROUND, centering=(0.5, 0.5))
-        img.save(str(image_path))
-
-
-def _enforce_background_color(image_path: Path) -> None:
-    """Replace all light background pixels with exact brand color (#F4E5CA).
-
-    Threshold of 170 catches off-brand beiges (e.g. Gemini's #E7D7B5 drift,
-    min channel ~181) that the old >240 threshold silently missed. Ink is
-    #582F0E (min channel ~14) and cross-hatch mid-tones have min channel
-    ~100-160, so 170 leaves shading intact. Mirrors agent9_images.py.
-    """
-    import numpy as np
-    from PIL import Image
-    arr = np.array(Image.open(str(image_path)).convert("RGB"))
-    mask = (arr[:, :, 0] > 170) & (arr[:, :, 1] > 170) & (arr[:, :, 2] > 170)
-    arr[mask] = TARGET_BACKGROUND
-    Image.fromarray(arr).save(str(image_path))
-
 
 # ---------------------------------------------------------------------------
 # Step 1: Claude Opus 4.7 — thumbnail concept generation
@@ -217,8 +184,8 @@ def _generate_image(
     output_path.write_bytes(img_bytes)
 
     # Post-processing: resize → bg enforce → (optional) grain
-    _resize_to_target(output_path)
-    _enforce_background_color(output_path)
+    resize_to_target(output_path)
+    enforce_background_color(output_path)
     if apply_grain:
         add_grain(output_path, intensity=GRAIN_INTENSITY)
 

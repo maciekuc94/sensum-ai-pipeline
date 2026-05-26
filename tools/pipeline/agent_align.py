@@ -1,4 +1,4 @@
-"""Agent 11 — Forced Alignment & DaVinci Asset Bundle
+"""Align Agent — Forced Alignment & DaVinci Asset Bundle
 
 Reads the user's exported voiceover WAV plus the existing script + phrase
 table, runs faster-whisper to get per-word timestamps, aligns those timestamps
@@ -183,7 +183,7 @@ def main(args: argparse.Namespace) -> None:
         # ------------------------------------------------------------------
         # Full path: transcribe + align
         # ------------------------------------------------------------------
-        print(f"=== Agent 11: Forced Alignment & DaVinci Bundle ===")
+        print(f"=== Align Agent: Forced Alignment & DaVinci Bundle ===")
         print(f"Slug          : {slug}")
         print(f"Audio         : {audio_path}")
         print(f"Script        : {script_path}")

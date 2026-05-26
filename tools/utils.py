@@ -239,6 +239,53 @@ def query_claude(
             raise
 
 
+def query_gemini_text(
+    prompt: str,
+    model: str,
+    max_tokens: int,
+    step_label: str = "",
+) -> tuple[str, dict]:
+    """Call Gemini via Vertex AI (google-genai SDK) and return (response_text, usage_dict).
+
+    Plain text generation — no Google Search grounding.
+    Retries up to 3 times on quota/server errors with exponential backoff at 15s, 30s, 60s.
+    """
+    import time
+    import google.genai as genai
+    from google.genai import types
+
+    project = get_env("GOOGLE_CLOUD_PROJECT")
+    location = "global"
+    label = f" — {step_label}" if step_label else ""
+    print(f"  Querying {model}{label}...")
+
+    client = genai.Client(vertexai=True, project=project, location=location)
+
+    for attempt in range(1, 5):
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    max_output_tokens=max_tokens,
+                ),
+            )
+            usage = {"model": model, "input_tokens": 0, "output_tokens": 0}
+            if hasattr(response, "usage_metadata") and response.usage_metadata:
+                usage["input_tokens"] = getattr(response.usage_metadata, "prompt_token_count", 0) or 0
+                usage["output_tokens"] = getattr(response.usage_metadata, "candidates_token_count", 0) or 0
+            return response.text, usage
+        except Exception as exc:
+            status = getattr(exc, "status_code", None) or getattr(exc, "code", None)
+            is_retryable = status in (429, 503) or "quota" in str(exc).lower() or "unavailable" in str(exc).lower()
+            if is_retryable and attempt < 4:
+                wait = 15 * (2 ** (attempt - 1))
+                print(f"  Gemini rate limited — waiting {wait}s before retry {attempt}/3...")
+                time.sleep(wait)
+                continue
+            raise
+
+
 def log_cost(slug: str, agent: str, data: dict) -> None:
     """Append a cost record to outputs/[slug]/cost_log.json."""
     output_dir = get_output_dir(slug)
@@ -414,6 +461,54 @@ def export_to_docx(
     output_path = output_dir / docx_filename
     doc.save(str(output_path))
     return output_path
+
+
+# ---------------------------------------------------------------------------
+# Image post-processing (shared by agent9_images and agent10_thumbnails)
+# ---------------------------------------------------------------------------
+
+TARGET_BACKGROUND_RGB = (244, 229, 202)  # #F4E5CA sage beige
+TARGET_IMAGE_SIZE = (1920, 1080)
+BACKGROUND_THRESHOLD_DEFAULT = 170
+# Threshold 170 catches off-brand beiges (Gemini drifts to e.g. #E7D7B5 / #F4DCB5,
+# min channel ~175-181) that the old >240 threshold silently missed. Ink (#582F0E)
+# has min channel ~14 and cross-hatch mid-tones land ~100-160, so 170 leaves
+# shading intact. History note: a prior bug used 240 vs 170 between agent9 and
+# agent10 — keep both agents on the same threshold by importing from here.
+
+
+def resize_to_target(
+    image_path,
+    *,
+    target_size: tuple[int, int] = TARGET_IMAGE_SIZE,
+    background: tuple[int, int, int] = TARGET_BACKGROUND_RGB,
+) -> None:
+    """Scale image to fit inside target_size, pad remainder with background — no crop, no stretch."""
+    from PIL import Image, ImageOps
+    img = Image.open(str(image_path)).convert("RGB")
+    if img.size != target_size:
+        img = ImageOps.pad(img, target_size, color=background, centering=(0.5, 0.5))
+        img.save(str(image_path))
+
+
+def enforce_background_color(
+    image_path,
+    *,
+    threshold: int = BACKGROUND_THRESHOLD_DEFAULT,
+    background: tuple[int, int, int] = TARGET_BACKGROUND_RGB,
+) -> None:
+    """Replace all light background pixels with the exact brand color.
+
+    Any pixel whose every channel exceeds `threshold` is treated as background
+    and replaced with `background`. See module-level note on threshold=170.
+    """
+    import numpy as np
+    from PIL import Image
+
+    arr = np.array(Image.open(str(image_path)).convert("RGB"))
+    mask = (arr[:, :, 0] > threshold) & (arr[:, :, 1] > threshold) & (arr[:, :, 2] > threshold)
+    arr[mask] = background
+    Image.fromarray(arr).save(str(image_path))
 
 
 # ---------------------------------------------------------------------------

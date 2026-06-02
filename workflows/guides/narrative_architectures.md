@@ -31,6 +31,8 @@ Zasady głosowe i językowe: patrz `style_guide.md`.
 
 **Zastępstwo to nie inna fraza — to nieobecność.** Nie zamieniaj "badania pokazują X" na "z analiz wynika X". Stwierdź X. Mówca po prostu wie.
 
+Pełna lista zakazanych fraz research-framingowych i szczegóły wyjątku kotwicy: `style_guide.md` §4.
+
 ---
 
 ## Zbanowane wzorce strukturalne (z polskiego pisania, dopisywane empirycznie)

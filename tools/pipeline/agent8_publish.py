@@ -83,6 +83,19 @@ _BRAND_AVOID = [
     "most people don't know", "this will change everything", "studies PROVE",
 ]
 
+# ── Section Map ─────────────────────────────────────────────────────────────
+# A. Shared helpers (narration loader, topic extractor, Gemini wrapper) ~L91
+# B. --api: titles pass (build_titles_prompt, run_titles_pass)          ~L124
+# C. --api: shorts pass (3 prompt builders, quarter annotator, runner)  ~L200
+# D. --api: metadata pass (signals scraper, prompt, parser, runner)     ~L469
+# E. --api: master output builder                                        ~L766
+# F. --extract bookend (narration docx → .tmp/08_narration.md)          ~L798
+# G. --signals bookend (autocomplete scrape + niche signals loader)     ~L841
+# H. --finalize bookend (Q-tag annotation, tag trim, validate, docx)    ~L921
+# I. --api: legacy 3-pass Gemini orchestrator                           ~L972
+# J. CLI entry point (argparse + main)                                  ~L1036
+# ────────────────────────────────────────────────────────────────────────────
+
 # ---------------------------------------------------------------------------
 # Shared helpers
 # ---------------------------------------------------------------------------

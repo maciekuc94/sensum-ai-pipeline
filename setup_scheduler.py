@@ -16,7 +16,7 @@ from pathlib import Path
 
 TASK_NAME = "SENSUM_Niche_Intelligence"
 PROJECT_ROOT = Path(__file__).parent.resolve()
-SCRIPT = PROJECT_ROOT / "tools" / "intelligence" / "agent11_intelligence.py"
+SCRIPT = PROJECT_ROOT / "tools" / "intelligence" / "intelligence.py"
 PYTHON = sys.executable
 
 

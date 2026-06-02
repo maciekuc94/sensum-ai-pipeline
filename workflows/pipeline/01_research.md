@@ -42,20 +42,7 @@ Vague examples to avoid:
 
 ## Prerequisites
 
-1. **Google Cloud authentication** — run once per machine:
-   ```
-   gcloud auth application-default login
-   ```
-2. **Environment variables** — set in `.env` at the project root:
-   ```
-   GOOGLE_CLOUD_PROJECT=your-gcp-project-id
-   GOOGLE_CLOUD_LOCATION=us-central1   # optional, defaults to us-central1
-   NCBI_API_KEY=your-ncbi-key          # optional but recommended for rate limits
-   ```
-3. **Dependencies installed:**
-   ```
-   pip install -r requirements.txt
-   ```
+See [00_master.md §Prerequisites](./00_master.md#prerequisites) for Python, `.env` variables, and Vertex AI authentication.
 
 ---
 

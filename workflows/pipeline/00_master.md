@@ -106,17 +106,16 @@ pip install -r requirements.txt
 Create a `.env` file in the project root. Required:
 
 ```
-ANTHROPIC_API_KEY=your-key-here
 GOOGLE_CLOUD_PROJECT=your-gcp-project-id
 GOOGLE_CLOUD_LOCATION=us-central1
 ```
 
-Optional (Intelligence Agent niche intelligence only):
+Optional:
 
 ```
-YOUTUBE_API_KEY=your-youtube-data-api-key
-SENSUM_CHANNEL_ID=UCxxxxxxxxxxxxx
-NCBI_API_KEY=your-ncbi-key       # raises PubMed rate limits
+YOUTUBE_API_KEY=your-youtube-data-api-key   # Intelligence Agent only
+SENSUM_CHANNEL_ID=UCxxxxxxxxxxxxx           # Intelligence Agent only
+NCBI_API_KEY=your-ncbi-key                 # raises PubMed rate limits
 ```
 
 ### 3. Vertex AI authentication
@@ -125,7 +124,7 @@ NCBI_API_KEY=your-ncbi-key       # raises PubMed rate limits
 gcloud auth application-default login
 ```
 
-Required for Agents 1, 2, 9, 10, and 11.
+Required for Agents 1, 2, 6, 7, and the Intelligence Agent.
 
 ---
 

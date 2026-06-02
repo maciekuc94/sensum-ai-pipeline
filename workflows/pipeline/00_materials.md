@@ -44,13 +44,13 @@ The `--topic` argument should match exactly what you'll pass to Agent 1, so both
 1. Extracts full text from the PDF using `pdfplumber`
 2. Sends the full book text + topic to Gemini 3.1 Pro (1M context — handles any book size)
 3. Gemini extracts: key frameworks, counterintuitive findings, concrete examples, quotable passages, and mechanisms most relevant to the topic
-4. Saves output to `outputs/videos/{slug}/md/00_materials_insights.md`
+4. Saves output to `outputs/videos_pl/{slug}/md/00_materials_insights.md`
 
 ---
 
 ## Review
 
-Open `outputs/videos/{slug}/md/00_materials_insights.md`. Skim the extracted insights:
+Open `outputs/videos_pl/{slug}/md/00_materials_insights.md`. Skim the extracted insights:
 
 - Are the most relevant frameworks from the book captured?
 - Are concrete examples present (not just abstract summaries)?
@@ -79,4 +79,4 @@ Agent 2 (verification) never sees the book — it only verifies claims from Agen
 
 | File | Description |
 |------|-------------|
-| `outputs/videos/{slug}/md/00_materials_insights.md` | Structured insights extracted from the book |
+| `outputs/videos_pl/{slug}/md/00_materials_insights.md` | Structured insights extracted from the book |

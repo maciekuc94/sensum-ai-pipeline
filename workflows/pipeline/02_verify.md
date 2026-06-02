@@ -44,24 +44,8 @@ when they are VERIFIED, so the script writer knows to caveat them.
 
 ## Prerequisites
 
-1. **Agent 1 must have run successfully.** The file
-   `outputs/videos/{slug}/md/01_research.md` must exist.
-
-2. **Google Cloud authentication** — run once per machine if not already done:
-   ```
-   gcloud auth application-default login
-   ```
-
-3. **Environment variables** — set in `.env` at the project root:
-   ```
-   GOOGLE_CLOUD_PROJECT=your-gcp-project-id
-   GOOGLE_CLOUD_LOCATION=us-central1   # optional, defaults to us-central1
-   ```
-
-4. **Dependencies installed:**
-   ```
-   pip install -r requirements.txt
-   ```
+1. **Agent 1 must have run successfully.** `outputs/videos_pl/{slug}/md/01_research.md` must exist.
+2. See [00_master.md §Prerequisites](./00_master.md#prerequisites) for Python, `.env` variables, and Vertex AI authentication.
 
 ---
 

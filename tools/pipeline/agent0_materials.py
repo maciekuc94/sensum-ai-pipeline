@@ -24,6 +24,17 @@ GEMINI_MODEL = "gemini-3.1-pro-preview"
 OUTPUT_FILENAME = "md/00_materials_insights.md"
 
 
+def _load_prompt() -> str:
+    """Load extraction prompt template from workflows/pipeline/00_materials_prompt.md."""
+    path = Path(__file__).parent.parent.parent / "workflows" / "pipeline" / "00_materials_prompt.md"
+    lines = path.read_text(encoding="utf-8").splitlines()
+    body = [l for l in lines if not l.startswith("#") and not l.startswith("<!--")]
+    return "\n".join(body).strip()
+
+
+_MATERIALS_PROMPT_TEMPLATE = _load_prompt()
+
+
 # ---------------------------------------------------------------------------
 # PDF extraction
 # ---------------------------------------------------------------------------
@@ -66,22 +77,7 @@ def query_gemini_extraction(topic: str, book_text: str) -> tuple[str, dict]:
     print(f"  Initializing Gemini client (project={project}, location={location})...")
     client = genai.Client(vertexai=True, project=project, location=location)
 
-    prompt = f"""\
-You are preparing source material for a YouTube psychology video about: "{topic}".
-
-Below is the full text of a book the creator has selected as a trusted reference.
-
-Extract and organize the following into a structured markdown document:
-- Key psychological frameworks or models described in the book
-- Counterintuitive or surprising findings
-- Concrete examples, case studies, or stories that illustrate the main ideas
-- Quotable passages (with approximate location if possible)
-- Any arguments or mechanisms most relevant to the topic
-
-Be specific and thorough. This will be used directly by a scriptwriter — prioritize insight density over brevity.
-
-BOOK TEXT:
-{book_text}"""
+    prompt = _MATERIALS_PROMPT_TEMPLATE.format(topic=topic, book_text=book_text)
 
     print(f"  Querying {GEMINI_MODEL} for insight extraction...")
     response = client.models.generate_content(

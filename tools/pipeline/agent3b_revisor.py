@@ -1,15 +1,19 @@
 """
-Agent 3b: Script Revisor (B++ v2 chain)
-Reads the draft from Agent 3a and runs a full-script Copilot-style revision pass
-applying 8 diff-derived revision moves on every sentence. On iteration 2+, also
-reads the prior `03_review.md` from the Reviewer and the prior revised draft, and
-addresses only the issues the Reviewer flagged.
+Agent 3b: Script Revisor — LEGACY Gemini --api fallback
 
-Replaces former Agent 3b (single-weakest-moment critic).
+DEFAULT PATH (since 2026-05-29): the Revisor runs **in-session in Claude Code on
+Opus 4.8** as part of the `/draft` loop. No Gemini, no Anthropic API. The prompt
+is the single source of truth in `workflows/pipeline/03b_revisor.md`.
 
-Output goes to `md/03_script_draft.md` (overwrites previous iteration).
+This script is kept only as a Gemini-3.1-Pro fallback. It reads the draft from
+Agent 3a and runs a full-script Copilot-style revision pass applying 8
+diff-derived revision moves on every sentence. On iteration 2+, it also reads the
+prior `03c_review_iter{N-1}.md` and the prior revised draft, addressing only the
+issues the Reviewer flagged. `build_output` is a shared helper.
 
-Usage:
+Output goes to `md/03b_revised_iter{N}.md`.
+
+Usage (legacy):
     python tools/pipeline/agent3b_revisor.py "<slug>"
     python tools/pipeline/agent3b_revisor.py "<slug>" --iteration 2
 """
@@ -27,9 +31,6 @@ from tools.utils import read_output, write_output, load_style_guide, query_gemin
 # ---------------------------------------------------------------------------
 
 DRAFT_FILENAME = "md/03a_draft.md"
-REVIEW_FILENAME = "md/03_review.md"
-PREV_REVISION_FILENAME = "md/03_script_draft.md"
-OUTPUT_FILENAME = "md/03_script_draft.md"
 
 GEMINI_MODEL = "gemini-3.1-pro-preview"
 
@@ -117,9 +118,9 @@ Softener słowa: *teraz / na chwilę / tylko jedną minutę / wystarczy że / ni
 - **Preserve length ±10%** — nie wycinaj całych akapitów ani nie dodawaj nowych sekcji
 - **Preserve voice** — warm therapist, ty/twój, polska intymność terapeutyczna
 - **Preserve architecture choice** — pierwsza linia (ARCHITECTURE: ...) zostaje bez zmian
-- **Preserve Permission Practice structure** — dokładnie 4 numerowane tipy, recognition close po sekcji
+- **Preserve Permission Practice structure** — sekcja PP (4 numerowane tipy + recognition close) MUSI być w outputcie. Jeśli jakiś tip narusza regułę "somatic/głos" (np. "Wymień jedną rzecz" = lista = zakazane), **przepisz ten tip** na akt somatyczny/głos — nie usuwaj całej sekcji PP.
 - **Jeśli zdanie jest already dobre** (nie pasuje do żadnego z 8 wzorców) — zostaw bez zmian
-- **NIE dodawaj** stage directions w nawiasach kwadratowych ani `[EDITOR NOTE]` inline — Reviewer skanuje czysty tekst osobno
+- **NIE dodawaj** stage directions w nawiasach kwadratowych — zakaz: `[Visual Pause]`, `[IMAGE: ...]`, `[EDITOR NOTE]`, `[IMAGE PROMPT]` ani żadnych innych adnotacji produkcyjnych w tekście skryptu
 - **NIE zmieniaj** twierdzeń naukowych ani struktury narracyjnej — tylko prozę
 
 ## Polish voice hard rules (nigdy nie naruszaj)
@@ -142,7 +143,9 @@ Softener słowa: *teraz / na chwilę / tylko jedną minutę / wystarczy że / ni
 {draft_text}
 
 ## Output
-Zwróć **kompletny zrewidowany skrypt** — od pierwszej linii (ARCHITECTURE: ...) do ostatniej. Bez preambuły, bez komentarzy, bez listy zmian. Tylko czysty tekst skryptu.
+Zwróć **kompletny zrewidowany skrypt** — od pierwszej linii (ARCHITECTURE: ...) do ostatniej. Bez preambuły, bez komentarzy, bez listy zmian.
+
+**BEZWZGLĘDNY ZAKAZ:** Nie dodawaj ŻADNYCH tagów w nawiasach kwadratowych — zakaz `[IMAGE: ...]`, `[Visual Pause]`, `[EDITOR NOTE]`, `[IMAGE PROMPT]` ani niczego podobnego. Obrazami zajmuje się oddzielny Agent 5 — Twój output to WYŁĄCZNIE ciągły tekst narracyjny. Żadnych adnotacji produkcyjnych. Żadnych przerywników wizualnych.
 """
 
 
@@ -206,8 +209,10 @@ def main() -> None:
         draft_content = read_output(slug, DRAFT_FILENAME)
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
-        print("\nRun Agent 3a first:")
-        print(f'  python tools/pipeline/agent3a_draft.py "{slug}"')
+        print("\nGenerate the draft first by running this in Claude Code:")
+        print(f'  /draft {slug}')
+        print("\nThe Drafter (3a) is no longer a Python script — it runs in Claude Code.")
+        print("See workflows/pipeline/03a_drafter.md for the prompt template.")
         sys.exit(1)
 
     topic = "Unknown Topic"
@@ -227,17 +232,30 @@ def main() -> None:
     prior_review = None
     prior_revision = None
     if iteration > 1:
+        prev_review_file = f"md/03c_review_iter{iteration - 1}.md"
+        prev_revision_file = f"md/03b_revised_iter{iteration - 1}.md"
         try:
-            prior_review = read_output(slug, REVIEW_FILENAME)
+            prior_review = read_output(slug, prev_review_file)
             print(f"  Prior review loaded ({len(prior_review):,} characters)")
         except FileNotFoundError:
-            print(f"  Warning: iteration > 1 but no {REVIEW_FILENAME} found — treating as iteration 1")
+            print(f"  Warning: iteration > 1 but no {prev_review_file} found — treating as iteration 1")
             iteration = 1
         try:
-            prior_revision = read_output(slug, PREV_REVISION_FILENAME)
+            prior_revision = read_output(slug, prev_revision_file)
             print(f"  Prior revision loaded ({len(prior_revision):,} characters)")
+            # If the prior revision is < 40% of the draft it's probably a truncated/broken
+            # output — don't pass it to Gemini to avoid compounding the error.
+            if len(prior_revision) < 0.4 * len(draft_content):
+                print(
+                    f"  Warning: prior revision ({len(prior_revision):,} chars) is only "
+                    f"{len(prior_revision) / len(draft_content) * 100:.0f}% of draft — "
+                    "skipping prior_revision context (likely broken iter 1 output)."
+                )
+                prior_revision = None
+                prior_review = None
+                iteration = 1
         except FileNotFoundError:
-            print(f"  Warning: iteration > 1 but no {PREV_REVISION_FILENAME} found — treating as iteration 1")
+            print(f"  Warning: iteration > 1 but no {prev_revision_file} found — treating as iteration 1")
             iteration = 1
             prior_review = None
             prior_revision = None
@@ -254,7 +272,7 @@ def main() -> None:
     )
 
     try:
-        script_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 8192, f"revision iter {iteration}")
+        script_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 16384, f"revision iter {iteration}")
     except EnvironmentError as exc:
         print(f"\nError: {exc}")
         sys.exit(1)
@@ -265,10 +283,31 @@ def main() -> None:
     print(f"  Revised script received ({len(script_text):,} characters)")
     print(f"  Tokens: in={usage['input_tokens']:,} out={usage['output_tokens']:,}")
 
-    # Step 4 — Save output (overwrites previous iteration)
-    print(f"\n[4/4] Saving output to {OUTPUT_FILENAME}...")
+    # Strip any [IMAGE: ...] or [Visual Pause] tags Gemini adds despite the ban.
+    # These come from the old pipeline format still referenced in training data.
+    import re
+    original_len = len(script_text)
+    script_text = re.sub(r'\[IMAGE:[^\]]*\]', '', script_text)
+    script_text = re.sub(r'\[Visual Pause\]', '', script_text, flags=re.IGNORECASE)
+    script_text = re.sub(r'\n{3,}', '\n\n', script_text).strip()
+    if len(script_text) < original_len:
+        print(f"  Stripped production tags ({original_len - len(script_text):,} chars removed)")
+
+    # Warn if output is suspiciously short compared to the input draft.
+    input_words = len(draft_content.split())
+    output_words = len(script_text.split())
+    ratio = output_words / max(input_words, 1)
+    if ratio < 0.7:
+        print(
+            f"  WARNING: Output ({output_words} words) is only {ratio * 100:.0f}% of input "
+            f"({input_words} words) — possible truncation. Verify 03b_revised_iter{iteration}.md before proceeding."
+        )
+
+    # Step 4 — Save output
+    output_filename = f"md/03b_revised_iter{iteration}.md"
+    print(f"\n[4/4] Saving output to {output_filename}...")
     content = build_output(topic, script_text, iteration)
-    output_path = write_output(slug, OUTPUT_FILENAME, content)
+    output_path = write_output(slug, output_filename, content)
     print(f"  Saved: {output_path}")
 
     print(f"\nDone. Next: agent3c_reviewer.py")

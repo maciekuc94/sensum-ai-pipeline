@@ -1,22 +1,22 @@
-# Workflow: Agent 9b — Image QA (style compliance check)
+# Workflow: Agent 6b — Image QA (style compliance check)
 
 ## Purpose
 
-Agent 9b is a vision-based second pass over the images produced by **Agent 9**.
+Agent 6b is a vision-based second pass over the images produced by **Agent 6**.
 It catches style violations that the in-pipeline color enforcement (`_enforce_background_color`)
 cannot detect — textured backgrounds, decorative borders, wrong color tints,
 and cropped heads.
 
 The validator uses **Gemini 2.5 Flash** on Vertex AI to score each PNG against
 the SENSUM style contract and writes a markdown report. It does **not** delete
-or modify images. With `--retry`, it will spawn Agent 9 once to regenerate the
+or modify images. With `--retry`, it will spawn Agent 6 once to regenerate the
 failed indices, then re-audit them.
 
 ---
 
 ## When to run
 
-After Agent 9 finishes, before you start adding film grain or moving on to
+After Agent 6 finishes, before you start adding film grain or moving on to
 voiceover. The QA pass is fast (~2 minutes per 120-image video) and cheap
 (~$0.04 per video at Gemini 2.5 Flash pricing) so there's no reason to skip it.
 
@@ -24,7 +24,7 @@ voiceover. The QA pass is fast (~2 minutes per 120-image video) and cheap
 
 ## Prerequisites
 
-Same as Agent 9:
+Same as Agent 6:
 
 1. Images exist at `outputs/videos/{slug}/images/image_*.png`.
 2. `GOOGLE_CLOUD_PROJECT` is set in `.env`.
@@ -38,23 +38,23 @@ Same as Agent 9:
 ## Usage
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9b_image_qa.py "<slug>"
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6b_image_qa.py "<slug>"
 ```
 
 Flags:
 
 - `--quiet` — only print the summary, suppress per-image output.
-- `--retry` — after QA, regenerate failed indices via Agent 9 (one attempt),
+- `--retry` — after QA, regenerate failed indices via Agent 6 (one attempt),
   then re-audit those indices and update the report.
 
 Examples:
 
 ```bash
 # Audit only
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9b_image_qa.py "5_how_to_actually_stay_mentally_healthy"
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6b_image_qa.py "5_how_to_actually_stay_mentally_healthy"
 
 # Audit, then auto-regenerate failures and re-audit
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9b_image_qa.py "5_how_to_actually_stay_mentally_healthy" --retry
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6b_image_qa.py "5_how_to_actually_stay_mentally_healthy" --retry
 ```
 
 ---
@@ -85,7 +85,7 @@ REASONS: <if FAIL, comma-separated phrases; if PASS write "none">
 
 ## Output
 
-`outputs/videos/{slug}/md/09_image_qa.md` — markdown report with:
+`outputs/videos/{slug}/md/06_qa.md` — markdown report with:
 
 - Summary header (pass / fail / error counts, model used).
 - `## Failed images` — table of failed PNGs and the human-readable reasons.
@@ -107,7 +107,7 @@ Exit code is always 0 — failures are data, not crashes.
 | 120-image runtime | ~2 minutes |
 
 If the Vertex model ID changes, edit `QA_MODEL` near the top of
-`tools/pipeline/agent9b_image_qa.py`.
+`tools/pipeline/agent6b_image_qa.py`.
 
 ---
 
@@ -119,12 +119,12 @@ If the Vertex model ID changes, edit `QA_MODEL` near the top of
   not been tuned exhaustively; treat the report as a triage tool, not gospel.
 
 - **No automatic deletion.** The validator never deletes images. Even with
-  `--retry`, Agent 9 overwrites in place — your originals are gone, but no
+  `--retry`, Agent 6 overwrites in place — your originals are gone, but no
   cleanup happens otherwise.
 
 - **One retry only.** `--retry` triggers a single regen pass. If the
   regenerated image still fails, fix the underlying prompt in
-  `md/05_image_prompts.md` and rerun Agent 9 manually.
+  `md/05_prompts.md` and rerun Agent 6 manually.
 
 ---
 
@@ -132,7 +132,7 @@ If the Vertex model ID changes, edit `QA_MODEL` near the top of
 
 **`No images found in outputs/videos/<slug>/images/`**
 
-Agent 9 has not run yet, or the slug is wrong. Verify:
+Agent 6 has not run yet, or the slug is wrong. Verify:
 ```bash
 ls outputs/videos/<slug>/images/
 ```
@@ -146,15 +146,15 @@ in `QA_MODEL`.
 
 The model is being overly strict (or the prompt is too rigid). Inspect the
 images manually — if they look fine, loosen the QA prompt in
-`tools/pipeline/agent9b_image_qa.py`.
+`tools/pipeline/agent6b_image_qa.py`.
 
 ---
 
 ## Why this exists
 
-Before Agent 9b, every defect (textured backgrounds, wrong colors, unwanted
+Before Agent 6b, every defect (textured backgrounds, wrong colors, unwanted
 frames) had to be caught by manually scrolling 100+ images per video. The
-existing `_enforce_background_color` pass in `agent9_images.py` only repairs
+existing `_enforce_background_color` pass in `agent6_images.py` only repairs
 solid wrong-color flats — it cannot detect texture variance or borders. A
 $0.04 QA pass per video catches the rest. Style violations get a name and a
 report; the user keeps final say.

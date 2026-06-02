@@ -21,7 +21,7 @@ You're working inside the **WAT framework** (Workflows, Agents, Tools). This arc
 - Credentials and API keys are stored in `.env`
 - These scripts are consistent, testable, and fast
 
-**Why this matters:** When AI tries to handle every step directly, accuracy drops fast. If each step is 90% accurate, you're down to 59% success after just five steps. By offloading execution to deterministic scripts, you stay focused on orchestration and decision-making where you excel.
+**Why this matters:** By offloading execution to deterministic scripts, you stay focused on orchestration and decision-making where you excel.
 
 ## Channel Language (2026-05-25 — Polish localization)
 
@@ -61,16 +61,12 @@ This loop is how the framework improves over time.
 
 ## File Structure
 
-**What goes where:**
-- **Deliverables**: Final outputs go to cloud services (Google Sheets, Slides, etc.) where I can access them directly
-- **Intermediates**: Temporary processing files that can be regenerated
-
 **Directory layout:**
 ```
 .tmp/                    # Temporary files (scraped data, intermediate exports). Regenerated as needed.
 tools/
   pipeline/              # Agent scripts 0–6, 8–10 + align (the full production chain)
-  intelligence/          # Agent 11 + intelligence module (analyzer, collector, db, slide_builder, vision)
+  intelligence/          # Intelligence Agent + intelligence module (analyzer, collector, db, slide_builder, vision)
   dev/                   # Support tools: add_grain.py
   utils.py               # Shared utilities (all agents import from here)
 workflows/
@@ -79,7 +75,7 @@ workflows/
 outputs/
   videos_pl/             # Polish-channel videos (one folder per slug). videos_en/ exists for legacy English content.
   channel_assets/        # Shared brand assets (logo, fonts, colors)
-  intelligence/          # Agent 11 analysis outputs
+  intelligence/          # Intelligence Agent analysis outputs
 .env                     # API keys and environment variables (NEVER store secrets anywhere else)
 ```
 
@@ -91,8 +87,8 @@ outputs/
 
 ## Technical Notes
 
-**Claude API routing**
-`query_claude()` in `tools/utils.py` uses the direct Anthropic API (`anthropic.Anthropic` + `ANTHROPIC_API_KEY`), not Vertex AI. `claude-opus-4-7` is not available in the `visual-studio-code-494218` GCP project via Vertex AI — do not revert to `AnthropicVertex` for Claude calls.
+**No Claude API — all Claude runs in-session (2026-05-29)**
+The pipeline makes **zero Anthropic API calls**. Every Claude step runs in-session in Claude Code on Opus 4.8 via slash commands: `/draft` (3a Drafter + the 3b Revisor ↔ 3c Reviewer loop), `/hook` (4b), `/visuals` (5), `/publish` (8 — the full publish package), `/thumbnails` (7 concepts). `query_claude()` was removed from `tools/utils.py`; `ANTHROPIC_API_KEY` is no longer required. Gemini (Vertex AI) remains only for research (Agents 0/1/2), image rendering (6, 7-render), and QA (6b). Prompts for the in-session agents are single-sourced in `workflows/pipeline/03{a,b,c}_*.md`, `04_hook.md`, `05_visuals.md`, `08_publish.md`, and `07_thumbnails.md`. Legacy Gemini-API script paths survive only behind an `--api` flag (`agent3.py`, `agent3b/3c`, `agent4_hook.py --api`, `agent8_publish.py --api`).
 
 **Windows terminal encoding**
 When running pipeline scripts via Bash on this machine, prefix with `PYTHONIOENCODING=utf-8` to avoid codec errors on Unicode characters (e.g., arrows in print statements):
@@ -107,68 +103,99 @@ The auto-derived PubMed query sometimes returns zero results (query too specific
 **Research-invisible script voice (2026-05-21; Polish equivalents 2026-05-25)**
 Scripts must read as a warm therapist talking to one person — research entirely invisible. The channel is research-*grounded* (Agents 0/1/2 still do PubMed verification) but never research-*forward* in the script. Findings appear as observations about being human, spoken in the speaker's own voice. The viewer trusts the speaker, not the citation. All real bibliographic citations live in the YouTube description (Agent 8 output) — never in the spoken narration.
 
-Polish forbidden phrases (research-framing): "naukowcy odkryli", "badania pokazują", "wyniki badań", "z badań wynika", "ostatnie badania", "neuronauka wykazała", "psychologowie nazywają to", "dane pokazują", "według badań", "nauka jest jasna", "jedno badanie", "meta-analiza", "w [roku]" wprowadzające badanie. English equivalents (preserved for reference): "researchers found / studies show / scientists discovered / research shows / neuroscience has found / one study / a meta-analysis / the data shows / according to research / the science is clear / psychologists call this". Both lists grow empirically as the channel ships content.
+Polish forbidden phrases (research-framing): "naukowcy odkryli", "badania pokazują", "wyniki badań", "z badań wynika", "ostatnie badania", "neuronauka wykazała", "psychologowie nazywają to", "dane pokazują", "według badań", "nauka jest jasna", "jedno badanie", "meta-analiza", "w [roku]" wprowadzające badanie. List grows empirically as the channel ships content.
 
-**Permission Practice closing section (2026-05-24, locked)**
-Every script ends with a mandatory Permission Practice section sitting between the architecture body and the recognition close. Exactly **4 numbered embodied micro-practices** — somatic acts, noticing, naming, breathing, micro-thresholds. Never optimization, scheduling, list-making, "talk to a therapist", "set boundaries", or anything that could appear unchanged on a productivity blog. Header template: *"Four things you can [verb], when [trigger]:"* — verb varies (do/try/notice/give yourself/carry with you); trigger ties to the script's specific mechanism. The recognition close still has the FINAL word — the tips are a beat, not the destination. Full spec lives in `workflows/guides/narrative_architectures.md` under "Permission Practice closing section (universal)". Agent 3a generates it; Agent 3b (Revisor) applies all revision moves including PP agency verbs; Agent 3c (Reviewer) flags PP integrity violations. Title doctrine unchanged — still identity-provocation only; tips are inside-the-video payoff, not click bait.
+**Permission Practice closing section (2026-05-24; reformatted to prose 2026-05-29)**
+Every script ends with a mandatory Permission Practice section (~4 embodied micro-practices, between architecture body and recognition close). **As of 2026-05-29 it is flowing prose ("Czasem wystarczy…" anaphora), NOT a numbered list — numbered prescriptive lists are now banned everywhere in the script.** Full spec in `workflows/guides/narrative_architectures.md`. Agent 3a generates it; 3b keeps it as prose + applies softeners; 3c flags numbered-list regressions and PP integrity violations.
 
-**Number policy:** Round, framed numbers only ("roughly half", "most people"). Banned in scripts: decimals (0.62), effect sizes (d = X, r = X), p-values, study counts ("94 experiments"), participant counts ("8,000 people"), methodology terms (pre-registered, double-blind, longitudinal, meta-analysis). If a number doesn't land emotionally as plain English, cut it.
+**Permission Practice — two registers / „path beat" (2026-05-31)**
+Permission Practice now has **two registers**, same *form* (prose, „Czasem wystarczy…", ~4 practices, softeners, recognition close still last), different *content*. **Somatic** (default, unchanged): breath/hand/noticing/naming — for topics whose only real move is internal (envy, shame, anxiety). **Strategic** (new — the „beat ścieżki"): behavioral micro-practices (choose one thing for the season, set-aside-not-discard, reframe the day job as ground) — only when the topic offers a genuine *external move* (career „too many interests", decision paralysis). **Trigger rule** lives in `narrative_architectures.md` „Dwa rejestry"; `/draft <slug> [arch] --sciezka` forces strategic. **Hard invariants unchanged:** prose not numbered list, temporal softeners, research-invisible (practical move as a plain human invitation, never a named framework/jargon — no „serial mastery / far transfer"), and **recognition close always gets the last word** (the map is a beat, not the destination — even the M-shaped video that inspired this ends on recognition). 3c category A now accepts the strategic register as valid (not auto-FLAG as "advice") but still BLOCKERs on numbered list / missing-softener / optimization-scheduling framing / no recognition after PP. Origin: brainstorm over two viral EN scripts the user loves (`workflows/guides/reference_scripts/` + `inspiration_log.md`) — M-shaped earns the strategic register, the super-sensor („cry easily") script is pure-permission and proves the beat must stay optional. The inspiration_log is the standing loop: user drops liked scripts, we extract the one genuinely-new lesson, default to NOT bloating.
+
+**Narrative architectures — Composite Portrait is the default (2026-05-29; re-spec'd same day after pilot)**
+There are five narrative architectures, all written at the channel's native length (**~10–15 min / ~1,500–1,750 Polish words → ~140–180 images** at one-per-sentence density). **`Composite Portrait` is the default** — Agent 3a uses it unless `/draft <slug> "<Architecture Name>"` forces one of the four others (Forensic Case Study, Historical Reversal, Socratic Challenge, Systems Audit). Composite Portrait follows one archetype figure through four movements (Surface → Cost → Origin → Reframe), in **full second person „ty"** (the figure is the viewer — *„Kupujesz nowy notatnik…"*), and threads a recurring object-motif. The reusable faceless figure (`CHARACTER_DESCRIPTION`) is its recurring protagonist (the viewer's avatar). **The initial ~20-min long-form + voice-braid (3rd-person „ktoś" + „ty" fold-backs) experiment was retired 2026-05-29** after the slug-2 pilot: the braid read as distancing/artificial in Polish, and ~20 min was longer than the format needs. Inspired by long-form portrait essays (e.g. Du Cinema) but realized at SENSUM's native length. Full spec in `workflows/guides/narrative_architectures.md` + `05_visuals.md` register.
+
+**Craft calibration (2026-05-29, from slug-2 pilot + external native-ear review)** — enforced globally in `style_guide.md` / 3a / 3c: **one central metaphor per script** (don't stack secondary metaphors — podatek + dom na wodzie + bak paliwa + loteria…); **at most 2–3 attention-imperatives** („Zwróć uwagę"/„Popatrz"/„Zatrzymaj się"/„Pomyśl"); **no uncited round-number stat** — even „blisko połowy tego, co robisz…" reads as research-without-citation, describe it instead.
+
+**Number policy:** Round, framed numbers only ("roughly half", "most people"). Banned in scripts: decimals (0.62), effect sizes (d = X, r = X), p-values, study counts ("94 experiments"), participant counts ("8,000 people"), methodology terms (pre-registered, double-blind, longitudinal, meta-analysis). If a number doesn't land emotionally as plain English, cut it. **Even a round number stated as fact ("blisko połowy tego, co robisz…") reads as an uncited research stat — describe the phenomenon without the number instead.**
 
 **Jargon policy:** Plain language first. Describe the phenomenon in everyday words. Name a scientific term only if (a) the name itself is memorable and (b) it appears once, late, after the idea has already landed. Never use the jargon-then-translation pattern ("ego depletion — the depletion of…").
 
 **Darwin exception (Historical Reversal architecture only):** Scripts using Historical Reversal may name Darwin as a historical narrative device (the "wrong view" being overturned). This is the structural antagonist of the architecture, not an inline citation. No other historical figures or researchers may be named.
 
-**Image generation — Agent 9**
-Agent 9 uses `gemini-3-pro-image-preview` via Vertex AI with `location="global"` (regional endpoints return 404 for this model). The API is `generate_content(response_modalities=["IMAGE"])` — not `generate_images()`. The negative prompt is embedded in the prompt text, not passed as a parameter. Aspect ratio is handled post-generation via `ImageOps.pad()` (pillarbox with #F4E5CA sage beige — no stretching, no cropping). Image prompts specify `#F4E5CA` sage beige background directly in `STYLE_SUFFIX` in `utils.py`; `_enforce_background_color` also runs automatically after each image is saved as a safety net (note: this only catches solid wrong-color flats — textured backgrounds and decorative frames pass through it; Agent 9b catches those). The `--transparent`/`rembg` path was removed — see plan `enumerated-doodling-lovelace.md` F4. **STYLE_SUFFIX rule:** never say "vellum", "aged paper", "parchment", or any texture descriptor in the prompt — Gemini interprets those literally and renders paper grain into the image; the prompt asks for a flat solid background and `add_grain.py` adds grain in post.
+**Clinical-anchor exception (2026-06-01, any architecture):** Exactly one established clinical anchor per script may be named and framed as "Badania nad [efektem] pokazują, że…" (e.g., "efekt świeżego startu" / fresh-start effect) — a deliberate device, not a general research citation. Hard limits: only one such frame per script; no author names, no years, no numbers, no methodology terms alongside it; a second research-framing frame in the same script is a BLOCKER (3c category B). All other research-invisible rules remain unchanged.
+
+**Image generation — Agent 6**
+Agent 6 uses `gemini-3-pro-image-preview` via Vertex AI with `location="global"` (regional endpoints return 404 for this model). The API is `generate_content(response_modalities=["IMAGE"])` — not `generate_images()`. The negative prompt is embedded in the prompt text, not passed as a parameter. Aspect ratio is handled post-generation via `ImageOps.pad()` (pillarbox with #F4E5CA sage beige — no stretching, no cropping). Image prompts specify `#F4E5CA` sage beige background directly in `STYLE_SUFFIX` in `utils.py`; `_enforce_background_color` also runs automatically after each image is saved as a safety net (note: this only catches solid wrong-color flats — textured backgrounds and decorative frames pass through it; Agent 6b catches those). **STYLE_SUFFIX rule:** never say "vellum", "aged paper", "parchment", or any texture descriptor in the prompt — Gemini interprets those literally and renders paper grain into the image; the prompt asks for a flat solid background and `add_grain.py` adds grain in post.
 
 **Selective regeneration — `--indices`**
-`agent9_images.py --generate --indices "22,26,97"` regenerates only the listed 1-based indices and overwrites existing PNGs at those positions. Other images are untouched. Use this for re-rolling specific bad images flagged by Agent 9b without spending API credits on the whole set.
+`agent6_images.py --generate --indices "22,26,97"` regenerates only the listed 1-based indices and overwrites existing PNGs at those positions. Other images are untouched. Use this for re-rolling specific bad images flagged by Agent 6b without spending API credits on the whole set.
 
-**Image QA — Agent 9b**
-After Agent 9, run `agent9b_image_qa.py "<slug>"` to validate every image against the SENSUM style contract using Gemini 2.5 Flash on Vertex AI. Checks: flat solid sage beige background (no texture), dark brown ink only (no other colors), no decorative borders/frames, no head cropping, no visible text. Writes `md/09_image_qa.md` listing failures. Cost ~$0.04 per 120-image video; runtime ~2 minutes. Use `--retry` to auto-regenerate failed indices via Agent 9 (one attempt). The validator never deletes images; it reports and lets the user decide.
+**Image QA — Agent 6b**
+After Agent 6, run `agent6b_image_qa.py "<slug>"` to validate every image against the SENSUM style contract using Gemini 2.5 Flash on Vertex AI. Checks: flat solid sage beige background (no texture), dark brown ink only (no other colors), no decorative borders/frames, no head cropping, no visible text. Writes `md/06_qa.md` listing failures. Use `--retry` to auto-regenerate failed indices via Agent 6 (one attempt). The validator never deletes images; it reports and lets the user decide.
 
-**Thumbnail generation — agent10_thumbnails.py**
-Run after Agent 8 (needs `07_publish_package.md`) and Agent 9 is optional. Two-step: Claude Opus 4.7 generates 5 distinct thumbnail concepts (one per composition type), then Gemini renders each at 1920×1080. Run with `--no-grain` — grain is applied manually in Canva after adding the title text overlay. Prompts are saved to `thumbnail_prompts.md` for reference. Flags: `--no-grain` (recommended), `--reuse-prompts` (skip Claude step, reload saved prompts), `--indices 1,4` (only generate those prompt numbers), `--count 3` (generate N variations per prompt — named `thumbnail_01_v1.png` etc). Rate limit: 20s between Vertex AI calls. Gemini is stochastic — exact pixel-identical re-runs are impossible; `--reuse-prompts` reuses the same prompt text but produces new renders.
+**Thumbnail generation — `/thumbnails` + agent7_thumbnails.py**
+Run after Agent 8 (needs `08_publish.md`). Two-step: `/thumbnails <slug>` generates 5 thumbnail concepts in-session (Opus 4.8, no API) into `md/07_prompts.md`, then `agent7_thumbnails.py "<slug>" --render --no-grain` renders each at 1920×1080 via Gemini. `--no-grain` — grain is applied manually in Canva after adding the title overlay. Rate limit: 20s between Vertex AI calls. For all flags and the composition-type rubric see `workflows/pipeline/07_thumbnails.md`.
 
-**Agent 8 web scraping**
-`agent8_publish.py` scrapes Google Autocomplete and YouTube search results for SEO tags. This is fragile — if Google/YouTube changes their HTML, the scraper returns an empty tag list silently and the rest of the output is fine. The YouTube competitor-tag scraper currently returns 0 results most runs (YouTube payload shape changed — `JSONDecodeError: Extra data`); Agent 8 still produces a valid package because it falls back on Niche Trend Signals + autocomplete + script context. If the tags section in `07_publish_package.md` looks empty or short, the scraper has broken; add tags manually.
+**Agent 8 publish package — in-session, 9 focused steps (2026-06-02)**
+Agent 8 runs entirely in Claude Code via `/publish <slug>` — **no API**. The old 3-mega-prompt Gemini pipeline (titles / shorts / metadata) is split into **9 single-responsibility steps** so each concern gets a dedicated reasoning pass: (1) titles, (2) description + 3 hashtags, (3) timestamps, (4) long-form tags, (5) bibliography, (6) shorts clip-selection, (7) shorts titles, (8) shorts descriptions, (9) shorts tags. Prompts are single-sourced in `workflows/pipeline/08_publish.md` (the master-file template + self-check live there too). Two deterministic Python bookends bracket the in-session run: `agent8_publish.py "<slug>" --extract` (materialize narration → `.tmp/08_narration.md`, since Claude can't Read `.docx`), `--signals` (scrape YouTube autocomplete + load the latest niche `_tag_signals.md` → `.tmp/08_signals.md`; pass `--topic="<polish seed>"` for real Polish autocomplete), and `--finalize` (annotate clip blocks with `[Q1]–[Q4]`, trim the tag line to the 450-char budget, validate every Short has a clip block, export `docx/08_publish.docx`). The legacy Gemini orchestrator survives behind `agent8_publish.py "<slug>" --api`.
 
-**Agent 8 publish package — output format (locked, 2026-05-24 rewrite)**
-Agent 8 operates as an **Advanced YouTube Metadata Engineer / NLP Optimization Pipeline** — cold, empirical decision logic for tag selection and NLP anchoring; warm-validating speaker voice in description and Shorts body copy. Do not loosen these without explicit instruction:
+**Output reminders (locked):** Tag #1 = exact-match primary keyword from the chosen title (algorithm front-loads weight here — don't waste it); **5–8** multi-word tags total, single-word prohibited except `SENSUM`-once; exactly 3 hashtags (`#sensum` first); description is exactly 5 sentences; bibliography heading is `Badania i źródła:`; Shorts clips tagged `[Q1]–[Q4]` — `[Q?]` means the quote didn't substring-match (paraphrase slipped in), `[MISSING]` means a Short lacks its clip block — fix both before publishing. The autocomplete scraper is fragile: if the tags look thin, it failed; the package is still valid via niche signals + script, add tags manually.
 
-- **Long-form titles** — 5 variants in the **Identity Provocation blueprint**: each title must function as an identity reframe ("You're Not Lazy. Your Reward System Is Misfiring."), a paradox ("What If Your Anxiety Is the System Working Perfectly?"), or a system-architectural reveal ("Your Nervous System Is Running on Outdated Settings."). Banned: instructional verbs (`how to`, `tips`, `ways to`, `stop`, `fix`), list-format (`5 …`, `7 things …`), advisory framing. Each under 60 chars. At least 2 of the 3 modes represented across the 5.
-- **Description** — three-block NLP-anchored structure, total under 120 words.
-  - **Block 1 (Hook Segment, lines 1–2):** 3–6 visceral somatic/emotional fragments, no conversational filler, no greeting.
-  - **Block 2 (Explanatory Block, line 3+):** identity-absolution framing ("These aren't character flaws — they're the signals of…"), names 3–5 concepts in plain language, closes warm. The phrase "In this video, we explore" is permitted but no longer mandated.
-  - Hard rules: no researcher names, no study years, no Latin-sounding jargon in body, no second-person preachy lines.
-- **Timestamps** — explicit `Timestamps:` heading followed by `00:00 Introduction` and `[XX:XX] Chapter Name` placeholder rows. 6–12 chapters.
-- **References** — heading is `Research & References:` (no book emoji). Format unchanged: `• Concept Label — Optional Qualifier: Author, A., et al. (Year).` One per line, bullet `•`, ends with year-in-parens and period. No summary sentence.
-- **Hashtags** (end of description block, before `---`) — **unchanged**: exactly 3, single-word, lowercase, `#` prefix. First is always `#sensum`. Other 2 are the strongest single-word topical hashtags.
-- **YouTube Tags** — **10–15 multi-word tags**, comma-separated, no `#` prefix, total under 450 chars (agent prints actual length; YouTube hard cap is 500). Slot structure, front-loaded by algorithmic weight: **Tag #1 = exact-match primary keyword** extracted from the chosen long-form title (algorithm front-loads semantic weight onto Tag #1 — don't waste it); **Tags #2–#5** = strongest long-tail variations and paraphrases of the primary keyword (3–5 words each); **Tags #6–#12** = supporting long-tail intent phrases (2–4 words) including Niche Trend Signals rendered as multi-word phrases; **Tags #13–#15** (optional) = broader 2–3 word category anchors ("permission psychology", "emotional regulation"). Single-word tags PROHIBITED — they cause semantic dilution and format decoupling on this niche. Brand exception: `SENSUM` (uppercase) appears once as the only single-word entry, slot anywhere. Every phrase extractable from script's literal language or a direct-intent paraphrase. Niche Trend Signals are a **supporting reference for the back half** — the primary keyword from the chosen title leads.
-- **Shorts package** — 3–5 Shorts, each with: single **Title** (max 60 chars, identity-reframe blueprint), **Description** (1–2 sentences mapping cognitive dissonance, ends with `#Shorts #x #y`), **Tags** (3–5 multi-word backend phrases, 2–4 words each, comma-separated, no `#` prefix, single-word prohibited except `SENSUM`-once), and **Script Lines to Clip** split into `Hook (first ~3s): [Q?]` and `Core payload: [Q?]` sub-blocks with verbatim `> ` quoted lines. Shorts backend tags are a categorization safety net, not a discovery driver — the description hashtag block carries the real algorithmic signal on Shorts (the Shorts recommendation engine is fully decoupled from long-form and barely reads backend tags). The `[Q1]/[Q2]/[Q3]/[Q4]` marker is computed deterministically by `_annotate_script_quarters` and tells the editor which quarter of `06_script_narration.md` to text-search in DaVinci. `[Q?]` means the quote did not substring-match — usually a paraphrase that needs fixing.
+**Script revision architecture (B++ v2) — full chain in-session on Opus 4.8 (2026-05-29)**
+Agent 3 runs entirely in Claude Code via `/draft <slug>` — **no API**: 3a Drafter → 3b Revisor ↔ 3c Reviewer loop, all on the in-session Opus 4.8 model. Loop exits on PASS or max iterations (default 5); on FLAG at max, `04_final.md` is prepended with a warning header — review `03c_review_iter{N}.md` before recording. Prompt templates are single source of truth: `03a_drafter.md`, `03b_revisor.md`, `03c_reviewer.md`. The legacy Gemini-API loop (`agent3.py` orchestrating `agent3b_revisor.py`/`agent3c_reviewer.py`) is kept only as an `--api` fallback; those files retain shared helpers (`parse_verdict`, `build_output`). **Reviewer independence note:** in-session, 3c shares context with 3b — the `03c_reviewer.md` prompt enforces a fresh critical pass (default FLAG on uncertainty, no rewriting). Pre-revisor English chain preserved at Git tag `agent-chain-v1-prerevisor`; see `docs/reversibility.md`.
 
-The Agent 8 metadata prompt frames Claude as an Advanced YouTube Metadata Engineer / NLP Optimization Pipeline operating with cold, empirical, mathematical precision (long-form titles in identity-provocation voice; description body and Shorts descriptions remain warm/validating).
+**Fluency-first script chain refactor (2026-05-30)** — addressed the root cause of mediocre native Polish despite Opus 4.8: the chain was tuned for *policy/structure* compliance and had **no owner for sentence-level Polish naturalness**, so calques passed a clean PASS. Four changes: **(1) Voice-first Drafter** — `03a_drafter.md` now writes in two ordered stages: Stage 1 produces living native Polish from voice anchors + corpus + research *without* prohibition lists in front; Stage 2 audits that prose against doctrine and fixes only genuine violations, protecting voice (constraints-first was producing defensive, flat prose). **(2) New `workflows/guides/voice_corpus.md`** — the positive Polish ear: exemplar passages from the user's own shipped slug-1 narration (§A) + native-ear correction pairs from the slug-1 raw→hand diff (§B) + slug-2 calques to avoid (§C). Replaces the *English* orchid/dandelion transcript as the primary rhythm anchor. Read by 3a/3b/3c. **(3) 3b MOVE 0 — open-ended naturalness sweep:** rewrite any sentence that isn't natural spoken Polish even if it matches none of the 11 named moves; philosophy changed from "leave most sentences untouched" to "leave only if already natural Polish." **(4) 3c category J — translationese gate:** real FLAG at ≥2 calque/awkward sentences; this is the gate that replaces the user's manual Copilot pass. Also de-bloated: removed the ~200-line Visual Register Maps from `narrative_architectures.md` (redundant — the canonical copy lives in `05_visuals.md`, the only file Agent 5 reads; the text agents 3a/3b/3c never needed it). `narrative_architectures.md` = structure owner, `style_guide.md` = voice owner, prompts reference rather than re-inline.
 
-**Script revision architecture (B++ v2) — 2026-05-25**
-Agent 3 orchestrates a Drafter + Revisor↔Reviewer loop derived from analyzing the diff between a pipeline-generated script and a manually Copilot-revised version. Architecture: 1 Gemini call (3a Drafter) followed by a Gemini+Claude loop (3b Revisor Gemini ↔ 3c Reviewer Claude Sonnet, max 2 iterations). The loop never returns to the Drafter — cost capped at 1 Gemini (3a) + 2–4 Gemini/Sonnet calls per script.
+**Agent Teams variant — `/draft-team` + cold-context Native-Ear Critic (Agent 3d) (2026-06-02)**
+The translationese gate has a structural weakness: in-session, 3b/3c share the context that *wrote* the calque, so they rationalize their own prose (the gap `03b` documents — calques like „Znasz to uczucie z palców" passed a clean loop). `/draft-team` fixes this with a **Claude Code Agent Team**. It runs 3a + the 3b↔3c loop in-session **exactly as `/draft`**, but **scopes the in-session 3c to categories A–I and defers category J (idiomatic Polish / translationese) to a separate `native-ear-critic` teammate** that has its **own context window** — it never saw the drafting/revising reasoning, so it reads the prose cold, like the owner's manual Copilot pass. **It is designed to replace that manual Copilot pass.** After the A–I loop reaches PASS, the lead copies the script to `md/04_working.md` and runs an **adversarial native-ear debate** (≤3 rounds): critic flags calques/the 4 named tells (BLOCKER in impact positions — hook, anchor lines, PP, recognition close) → lead rewrites only the challenged sentences → critic **re-challenges** weak fixes and scans for new calques, until verdict `NATIVE` (then finalize `04_final.md`) or `REWORK` at max (ship-warning header). An **anti-sterility guard** makes the critic also reject over-flattened rewrites and protect the strongest images (`voice_corpus.md` §E.f), so the debate doesn't grind prose into compliant mush. Artifacts add `md/03d_nativeear_iter*.md`; the full review trail is kept. **File ownership is strict** — lead owns/edits `03a/03b/03c/04_working/04_final`; the teammate only *reads* `04_working.md` and *writes* its own `03d_*` logs (two agents never edit one file). Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (set in `.claude/settings.local.json`); runs **in-process** on Windows/VS Code (split panes unsupported — Shift+Down to view the critic). **Falls back to plain `/draft` behavior** (in-session 3c runs A–J) if Agent Teams is unavailable. **Token cost:** one extra Opus context across ≤3 language rounds — use `/draft` for the cheaper path. Prompts are single-sourced: critic = `workflows/pipeline/03d_native_ear.md`, role = `.claude/agents/native-ear-critic.md`, orchestration = `.claude/commands/draft-team.md`. Reference: `docs/agent_teams_reference.md`. `/draft` stays the default; `/draft-team` is opt-in when native Polish is the priority.
 
-The Revisor (3b) applies 8 diff-derived revision moves across the full script (embodied clarity, cut redundancy, de-judging tone, generalization, symbolic metaphor, diagnostic framing, PP agency verbs, softening pressure). The Reviewer (3c) judges PASS/FLAG against 7 critical-issue categories without rewriting. On FLAG + iter < max, Revisor re-runs addressing only the Reviewer's flagged issues. Loop exits on PASS or max iterations; if still FLAG at max iterations, `04_script_final.md` is prepended with a warning header — review `03_review.md` before recording.
+**Script-chain Tier-1 sharpening (2026-05-30, after external Gemini/Copilot review)** — two changes on top of the fluency-first refactor, chosen to sharpen without re-bloating (most of the external feedback was already implemented or scope-creep). **(1) Severity triage in 3c** — every Critical Issue is now classified `BLOCKER` / `FIX` / `WATCH`; `03c_reviewer.md` issues `FLAG` only on ≥1 BLOCKER, ≥2 same-category FIX, or ≥3 drift-pattern WATCH (else PASS with residue in Minor Notes). An **iteration dampener** tightens this from iteration 3 on (FLAG only on BLOCKER or ≥2 same-category FIX) to stop grinding on minor stutters, and an **edit-guard** (report over-correction sterility as a FIX, never reward padding) replaces the rejected "goosebumps FLAG". **The loop parser contract is unchanged** — the first line after `## VERDICT` is still exactly `PASS`/`FLAG`; severity lives inside the Critical Issues block as a prefix, so `draft.md` needs no logic change. This directly answers the over-correction risk of blanket default-FLAG. **(2) Four named Polish syntactic tells** — `pronoun flood` (drop redundant possessives), `rzeczownikomania/nominalizacja` (restore the verb), `genitive-stack` (collapse dopełniacz chains), `trailing verb` (EN dependent-clause word order). Single-sourced in `voice_corpus.md` §C2; named in 3b MOVE 0 (fix proactively) and 3c category J (gate). These catch calques that pass logically/clean — the layer the old general "translationese" wording missed.
 
-The old chain (3a/3n/3b_critic/3c_rewrite/4a — 3 Opus calls, ~$1.20/script) is preserved at Git tag `agent-chain-v1-prerevisor`. See `docs/reversibility.md` for restore commands.
+**Agent 5 in-session — Opus 4.8 (2026-05-29)**
+Agent 5 (Visual Storyteller) runs in Claude Code via `/visuals <slug>` — no API. Claude generates compact `05_prompts.md` entries (with `**Visual:**` field, 40–60 word descriptions) directly in-session, then `agent5_visuals.py --expand` injects CHARACTER_DESCRIPTION + STYLE_SUFFIX constants and exports phrase files. Prompt template lives in `workflows/pipeline/05_visuals.md` (single source of truth). The `--extract` flag extracts `docx/script_corrected.docx` → `md/script_corrected.md`; the `/visuals` skill calls this automatically when `script_corrected.docx` is present and uses the extracted file as its script source.
 
-**Niche Trend Signals — Agent 11 ↔ Agent 8 integration**
-Agent 11 (weekly niche intelligence) writes a sidecar **`outputs/intelligence/{week_label}_tag_signals.md`** alongside its PPTX deck. The file is single-word-only and has four sections: Top Trending Tags / Top Trending Title Topics / Top Title Words / Content Gaps. Agent 8 automatically reads the latest sidecar (newest by filename sort) via `_load_niche_signals()` and injects it into the metadata prompt as `## Niche Trend Signals (latest weekly intelligence report)`. The prompt treats this block as a **supporting reference for the back half of the tag list** (post 2026-05-24 doctrine shift — previously it was "highest-priority", but Tag #1 must now be the exact-match primary keyword extracted from the chosen long-form title, since YouTube's algorithm front-loads semantic weight on Tag #1). The integration fails soft — if no sidecar exists, Agent 8 still works as before. Agent 11's `PROJECT_ROOT` is `Path(__file__).parent.parent.parent` (three levels up, not two) — a prior bug used `.parent.parent` which resolved to `tools/` and broke `outputs/intelligence/` pathing.
+**Niche Trend Signals — Intelligence Agent ↔ Agent 8 integration**
+Intelligence Agent writes a sidecar `outputs/intelligence/{week_label}_tag_signals.md` alongside its PPTX deck. Agent 8 auto-reads the latest sidecar via `_load_niche_signals()` and injects it as a supporting reference for the back half of the tag list (Tag #1 is always the exact-match primary keyword from the chosen title — Niche Signals never displace it). Integration fails soft — if no sidecar exists, Agent 8 works as before. **Pathing note:** Intelligence Agent's `PROJECT_ROOT` is `Path(__file__).parent.parent.parent` (three levels up) — `.parent.parent` resolves to `tools/` and breaks `outputs/intelligence/`.
 
 ## Quick Command Reference
 
 All agents (except 0 and 1) take a **slug** — the output directory name under `outputs/videos_pl/`. Never pass the raw topic after Agent 1.
 
 ```bash
-# Standard invocation:
+# Standard Python invocation:
 PYTHONIOENCODING=utf-8 python tools/pipeline/agentN_name.py "<slug>"
 
+# Script chain (Agent 3) — slash command in Claude Code:
+#   /draft <slug> [architecture]
+# Default architecture: Composite Portrait (~10–15 min, full second person). Pass a name to force another, e.g. /draft <slug> "Forensic Case Study".
+# Runs 3a Drafter + the full 3b↔3c loop in-session (Opus 4.8, no API), finalizes 04_final.md.
+
+# Script chain + adversarial native-ear debate (Agent Teams) — slash command in Claude Code:
+#   /draft-team <slug> [architecture] [--sciezka]
+# Same 3a + 3b↔3c loop in-session, but in-session 3c covers A–I only and a cold-context
+# Native-Ear Critic teammate (Agent 3d) owns translationese (cat J) in a ≤3-round debate that
+# replaces the manual Copilot pass. Opt-in (extra Opus context); /draft stays the default/fallback.
+
+# Hook gate (Agent 4) — slash command in Claude Code:
+#   /hook <slug>
+# Scores the opening in-session (Opus 4.8, no API), then agent4_hook.py --apply splices the rewrite.
+
+# Image prompt generation (Agent 5) — slash command in Claude Code:
+#   /visuals <slug>
+# Generates compact 05_prompts.md in-session (Opus 4.8, no API), then auto-runs agent5_visuals.py --expand.
+
+# Publish package (Agent 8) — slash command in Claude Code:
+#   /publish <slug>
+# Builds the package in-session across 9 focused steps (Opus 4.8, no API).
+# Bookends: agent8_publish.py --extract (narration) and --signals (autocomplete) before,
+# --finalize (Q1–Q4 + tag trim + validate + docx) after. Legacy Gemini: --api.
+
+# Thumbnail concepts (Agent 7) — slash command in Claude Code:
+#   /thumbnails <slug>
+# Generates 5 concepts in-session (Opus 4.8, no API), then agent7_thumbnails.py --render renders via Gemini.
+
 # Intelligence agent:
-PYTHONIOENCODING=utf-8 python tools/intelligence/agent11_intelligence.py
+PYTHONIOENCODING=utf-8 python tools/intelligence/intelligence.py
 
 # List existing slugs:
 ls outputs/videos_pl/
@@ -177,40 +204,42 @@ ls outputs/videos_pl/
 **Agents that take a TOPIC:** Agent 0 (`--topic` flag), Agent 1 (positional arg). All others take a slug.  
 **Before running any agent:** verify the previous agent's output exists in `outputs/videos_pl/{slug}/md/`.  
 **Parallel-safe after Agent 3 (script chain):** Agents 5, 6, and 8 can run simultaneously.  
-**Agent 3 flags:** `--max-iterations N` (cap Revisor↔Reviewer loops, default 2), `--skip-drafter` (start from existing `03a_draft.md`).  
+**Agent 3 entry point:** `/draft <slug>` (Claude Code slash command — runs 3a + the full 3b↔3c loop in-session on Opus 4.8, finalizes `04_final.md`). The legacy `python tools/pipeline/agent3.py "<slug>"` runs only the Gemini-API 3b/3c loop over an existing `md/03a_draft.md` (`--api` fallback).  
+**Hook gate entry point:** `/hook <slug>` (in-session scoring on Opus 4.8, then `agent4_hook.py --apply` splices the rewrite).  
+**Publish entry point:** `/publish <slug>` (Claude Code slash command — 9 focused steps in-session on Opus 4.8, bracketed by `agent8_publish.py --extract`/`--signals`/`--finalize`). The legacy `python tools/pipeline/agent8_publish.py "<slug>" --api` runs the Gemini 3-pass orchestrator end-to-end.  
+**Legacy agent3.py flags:** `--max-iterations N` (default 5), `--start-iteration N` — apply to the Gemini `--api` fallback only.  
 **For flags and error recovery:** see the matching `workflows/pipeline/NN_name.md` file. Style guides are in `workflows/guides/`.
 
 ## Agent Chain
 
 Complete pipeline — run in this order. Each agent reads its **Input** and writes its **Output** inside `outputs/videos_pl/{slug}/`.
 
-All pipeline scripts live in `tools/pipeline/`. Agent 11 lives in `tools/intelligence/`.
+All pipeline scripts live in `tools/pipeline/`. Intelligence Agent lives in `tools/intelligence/`.
 
 | Agent | Script | Model | Input | Output |
 | --- | --- | --- | --- | --- |
 | 0 (optional) | `pipeline/agent0_materials.py` | Gemini 3.1 Pro | PDF + topic | `md/00_materials_insights.md` |
 | 1 | `pipeline/agent1_research.py` | Gemini 3.1 Pro + PubMed | topic string | `md/01_research.md` |
 | 2 | `pipeline/agent2_verify.py` | Gemini 3.1 Pro | `01_research.md` | `md/02_verified_research.md` |
-| 3 | `pipeline/agent3.py` | runs 3a → 3b↔3c loop | slug | all `03_*.md` files + `md/04_script_final.md` |
-| 3a | `pipeline/agent3a_draft.py` | Claude Opus 4.7 | `02_verified_research.md` | `md/03a_draft.md` |
-| 3b | `pipeline/agent3b_revisor.py` | Gemini 3.1 Pro | `03a_draft.md` (+ `03_review.md` on iter 2) | `md/03_script_draft.md` |
-| 3c | `pipeline/agent3c_reviewer.py` | Gemini 3.1 Pro | `03_script_draft.md` | `md/03_review.md` |
-| 4b **(gate)** | `pipeline/agent4b_hook.py` | Gemini 3.1 Pro | `04_script_final.md` | `md/04b_hook_score.md` + revised `04_script_final.md` in place |
-| 5 | `pipeline/agent5_visuals.py` | Claude Opus 4.7 | `04_script_final.md` | `md/05_image_prompts.md` |
-| 6 | `pipeline/agent6_narration.py` | deterministic | `04_script_final.md` | `md/06_script_narration.md` |
-| 8 | `pipeline/agent8_publish.py` | Gemini 3.1 Pro + web scrape | `04`, `06`, `02` outputs | `md/07_publish_package.md` |
-| 9 **(manual)** | `pipeline/agent9_images.py` | Gemini 3 Pro Image Preview | `05_image_prompts.md` | `images/image_*.png` |
-| 9b **(QA, optional)** | `pipeline/agent9b_image_qa.py` | Gemini 2.5 Flash | `images/*.png` | `md/09_image_qa.md` |
-| 10 **(manual)** | `pipeline/agent10_thumbnails.py` | Claude Opus 4.7 + Gemini 3 Pro Image Preview | `04_script_final.md` + `07_publish_package.md` | `thumbnails/thumbnail_0N.png` × 5 |
-| Align **(post-record)** | `pipeline/agent_align.py` | faster-whisper (local, free) | `voiceover/voiceover.wav` + `05_image_phrases.md` + `06_script_narration.md` | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` |
+| 3 (whole chain) | `/draft <slug>` (Claude Code slash command) | Opus 4.8 (Claude Code, in-session — no API) | `02_verified_research.md` | `03a_draft.md`, `03b_revised_iter*.md`, `03c_review_iter*.md` + `md/04_final.md` |
+| 3a | (inside `/draft`) | Opus 4.8 (in-session — no API) | `02_verified_research.md` | `md/03a_draft.md` |
+| 3b | (inside `/draft`; legacy `agent3b_revisor.py --api`) | Opus 4.8 in-session (legacy: Gemini 3.1 Pro) | `03a_draft.md` (+ `03c_review_iter{N-1}.md` on iter > 1) | `md/03b_revised_iter{N}.md` |
+| 3c | (inside `/draft`; legacy `agent3c_reviewer.py --api`) | Opus 4.8 in-session (legacy: Gemini 3.1 Pro) | `03b_revised_iter{N}.md` | `md/03c_review_iter{N}.md` |
+| 4 **(gate)** | `/hook <slug>` + `agent4_hook.py --apply` | Opus 4.8 in-session (legacy: `--api` Gemini) | `04_final.md` | `md/04_hook.md` + revised `04_final.md` in place + `docx/script.docx` |
+| 5 | `/visuals <slug>` (Claude Code slash command) | Opus 4.8 (Claude Code, in-session — no API) | `04_final.md` (or `script_corrected.docx` if present) | `md/05_prompts.md` |
+| 8 | `/publish <slug>` (Claude Code slash command; bookends `agent8_publish.py --extract/--signals/--finalize`) | Opus 4.8 (Claude Code, in-session — no API; legacy: `--api` Gemini + web scrape) | `script_corrected.docx` → `script.docx` → `04_final.md` + `02_verified_research.md` | `md/08_publish.md` + `docx/08_publish.docx` |
+| 6 **(manual)** | `pipeline/agent6_images.py` | Gemini 3 Pro Image Preview | `05_prompts.md` | `images/image_*.png` |
+| 6b **(QA, optional)** | `pipeline/agent6b_image_qa.py` | Gemini 2.5 Flash | `images/*.png` | `md/06_qa.md` |
+| 7 **(manual)** | `/thumbnails <slug>` + `agent7_thumbnails.py --render` | Opus 4.8 concepts (in-session) + Gemini 3 Pro Image Preview render | `04_final.md` + `08_publish.md` | `md/07_prompts.md` + `thumbnails_no_grain/thumbnail_0N.png` × N |
+| Align **(post-record)** | `pipeline/agent_align.py` | faster-whisper (local, free) | `voiceover/voiceover.wav` + `05_phrases.md` + `script_corrected.docx` / `script.docx` / `04_final.md` | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` |
 
-**Parallel-safe after Agent 3 (script chain):** Agents 5, 6, and 8 can run simultaneously. Agent 9 depends on Agent 5. Agent 10 depends on Agent 8 (for `07_publish_package.md`) and can run in parallel with Agent 9.
+**Parallel-safe after Agent 3 (script chain):** Agents 5 and 8 can run simultaneously. Agent 6 depends on Agent 5. Agent 7 can run in parallel with Agent 6.
 
-**Manual agents — never run automatically:** Agents 9 and 10 generate images and thumbnails (cost + time). Always stop the pipeline after Agent 8 completes and wait for explicit instruction before running either.
+**Manual agents — never run automatically:** Agents 6 and 7 generate images and thumbnails (cost + time). Always stop the pipeline after Agent 8 completes and wait for explicit instruction before running either.
 
-**Align Agent — Forced Alignment & DaVinci Bundle:** Runs *after* voiceover recording (Studio One → exported WAV at `voiceover/voiceover.wav`). Uses faster-whisper to align audio to the known script, then emits an SRT + FCPXML the user imports into DaVinci Resolve. Eliminates ~2-4 hours of manual subtitle syncing and image placement per video. Local-only, no API costs. Naming: file is `tools/pipeline/agent_align.py` (no number — avoids confusion with the unrelated `agent11_intelligence.py` analysis tool). See `workflows/pipeline/align.md` and one-time `workflows/guides/davinci_subtitle_preset.md` for setup.
+**Align Agent — Forced Alignment & DaVinci Bundle:** Runs *after* voiceover recording (Studio One → exported WAV at `voiceover/voiceover.wav`). Uses faster-whisper to align audio to the known script, then emits an SRT + FCPXML the user imports into DaVinci Resolve. Eliminates ~2-4 hours of manual subtitle syncing and image placement per video. Local-only, no API costs. Naming: file is `tools/pipeline/agent_align.py` (no number — avoids confusion with the unrelated `intelligence.py` analysis tool). See `workflows/pipeline/align.md` and one-time `workflows/guides/davinci_subtitle_preset.md` for setup.
 
-**Quality gate — Agent 4b:** Scores opening hook (Tier 1: ≥8/10 at 37 words; Tier 2: ≥7/10 at 200 words). Verdict must be `RECORD` before recording voiceover. Modifies `04_script_final.md` in place; backup saved to `04_script_final.bak.md`.
+**Quality gate — Agent 4 (`/hook <slug>`):** Scores opening hook in-session on Opus 4.8 (Tier 1: ≥8/10 at 37 words; Tier 2: ≥7/10 at 200 words), then `agent4_hook.py --apply` splices the rewrite deterministically. Verdict must be `RECORD` before recording voiceover. Modifies `04_final.md` in place; backup saved to `04_final.bak.md`. Also exports `docx/script.docx` — edit this in Word/Copilot 365/Gemini and save as `docx/script_corrected.docx`; all downstream agents (Agent 8, /visuals, Align) auto-detect the corrected file.
 
 ## Bottom Line
 

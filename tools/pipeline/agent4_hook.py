@@ -1,39 +1,47 @@
 """
-Agent 4b: Hook Refiner (two-tier, iterative)
+Agent 4: Hook Refiner (two-tier)
 
-Evaluates the polished script produced by Agent 4a using a two-tier rubric:
+Evaluates the opening of 04_final.md against a two-tier rubric:
 
   Tier 1 — 15-Second Window (first 37 words). Primary gate. Pass = >= 8/10.
   Tier 2 — 30-Second Hook (first 150-200 words). Secondary. Pass = >= 7/10.
 
-If either tier fails, the agent rewrites the first 37 words IN-PLACE in
-04_script_final.md and re-scores. Up to MAX_ATTEMPTS passes. The original
-opening is preserved once as 04_script_final.bak.md.
+Default path (--apply): the SCORING + REWRITE happens in-session in Claude Code
+(Opus 4.8, no API) via the `/hook <slug>` slash command, which writes the
+structured response to md/04_hook_response.txt. This script then does only the
+deterministic work — one-time backup, sentence-aware splice of the new opening
+into 04_final.md, and the 04_hook.md log. NO LLM call.
+
+Legacy path (--api): the old Gemini-3.1-Pro scoring loop, kept as a fallback.
 
 Reference: docs/specs/2026-05-15-15-second-hook-research.md
-Chain: 3a -> 3b -> 3c -> 4a -> 4b -> record
+Chain: 3a -> 3b <-> 3c -> 4 -> record
 
 Usage:
-    python tools/agent4b_hook.py "emotional-dysregulation-in-adhd"
+    /hook <slug>                                  # in Claude Code (scores in-session, then calls --apply)
+    python tools/pipeline/agent4_hook.py "<slug>" --apply   # deterministic apply step (no LLM)
+    python tools/pipeline/agent4_hook.py "<slug>" --api     # legacy Gemini scoring loop
 """
 
+import argparse
 import re
 import sys
 import os
 from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import read_output, write_output, query_gemini_text
+from tools.utils import read_output, write_output, get_output_dir, query_gemini_text, export_to_docx
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-INPUT_FILENAME = "md/04_script_final.md"
-BACKUP_FILENAME = "md/04_script_final.bak.md"
-LOG_FILENAME = "md/04b_hook_score.md"
+INPUT_FILENAME = "md/04_final.md"
+BACKUP_FILENAME = "md/04_final.bak.md"
+LOG_FILENAME = "md/04_hook.md"
+RESPONSE_FILENAME = "md/04_hook_response.txt"   # in-session hand-off from /hook
 
-GEMINI_MODEL = "gemini-3.1-pro-preview"
+GEMINI_MODEL = "gemini-3.1-pro-preview"           # legacy --api path only
 
 WORDS_15S = 37          # ~15 seconds at 150 wpm
 WORDS_30S = 200         # full hook window
@@ -236,6 +244,8 @@ def _extract_topic(script: str) -> str:
         line = line.strip()
         if line.startswith("# Script Final:"):
             return line[len("# Script Final:") :].strip()
+        if line.startswith("# Script Revision:"):
+            return line[len("# Script Revision:") :].strip()
         if line.startswith("# Script Draft:"):
             return line[len("# Script Draft:") :].strip()
         if line.startswith("# "):
@@ -372,7 +382,7 @@ def _format_attempt_log(attempt_num: int, parsed: dict, applied: bool) -> str:
         f"### Tier 2 — 30-Second Hook: {parsed['t2_score']}/10  [{_bar(parsed['t2_score'])}]\n"
         f"{parsed['t2_breakdown']}\n\n"
         f"**Biggest weakness:** {parsed['weakness']}\n\n"
-        f"### Rewritten first 37 words ({'applied to 04_script_final.md' if applied else 'not applied — already passing'}):\n"
+        f"### Rewritten first 37 words ({'applied to 04_final.md' if applied else 'not applied — already passing'}):\n"
         f"> {parsed['rewrite']}\n"
         f"\n"
         f"_(words: {_word_count(parsed['rewrite'])})_\n"
@@ -385,18 +395,12 @@ def _format_attempt_log(attempt_num: int, parsed: dict, applied: bool) -> str:
 # ---------------------------------------------------------------------------
 
 
-def main() -> None:
-    if len(sys.argv) < 2:
-        print('Usage: python tools/agent4b_hook.py "<slug>"')
-        print('Example: python tools/agent4b_hook.py "emotional-dysregulation-in-adhd"')
-        sys.exit(1)
+def run_api(slug: str) -> None:
+    """Legacy Gemini-3.1-Pro scoring loop. Kept as a fallback (--api).
 
-    slug = sys.argv[1].strip()
-    if not slug:
-        print("Error: slug argument is empty.")
-        sys.exit(1)
-
-    print("\n=== Agent 4b: Hook Refiner (two-tier, iterative) ===")
+    The default path is now in-session scoring via `/hook` + `run_apply`.
+    """
+    print("\n=== Agent 4b: Hook Refiner (LEGACY Gemini --api) ===")
     print(f"Slug : {slug}")
     print()
 
@@ -406,8 +410,7 @@ def main() -> None:
         script = read_output(slug, INPUT_FILENAME)
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
-        print("\nRun Agent 3 chain first (produces 04_script_final.md):")
-        print(f'  python tools/pipeline/agent3.py "{slug}"')
+        print("\nRun the /draft chain first in Claude Code (produces 04_final.md).")
         sys.exit(1)
 
     topic = _extract_topic(script)
@@ -440,7 +443,7 @@ def main() -> None:
         )
 
         try:
-            response_text, _ = query_gemini_text(prompt, GEMINI_MODEL, 2048, "hook refiner")
+            response_text, _ = query_gemini_text(prompt, GEMINI_MODEL, 4096, "hook refiner")
         except EnvironmentError as exc:
             print(f"\nError: {exc}")
             sys.exit(1)
@@ -524,7 +527,147 @@ def main() -> None:
     elif verdict == "polish":
         print("\nNext: consider re-running once more, or accept the current state.")
     else:
-        print("\nNext: proceed to Agent 5 (visuals) and Agent 6 (narration).")
+        print("\nNext: edit docx/script.docx if needed (save as script_corrected.docx), then /visuals and Agent 8.")
+
+
+# ---------------------------------------------------------------------------
+# Apply step (deterministic, no LLM) — default path for the /hook in-session flow
+# ---------------------------------------------------------------------------
+
+
+def run_apply(slug: str) -> None:
+    """Apply the in-session /hook result to 04_final.md. No LLM call.
+
+    Reads the structured response that `/hook` wrote to md/04_hook_response.txt,
+    backs up the original opening once, splices the new opening (REWRITE_15S) into
+    04_final.md if it differs from the current opening, writes the 04_hook.md log,
+    and removes the temp response file.
+    """
+    print("\n=== Agent 4: Hook Apply (deterministic, no LLM) ===")
+    print(f"Slug : {slug}")
+    print()
+
+    try:
+        script = read_output(slug, INPUT_FILENAME)
+    except FileNotFoundError as exc:
+        print(f"\nError: {exc}")
+        print("\nRun the /draft chain first in Claude Code (produces 04_final.md).")
+        sys.exit(1)
+
+    try:
+        response_text = read_output(slug, RESPONSE_FILENAME)
+    except FileNotFoundError:
+        print(f"\nError: {RESPONSE_FILENAME} not found.")
+        print("Run  /hook <slug>  in Claude Code first — it scores the hook in-session")
+        print("and writes the structured response that this step applies.")
+        sys.exit(1)
+
+    topic = _extract_topic(script)
+    parsed = _parse_response(response_text)
+    t1, t2 = parsed["t1_score"], parsed["t2_score"]
+    rewrite = parsed["rewrite"]
+    rewrite_wc = _word_count(rewrite)
+    passed = t1 >= T1_PASS and t2 >= T2_PASS
+
+    print(f"  Topic: {topic}")
+    print(f"  Tier 1 (15s): {t1}/10  [{_bar(t1)}]")
+    print(f"  Tier 2 (30s): {t2}/10  [{_bar(t2)}]")
+
+    backup_created = _ensure_backup(slug, script)
+    print(f"  Backup {'created' if backup_created else 'preserved'}: {BACKUP_FILENAME}")
+
+    # The in-session model reports scores for the opening contained in REWRITE_15S,
+    # so splice it in whenever it is valid and differs from the current opening.
+    applied = False
+    if not rewrite:
+        print("  Warning: response has an empty REWRITE_15S — leaving 04_final.md unchanged.")
+    elif rewrite_wc > WORDS_15S:
+        print(f"  Warning: rewrite is {rewrite_wc} words (>{WORDS_15S}) — leaving 04_final.md unchanged.")
+    else:
+        current_window = _extract_15s_window(script)
+        if rewrite.strip() == current_window.strip():
+            print("  Opening already matches the scored rewrite — no splice needed.")
+        else:
+            script = _splice_first_37_words(script, rewrite)
+            write_output(slug, INPUT_FILENAME, script)
+            applied = True
+            print(f"  Applied rewrite ({rewrite_wc} words) to {INPUT_FILENAME}.")
+
+    verdict = "record" if passed else (parsed["verdict"] or "rewrite")
+
+    print(f"\n  Final verdict: {verdict.upper()}")
+    print(f"  Final 15s score: {t1}/10 | 30s score: {t2}/10")
+    if applied:
+        print(f"  Original opening preserved at: {BACKUP_FILENAME}")
+
+    today = date.today().isoformat()
+    log = (
+        f"# Hook Refiner Log: {topic}\n"
+        f"Generated: {today}\n"
+        f"Model: claude-opus-4-8 (Claude Code)\n"
+        f"Source: {INPUT_FILENAME}\n"
+        f"Backup: {BACKUP_FILENAME}\n"
+        f"\n---\n\n"
+        + _format_attempt_log(1, parsed, applied)
+        + f"## Final\n"
+        f"- Final 15s score: **{t1}/10**\n"
+        f"- Final 30s score: **{t2}/10**\n"
+        f"- Verdict: **{verdict}**\n"
+        f"- Backup of original opening: `{BACKUP_FILENAME}`\n"
+    )
+    write_output(slug, LOG_FILENAME, log)
+    print(f"\n  Log saved: {LOG_FILENAME}")
+
+    export_to_docx(
+        slug, "md/04_final.md", "docx/script.docx",
+        sentence_per_line=True, no_spacing=True, preserve_blank_lines=True,
+    )
+    print(f"  Script exported → docx/script.docx")
+
+    # Clean up the temp hand-off file.
+    resp_path = get_output_dir(slug) / "md" / "04_hook_response.txt"
+    try:
+        resp_path.unlink()
+    except OSError:
+        pass
+
+    if verdict == "record":
+        print("\nNext: edit docx/script.docx if needed (save as script_corrected.docx), then /visuals and Agent 8.")
+    else:
+        print("\nNext: hand-rewrite the opening or re-run /hook — both tiers not yet passing.")
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Agent 4b — Hook Refiner (two-tier)")
+    parser.add_argument("slug", help="Output directory slug under outputs/videos_pl/")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "--apply",
+        action="store_true",
+        help="Deterministic apply step (no LLM): splice the in-session /hook rewrite into 04_final.md",
+    )
+    group.add_argument(
+        "--api",
+        action="store_true",
+        help="Legacy Gemini-3.1-Pro scoring loop (fallback)",
+    )
+    args = parser.parse_args()
+
+    slug = args.slug.strip()
+    if not slug:
+        print("Error: slug argument is empty.")
+        sys.exit(1)
+
+    if args.api:
+        run_api(slug)
+    else:
+        # Default = deterministic apply step for the /hook in-session flow.
+        run_apply(slug)
 
 
 if __name__ == "__main__":

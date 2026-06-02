@@ -4,7 +4,7 @@
 
 The Align agent (`tools/pipeline/agent_align.py`) eliminates the 2-4 hours of manual work that used to happen in DaVinci after recording the voiceover. It runs forced alignment between the recorded WAV and the canonical script, then emits four files into `outputs/videos/{slug}/edit/`:
 
-> Note: this is the "post-record" step, distinct from `tools/intelligence/agent11_intelligence.py`. The file is `agent_align.py` (no number) so the two never get confused.
+> Note: this is the "post-record" step, distinct from `tools/intelligence/intelligence.py`. The file is `agent_align.py` (no number) so the two never get confused.
 
 | File | What it does in DaVinci |
 |---|---|
@@ -25,11 +25,11 @@ After import, the DaVinci work is artistic only: zoom and reframe each image to 
    ```
    `.mp3`, `.m4a`, and `.flac` are also accepted. If the directory has multiple files and none is named `voiceover.wav`, the first audio file alphabetically wins. Use `--audio <path>` to override.
 
-2. **Agent 5 has run** — `outputs/videos/{slug}/md/05_image_phrases.md` exists.
+2. **Agent 5 has run** — `outputs/videos/{slug}/md/05_phrases.md` exists.
 
-3. **Agent 6 has run** — `outputs/videos/{slug}/md/06_script_narration.md` exists.
+3. **Agent 4 has run** — `outputs/videos/{slug}/docx/script.docx` exists (exported automatically by `--apply`). If you edited the script, `script_corrected.docx` takes priority. **Section headers (`## `) are automatically skipped** by `read_script_docx` in `lib/aligner.py` — any Heading-styled paragraph is ignored, so dividers added by the draft chain (or manually in Word) do not affect alignment.
 
-4. **Agent 9 has run** — generated images exist at `outputs/videos/{slug}/images/image_*.png`. If you skip Agent 9, the timeline will be built without the V3 image track.
+4. **Agent 6 has run** — generated images exist at `outputs/videos/{slug}/images/image_*.png`. If you skip Agent 6, the timeline will be built without the V3 image track.
 
 5. **Channel assets present** in `outputs/channel_assets/`:
    - `blank_background_grain.png` — the static canvas
@@ -67,7 +67,7 @@ Flags:
 
 1. **Transcribe.** Runs `faster-whisper` on the WAV with `word_timestamps=True`.
 2. **Align.** Greedy walk through the script tokens, snapping each one to the matching Whisper word in the next `--window` positions. Unmatched tokens get their timestamps interpolated between neighbors.
-3. **Map phrases.** Parses `05_image_phrases.md` and finds each phrase as a contiguous run in the aligned script.
+3. **Map phrases.** Parses `05_phrases.md` and finds each phrase as a contiguous run in the aligned script.
 4. **Chunk subtitles.** Groups aligned words into 4-7-word chunks, breaking on sentence boundaries, natural pauses, and held single words.
 5. **Emit assets.** Writes `subtitles.srt`, `timeline.fcpxml`, `alignment.json`, and `preview.html`.
 
@@ -93,8 +93,10 @@ outputs/videos/{slug}/
 ├── voiceover/
 │   └── voiceover.wav         (you put this here)
 ├── md/
-│   ├── 05_image_phrases.md   (existing — input)
-│   └── 06_script_narration.md (existing — input)
+│   └── 05_phrases.md   (existing — input)
+├── docx/
+│   ├── script_corrected.docx (preferred — input)
+│   └── script.docx           (fallback — input)
 ├── images/
 │   └── image_NNN.png         (existing — input)
 └── edit/                     (NEW — agent 11 output)

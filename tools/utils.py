@@ -12,12 +12,12 @@ from slugify import slugify
 
 # Load environment variables from .env file at project root
 # ---------------------------------------------------------------------------
-# Shared visual brand constants (used by agent5_visuals and agent9_images)
+# Shared visual brand constants (used by agent5_visuals and agent6_images)
 # ---------------------------------------------------------------------------
 
 STYLE_SUFFIX = (
-    "minimalist high-contrast ink illustration on a flat solid #F4E5CA sage beige background — "
-    "the background is one continuous solid color with no texture, no paper grain, no mottling, "
+    "minimalist high-contrast ink illustration on a flat solid sage beige background (#F4E5CA) — "
+    "the background is one continuous solid sage beige color with no texture, no paper grain, no mottling, "
     "no aged-paper effects, no parchment look, no fibers, no stains, no discoloration, "
     "no border, no frame, no decorative outline around the image, no inner rectangle or panel containing the illustration, "
     "full-bleed composition where the background extends edge-to-edge, "
@@ -121,7 +121,10 @@ def get_output_dir(slug: str) -> Path:
         Path to the output directory (e.g., outputs/emotional-dysregulation-in-adhd)
     """
     output_dir = Path(__file__).parent.parent / "outputs" / "videos_pl" / slug
-    for subdir in ("images", "images_grain", "md", "docx", "thumbnails"):
+    # Scaffold the same skeleton as slug 1. No images_grain — grain is off by
+    # default; agent6_images.py creates images_grain/ itself only when grain is
+    # actually applied. The edit/ folder is created lazily by agent_align.py.
+    for subdir in ("images", "md", "docx", "thumbnails", "thumbnails_grain", "thumbnails_no_grain", "voiceover"):
         (output_dir / subdir).mkdir(parents=True, exist_ok=True)
     return output_dir
 
@@ -198,45 +201,11 @@ def load_style_guide(filename: str = "style_guide.md") -> str:
     return path.read_text(encoding="utf-8")
 
 
-def query_claude(
-    prompt: str,
-    model: str,
-    max_tokens: int,
-    step_label: str = "",
-) -> tuple[str, dict]:
-    """Call Claude via direct Anthropic API and return (response_text, usage_dict).
-
-    Retries up to 3 times on HTTP 429/503 with exponential backoff at 15s, 30s, 60s.
-    All other errors are re-raised immediately.
-    """
-    import time
-    import anthropic
-
-    client = anthropic.Anthropic(api_key=get_env("ANTHROPIC_API_KEY"))
-    label = f" — {step_label}" if step_label else ""
-    print(f"  Querying {model}{label}...")
-
-    for attempt in range(1, 5):
-        try:
-            message = client.messages.create(
-                model=model,
-                max_tokens=max_tokens,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            text = next(b.text for b in message.content if b.type == "text")
-            usage = {
-                "model": model,
-                "input_tokens": message.usage.input_tokens,
-                "output_tokens": message.usage.output_tokens,
-            }
-            return text, usage
-        except anthropic.APIStatusError as exc:
-            if exc.status_code in (429, 503, 529) and attempt < 4:
-                wait = 15 * (2 ** (attempt - 1))
-                print(f"  API rate limited — waiting {wait}s before retry {attempt}/3...")
-                time.sleep(wait)
-                continue
-            raise
+# NOTE: query_claude() (direct Anthropic API) was removed on 2026-05-29. The
+# pipeline no longer makes any Claude/Anthropic API call — all Claude work runs
+# in-session in Claude Code on Opus 4.8 via slash commands (/draft, /hook,
+# /visuals, /thumbnails). ANTHROPIC_API_KEY is no longer required. Text models
+# that remain are Gemini (Vertex AI) for research and image rendering only.
 
 
 def query_gemini_text(
@@ -274,7 +243,21 @@ def query_gemini_text(
             if hasattr(response, "usage_metadata") and response.usage_metadata:
                 usage["input_tokens"] = getattr(response.usage_metadata, "prompt_token_count", 0) or 0
                 usage["output_tokens"] = getattr(response.usage_metadata, "candidates_token_count", 0) or 0
-            return response.text, usage
+            text = response.text
+            if text is None:
+                # Try to recover partial text from candidates (e.g. MAX_TOKENS truncation)
+                try:
+                    if response.candidates and response.candidates[0].content.parts:
+                        text = "".join(
+                            p.text for p in response.candidates[0].content.parts
+                            if hasattr(p, "text") and p.text
+                        ) or None
+                except Exception:
+                    pass
+            if text is None:
+                finish = getattr(response.candidates[0] if response.candidates else None, "finish_reason", "unknown") if hasattr(response, "candidates") else "unknown"
+                raise ValueError(f"Gemini returned None text (finish_reason={finish}). Possible safety block or empty candidate.")
+            return text, usage
         except Exception as exc:
             status = getattr(exc, "status_code", None) or getattr(exc, "code", None)
             is_retryable = status in (429, 503) or "quota" in str(exc).lower() or "unavailable" in str(exc).lower()
@@ -287,24 +270,24 @@ def query_gemini_text(
 
 
 def log_cost(slug: str, agent: str, data: dict) -> None:
-    """Append a cost record to outputs/[slug]/cost_log.json."""
-    output_dir = get_output_dir(slug)
-    log_path = output_dir / "cost_log.json"
+    """No-op. cost_log.json is no longer written (not needed per user, 2026-05-29).
 
-    record = {"agent": agent, "timestamp": datetime.now().isoformat(), **data}
+    Kept as an importable no-op so existing callers (agent_align, intelligence) don't
+    break. Remove the calls entirely if/when convenient.
+    """
+    return
 
-    records: list[dict] = []
-    if log_path.exists():
-        try:
-            records = json.loads(log_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, ValueError):
-            records = []
 
-    # Replace existing record for this agent so re-runs don't double-count
-    records = [r for r in records if r.get("agent") != agent]
-    records.append(record)
-
-    log_path.write_text(json.dumps(records, indent=2), encoding="utf-8")
+def read_script_docx_text(path) -> str:
+    """Extract plain narration body from a script .docx, skipping heading paragraphs."""
+    from docx import Document
+    doc = Document(Path(path))
+    lines = []
+    for para in doc.paragraphs:
+        if para.style.name.startswith("Heading"):
+            continue
+        lines.append(para.text)
+    return "\n".join(lines).strip()
 
 
 def export_to_docx(
@@ -464,7 +447,7 @@ def export_to_docx(
 
 
 # ---------------------------------------------------------------------------
-# Image post-processing (shared by agent9_images and agent10_thumbnails)
+# Image post-processing (shared by agent6_images and agent7_thumbnails)
 # ---------------------------------------------------------------------------
 
 TARGET_BACKGROUND_RGB = (244, 229, 202)  # #F4E5CA sage beige
@@ -474,7 +457,7 @@ BACKGROUND_THRESHOLD_DEFAULT = 170
 # min channel ~175-181) that the old >240 threshold silently missed. Ink (#582F0E)
 # has min channel ~14 and cross-hatch mid-tones land ~100-160, so 170 leaves
 # shading intact. History note: a prior bug used 240 vs 170 between agent9 and
-# agent10 — keep both agents on the same threshold by importing from here.
+# agent7 — keep both agents on the same threshold by importing from here.
 
 
 def resize_to_target(
@@ -511,8 +494,24 @@ def enforce_background_color(
     Image.fromarray(arr).save(str(image_path))
 
 
+def make_transparent(image_path, *, threshold: int = BACKGROUND_THRESHOLD_DEFAULT) -> None:
+    """Convert light background pixels to transparent (alpha=0). Keeps dark ink pixels opaque.
+
+    Any pixel where all channels exceed `threshold` becomes fully transparent.
+    Output is RGBA PNG. Threshold mirrors enforce_background_color for consistency.
+    """
+    import numpy as np
+    from PIL import Image
+
+    arr = np.array(Image.open(str(image_path)).convert("RGBA"))
+    mask = (arr[:, :, 0] > threshold) & (arr[:, :, 1] > threshold) & (arr[:, :, 2] > threshold)
+    arr[mask, 3] = 0
+    arr[~mask, 3] = 255
+    Image.fromarray(arr).save(str(image_path))
+
+
 # ---------------------------------------------------------------------------
-# Film grain (shared by agent9_images, agent10_thumbnails, tools/dev/add_grain)
+# Film grain (shared by agent6_images, agent7_thumbnails, tools/dev/add_grain)
 # ---------------------------------------------------------------------------
 
 GRAIN_INTENSITY_DEFAULT = 12  # SENSUM standard — Gaussian std-dev on 0–255 scale

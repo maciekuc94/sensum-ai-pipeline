@@ -1,6 +1,6 @@
-"""Map each phrase in 05_image_phrases.md to start/end timestamps from the alignment.
+"""Map each phrase in 05_phrases.md to start/end timestamps from the alignment.
 
-The phrases listed in 05_image_phrases.md are contiguous chunks of the canonical
+The phrases listed in 05_phrases.md are contiguous chunks of the canonical
 script in order — Agent 5 wrote them in the same sequence the words appear. So
 we walk the script tokens with a pointer that advances past each matched
 phrase. For each phrase, we record the start timestamp of its first token and
@@ -40,7 +40,7 @@ _WORD_SPLIT_RE = re.compile(r"\S+")
 
 
 def parse_phrases_md(md_text: str) -> list[tuple[int, str]]:
-    """Parse the phrase table from 05_image_phrases.md.
+    """Parse the phrase table from 05_phrases.md.
 
     Returns a list of (image_num, phrase_text) tuples in document order.
     Header row (`| # | Phrase |`) and separator row (`|---|---|`) are skipped.

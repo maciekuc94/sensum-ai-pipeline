@@ -2,7 +2,7 @@
 
 Strategy:
   1. Transcribe the voiceover WAV with faster-whisper (word-level timestamps).
-  2. Tokenize the canonical script (06_script_narration.md) into ordered words.
+  2. Tokenize the canonical script (script_corrected.docx / script.docx / 04_final.md) into ordered words.
   3. Greedy align Whisper words to script words with a lookahead window
      (works well because reading is word-for-word).
   4. Interpolate timestamps for any unmatched script words from their neighbors.

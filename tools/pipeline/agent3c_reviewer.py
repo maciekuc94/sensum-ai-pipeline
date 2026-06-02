@@ -1,17 +1,22 @@
 """
-Agent 3c: Script Reviewer (B++ v2 chain)
-Reads the revised draft from Agent 3b and judges it against critical-issue
-categories. Outputs VERDICT (PASS/FLAG) + flagged issues for the Revisor to
-address in the next iteration. **Does NOT rewrite.**
+Agent 3c: Script Reviewer — LEGACY Gemini --api fallback
 
-Replaces former Agent 3c (mechanical rewrite-apply).
+DEFAULT PATH (since 2026-05-29): the Reviewer runs **in-session in Claude Code on
+Opus 4.8** as part of the `/draft` loop. No Gemini, no Anthropic API. The prompt
+is the single source of truth in `workflows/pipeline/03c_reviewer.md`.
 
-Output goes to `md/03_review.md`.
+This script is kept only as a Gemini-3.1-Pro fallback. It reads the revised draft
+from Agent 3b and judges it against critical-issue categories, outputting a
+VERDICT (PASS/FLAG) + flagged issues. **Does NOT rewrite.** `parse_verdict` is a
+shared helper imported by the orchestrator.
 
-Usage:
+Output goes to `md/03c_review_iter{N}.md`.
+
+Usage (legacy):
     python tools/pipeline/agent3c_reviewer.py "<slug>"
 """
 
+import argparse
 import sys
 import os
 from datetime import date
@@ -23,8 +28,6 @@ from tools.utils import read_output, write_output, load_style_guide, query_gemin
 # Constants
 # ---------------------------------------------------------------------------
 
-REVISED_FILENAME = "md/03_script_draft.md"
-OUTPUT_FILENAME = "md/03_review.md"
 
 GEMINI_MODEL = "gemini-3.1-pro-preview"
 
@@ -180,16 +183,18 @@ def parse_verdict(review_content: str) -> str:
 
 
 def main() -> None:
-    if len(sys.argv) < 2:
-        print("Usage: python tools/pipeline/agent3c_reviewer.py \"<slug>\"")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Agent 3c — Script Reviewer (B++ v2)")
+    parser.add_argument("slug", help="Output directory slug under outputs/videos_pl/")
+    parser.add_argument("--iteration", type=int, default=1, help="Review iteration number (default 1)")
+    args = parser.parse_args()
 
-    slug = sys.argv[1].strip()
+    slug = args.slug.strip()
+    iteration = args.iteration
     if not slug:
         print("Error: slug argument is empty.")
         sys.exit(1)
 
-    print(f"\n=== Agent 3c: Script Reviewer ===")
+    print(f"\n=== Agent 3c: Script Reviewer (iteration {iteration}) ===")
     print(f"Slug : {slug}")
     print()
 
@@ -203,13 +208,14 @@ def main() -> None:
         sys.exit(1)
 
     # Step 2 — Read revised draft
-    print(f"\n[2/4] Reading {REVISED_FILENAME}...")
+    revised_filename = f"md/03b_revised_iter{iteration}.md"
+    print(f"\n[2/4] Reading {revised_filename}...")
     try:
-        revised_content = read_output(slug, REVISED_FILENAME)
+        revised_content = read_output(slug, revised_filename)
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
         print("\nRun Agent 3b first:")
-        print(f'  python tools/pipeline/agent3b_revisor.py "{slug}"')
+        print(f'  python tools/pipeline/agent3b_revisor.py "{slug}" --iteration {iteration}')
         sys.exit(1)
 
     topic = "Unknown Topic"
@@ -230,7 +236,7 @@ def main() -> None:
     prompt = _build_prompt(style_guide, narrative_architectures, revised_content)
 
     try:
-        review_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 2048, "review")
+        review_text, usage = query_gemini_text(prompt, GEMINI_MODEL, 8192, "review")
     except EnvironmentError as exc:
         print(f"\nError: {exc}")
         sys.exit(1)
@@ -242,19 +248,20 @@ def main() -> None:
     print(f"  Tokens: in={usage['input_tokens']:,} out={usage['output_tokens']:,}")
 
     # Step 4 — Save output + display verdict
-    print(f"\n[4/4] Saving output to {OUTPUT_FILENAME}...")
+    output_filename = f"md/03c_review_iter{iteration}.md"
+    print(f"\n[4/4] Saving output to {output_filename}...")
     content = build_output(topic, review_text)
-    output_path = write_output(slug, OUTPUT_FILENAME, content)
+    output_path = write_output(slug, output_filename, content)
     print(f"  Saved: {output_path}")
 
     verdict = parse_verdict(review_text)
     print(f"\n  VERDICT: {verdict}")
     if verdict == "FLAG":
-        print(f"  → Run Agent 3b again with --iteration 2 to address flagged issues")
+        print(f"  → Run Agent 3b again with --iteration {iteration + 1} to address flagged issues")
     elif verdict == "PASS":
-        print(f"  → Ready to copy md/03_script_draft.md → md/04_script_final.md")
+        print(f"  → Ready to copy md/03b_revised_iter{iteration}.md → md/04_final.md")
     else:
-        print(f"  → Warning: verdict could not be parsed; check {OUTPUT_FILENAME} manually")
+        print(f"  → Warning: verdict could not be parsed; check {output_filename} manually")
 
 
 if __name__ == "__main__":

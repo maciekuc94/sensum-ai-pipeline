@@ -1,11 +1,11 @@
 """
-Agent 11: Weekly YouTube Niche Intelligence
+Intelligence: Weekly YouTube Niche Intelligence
 
 Collects competitor channel data, classifies thumbnails via Gemini Vision,
 runs 8 analytical dimensions, and generates a branded 16-slide PPTX report.
 
 Usage:
-    PYTHONIOENCODING=utf-8 python tools/agent11_intelligence.py
+    PYTHONIOENCODING=utf-8 python tools/intelligence/intelligence.py
 
 Flags:
     --skip-vision     Skip Gemini thumbnail classification (faster, no Vision cost)
@@ -217,7 +217,7 @@ def run(skip_vision: bool = False, skip_comments: bool = False, days: int = 30):
     # ------------------------------------------------------------------ #
     # Cost log
     # ------------------------------------------------------------------ #
-    log_cost("intelligence", "agent11", {
+    log_cost("intelligence", "niche_intel", {
         "week_label": week_label,
         "channels_analyzed": len(channels),
         "videos_collected": len(all_videos),

@@ -1,6 +1,6 @@
 # Image Style Guide
 
-Visual bible for YouTube psychology channel images. Read by Agent 3 when writing `[IMAGE: ...]` markers. Agent 5 (visuals) uses these descriptions to assemble full Imagen prompts automatically.
+Visual bible for YouTube psychology channel images. Read by Agent 5 (visuals) when assembling full Imagen prompts. Agent 3 (script) does NOT write image markers — Agent 5 generates all prompts directly from the finished script.
 
 ---
 
@@ -10,7 +10,7 @@ All images use only these two SENSUM colors. No blue, no teal, no red, no golden
 
 | Color name | Hex | Role |
 |---|---|---|
-| Sage Beige | #F4E5CA | Background (applied in post-processing — images generate on white) |
+| Sage Beige | #F4E5CA | Background applied in DaVinci as canvas color — images generate and export as transparent PNG |
 | Dark Brown | #582F0E | All linework, ink-liner outlines, cross-hatching |
 
 **Global rule: No text, no labels, no words, no numbers, no letters in any image.**

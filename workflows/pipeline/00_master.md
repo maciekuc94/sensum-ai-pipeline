@@ -30,40 +30,41 @@ outputs/videos_pl/{slug}/md/01_research.md
 outputs/videos_pl/{slug}/md/02_verified_research.md
     │
     ▼
-[Agent 3: Script — orchestrates 3a Drafter → loop[3b Revisor ↔ 3c Reviewer]]
-    │  3a Drafter   — Claude Opus 4.7 writes ~1,700-word narration (one-shot)
-    │  3b Revisor   — Sonnet 4.6 applies 8 diff-derived revision moves (iter 1-N)
-    │  3c Reviewer  — Sonnet 4.6 verdicts PASS/FLAG (no rewrite)
-    │  Loop: max 2 iterations; on PASS or exhaust → copy 03_script_draft.md → 04_script_final.md
+[Agent 3: Script — 3a Drafter → loop[3b Revisor ↔ 3c Reviewer], ALL in-session via `/draft <slug>`]
+    │  3a Drafter   — Opus 4.8 (Claude Code, in-session) writes ~1,700-word narration
+    │  3b Revisor   — Opus 4.8 (in-session) applies 8 diff-derived revision moves (iter 1-N)
+    │  3c Reviewer  — Opus 4.8 (in-session) verdicts PASS/FLAG (no rewrite)
+    │  Loop: max 5 iterations; on PASS or exhaust → copy latest 03b_revised_iter{N}.md → 04_final.md
+    │  (no API — legacy Gemini path survives behind agent3.py --api)
     ▼
-outputs/videos_pl/{slug}/md/03_script_draft.md  (+ 03a_draft.md, 03_review.md intermediates)
-                                  →  copied by orchestrator to:
-outputs/videos_pl/{slug}/md/04_script_final.md
+outputs/videos_pl/{slug}/md/03b_revised_iter{N}.md  (+ 03a_draft.md, 03c_review_iter{N}.md intermediates)
+                                  →  finalized to:
+outputs/videos_pl/{slug}/md/04_final.md
     │
     ▼
-[Agent 4b: Hook Gate]  ◀──── must verdict RECORD before voiceover
-    │  Sonnet 4.6 scores opening 37 words / 200 words; rewrites in place up to 3×
+[Agent 4: Hook Gate — `/hook <slug>`]  ◀──── must verdict RECORD before voiceover
+    │  Opus 4.8 (in-session) scores opening 37 words / 200 words; agent4_hook.py --apply splices in place
     ▼
-outputs/videos_pl/{slug}/md/04_script_final.md  (modified in place)
-outputs/videos_pl/{slug}/md/04b_hook_score.md
-outputs/videos_pl/{slug}/md/04_script_final.bak.md  (created once, never overwritten)
+outputs/videos_pl/{slug}/md/04_final.md  (modified in place)
+outputs/videos_pl/{slug}/md/04_hook.md
+outputs/videos_pl/{slug}/md/04_final.bak.md  (created once, never overwritten)
     │
-    ├──────────────────────────────┬──────────────────────────────┐
-    ▼                              ▼                              ▼
-[Agent 5: Visuals]          [Agent 6: Narration]            [Agent 8: Publish]
-    │  Opus 4.7 writes          │  Deterministic — strips        │  Sonnet 4.6 + YouTube
-    │  one prompt per beat      │  EDITOR NOTEs + IMAGE markers  │  autocomplete scraper
-    ▼                              ▼                              ▼
-outputs/videos_pl/{slug}/md/    outputs/videos_pl/{slug}/md/      outputs/videos_pl/{slug}/md/
-  05_image_prompts.md          06_script_narration.md         07_publish_package.md
-  05_image_phrases.md
-    │                              │                              │
-    │   ┌──────────────────────────┴──────────────────────────────┘
-    │   │  (manual gate — review all three before generating images/thumbs)
+    ├──────────────────────────────────────────────────────────────┐
+    ▼                                                              ▼
+[Agent 5: Visuals — `/visuals`]                              [Agent 8: Publish — `/publish`]
+    │  Opus 4.8 (in-session)                                      │  Opus 4.8 (in-session), 9 steps
+    │  one prompt per beat                                         │  + autocomplete/finalize bookends
+    ▼                                                              ▼
+outputs/videos_pl/{slug}/md/                            outputs/videos_pl/{slug}/md/
+  05_prompts.md                                              08_publish.md
+  05_phrases.md
+    │                                                              │
+    │   ┌──────────────────────────────────────────────────────────┘
+    │   │  (manual gate — review both before generating images/thumbs)
     │   │
     ▼   ▼
-[Agent 9: Images] (manual)             [Agent 10: Thumbnails] (manual)
-    │  Gemini 3 Pro Image Preview         │  Opus 4.7 → Gemini 3 Pro Image Preview
+[Agent 6: Images] (manual)             [Agent 7: Thumbnails] (manual — `/thumbnails`)
+    │  Gemini 3 Pro Image Preview         │  Opus 4.8 concepts (in-session) → Gemini 3 Pro Image render
     ▼                                     ▼
 outputs/videos_pl/{slug}/images/         outputs/videos_pl/{slug}/thumbnails*/
     │                                     │
@@ -83,7 +84,7 @@ outputs/videos_pl/{slug}/edit/
 Out-of-band, on a weekly cron:
 
 ```
-[Agent 11: Niche Intelligence]   (tools/intelligence/agent11_intelligence.py)
+[Intelligence Agent: Niche Intelligence]   (tools/intelligence/intelligence.py)
    YouTube API + Gemini Vision → outputs/intelligence/YYYY-WNN_*.pptx
    Sidecar `YYYY-WNN_tag_signals.md` is auto-read by Agent 8.
 ```
@@ -110,7 +111,7 @@ GOOGLE_CLOUD_PROJECT=your-gcp-project-id
 GOOGLE_CLOUD_LOCATION=us-central1
 ```
 
-Optional (Agent 11 niche intelligence only):
+Optional (Intelligence Agent niche intelligence only):
 
 ```
 YOUTUBE_API_KEY=your-youtube-data-api-key
@@ -164,33 +165,36 @@ Gemini 3.1 Pro fact-checks every claim against peer-reviewed sources. Review eve
 
 ### Step 3 — Script (Drafter → Revisor ↔ Reviewer loop, B++ v2)
 
-```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent3.py "emotional-dysregulation-in-adhd"
+In Claude Code:
+
+```text
+/draft emotional-dysregulation-in-adhd
 ```
 
-Runs Drafter (3a, Opus) once, then loops Revisor↔Reviewer (3b↔3c, Sonnet) up to 2 iterations. Loop exits on Reviewer PASS or max iterations; orchestrator then copies `md/03_script_draft.md` → `md/04_script_final.md`. Review `md/03_review.md` (Reviewer verdict) and `md/04_script_final.md`. Run sub-agents individually (`agent3a_draft.py`, `agent3b_revisor.py`, `agent3c_reviewer.py`) to inspect or edit an intermediate file. Useful flags: `--max-iterations N`, `--skip-drafter`. See [03_script.md](03_script.md).
+That slash command runs the whole script chain **in-session on Opus 4.8 — no API**: Drafter (3a) saves `md/03a_draft.md`, then the Revisor↔Reviewer loop (3b↔3c) runs in the same session up to 5 iterations, exiting on Reviewer PASS or max. The latest `md/03b_revised_iter{N}.md` is finalized to `md/04_final.md`. Review `md/03c_review_iter{N}.md` (Reviewer verdict) and `md/04_final.md`. (Legacy Gemini path: `python tools/pipeline/agent3.py "<slug>"` with `--api`, flags `--max-iterations N` / `--start-iteration N`.) See [03_script.md](03_script.md), [03a_drafter.md](03a_drafter.md), [03b_revisor.md](03b_revisor.md), [03c_reviewer.md](03c_reviewer.md).
 
-### Step 4b — Hook Gate
+### Step 4 — Hook Gate
 
-```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent4b_hook.py "emotional-dysregulation-in-adhd"
+In Claude Code:
+
+```text
+/hook emotional-dysregulation-in-adhd
 ```
 
-Scores the opening 37 words (Tier 1, ≥8) and the opening 200 words (Tier 2, ≥7). Rewrites in place up to 3 attempts. Verdict must be `RECORD` before recording voiceover. See [04b_hook.md](04b_hook.md).
+Scores the opening 37 words (Tier 1, ≥8) and the opening 200 words (Tier 2, ≥7) in-session on Opus 4.8, then `agent4_hook.py --apply` splices the rewrite in place. Verdict must be `RECORD` before recording voiceover. See [04_hook.md](04_hook.md).
 
-### Steps 5, 6, 8 — Parallel-safe after 4b
+### Steps 5, 6, 8 — Parallel-safe after 4
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent5_visuals.py "emotional-dysregulation-in-adhd"
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_narration.py "emotional-dysregulation-in-adhd"
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent8_publish.py "emotional-dysregulation-in-adhd"
+# Both run in Claude Code (Opus 4.8, in-session — no API):
+#   /visuals emotional-dysregulation-in-adhd
+#   /publish emotional-dysregulation-in-adhd
 ```
 
 - Agent 5 — one Imagen prompt per sentence/beat with beat-aware visual register
-- Agent 6 — deterministic teleprompter strip (no API calls)
-- Agent 8 — titles, hooks, 5 Shorts, description, chapters, bibliography, tags
+- Agent 8 — 9 focused steps: titles, description + hashtags, timestamps, long-form tags, bibliography, then shorts clip-selection / titles / descriptions / tags. Legacy Gemini end-to-end stays at `agent8_publish.py "<slug>" --api`.
 
-Review `05_image_prompts.md` carefully — it is the only gate before image cost. See [05_visuals.md](05_visuals.md) and [08_publish.md](08_publish.md).
+Review `05_prompts.md` carefully — it is the only gate before image cost. See [05_visuals.md](05_visuals.md) and [08_publish.md](08_publish.md).
 
 ### **STOP — manual gate before Agents 9 and 10**
 
@@ -199,18 +203,20 @@ Agents 9 and 10 cost API credits and time. Always pause after Agent 8 completes 
 ### Step 9 — Generate Images (manual)
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "emotional-dysregulation-in-adhd" --generate
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "emotional-dysregulation-in-adhd" --generate
 ```
 
-Renders each prompt via Gemini 3 Pro Image Preview at 16:9. See [09_images.md](09_images.md).
+Renders each prompt via Gemini 3 Pro Image Preview at 16:9. See [06_images.md](06_images.md).
 
 ### Step 10 — Generate Thumbnails (manual)
 
-```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent10_thumbnails.py "emotional-dysregulation-in-adhd" --no-grain
+In Claude Code (generates 5 concepts in-session, then renders):
+
+```text
+/thumbnails emotional-dysregulation-in-adhd
 ```
 
-Five thumbnail concepts via Opus 4.7 + Gemini 3 Pro Image Preview. Grain added manually in Canva after the title overlay. See [10_thumbnails.md](10_thumbnails.md).
+Five thumbnail concepts via Opus 4.8 (in-session, no API) → rendered by `agent7_thumbnails.py --render` on Gemini 3 Pro Image Preview. Grain added manually in Canva after the title overlay. See [07_thumbnails.md](07_thumbnails.md).
 
 ### Align — Post-Record (DaVinci Bundle)
 
@@ -234,15 +240,15 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 1 | `md/01_research.md` | Raw research from Gemini and PubMed |
 | 2 | `md/02_verified_research.md` | Claims categorised as Verified, Flagged, or Removed |
 | 3a | `md/03a_draft.md` | First-pass narration (input to 3b Revisor) |
-| 3b | `md/03_script_draft.md` | Revised script (overwritten each Revisor iteration) |
-| 3c | `md/03_review.md` | Reviewer verdict (PASS / FLAG) with per-issue notes |
-| 3 (finalize) | `md/04_script_final.md` | Orchestrator copies `03_script_draft.md` after loop exits |
-| 4b | `md/04b_hook_score.md` | Hook score per attempt + final verdict |
-| 4b | `md/04_script_final.bak.md` | Pre-hook-refine backup (first run only) |
-| 5 | `md/05_image_prompts.md` | One Imagen prompt per sentence/beat |
-| 5 | `md/05_image_phrases.md` | Short phrase index used by Align |
-| 6 | `md/06_script_narration.md` | Clean teleprompter script |
-| 8 | `md/07_publish_package.md` | Titles, hooks, 5 Shorts packages, YouTube metadata |
+| 3b | `md/03b_revised.md` | Revised script (overwritten each Revisor iteration) |
+| 3c | `md/03c_review.md` | Reviewer verdict (PASS / FLAG) with per-issue notes |
+| 3 (finalize) | `md/04_final.md` | Orchestrator copies `03b_revised.md` after loop exits |
+| 4  | `md/04_hook.md` | Hook score per attempt + final verdict |
+| 4  | `md/04_final.bak.md` | Pre-hook-refine backup (first run only) |
+| 5 | `md/05_prompts.md` | One Imagen prompt per sentence/beat |
+| 5 | `md/05_phrases.md` | Short phrase index used by Align |
+| 4  | `docx/script.docx` | Teleprompter-ready script (edit → save as `script_corrected.docx`) |
+| 8 | `md/08_publish.md` | Titles, 5 Shorts packages, YouTube metadata |
 | 9 | `images/image_NNN.png` | Generated 16:9 images |
 | 10 | `thumbnails_no_grain/thumbnail_NN.png` | 5 thumbnail concepts at 1920×1080 |
 | Align | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` | DaVinci bundle |
@@ -264,7 +270,7 @@ Every factual claim in the final script must originate from the **Verified Claim
 | `GOOGLE_CLOUD_PROJECT not set` | Add `GOOGLE_CLOUD_PROJECT=your-project-id` to `.env` |
 | `ANTHROPIC_API_KEY not set` | Add `ANTHROPIC_API_KEY=your-key` to `.env` |
 | Agent 2 returns `Verified: 0 claims` | Topic too broad — try a more specific phrasing |
-| Agent 9 `--generate`: `md/05_image_prompts.md not found` | Run Agent 5 first |
+| Agent 6 `--generate`: `md/05_prompts.md not found` | Run Agent 5 first |
 | Unicode errors on Windows | Prefix the command with `PYTHONIOENCODING=utf-8` |
 
 ---
@@ -276,13 +282,12 @@ workflows/pipeline/00_materials.md   — Agent 0 (reference book extraction)
 workflows/pipeline/01_research.md    — Agent 1
 workflows/pipeline/02_verify.md      — Agent 2
 workflows/pipeline/03_script.md      — Agents 3a (Drafter) / 3b (Revisor) / 3c (Reviewer) — B++ v2 loop
-workflows/pipeline/04b_hook.md       — Agent 4b (hook gate)
+workflows/pipeline/04_hook.md       — Agent 4 (hook gate)
 workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
-workflows/pipeline/06_narration.md   — Agent 6 (narration strip)
 workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
-workflows/pipeline/09_images.md      — Agent 9 (image generation, manual)
-workflows/pipeline/10_thumbnails.md  — Agent 10 (thumbnails, manual)
-workflows/pipeline/11_intelligence.md — Agent 11 (weekly niche report)
+workflows/pipeline/06_images.md      — Agent 6 (image generation, manual)
+workflows/pipeline/07_thumbnails.md  — Agent 7 (thumbnails, manual)
+workflows/pipeline/intelligence.md — Intelligence Agent (weekly niche report)
 workflows/pipeline/align.md          — Align (post-record DaVinci bundle)
 workflows/guides/style_guide.md      — Script style rules
 workflows/guides/style_guide_images.md — Image style rules

@@ -151,6 +151,34 @@ git checkout agent-chain-v1-prerevisor -- workflows/guides/style_guide.md
 
 Po restore pipeline znowu używa starego flow: `python tools/pipeline/agent3.py "<slug>"` uruchamia 3a → 3n → 3b → 3c (jak przed), a `agent4a_edit.py` znowu istnieje jako osobny krok po Agent 3.
 
+## Mechanizm piątorzędny — split Agenta 8 (publish) na 9 kroków in-session (2026-06-02)
+
+Agent 8 został podzielony z 3 mega-promptów (Gemini: titles / shorts / metadata) na **9 osobnych kroków in-session na Opus 4.8** (`/publish <slug>`), z deterministycznymi „bookendami" w Pythonie (`--extract`, `--signals`, `--finalize`). Stary orchestrator Gemini **nie został usunięty** — żyje za flagą `--api`.
+
+### Najszybszy powrót — flaga `--api` (bez restore)
+
+```bash
+# Uruchom stary, pełny pipeline Gemini end-to-end (titles → shorts → metadata, jak przed splitem):
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent8_publish.py "<slug>" --api
+```
+
+Nic nie trzeba cofać — `--api` produkuje to samo `md/08_publish.md` co dawny `agent8_publish.py "<slug>"` (bez flagi). Split dodaje tylko nowe ścieżki (`/publish`, `--extract/--signals/--finalize`), nie kasuje starej.
+
+### Pełny powrót do stanu sprzed splitu (gdyby flaga `--api` nie wystarczyła)
+
+```bash
+# Commit sprzed splitu (znajdź go w logu — opis: „split publishing agent"):
+git log --oneline -- tools/pipeline/agent8_publish.py | head
+
+# Przywróć skrypt, prompt SOP i usuń slash command:
+git checkout <pre-split-commit> -- tools/pipeline/agent8_publish.py workflows/pipeline/08_publish.md
+rm .claude/commands/publish.md
+
+git add -A && git commit -m "restore agent 8 to pre-split (3-pass Gemini) version"
+```
+
+Stara wersja `agent8_publish.py` miała `main()` jako orchestrator Gemini bez flag — uruchamiana przez `python tools/pipeline/agent8_publish.py "<slug>"`.
+
 ---
 
 ## Tag inventory

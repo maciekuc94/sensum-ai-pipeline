@@ -52,7 +52,7 @@ from tools.pipeline.lib.preview_writer import render_preview  # noqa: E402
 
 
 CHANNEL_ASSETS_DIR = PROJECT_ROOT / "outputs" / "channel_assets"
-BACKGROUND_CANDIDATES = ("blank_background_grain.png", "blank_background_Grain.png")
+BACKGROUND_CANDIDATES = ("blank_background.png", "blank_background_grain.png", "blank_background_Grain.png")
 AMBIENT_MUSIC_FILENAME = "ambient_sensum.wav"
 AUDIO_EXTENSIONS = (".wav", ".mp3", ".m4a", ".flac")
 
@@ -107,13 +107,16 @@ def main(args: argparse.Namespace) -> None:
     edit_dir = base / "edit"
     edit_dir.mkdir(parents=True, exist_ok=True)
 
-    # Script source: prefer the .docx in docx/ (the user's working copy edited
-    # before recording), fall back to the .md if the docx isn't present.
-    script_docx_path = base / "docx" / "06_script_narration.docx"
-    script_md_path = base / "md" / "06_script_narration.md"
-    script_path = script_docx_path if script_docx_path.exists() else script_md_path
-    phrases_path = base / "md" / "05_image_phrases.md"
-    images_dir = base / "images_grain" if (base / "images_grain").exists() else base / "images"
+    # Script source priority: script_corrected.docx > script.docx > 04_final.md
+    script_path = base / "md" / "04_final.md"
+    for docx_name in ("docx/script_corrected.docx", "docx/script.docx"):
+        candidate = base / docx_name
+        if candidate.exists():
+            script_path = candidate
+            break
+    phrases_path = base / "md" / "05_phrases.md"
+    _grain_dir = base / "images_grain"
+    images_dir = _grain_dir if (_grain_dir.exists() and any(_grain_dir.glob("image_*.png"))) else base / "images"
 
     audio_path: Path | None = None
     if not args.from_alignment:
@@ -133,7 +136,7 @@ def main(args: argparse.Namespace) -> None:
             sys.exit(1)
 
     if not script_path.exists():
-        print(f"Error: script not found: {script_path}\n  Run Agent 6 first.")
+        print(f"Error: script not found: {script_path}\n  Run Agent 4b first (--apply exports docx/script.docx).")
         sys.exit(1)
     if not phrases_path.exists():
         print(f"Error: phrase table not found: {phrases_path}\n  Run Agent 5 first.")
@@ -242,7 +245,7 @@ def main(args: argparse.Namespace) -> None:
             )
 
         # 2) Phrase mapping
-        print("Step 2/5: Mapping phrases from 05_image_phrases.md...")
+        print("Step 2/5: Mapping phrases from 05_phrases.md...")
         phrases_md = phrases_path.read_text(encoding="utf-8")
         phrase_rows = parse_phrases_md(phrases_md)
         phrase_timings = map_phrases_to_timings(phrase_rows, aligned)

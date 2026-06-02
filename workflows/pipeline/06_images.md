@@ -1,21 +1,21 @@
-# Workflow: Agent 9 — Image Generation
+# Workflow: Agent 6 — Image Generation
 
 ## Purpose
 
-Agent 9 reads the `md/05_image_prompts.md` file produced by **Agent 5** and
+Agent 6 reads the `md/05_prompts.md` file produced by **Agent 5** and
 renders each prompt as a PNG using **Gemini 3 Pro Image Preview** on Vertex AI.
 It runs in two phases separated by a human review step so prompts can be
 refined before spending API credits on generation.
 
 The image-prompt content itself is **owned by Agent 5** (`tools/pipeline/agent5_visuals.py`).
-Agent 9 is a renderer — it does not generate or rewrite prompts.
+Agent 6 is a renderer — it does not generate or rewrite prompts.
 
 ---
 
 ## Prerequisites
 
 1. **Agent 5 must have run successfully.** The file
-   `outputs/videos/{slug}/md/05_image_prompts.md` must exist. If it does not, run:
+   `outputs/videos/{slug}/md/05_prompts.md` must exist. If it does not, run:
    ```bash
    PYTHONIOENCODING=utf-8 python tools/pipeline/agent5_visuals.py "<slug>"
    ```
@@ -41,27 +41,27 @@ Agent 9 is a renderer — it does not generate or rewrite prompts.
 
 ## Phase 1: Verify prompts file
 
-Run the script with no flags to confirm `05_image_prompts.md` exists and
+Run the script with no flags to confirm `05_prompts.md` exists and
 report the parsed prompt count:
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "<slug>"
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>"
 ```
 
 Expected output:
 
 ```
-=== Agent 9: Image Generation — Phase 1 Check ===
+=== Agent 6: Image Generation — Phase 1 Check ===
 Slug : <slug>
 
-Agent 5 writes 05_image_prompts.md directly.
+Agent 5 writes 05_prompts.md directly.
 Run Agent 5 if you have not already:
   python tools/pipeline/agent5_visuals.py "<slug>"
 
-  Found existing md/05_image_prompts.md with 76 prompt(s).
+  Found existing md/05_prompts.md with 76 prompt(s).
 
-Review and edit md/05_image_prompts.md, then generate images:
-  python tools/pipeline/agent9_images.py "<slug>" --generate
+Review and edit md/05_prompts.md, then generate images:
+  python tools/pipeline/agent6_images.py "<slug>" --generate
 ```
 
 If the file does not exist, the command exits with a clear pointer to run
@@ -71,7 +71,7 @@ Agent 5 first.
 
 ## Phase 2: Review prompts
 
-Open `outputs/videos/{slug}/md/05_image_prompts.md` before running generation. Each
+Open `outputs/videos/{slug}/md/05_prompts.md` before running generation. Each
 block looks like this:
 
 ```markdown
@@ -101,7 +101,7 @@ color palette strictly limited to #582F0E dark brown ink lines on white —
   prompt blocks these, but prompts that explicitly request them will still
   fight the negative.
 
-Edit the file freely. Agent 9 reads it as-is at Phase 2 time.
+Edit the file freely. Agent 6 reads it as-is at Phase 2 time.
 
 ---
 
@@ -110,7 +110,7 @@ Edit the file freely. Agent 9 reads it as-is at Phase 2 time.
 Once the prompts are approved, run with `--generate`:
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "<slug>" --generate
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --generate
 ```
 
 Optional flags:
@@ -126,10 +126,10 @@ Optional flags:
 Expected output:
 
 ```
-=== Agent 9: Image Generation — Phase 2 (Generate Images) ===
+=== Agent 6: Image Generation — Phase 2 (Generate Images) ===
 Slug : <slug>
 
-[1/3] Reading md/05_image_prompts.md...
+[1/3] Reading md/05_prompts.md...
   Loaded 76 prompt(s)
 
 [2/3] Initialising Vertex AI Imagen...
@@ -145,7 +145,7 @@ Slug : <slug>
 ```
 
 **What it does:**
-- Parses each `**Imagen prompt:**` block from `md/05_image_prompts.md`.
+- Parses each `**Imagen prompt:**` block from `md/05_prompts.md`.
 - Appends a short negative instruction (face suppression, color-drift
   suppression, head-cropping suppression) to each prompt.
 - Calls `gemini-3-pro-image-preview` with `response_modalities=["IMAGE"]`.
@@ -171,7 +171,7 @@ exact `#F4E5CA`. Useful if you regenerated images outside the standard pipeline
 and need to enforce brand background color.
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "<slug>" --correct-bg
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --correct-bg
 ```
 
 ### `--apply-grain N` — grain pass
@@ -181,32 +181,32 @@ Copies images (from `images_corrected/` if it exists, otherwise `images/`) to
 intensity is 12.
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "<slug>" --apply-grain 12
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --apply-grain 12
 ```
 
 ### `--sync-scripts` — insert cue markers
 
-Updates `md/04_script_final.md` so each row in `md/05_image_prompts.md` has a
+Updates `md/04_final.md` so each row in `md/05_prompts.md` has a
 matching `[IMAGE_NNN]` cue marker inserted before the sentence it illustrates.
 This is for editor reference during recording — it does not affect Agent 6
 narration (Agent 6 strips these defensively).
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent9_images.py "<slug>" --sync-scripts
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --sync-scripts
 ```
 
 ---
 
-## Image Style (enforced by Agent 5, not Agent 9)
+## Image Style (enforced by Agent 5, not Agent 6)
 
 The bichromatic SENSUM contract — `#F4E5CA` background + `#582F0E` ink only,
 19th-century scientific etching, no facial features, no text — is enforced by
 Agent 5 when it constructs each prompt. The `CHARACTER_DESCRIPTION` and
 `STYLE_SUFFIX` constants live in `tools/utils.py` and are imported by Agent 5.
 
-To change the default style, edit `tools/utils.py` and rerun Agent 5. Agent 9
+To change the default style, edit `tools/utils.py` and rerun Agent 5. Agent 6
 does **not** re-apply the style — it just renders whatever is in
-`md/05_image_prompts.md`.
+`md/05_prompts.md`.
 
 ---
 
@@ -227,7 +227,7 @@ does **not** re-apply the style — it just renders whatever is in
   but does not eliminate it.
 
 - **Rate limit** — Vertex AI Gemini 3 Pro Image Preview has a low QPM quota.
-  Agent 9 spaces calls 20 s apart. A 76-image script takes ~25 minutes.
+  Agent 6 spaces calls 20 s apart. A 76-image script takes ~25 minutes.
 
 - **Stochasticity** — Re-running the same prompt produces a different render.
   This is expected behavior of the model.
@@ -236,7 +236,7 @@ does **not** re-apply the style — it just renders whatever is in
 
 ## Common Issues
 
-**`md/05_image_prompts.md not found`**
+**`md/05_prompts.md not found`**
 
 Agent 5 has not been run for this slug. Run it first:
 ```bash
@@ -260,7 +260,7 @@ gcloud auth application-default login
 **Individual `Failed to generate image_NNN.png` warnings**
 
 One image failed (safety filter, transient API error, etc.) but the rest
-continued. Inspect the warning, fix the prompt in `md/05_image_prompts.md`,
+continued. Inspect the warning, fix the prompt in `md/05_prompts.md`,
 delete the failing PNG (or run with `--start NNN --limit 1`), and rerun
 Phase 2.
 
@@ -271,9 +271,9 @@ Phase 2.
 ```
 outputs/videos/<slug>/
 ├── md/
-│   ├── 04_script_final.md         (Agent 4b output)
-│   └── 05_image_prompts.md        (Agent 5 output — Agent 9 input)
-├── images/                         (Agent 9 --generate output)
+│   ├── 04_final.md         (Agent 4b output)
+│   └── 05_prompts.md        (Agent 5 output — Agent 6 input)
+├── images/                         (Agent 6 --generate output)
 │   ├── image_001.png
 │   ├── image_002.png
 │   └── ...

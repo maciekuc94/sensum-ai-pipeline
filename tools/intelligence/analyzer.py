@@ -128,7 +128,14 @@ def content_gaps(videos: list[dict], corpus_dir: Path, top_n: int = 10) -> list[
     Compares top competitor title words against SENSUM corpus scripts.
     """
     corpus_words: set[str] = set()
-    for script in corpus_dir.glob("*/md/06_script_narration.md"):
+    for slug_dir in corpus_dir.iterdir():
+        if not slug_dir.is_dir():
+            continue
+        script = slug_dir / "md" / "script_corrected.md"
+        if not script.exists():
+            script = slug_dir / "md" / "04_final.md"
+        if not script.exists():
+            continue
         text = script.read_text(encoding="utf-8", errors="ignore").lower()
         words = re.findall(r"[a-zA-Z']+", text)
         corpus_words.update(w.strip("'") for w in words if len(w) > 3)

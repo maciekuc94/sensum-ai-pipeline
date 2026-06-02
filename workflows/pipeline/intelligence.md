@@ -18,7 +18,7 @@ dimensions, and output a branded 16-slide PPTX intelligence report every Sunday.
 ## Standard invocation
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/intelligence/agent11_intelligence.py
+PYTHONIOENCODING=utf-8 python tools/intelligence/intelligence.py
 ```
 
 ## Flags

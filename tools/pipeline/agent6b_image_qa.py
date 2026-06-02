@@ -1,5 +1,5 @@
 """
-Agent 9b: Image QA (style compliance check)
+Agent 6b: Image QA (style compliance check)
 
 Audits every PNG in `outputs/videos_pl/{slug}/images/` against the SENSUM style
 contract using Gemini 2.5 Flash on Vertex AI. Cheap (~$0.04 per 120-image video)
@@ -15,14 +15,14 @@ Checks:
   5. No visible text, letters, numbers, or labels anywhere.
 
 Outputs:
-  outputs/videos_pl/{slug}/md/09_image_qa.md  — markdown report
+  outputs/videos_pl/{slug}/md/06_qa.md  — markdown report
 
 Usage:
-  python tools/pipeline/agent9b_image_qa.py "<slug>"
-  python tools/pipeline/agent9b_image_qa.py "<slug>" --quiet
-  python tools/pipeline/agent9b_image_qa.py "<slug>" --retry
+  python tools/pipeline/agent6b_image_qa.py "<slug>"
+  python tools/pipeline/agent6b_image_qa.py "<slug>" --quiet
+  python tools/pipeline/agent6b_image_qa.py "<slug>" --retry
 
-`--retry` automatically regenerates failed indices via Agent 9 (one attempt)
+`--retry` automatically regenerates failed indices via Agent 6 (one attempt)
 and re-runs QA on those indices only. Does NOT delete images. Reports always.
 """
 
@@ -35,13 +35,13 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import get_output_dir, get_env, write_output
+from tools.utils import get_output_dir, get_env, write_output, read_output
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-QA_REPORT_FILENAME = "md/09_image_qa.md"
+QA_REPORT_FILENAME = "md/06_qa.md"
 QA_MODEL = "gemini-2.5-flash"
 REQUEST_DELAY = 1.0  # seconds between Vertex AI calls
 
@@ -71,7 +71,7 @@ QA_PROMPT = (
 
 
 def _init_client():
-    """Return a Vertex AI genai client. Mirrors agent9_images.py."""
+    """Return a Vertex AI genai client. Mirrors agent6_images.py."""
     try:
         project = get_env("GOOGLE_CLOUD_PROJECT")
     except EnvironmentError as exc:
@@ -118,6 +118,57 @@ def _audit_one(client, image_path: Path) -> tuple[str, str]:
     verdict = verdict_match.group(1).upper()
     reasons = reasons_match.group(1).strip() if reasons_match else "—"
     return verdict, reasons
+
+
+def _check_background_color(image_path: Path) -> str | None:
+    """Sample 4 corners of the image and check if background matches #F4E5CA.
+    Returns a failure reason string if wrong color, None if OK.
+    Runs locally — no API call needed.
+    """
+    import numpy as np
+    from PIL import Image
+
+    TARGET = (244, 229, 202)  # #F4E5CA sage beige
+    TOLERANCE = 20  # max RMS distance; worst passing image observed at 12.1
+    SAMPLE = 30     # corner area in pixels
+
+    img = Image.open(str(image_path)).convert("RGB")
+    w, h = img.size
+    arr = np.array(img)
+
+    strips = [
+        arr[:SAMPLE, :],       # top strip, full width
+        arr[h - SAMPLE:, :],   # bottom strip, full width
+        arr[:, :SAMPLE],       # left strip, full height
+        arr[:, w - SAMPLE:],   # right strip, full height
+    ]
+    samples = np.concatenate([s.reshape(-1, 3) for s in strips], axis=0)
+    avg = samples.mean(axis=0)
+    dist = float(np.sqrt(((avg - np.array(TARGET)) ** 2).mean()))
+    if dist > TOLERANCE:
+        r, g, b = int(avg[0]), int(avg[1]), int(avg[2])
+        return f"background color #{r:02X}{g:02X}{b:02X} is not sage beige #F4E5CA"
+    return None
+
+
+def _check_missing_images(slug: str, images_dir: Path) -> list[dict]:
+    """Return FAIL entries for expected image indices absent from images/."""
+    try:
+        content = read_output(slug, "md/05_prompts.md")
+    except FileNotFoundError:
+        return []
+    header_match = re.search(r'^Total images:\s*(\d+)', content, re.MULTILINE)
+    if header_match:
+        total = int(header_match.group(1))
+    else:
+        total = len(re.findall(r'^## Image \d+', content, re.MULTILINE))
+    if total == 0:
+        return []
+    present = {_index_from_filename(p) for p in images_dir.glob("image_*.png")} if images_dir.exists() else set()
+    return [
+        {"index": i, "filename": f"image_{i:03d}.png", "verdict": "FAIL", "reasons": "image file missing"}
+        for i in range(1, total + 1) if i not in present
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -201,17 +252,29 @@ def _write_report(slug: str, results: list[dict], model_id: str) -> Path:
 def audit(slug: str, *, quiet: bool = False, only_indices: list[int] | None = None) -> list[dict]:
     """Run QA on all images (or only the supplied indices). Returns results list."""
     images_dir = get_output_dir(slug) / "images"
-    png_files = sorted(images_dir.glob("image_*.png"))
-    if not png_files:
-        print(f"No images found in {images_dir}")
-        sys.exit(1)
 
+    missing = _check_missing_images(slug, images_dir)
+    if only_indices is not None:
+        wanted = set(only_indices)
+        missing = [r for r in missing if r["index"] in wanted]
+
+    png_files = sorted(images_dir.glob("image_*.png")) if images_dir.exists() else []
     if only_indices is not None:
         wanted = set(only_indices)
         png_files = [p for p in png_files if _index_from_filename(p) in wanted]
-        if not png_files:
+        if not png_files and not missing:
             print(f"No images match indices {only_indices} in {images_dir}")
             sys.exit(1)
+    elif not png_files and not missing:
+        print(f"No images found in {images_dir}")
+        sys.exit(1)
+
+    if not png_files:
+        if not quiet:
+            print(f"\n=== Agent 9b: Image QA ===")
+            for r in missing:
+                print(f"  MISS  {r['filename']}  image file missing")
+        return sorted(missing, key=lambda r: r["index"])
 
     client, project = _init_client()
 
@@ -219,6 +282,8 @@ def audit(slug: str, *, quiet: bool = False, only_indices: list[int] | None = No
     print(f"Slug    : {slug}")
     print(f"Project : {project}")
     print(f"Model   : {QA_MODEL}")
+    if missing:
+        print(f"Missing : {sorted(r['index'] for r in missing)}")
     print(f"Images  : {len(png_files)}")
     print()
 
@@ -226,6 +291,10 @@ def audit(slug: str, *, quiet: bool = False, only_indices: list[int] | None = No
     for i, path in enumerate(png_files, start=1):
         idx = _index_from_filename(path) or 0
         verdict, reasons = _audit_one(client, path)
+        color_fail = _check_background_color(path)
+        if color_fail:
+            verdict = "FAIL"
+            reasons = f"{color_fail}, {reasons}" if reasons and reasons != "none" else color_fail
         results.append({
             "index": idx,
             "filename": path.name,
@@ -238,21 +307,20 @@ def audit(slug: str, *, quiet: bool = False, only_indices: list[int] | None = No
         if i < len(png_files):
             time.sleep(REQUEST_DELAY)
 
-    return results
+    return sorted(missing + results, key=lambda r: r["index"])
 
 
 def _retry_failed(slug: str, failed_indices: list[int]) -> None:
-    """Spawn agent9_images.py to regenerate the failed indices."""
+    """Spawn agent6_images.py to regenerate the failed indices."""
     if not failed_indices:
         return
-    script = Path(__file__).parent / "agent9_images.py"
+    script = Path(__file__).parent / "agent6_images.py"
     cmd = [
         sys.executable, str(script), slug,
         "--generate",
         "--indices", ",".join(str(i) for i in failed_indices),
-        "--grain", "12",
     ]
-    print(f"\n=== Agent 9b: Retry — regenerating {len(failed_indices)} failed images ===")
+    print(f"\n=== Agent 6b: Retry — regenerating {len(failed_indices)} failed images ===")
     print(f"  {' '.join(cmd)}")
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     subprocess.run(cmd, check=False, env=env)
@@ -269,8 +337,8 @@ def _parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"
-            "  python tools/pipeline/agent9b_image_qa.py \"5_how_to_actually_stay_mentally_healthy\"\n"
-            "  python tools/pipeline/agent9b_image_qa.py \"5_how_to_actually_stay_mentally_healthy\" --retry\n"
+            "  python tools/pipeline/agent6b_image_qa.py \"5_how_to_actually_stay_mentally_healthy\"\n"
+            "  python tools/pipeline/agent6b_image_qa.py \"5_how_to_actually_stay_mentally_healthy\" --retry\n"
         ),
     )
     parser.add_argument("slug", help="Output slug under outputs/videos/.")
@@ -278,6 +346,8 @@ def _parse_args() -> argparse.Namespace:
                         help="Suppress per-image stdout, only print summary.")
     parser.add_argument("--retry", action="store_true",
                         help="After QA, auto-regenerate failed images via Agent 9 and re-run QA on them.")
+    parser.add_argument("--indices", type=str, default=None,
+                        help="Comma-separated 1-based indices to audit only (e.g. \"4,13,31\").")
     return parser.parse_args()
 
 
@@ -288,7 +358,15 @@ def main() -> None:
         print("Error: slug argument is empty.")
         sys.exit(1)
 
-    results = audit(slug, quiet=args.quiet)
+    only_indices: list[int] | None = None
+    if args.indices:
+        try:
+            only_indices = [int(x.strip()) for x in args.indices.split(",") if x.strip()]
+        except ValueError:
+            print(f"Error: --indices must be comma-separated integers, got: {args.indices!r}")
+            sys.exit(1)
+
+    results = audit(slug, quiet=args.quiet, only_indices=only_indices)
     report_path = _write_report(slug, results, QA_MODEL)
 
     failed = [r for r in results if r["verdict"] == "FAIL"]

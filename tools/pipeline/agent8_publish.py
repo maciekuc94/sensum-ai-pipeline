@@ -1,22 +1,40 @@
 """
 Agent 8: Publish Package — Advanced YouTube Metadata Engineer / NLP Optimization Pipeline.
 
-Runs three passes in sequence and produces one master output file:
-  1. Titles — 5 long-form title variants (Identity Provocation blueprint: identity reframe / paradox / system-architectural reveal)
-  2. YouTube Shorts — 3–5 lead-in packages, each with one identity-reframe title, a 1–2 sentence cognitive-dissonance description, a 3–5 multi-word backend-tag block, and a Script Lines to Clip split (Hook + Core payload, each tagged with the script quarter Q1–Q4 for DaVinci search)
-  3. YouTube Metadata — description (Hook Segment + Explanatory Block with identity-absolution framing), chapters, bibliography (Research & References), 3-hashtag block, and 10–15 multi-word tag block (Tag #1 = exact-match primary keyword extracted from the chosen title; single-word tags prohibited; SENSUM-uppercase brand exception only)
+As of 2026-06-02 the publish package is generated **in-session on Opus 4.8** via the
+`/publish <slug>` slash command (no API), which splits the work into 9 focused steps
+(titles, description+hashtags, timestamps, long-form tags, bibliography, shorts
+clip-selection, shorts titles, shorts descriptions, shorts tags). The prompts are
+single-sourced in `workflows/pipeline/08_publish.md`. This script now provides the two
+deterministic bookends that bracket the in-session run, plus the legacy Gemini path:
+
+  --signals   PRE-step. Derive the topic from the script, scrape YouTube autocomplete
+              and load the latest niche tag signals, write `.tmp/08_signals.md` for the
+              in-session long-form-tags step to read.
+  --finalize  POST-step. Read the in-session-written `md/08_publish.md`, then in place:
+              annotate each shorts clip block with its script quarter (Q1–Q4), trim the
+              long-form tag line to the 450-char budget, validate every Short has a clip
+              block, and export `docx/08_publish.docx`.
+  --api       Legacy fallback. Run the original 3-pass Gemini orchestrator end-to-end
+              (titles → shorts → metadata) and write `md/08_publish.md` itself. Kept per
+              the pipeline convention that Gemini paths survive behind `--api`.
 
 Inputs:
-  outputs/videos_pl/{slug}/md/04_script_final.md   (titles + metadata)
-  outputs/videos_pl/{slug}/md/06_script_narration.md  (shorts clips + quarter splits)
-  outputs/videos_pl/{slug}/md/02_verified_research.md (bibliography)
+  outputs/videos_pl/{slug}/docx/script_corrected.docx  (preferred — user-edited script)
+  outputs/videos_pl/{slug}/docx/script.docx             (fallback — exported by agent4 --apply)
+  outputs/videos_pl/{slug}/md/04_final.md               (last-resort fallback)
+  outputs/videos_pl/{slug}/md/02_verified_research.md   (bibliography)
 
 Outputs:
-  outputs/videos_pl/{slug}/md/07_publish_package.md
-  outputs/videos_pl/{slug}/docx/07_publish_package.docx
+  outputs/videos_pl/{slug}/.tmp/08_signals.md           (--signals)
+  outputs/videos_pl/{slug}/md/08_publish.md             (in-session /publish, or --api)
+  outputs/videos_pl/{slug}/docx/08_publish.docx         (--finalize, or --api)
 
 Usage:
-    python tools/pipeline/agent8_publish.py "emotional-dysregulation-in-adhd"
+    /publish "emotional-dysregulation-in-adhd"                          # in-session (preferred)
+    python tools/pipeline/agent8_publish.py "<slug>" --signals          # PRE bookend
+    python tools/pipeline/agent8_publish.py "<slug>" --finalize         # POST bookend
+    python tools/pipeline/agent8_publish.py "<slug>" --api              # legacy Gemini fallback
 """
 
 import json
@@ -30,24 +48,20 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import export_to_docx, get_env, read_output, write_output, query_gemini_text as _query_gemini_base
+from tools.utils import export_to_docx, get_env, get_output_dir, read_output, write_output, query_gemini_text as _query_gemini_base, read_script_docx_text
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-SCRIPT_FILENAME = "md/04_script_final.md"
-NARRATION_FILENAME = "md/06_script_narration.md"
 RESEARCH_FILENAME = "md/02_verified_research.md"
-OUTPUT_FILENAME = "md/07_publish_package.md"
+OUTPUT_FILENAME = "md/08_publish.md"
+SIGNALS_FILENAME = ".tmp/08_signals.md"
 
 GEMINI_MODEL = "gemini-3.1-pro-preview"
 
-# Per-prompt context budgets for the metadata pass. The pass uses script + research
-# as reference for tags/bibliography; full files would balloon the prompt without
-# improving output quality. Tuned to stay well under Gemini's input window on low-cost runs.
-SCRIPT_CONTEXT_CHARS = 6000
-RESEARCH_CONTEXT_CHARS = 4000
+SCRIPT_CONTEXT_CHARS = 999_999
+RESEARCH_CONTEXT_CHARS = 999_999
 
 SHORT_TYPES = [
     ("Surprise",      "A fact that contradicts common belief — stops the scroll"),
@@ -74,6 +88,20 @@ _BRAND_AVOID = [
 # ---------------------------------------------------------------------------
 
 
+def _load_narration(slug: str) -> str:
+    """Load narration text with priority: script_corrected.docx > script.docx > 04_final.md."""
+    base = get_output_dir(slug)
+    for docx_rel in ("docx/script_corrected.docx", "docx/script.docx"):
+        p = base / docx_rel
+        if p.exists():
+            print(f"  Script   : {docx_rel}")
+            return read_script_docx_text(p)
+    # fallback: 04_final.md (strip front matter)
+    raw = read_output(slug, "md/04_final.md")
+    print(f"  Script   : md/04_final.md (fallback)")
+    return raw.split("\n---\n", 1)[1].strip() if "\n---\n" in raw else raw
+
+
 def _extract_topic(script_content: str) -> str:
     for line in script_content.splitlines():
         line = line.strip()
@@ -84,7 +112,7 @@ def _extract_topic(script_content: str) -> str:
     return "Unknown Topic"
 
 
-def _query_gemini(prompt: str, step_label: str, max_tokens: int = 4096) -> tuple[str, dict]:
+def _query_gemini(prompt: str, step_label: str, max_tokens: int = 16384) -> tuple[str, dict]:
     return _query_gemini_base(prompt, GEMINI_MODEL, max_tokens, step_label)
 
 
@@ -96,30 +124,56 @@ def _query_gemini(prompt: str, step_label: str, max_tokens: int = 4096) -> tuple
 def _build_titles_prompt(script_content: str) -> str:
     avoid_kw = ", ".join(f'"{k}"' for k in _BRAND_AVOID)
     return f"""\
-You are an Advanced YouTube Metadata Engineer for the SENSUM channel — niche: behavioral science, neurobiology, emotional states. You operate with cold, empirical, mathematical precision. Your job is to bypass the Pre-sampling Queue and accelerate Impression Velocity through identity-provocation titles.
+OUTPUT LANGUAGE: Polish. All 5 title variants must be written in Polish for the Polish-language YouTube channel @sensumpolska.
+
+You are an Advanced YouTube Metadata Engineer for the SENSUM channel — niche: behavioral science, neurobiology, emotional states. Your job is to generate identity-provocation titles that drive clicks while maintaining psychological credibility and emotional authenticity.
 
 Read this script and generate exactly 5 long-form title variants. Each title must function as an **identity reframe, paradox, or system-level architectural reveal** — never as instruction, advice, or a list.
 
 ## TITLE ARCHITECTURE — Identity Provocation Blueprint
 
 A qualifying title does ONE of the following:
-- **Identity reframe** — names a state the viewer believes about themselves and inverts it ("You're Not Lazy. Your Reward System Is Misfiring.").
-- **Paradox** — pairs two ideas the viewer assumes are opposites and reveals their unity ("What If Your Anxiety Is the System Working Perfectly?").
-- **System-level architectural reveal** — describes the viewer's inner mechanism as a system the viewer didn't know they were running ("Your Nervous System Is Running on Outdated Settings.").
+- **Identity reframe** — names a state the viewer believes about themselves and inverts it ("To nie lenistwo. To alarm, który uruchamia twoja psychika.").
+- **Paradox** — pairs two ideas the viewer assumes are opposites and reveals their unity ("Twój mózg widzi zagrożenie tam, gdzie widzisz sukces innych").
+- **System-level architectural reveal** — describes the viewer's inner mechanism in everyday language the viewer didn't know applied to them ("Porównujesz swoje życie do cudzego montażu").
 
 The viewer must feel addressed at the level of *identity* or *underlying mechanism* — not at the level of behavior or advice.
 
+## LANGUAGE RULES (non-negotiable)
+
+- **Natural spoken Polish** — as if said aloud by one person to another. No academic, clinical, or mechanistic register.
+- **Emotional directness** — the title must hit an emotional truth or felt recognition in the first reading. If it sounds like a research abstract, rewrite it.
+- **No abstract nouns as the grammatical subject** — do NOT write titles where the subject is "układ nerwowy", "mechanizm", "system", "instynkt", "reakcja fizjologiczna" or similar clinical/mechanistic nouns. Write from the viewer's perspective or name the mechanism in a felt, human way.
+- **No trailing period.** Titles end without punctuation, OR with a question mark if using the question pattern.
+
+## RECOMMENDED PATTERNS
+
+- **Question + answer**: "Czujesz, że jesteś w tyle? Dlatego boli to aż tak mocno"
+- **Contradiction**: "To nie lenistwo. To alarm, który uruchamia twoja psychika"
+- **Viewer-perspective reframe**: "Dlaczego masz wrażenie, że wszyscy cię wyprzedzili"
+- **Perceptual reveal**: "Nie jesteś w tyle. Porównujesz się do cudzego skrótu"
+
 ## HARD BANS (any of these auto-disqualifies a title)
 
-- Instructional verbs: "how to", "how you can", "ways to", "tips for", "guide to", "steps to", "stop", "fix".
-- List formats: "5 …", "7 things …", any leading number used as a counter.
-- Generic mental-health framings: "anxiety", "trauma", "depression" used as standalone topical labels without an identity / paradox / system reframe around them.
-- Advisory framing: "you should", "you need to", "what you must know".
+- Instructional verbs: "how to", "jak się", "jak możesz", "ways to", "tips for", "stop", "fix".
+- List formats: "5 …", "7 rzeczy …", any leading number used as a counter.
+- Mechanistic subjects: titles beginning with "Twój układ nerwowy…", "Twój system przetrwania…", "Mechanizm…", "Instynkt…", "Reakcja fizjologiczna…"
+- Advisory framing: "powinieneś", "musisz", "co musisz wiedzieć".
+- Trailing period at the end of the title.
 - Clickbait words: {avoid_kw}.
+
+## BAD EXAMPLES vs GOOD EXAMPLES
+
+❌ "Nie jesteś w tyle. Twój układ nerwowy analizuje błędne dane." — mechanistic subject, trailing period, abstract
+❌ "Lęk przed spóźnieniem to poprawna reakcja fizjologiczna." — clinical register, sounds like a textbook
+❌ "Twój system przetrwania reaguje na algorytm jak na stado." — mechanistic, abstract, not emotionally direct
+✓ "Czujesz, że jesteś w tyle? Dlatego boli to aż tak mocno"
+✓ "To nie lenistwo. To alarm, który uruchamia twoja psychika"
+✓ "Dlaczego masz wrażenie, że wszyscy cię wyprzedzili"
 
 ## CONSTRAINTS
 
-- Exactly 5 titles. Each under 60 characters.
+- Exactly 5 titles. Each under 70 characters.
 - Specific to THIS script's actual content. Do not invent claims the script doesn't make.
 - No quotation marks, no labels, no explanation. Numbered 1–5, title text only.
 - Mix architectural modes across the 5 — at least 2 of the 3 modes (identity reframe / paradox / system reveal) must be represented.
@@ -134,7 +188,7 @@ Return ONLY the 5 numbered titles. No preamble, no commentary, no opening hooks,
 
 def run_titles_pass(script_content: str) -> str:
     prompt = _build_titles_prompt(script_content)
-    text, _ = _query_gemini(prompt, "pass 1 — titles", max_tokens=1024)
+    text, _ = _query_gemini(prompt, "pass 1 — titles", max_tokens=4096)
     return text
 
 
@@ -228,6 +282,8 @@ Output format — use this block exactly for each Short, separated by ---:
 
 
 _SHORTS_BRAND_SYSTEM = """\
+OUTPUT LANGUAGE: Polish. All generated titles, descriptions, and tags must be written in Polish for the Polish-language YouTube channel @sensumpolska. Script lines to clip are quoted verbatim from the Polish narration — do not translate them.
+
 You are an Advanced YouTube Metadata Engineer writing Shorts lead-in packages for SENSUM — a long-form psychology channel for emotionally literate adults. Niche: behavioral science, neurobiology, emotional states. Each Short is a feed-lead-in: its job is to map the viewer's cognitive dissonance in 30 seconds and drive a click to the Related Video anchor.
 
 Brand voice for Shorts descriptions (warm, validating — title voice differs):
@@ -238,14 +294,16 @@ Brand voice for Shorts descriptions (warm, validating — title voice differs):
 
 Title rules:
 - Produce exactly ONE title per Short (not a list of candidates).
-- Maximum 60 characters.
-- High-impact reframe: identity-reframe, paradox, or system-architectural reveal. Examples of the shape: "Your Depression Isn't a Flaw. It's a Misfiled Map." / "What If Your Procrastination Is Loyalty to an Old Self?"
-- Speak to the psychology insight at the identity / mechanism level. Never instructional ("How to…", "Tips for…", "5 ways…").
-- Creates curiosity or emotional recognition. Not manufactured shock.
+- Maximum 60 characters. No trailing period.
+- High-impact reframe: identity-reframe, paradox, or system-architectural reveal.
+- Language: natural spoken Polish — emotionally direct, from the viewer's perspective. No mechanistic or academic register.
+- Recommended patterns: contradiction ("To nie jest X. To Y."), viewer-direct question ("Dlaczego X uruchamia w tobie Y"), direct psychological statement.
+- Polish examples of the right shape: "Dlaczego cudzy sukces uruchamia w tobie panikę" / "To nie jest jedno uczucie. To dwa różne alarmy" / "Porównujesz swoje życie do cudzego montażu"
+- Never instructional ("Jak…", "Tips for…", "5 ways…"). Never ends with a period.
 
 Description rules:
-- 1-2 sentences only — map the **core cognitive dissonance** the Short surfaces, optimized to drive the click to the Related Video anchor.
-- End with: #Shorts plus 2 single-word lowercase topic hashtags (e.g. #Shorts #willpower #habits). Each hashtag must be ONE WORD — no spaces. "#nervous system" is wrong; use "#nervoussystem" or "#regulation".
+- Exactly 2 sentences — first names the viewer's experience, second delivers the psychological reframe or mechanism (no jargon).
+- End with: #Shorts #psychologia plus 1 single-word lowercase topic hashtag matching the Short's theme (e.g. #presja #stres #lek #smutek #emocje). Each hashtag must be ONE WORD — no spaces, no Polish diacritics in hashtags (use #lek not #lęk).
 
 Backend Tag Block rules (kept tight — Shorts algorithm barely reads backend tags; the real categorization signal is the description hashtags):
 - 3–5 multi-word intent phrases per Short. Each phrase 2–4 words. Comma-separated, no `#` prefix.
@@ -387,15 +445,15 @@ def _validate_shorts_clip_blocks(shorts_text: str) -> tuple[str, list[int]]:
             continue
         if "**Script Lines to Clip:**" not in block:
             broken.append(int(header_match.group(1)))
-            block = block.rstrip() + "\n\n**Script Lines to Clip:** [MISSING — model dropped this block; locate the lines manually in 06_script_narration.md or rerun the Shorts pass]\n\n---\n"
+            block = block.rstrip() + "\n\n**Script Lines to Clip:** [MISSING — model dropped this block; locate the lines manually in script_corrected.docx/script.docx or rerun the Shorts pass]\n\n---\n"
         output_blocks.append(block)
     return "".join(output_blocks), broken
 
 
 def run_shorts_pass(narration: str) -> str:
-    analysis, _ = _query_gemini(_build_shorts_pass1_prompt(narration), "shorts pass 1 — candidate mapping")
-    shorts_text, _ = _query_gemini(_build_shorts_pass2_prompt(narration, analysis), "shorts pass 2 — selection")
-    enhanced, _ = _query_gemini(_build_shorts_pass3_prompt(narration, shorts_text), "shorts pass 3 — titles and descriptions")
+    analysis, _ = _query_gemini(_build_shorts_pass1_prompt(narration), "shorts pass 1 — candidate mapping", max_tokens=16384)
+    shorts_text, _ = _query_gemini(_build_shorts_pass2_prompt(narration, analysis), "shorts pass 2 — selection", max_tokens=16384)
+    enhanced, _ = _query_gemini(_build_shorts_pass3_prompt(narration, shorts_text), "shorts pass 3 — titles and descriptions", max_tokens=16384)
     annotated = _annotate_script_quarters(narration, enhanced)
     validated, broken = _validate_shorts_clip_blocks(annotated)
     if broken:
@@ -436,41 +494,6 @@ def _alphabet_soup(base_query: str) -> list[str]:
     return list(dict.fromkeys(results))
 
 
-def _scrape_competitor_tags(topic: str, n: int = 7) -> list[str]:
-    tags: list[str] = []
-    try:
-        encoded = urllib.parse.quote(topic)
-        search_url = f"https://www.youtube.com/results?search_query={encoded}"
-        req = urllib.request.Request(search_url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            html = resp.read().decode("utf-8")
-        video_ids = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
-        seen: set[str] = set()
-        unique_ids = [v for v in video_ids if not (v in seen or seen.add(v))][:n]
-        for vid in unique_ids:
-            try:
-                vreq = urllib.request.Request(
-                    f"https://www.youtube.com/watch?v={vid}",
-                    headers={"User-Agent": "Mozilla/5.0"},
-                )
-                with urllib.request.urlopen(vreq, timeout=8) as vresp:
-                    vhtml = vresp.read().decode("utf-8")
-                m = re.search(
-                    r'ytInitialPlayerResponse\s*=\s*(\{.+?\});\s*(?:var|const|let|window)',
-                    vhtml, re.DOTALL,
-                )
-                if m:
-                    data = json.loads(m.group(1))
-                    kws = data.get("videoDetails", {}).get("keywords", [])
-                    tags.extend(kws)
-                time.sleep(0.15)
-            except Exception as exc:
-                print(f"  video {vid} tag scrape failed: {type(exc).__name__}: {exc}")
-                continue
-    except Exception as exc:
-        print(f"  competitor search failed: {type(exc).__name__}: {exc}")
-    return list(dict.fromkeys(tags))
-
 
 def _load_niche_signals() -> str:
     """Return the most recent {week}_tag_signals.md content, or '' if none exists.
@@ -491,22 +514,19 @@ def _load_niche_signals() -> str:
         return ""
 
 
-def _build_metadata_prompt(topic: str, script: str, research: str, suggestions: list[str], competitor_tags: list[str], niche_signals: str = "", titles_text: str = "") -> str:
+def _build_metadata_prompt(topic: str, script: str, research: str, suggestions: list[str], niche_signals: str = "", titles_text: str = "") -> str:
     avoid_kw = ", ".join(f'"{k}"' for k in _BRAND_AVOID)
     suggestions_block = (
         "\n".join(f"- {s}" for s in suggestions[:300])
         if suggestions
         else "(unavailable)"
     )
-    competitor_block = (
-        "\n".join(f"- {t}" for t in competitor_tags[:150])
-        if competitor_tags
-        else "(unavailable)"
-    )
     niche_block = niche_signals.strip() if niche_signals.strip() else "(unavailable)"
     titles_block = titles_text.strip() if titles_text.strip() else "(unavailable)"
 
     return f"""\
+OUTPUT LANGUAGE: Polish. The video description, chapter labels, and all YouTube tags must be written in Polish for the Polish-language YouTube channel @sensumpolska.
+
 You are an **Advanced YouTube Metadata Engineer and NLP Optimization Pipeline** for the SENSUM channel. Niche: behavioral science, neurobiology, emotional states. Your sole purpose is to convert raw script data and research into a highly optimized Publish Package designed to **bypass the Pre-sampling Queue and accelerate Impression Velocity**.
 
 Execute every task with cold, empirical, mathematical precision. The OUTPUT you produce (description body, references) is warm and validating in the speaker's voice — but your decision logic for tag selection, NLP anchoring, and E-E-A-T construction is algorithmic. You are not writing prose for the viewer to enjoy; you are constructing an NLP surface for YouTube's discovery pipeline.
@@ -514,30 +534,33 @@ Execute every task with cold, empirical, mathematical precision. The OUTPUT you 
 Operating principles:
 - A tag is a search query, not a vocabulary word. If you can't picture a real person living this problem typing it into YouTube search, it has no place in the tag block.
 - **Tag #1 carries the most algorithmic weight.** YouTube front-loads semantic weight onto the first tag in the list. Tag #1 must be the **exact-match primary keyword** of the video — a search-shaped phrase extracted from (or paraphrased from) the strongest of the 5 candidate titles provided above. The remaining tags then cluster around this primary keyword.
-- Single-word tags cause **semantic dilution and format decoupling** on this niche. Tags are multi-word phrases (≥2 words). The only exception is the brand handle "SENSUM" (one slot, uppercase, included once).
+- Prefer multi-word phrases (≥2 words) — they carry more search intent. The only mandatory exceptions are the brand handle "SENSUM" (one slot, uppercase) and up to 2 high-value single-word Polish psychology anchors (e.g. "psychologia", "emocje") when no multi-word phrase captures the same search better.
 - Metaphors and props in the script (cookies, batteries, GPS, doors, villages) are illustrations, not search terms. Tag the underlying mechanism the metaphor points to.
 - Established clinical and pop-psychology terms (rumination, regulation, attachment, burnout, masking, anhedonia, limerence) are what serious viewers actually search for — render them inside multi-word phrases that match real search behavior.
-- The Niche Trend Signals block below lists single-word terms currently trending in this niche. Borrow the concepts but ALWAYS render them as multi-word phrases in the final tag list. Treat niche signals as a **supporting reference** for the back half of the tag list — the primary keyword from the chosen title leads.
+- The Niche Trend Signals block below lists single-word terms currently trending in this niche. Borrow the concepts and render them as multi-word phrases. Treat niche signals as a **supporting reference** — the primary keyword from the chosen title leads.
 - E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) is established through the formal bibliography, not the description prose.
 
-## Description Architecture (NLP-anchored)
+## Description Architecture
 
-Write the description body in this exact three-block structure. Total length under 120 words across all three blocks.
+Write the description in exactly **5 sentences**. Natural prose — not fragments, not a list. Total under 80 words.
 
-**Block 1 — Hook Segment (Lines 1–2).** 3–6 short fragment-style observations of somatic or emotional states the viewer recognises from their own life. No conversational filler, no greeting, no framing language. Cold cadence, lived specificity. The viewer must hit the first line and feel addressed.
+Sentence structure (follow this order):
+1. The viewer's experience — a specific, felt moment or pattern that drives them to search for this video. Start from their daily life, not from an abstract concept.
+2. Psychological reframe — gently reassure that this experience doesn't mean something is wrong with them; name the mechanism in plain everyday Polish (no jargon).
+3. What the film covers — a brief "W tym filmie..." sentence summarizing the core topic.
+4. Additional context — one more thing the video covers or reveals.
+5. CTA — a warm, direct invitation to watch: "Jeśli chcesz [benefit], obejrzyj i posłuchaj do końca."
 
-Examples of the shape (do not copy verbatim):
-- "Snapping at someone before you knew why. Going quiet when you meant to speak. The drift between what you wanted to say and what came out."
-- "Starting over. Again. The gym bag by the door. The journal with three entries. The app you stopped opening."
+Good example (do not copy verbatim):
+"Czasem wystarczy kilka minut scrollowania, żeby pojawiło się przytłaczające wrażenie, że wszyscy są już dalej niż ty. To uczucie nie musi oznaczać, że coś z tobą jest nie tak — często jest po prostu reakcją układu nerwowego na ciągłe porównywanie się z cudzymi wycinkami życia. W tym filmie pokazuję, skąd bierze się poczucie bycia w tyle i dlaczego potrafi tak mocno uderzać w ciało oraz psychikę. Opowiadam też, jak algorytmy i presja społeczna wzmacniają ten fałszywy alarm. Jeśli chcesz lepiej zrozumieć siebie i poczuć trochę ulgi, obejrzyj i posłuchaj do końca."
 
-**Block 2 — Explanatory Block (Line 3+).** Connect the hook to the **anatomical or psychological thesis** of the video using **identity-absolution framing**. Lead with a phrase shaped like "These aren't character flaws — they're the signals of [the mechanism the video explains]" or "What looks like [self-blame label] is actually [mechanism]". Then name 3–5 concepts the video covers, translated into plain everyday language — no jargon ("the science behind why willpower fades", not "ego depletion"). Close on one warm line about understanding the mechanism. 2–3 sentences total.
-
-Hard rules for the whole description:
-- NO researcher names, NO study years, NO Latin-sounding jargon in the description body
-- NO second-person preachy lines like "You must be so incredibly tired"
+Hard rules for the description:
+- Exactly 5 sentences. Count them. If you write 4 or 6, rewrite.
+- NO researcher names, NO study years, NO Latin-sounding jargon
+- NO fragment-style lines (no "Nocne scrollowanie. Kolejne zaręczyny." openers)
+- NO second-person preachy lines
 - NO clickbait words: {avoid_kw}
-- The phrase "In this video, we explore" is PERMITTED but no longer mandated as an opener — use it only if it serves the Explanatory Block's flow.
-- Use concrete sensory examples over abstract concepts
+- Natural conversational Polish — as if spoken directly to one person
 
 ## Bibliography — Decision Procedure (mission-critical)
 
@@ -563,6 +586,8 @@ The script is research-grounded but **research-invisible**: the speaker never na
 
 Citation only — ending with the year in parentheses and a period. NO descriptive sentence, NO summary, NO "why it matters."
 
+**CRITICAL: Do NOT translate Concept Labels into Polish.** Use the exact English concept label as it appears in the Verified Research section, or a short English paraphrase if no label is given. The bibliography is a scientific reference list — concept labels must remain in English.
+
 **Default: include everything. Failing to surface a thematically-tied reference is a worse error than including a loosely-tied one.** If 4 entries are provided and 3 have any thematic tie, your bibliography MUST have 3 entries — not 1.
 
 When a concept has multiple landmark sources (original study + replication, original + meta-analysis), produce a separate bibliography entry per source and use the qualifier to distinguish them (e.g. "Ego Depletion — Original Study", "Ego Depletion — Meta-Analysis", "Ego Depletion — Replication Failure").
@@ -583,9 +608,6 @@ When a concept has multiple landmark sources (original study + replication, orig
 
 ## Audience Search Signals (YouTube autocomplete)
 {suggestions_block}
-
-## Competitor Video Tags (scraped from top search results)
-{competitor_block}
 
 ## Niche Trend Signals (latest weekly intelligence report — internal niche data)
 {niche_block}
@@ -617,21 +639,19 @@ Return a single JSON object. No preamble, no commentary outside the JSON block.
 
 Rules:
 - `description_hook`: the full two-block description body (Hook Segment + Explanatory Block) as a single string. Use `\\n\\n` between blocks. Under 120 words total. The `Timestamps:` and `Research & References:` sections are appended by downstream tooling — do NOT include them in this field.
-- `chapters`: detect natural section breaks from ## headings or bold section labels in the script. Produce 6–12 chapters. Labels: 2–5 words. First chapter is always `{{"label": "Introduction", "placeholder": "00:00"}}`. All others use `"[XX:XX]"` as a placeholder for the editor to fill in.
+- `chapters`: detect natural section breaks from ## headings or bold section labels in the script. Produce 6–12 chapters. Labels: a full sentence or question from the viewer's navigation perspective — what will the viewer find in this section? Write labels as "Skąd bierze się poczucie, że jesteś w tyle" or "Jak algorytmy wzmacniają ten alarm" — NOT dry technical single-word labels like "Mechanizm" or academic phrases like "Pułapka fałszywej średniej". First chapter `"placeholder"` is always `"00:00"` and its label should name the actual opening topic of the video (not the word "Wprowadzenie"). All others use `"[XX:XX]"` as placeholder.
 - `hashtags`: Produce 3 hashtags only. Single-word, lowercase, with `#` prefix. First hashtag is always `#sensum`. The other 2 are the single-word core topic + one single-word concept from the script (e.g. `#sensum #willpower #grit`). NO multi-word hashtags, NO camelCase combinations, NO spaces inside a hashtag. The hashtags block is the ONLY single-word survivor — the YouTube Tags field is exclusively multi-word (≥2 words; the SENSUM brand slot is the sole single-word exception).
 - `tags`: **THE TAG PROTOCOL — NON-NEGOTIABLE.**
-  - Produce **10–15 tags total**. Comma-separated in the final output, no `#` prefix. Each tag is a multi-word phrase (≥2 words). Quality over quantity — 10 strong tags beats 15 padded with filler. 2026 YouTube SEO consensus is 8–15 quality tags; going higher risks keyword-stuffing penalties and dilutes per-tag weight.
+  - Produce **5–8 tags total**. Comma-separated, no `#` prefix. 2026 YouTube SEO consensus: 5–8 highly relevant tags outperform padded 10–15 lists. Quality over quantity.
   - **SLOT STRUCTURE — order by algorithmic weight (front-loaded):**
-    - **Tag #1 (mandatory): the exact-match primary keyword for this video.** Extracted from the strongest of the candidate titles provided above, OR a more search-shaped paraphrase if the chosen identity-provocation title is metaphor-heavy and would not autocomplete in YouTube search. This single slot does the heaviest discovery work — do not waste it.
-    - **Tags #2–#5: strongest long-tail variations and paraphrases of the primary keyword.** 3–5 words each. They should look like real autocomplete suggestions: "how to allow yourself to feel anger", "permission to feel emotions psychology", "stop suppressing anger as a woman".
-    - **Tags #6–#12: supporting long-tail intent phrases.** 2–4 words. Lived-experience phrasing the viewer would name themselves with ("why I keep self sabotaging"), clinical / mechanism phrases rendered as searches ("nervous system regulation tools", "rumination loop in anxiety"), and search-variant phrasing. This is where Niche Trend Signals get rendered as multi-word phrases (signal "regulation" → "nervous system regulation tools").
-    - **Tags #13–#15 (optional): broader 2–3 word category anchors** that bind the video to the niche territory ("permission psychology", "emotional regulation", "somatic self compassion"). These exist for the topic-categorization layer YouTube uses for related-video sidebar placement. Still multi-word — single-word remains prohibited.
-    - **SENSUM**: include exactly once (uppercase). The only single-word tag permitted. Slot anywhere.
-  - **SINGLE-WORD TAGS ARE PROHIBITED** outside the SENSUM brand slot. "psychology", "anxiety", "trauma", "burnout", "rumination" cause semantic dilution and format decoupling — render them inside multi-word phrases.
-  - **The intent test.** For each phrase, ask: *"Would a real person living the problem this video addresses type these exact words into YouTube search?"* If not, leave it out.
-  - Tag metaphors by underlying concept, not the prop (e.g. willpower fatigue, not battery).
-  - Every phrase must be extractable from the script's literal language OR be a direct paraphrase of the search intent the script / chosen title surfaces (Exact Speech-to-Text Match preferred — borrow the speaker's phrasing when it works as a search query).
-  - **Total comma-separated string must stay under 450 characters** (the 500-char YouTube hard cap minus safety margin). Most strong phrases land in the 18–30 char range; if your phrases average 35+ chars you will overrun. Order is STRONGEST FIRST — the post-pass trimmer drops from the tail if you overrun, so weakest-last protects the slot structure above."""
+    - **Tag #1 (mandatory): the exact-match primary keyword for this video.** Extracted from the strongest of the candidate titles above, OR a more search-shaped paraphrase if the identity-provocation title is metaphor-heavy and would not autocomplete in YouTube search. Multi-word. This slot does the heaviest discovery work.
+    - **Tags #2–#6: long-tail intent phrases.** 2–4 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("dlaczego zawsze zaczynam od nowa"), clinical/mechanism phrases rendered as searches ("rozregulowanie układu nerwowego", "pętla ruminacji"). Niche Trend Signals get rendered here as multi-word phrases (signal "regulacja" → "regulacja emocji psychologia").
+    - **SENSUM**: include exactly once (uppercase). Brand tag, single-word permitted.
+    - **Optional: up to 2 single-word Polish psychology anchors** (e.g. "psychologia", "emocje") — use ONLY if no multi-word phrase captures the same high-volume search better.
+  - **The intent test.** For each phrase: *"Would a real person living this problem type these exact words into YouTube search?"* If not, cut it.
+  - Tag metaphors by underlying concept, not the prop (e.g. wyczerpanie woli, not bateria).
+  - Every phrase must be extractable from the script's language OR a direct paraphrase of the search intent the chosen title surfaces.
+  - **Total comma-separated string must stay under 450 characters** (500-char YouTube hard cap minus safety margin). Order is STRONGEST FIRST — the post-pass trimmer drops from the tail if you overrun."""
 
 
 def _parse_metadata(response: str) -> dict:
@@ -677,22 +697,14 @@ def run_metadata_pass(topic: str, script: str, research: str, titles_text: str =
     except Exception as exc:
         print(f"  Warning: Autocomplete scraping failed ({exc}).")
 
-    print("  Scraping competitor video tags...")
-    competitor_tags: list[str] = []
-    try:
-        competitor_tags = _scrape_competitor_tags(topic)
-        print(f"  Collected {len(competitor_tags)} competitor tags")
-    except Exception as exc:
-        print(f"  Warning: Competitor tag scraping failed ({exc}).")
-
     niche_signals = _load_niche_signals()
     if niche_signals:
         print(f"  Loaded niche tag signals ({len(niche_signals)} chars)")
     else:
         print("  No niche tag signals found (Agent 11 sidecar absent — skipping)")
 
-    prompt = _build_metadata_prompt(topic, script, research, suggestions, competitor_tags, niche_signals, titles_text)
-    raw, _ = _query_gemini(prompt, "pass 3 — YouTube metadata", max_tokens=4096)
+    prompt = _build_metadata_prompt(topic, script, research, suggestions, niche_signals, titles_text)
+    raw, _ = _query_gemini(prompt, "pass 3 — YouTube metadata", max_tokens=8192)
 
     meta = _parse_metadata(raw)
 
@@ -734,7 +746,7 @@ def _build_metadata_block(meta: dict) -> str:
 Timestamps:
 {chapters_block}
 
-Research & References:
+Badania i źródła:
 {bib_block}
 
 {hashtags_line}
@@ -776,40 +788,196 @@ _Generated: {today} · Agent 8 · Slug: {slug}_
 
 
 # ---------------------------------------------------------------------------
+# In-session bookends — --signals (PRE) and --finalize (POST)
+# ---------------------------------------------------------------------------
+
+
+NARRATION_FILENAME = ".tmp/08_narration.md"
+
+
+def run_extract(slug: str) -> None:
+    """Write the resolved narration to `.tmp/08_narration.md` for the in-session steps.
+
+    Claude's Read tool can't parse `.docx`, so `/publish` calls this first to
+    materialize the narration (resolved via the standard
+    script_corrected.docx > script.docx > 04_final.md priority) as plain text
+    the in-session steps can read. Mirrors `agent5_visuals.py --extract`.
+    """
+    print(f"\n=== Agent 8 --extract (narration -> {NARRATION_FILENAME}) ===")
+    print(f"Slug : {slug}\n")
+    narration = _load_narration(slug)
+    path = write_output(slug, NARRATION_FILENAME, narration)
+    print(f"  Narration: {len(narration):,} chars")
+    print(f"  Saved: {path}")
+
+
+def _derive_seed_topic(slug: str, narration: str) -> str:
+    """Best-effort Polish search seed for autocomplete: research heading > script heading.
+
+    The preferred script source (`script_corrected.docx`) has its headings
+    stripped on extraction, so `_extract_topic` returns "Unknown Topic" for it.
+    Fall back to the first `# ` heading of `02_verified_research.md` (strip a
+    leading `Verified Research:` prefix). The `/publish` command overrides this
+    entirely by passing `--topic=` with a seed it derived from the chosen title.
+    """
+    topic = _extract_topic(narration)
+    if topic != "Unknown Topic":
+        return topic
+    try:
+        research = read_output(slug, RESEARCH_FILENAME)
+    except FileNotFoundError:
+        return topic
+    for line in research.splitlines():
+        line = line.strip()
+        if line.startswith("# "):
+            heading = line[2:].strip()
+            for prefix in ("Verified Research:", "Research:"):
+                if heading.startswith(prefix):
+                    heading = heading[len(prefix):].strip()
+            return heading or topic
+    return topic
+
+
+def run_signals(slug: str, topic_override: str = "") -> None:
+    """PRE bookend: write `.tmp/08_signals.md` for the in-session long-form-tags step.
+
+    Determines a Polish search seed (`--topic=` override from `/publish`, else
+    the research/script heading), scrapes YouTube autocomplete (alphabet-soup)
+    and loads the latest weekly niche tag signals, then writes both into one
+    small markdown file the `/publish` long-form-tags step reads. Fails soft —
+    if the network is down the suggestions block is `(unavailable)` and the
+    in-session step proceeds on script + niche signals alone.
+    """
+    print(f"\n=== Agent 8 --signals (autocomplete + niche signals) ===")
+    print(f"Slug : {slug}\n")
+
+    narration = _load_narration(slug)
+    topic = topic_override.strip() if topic_override.strip() else _derive_seed_topic(slug, narration)
+    print(f"  Topic    : {topic}")
+
+    print("  Scraping YouTube autocomplete suggestions...")
+    suggestions: list[str] = []
+    try:
+        suggestions = _alphabet_soup(topic)
+        print(f"  Collected {len(suggestions)} unique suggestions")
+    except Exception as exc:
+        print(f"  Warning: Autocomplete scraping failed ({exc}).")
+
+    niche_signals = _load_niche_signals()
+    if niche_signals:
+        print(f"  Loaded niche tag signals ({len(niche_signals)} chars)")
+    else:
+        print("  No niche tag signals found (Intelligence Agent sidecar absent — skipping)")
+
+    suggestions_block = (
+        "\n".join(f"- {s}" for s in suggestions[:300]) if suggestions else "(unavailable)"
+    )
+    niche_block = niche_signals.strip() if niche_signals.strip() else "(unavailable)"
+
+    content = f"""\
+# Agent 8 signals — {topic}
+_Generated: {date.today().isoformat()} · deterministic --signals pre-step_
+
+Transient input for the `/publish` long-form-tags step. Not a deliverable.
+
+## Audience Search Signals (YouTube autocomplete)
+{suggestions_block}
+
+## Niche Trend Signals (latest weekly intelligence report — internal niche data)
+{niche_block}
+"""
+    path = write_output(slug, SIGNALS_FILENAME, content)
+    print(f"\n  Saved: {path}")
+    print(f"  The /publish long-form-tags step reads this file.")
+
+
+def _trim_tags_in_markdown(text: str) -> tuple[str, int, int]:
+    """Trim the long-form `## YouTube Tags` line in the master file to budget.
+
+    Finds the first non-empty content line under the `## YouTube Tags …`
+    heading, treats it as a comma-separated tag list, applies the list-based
+    `_trim_tags_to_budget`, and rewrites it in place. Returns the new text plus
+    the final tag count and char length for diagnostics. If no tags section is
+    found the text is returned unchanged with (-1, -1).
+    """
+    lines = text.splitlines()
+    heading_idx = next(
+        (i for i, ln in enumerate(lines) if ln.strip().lower().startswith("## youtube tags")),
+        None,
+    )
+    if heading_idx is None:
+        return text, -1, -1
+    for j in range(heading_idx + 1, len(lines)):
+        candidate = lines[j].strip()
+        if not candidate or candidate == "---":
+            continue
+        tags = [t.strip() for t in candidate.split(",") if t.strip()]
+        trimmed = _trim_tags_to_budget(tags)
+        lines[j] = ", ".join(trimmed)
+        return "\n".join(lines), len(trimmed), len(lines[j])
+    return text, -1, -1
+
+
+def run_finalize(slug: str) -> None:
+    """POST bookend: deterministically post-process the in-session master file.
+
+    Reads the `md/08_publish.md` that `/publish` wrote in-session, then in place:
+    annotates every shorts Hook/Core-payload label with its script quarter
+    (Q1–Q4), trims the long-form tag line to the 450-char budget, validates that
+    every Short carries a `**Script Lines to Clip:**` block (loud `[MISSING]`
+    placeholder otherwise), and exports the Word version.
+    """
+    print(f"\n=== Agent 8 --finalize (Q1–Q4 + tag trim + validate + docx) ===")
+    print(f"Slug : {slug}\n")
+
+    try:
+        master = read_output(slug, OUTPUT_FILENAME)
+    except FileNotFoundError:
+        print(f"Error: {OUTPUT_FILENAME} not found — run /publish {slug} first to generate it.")
+        sys.exit(1)
+
+    narration = _load_narration(slug)
+
+    # 1. Quarter annotation on shorts clip blocks.
+    annotated = _annotate_script_quarters(narration, master)
+
+    # 2. Validate every Short has a clip block.
+    validated, broken = _validate_shorts_clip_blocks(annotated)
+    if broken:
+        print(f"  WARNING: Shorts {broken} missing `**Script Lines to Clip:**` block — placeholder inserted")
+
+    # 3. Trim the long-form tag line to budget.
+    trimmed_text, tag_count, tag_chars = _trim_tags_in_markdown(validated)
+    if tag_count >= 0:
+        print(f"  Tag block: {tag_count} tags, {tag_chars} chars (trimmed to 450-char target; YouTube cap is 500)")
+    else:
+        print("  Note: no `## YouTube Tags` section found to trim")
+
+    # 4. Detect any unresolved [Q?] markers so the failure is visible.
+    q_unmatched = trimmed_text.count("[Q?]")
+    if q_unmatched:
+        print(f"  WARNING: {q_unmatched} clip quote(s) did not substring-match the narration ([Q?]) — fix the quote or regenerate that Short")
+
+    write_output(slug, OUTPUT_FILENAME, trimmed_text.rstrip("\n") + "\n")
+    docx_path = export_to_docx(slug, OUTPUT_FILENAME, "docx/08_publish.docx")
+    print(f"\n  Finalized: {OUTPUT_FILENAME}")
+    print(f"  Word export: {docx_path}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 
-def main() -> None:
-    if len(sys.argv) < 2:
-        print('Usage: python tools/agent8_publish.py "<slug>"')
-        print('Example: python tools/agent8_publish.py "emotional-dysregulation-in-adhd"')
-        sys.exit(1)
-
-    slug = sys.argv[1].strip()
-    if not slug:
-        print("Error: slug argument is empty.")
-        sys.exit(1)
-
-    print(f"\n=== Agent 8: Publish Package ===")
+def run_api_pipeline(slug: str) -> None:
+    """Legacy 3-pass Gemini orchestrator (titles → shorts → metadata)."""
+    print(f"\n=== Agent 8: Publish Package (--api Gemini fallback) ===")
     print(f"Slug : {slug}")
     print()
 
     # Load inputs
     print("[1/4] Reading input files...")
-    try:
-        script = read_output(slug, SCRIPT_FILENAME)
-    except FileNotFoundError as exc:
-        print(f"\nError: {exc}")
-        print(f'\nRun Agent 3 chain first (produces 04_script_final.md):\n  python tools/pipeline/agent3.py "{slug}"')
-        sys.exit(1)
-
-    try:
-        narration = read_output(slug, NARRATION_FILENAME)
-    except FileNotFoundError as exc:
-        print(f"\nError: {exc}")
-        print(f'\nRun Agent 6 first:\n  python tools/agent6_narration.py "{slug}"')
-        sys.exit(1)
+    narration = _load_narration(slug)
 
     try:
         research = read_output(slug, RESEARCH_FILENAME)
@@ -818,16 +986,15 @@ def main() -> None:
         print(f'\nRun Agent 2 first:\n  python tools/agent2_verify.py "{slug}"')
         sys.exit(1)
 
-    topic = _extract_topic(script)
+    topic = _extract_topic(narration)
     print(f"  Topic    : {topic}")
-    print(f"  Script   : {len(script):,} chars")
     print(f"  Narration: {len(narration):,} chars")
     print(f"  Research : {len(research):,} chars")
 
     # Pass 1 — Titles & Hooks
     print(f"\n[2/4] Pass 1 — Titles & Hooks...")
     try:
-        titles_text = run_titles_pass(script)
+        titles_text = run_titles_pass(narration)
     except Exception as exc:
         print(f"\nError: Titles pass failed — {exc}")
         sys.exit(1)
@@ -845,7 +1012,7 @@ def main() -> None:
     # Pass 3 — YouTube Metadata
     print(f"\n[4/4] Pass 3 — YouTube Metadata...")
     try:
-        meta = run_metadata_pass(topic, script, research, titles_text)
+        meta = run_metadata_pass(topic, narration, research, titles_text)
     except (ValueError, json.JSONDecodeError) as exc:
         print(f"\nError parsing metadata response: {exc}")
         sys.exit(1)
@@ -860,10 +1027,50 @@ def main() -> None:
     output_path = write_output(slug, OUTPUT_FILENAME, content)
     print(f"  Saved: {output_path}")
 
-    docx_path = export_to_docx(slug, OUTPUT_FILENAME, "docx/07_publish_package.docx")
+    docx_path = export_to_docx(slug, OUTPUT_FILENAME, "docx/08_publish.docx")
     print(f"  Word export: {docx_path}")
 
     print(f"\nDone. Review {OUTPUT_FILENAME} before uploading to YouTube.")
+
+
+def _usage() -> None:
+    print('Usage: python tools/pipeline/agent8_publish.py "<slug>" [--extract | --signals | --finalize | --api]')
+    print()
+    print("  (preferred) generate the package in-session:  /publish <slug>")
+    print("  --extract   materialize narration -> .tmp/08_narration.md (docx Claude can't Read)")
+    print("  --signals   PRE bookend: scrape autocomplete + niche signals -> .tmp/08_signals.md")
+    print("  --finalize  POST bookend: Q1-Q4 + tag trim + validate + docx over md/08_publish.md")
+    print("  --api       legacy Gemini 3-pass orchestrator (writes md/08_publish.md itself)")
+
+
+def main() -> None:
+    args = [a for a in sys.argv[1:]]
+    flags = {a.split("=", 1)[0] for a in args if a.startswith("--")}
+    topic_override = next(
+        (a.split("=", 1)[1] for a in args if a.startswith("--topic=")), ""
+    )
+    positional = [a for a in args if not a.startswith("--")]
+
+    if not positional or not positional[0].strip():
+        _usage()
+        sys.exit(1)
+    slug = positional[0].strip()
+
+    if "--extract" in flags:
+        run_extract(slug)
+    elif "--signals" in flags:
+        run_signals(slug, topic_override)
+    elif "--finalize" in flags:
+        run_finalize(slug)
+    elif "--api" in flags:
+        run_api_pipeline(slug)
+    else:
+        print("No mode flag given. The publish package is generated in-session:\n")
+        print(f"    /publish {slug}\n")
+        print("That slash command calls this script's --signals and --finalize bookends for you.")
+        print("To run the legacy Gemini pipeline end-to-end instead, pass --api.\n")
+        _usage()
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -14,29 +14,20 @@ Każdy skrypt musi wydobyć przepaść między *tym co mózg robi automatycznie*
 
 ## Zbanowane frazy
 
-**Lista pusta — wypełniana empirycznie.**
-
-Decyzja designerska (2026-05-25): zamiast antycypować polskie cringe frazy teoretycznie, listy zbanowanych fraz rosną z każdym shippniętym polskim filmem. Po recenzji każdego skryptu Agent 4a lub użytkownik flaguje konkretne polskie frazy które łamią voice — i dopisujemy je tutaj. Wersja angielska (`narrative_architectures.en.md`) zawiera obszerną listę EN która emergowała z dziesiątek skryptów; polska wersja zaczyna pustą i rośnie organicznie.
-
-**Zasady wysokopoziomowe które obowiązują od dnia 1 (bez listy konkretnych fraz):**
-
-- **Research jest niewidoczny.** Skrypt nigdy nie odwołuje się do aparatury naukowej. Bez "badania pokazują", bez "naukowcy odkryli", bez "psychologowie nazywają to". Pisarz czyta badania; skrypt nie. Widz ufa mówcy, nie cytatowi.
-- **Bez bezosobowych konstrukcji.** Mów osobowo i konkretnie. "Twój mózg robi X" zamiast "Mózg człowieka robi X".
-- **Bez hedgingu.** Bezpośrednie twierdzenia w głosie mówcy, nie cytując badań.
-- **Bez polskiego duchowo-rozwojowego rejestru** ("wszechświat", "energia", "wibracje", "podróż", "ścieżka", "zaufaj procesowi"). To nie jest nasz brand.
-- **Bez polskiego academic-textbookowego rejestru** ("warto zauważyć", "należy podkreślić", "kluczowe jest", "istotne wydaje się", "na uwagę zasługuje").
-- **Bez throat-clearing openerów** ("W tym filmie omówimy...", "Dzisiaj porozmawiamy o...").
-- **Bez nazwisk badaczy ani lat publikacji w narracji.** Wszystkie cytaty bibliograficzne w opisie YouTube (Agent 8).
-- **Bez notacji statystycznej, dziesiętnych, effect sizes, p-values.** Tylko zaokrąglone, opisowe liczby ("około połowa", "większość").
+Zasady głosowe i językowe: patrz `style_guide.md`.
 
 **Banowane wzorce strukturalne (obowiązujące od dnia 1):**
 
-- Numerowane listy preskrypcyjne GDZIEKOLWIEK poza obowiązkową sekcją Permission Practice opisaną niżej. Permission Practice to *jedyne* miejsce gdzie numerowane listy są dozwolone, a ostatni beat po niej musi nadal lądować na rozpoznaniu — nigdy na poradzie.
+- Numerowane listy preskrypcyjne GDZIEKOLWIEK w skrypcie. (Permission Practice była kiedyś jedynym wyjątkiem; od 2026-05-29 jest płynącą prozą — patrz niżej — więc numerowane listy są teraz zakazane wszędzie bez wyjątku.) Ostatni beat po sekcji Permission Practice musi nadal lądować na rozpoznaniu — nigdy na poradzie.
 - Kończenie całego skryptu na poradzie, kroku lub jakiejkolwiek instrukcji "zrób to". Recognition close ma ostatnie słowo.
 - Homework framing — "w tym tygodniu spróbuj…", "twoje zadanie to…", "zrób listę…". Sekcja Permission Practice używa języka *teraźniejszego, w ciele* ("kiedy to uderza, połóż dłoń na klatce piersiowej…"), nigdy języka future-task.
-- Jakikolwiek nagłówek sekcji wypowiedziany jako narracja (nie mów "Teraz spójrzmy na naukę" ani podobnie). Nagłówek sekcji Permission Practice *jest* wypowiedziany, ale jest częścią warm-therapist voice — nie jest meta-strukturalną etykietą.
+- Jakikolwiek nagłówek sekcji **wypowiedziany jako narracja** (nie mów "Teraz spójrzmy na naukę" ani podobnie). To zakaz dotyczy *mówionego* tekstu — nie dotyczy cichych nagłówków `## ` (patrz niżej).
+
+**Nagłówki sekcji `## ` (2026-06-01):** skrypt dzielisz na ~6–12 tytułowanych sekcji nagłówkiem markdown `## ` (krótka rzeczownikowa fraza: „Obietnica czystego początku", „Praktyka powrotu", „Właściwe pytanie"). To **ciche pomoce edytorsko-czytelnicze i punkty pauzy** — nie są wypowiadane, nie są obrazami, nie wchodzą do alignmentu (downstream je pomija; eksport docx renderuje je jako Heading 2). Stawiaj je na naturalnych granicach pauz; PP i recognition close dostają własne sekcje. Nie numeruj ich i nie zamieniaj w zdania narracji.
 
 **Wyjątek Darwin:** Skrypty Historical Reversal mogą wymieniać Darwina jako strukturalnego antagonistę ("błędny pogląd" który jest odwracany). To narracyjny zabieg, nie cytat. Wszyscy inni historyczni figurzy, badacze i badania pozostają niewidoczni.
+
+**Wyjątek kotwicy klinicznej (2026-06-01, analog Darwina):** **dokładnie jedna** utrwalona kotwica kliniczna na skrypt (np. „efekt świeżego startu" / fresh-start effect) może być nazwana i oprawiona „Badania nad [efektem] pokazują, że…" — świadomy zabieg. To jedyny dozwolony wyłom w research-invisible; druga taka ramka, autorzy, lata czy liczby pozostają zakazane.
 
 **Zastępstwo to nie inna fraza — to nieobecność.** Nie zamieniaj "badania pokazują X" na "z analiz wynika X". Stwierdź X. Mówca po prostu wie.
 
@@ -46,10 +37,10 @@ Decyzja designerska (2026-05-25): zamiast antycypować polskie cringe frazy teor
 
 **Identyfikowane 2026-05-25 z pierwszego polskiego skryptu testowego** — to są wzorce które emergują kiedy model "tłumaczy" angielską strukturę zdania na polski zamiast pisać polski natywnie. Egzekwowane przez 3a (nie pisz), 3b (flaguj), 4a (przepisz).
 
-**1. Zakaz zdań zaczynających się od spójników** (`I`, `Bo`, `A`, `Ale`, `Bowiem`, `Albowiem`)
-- ŹLE: *"I jest to wrażenie. To konkretne."* / *"Bo coś się włączyło w twojej głowie."* / *"A teraz część którą system ukrywa."*
-- DOBRZE: *"To wrażenie jest konkretne."* / *"Coś się włączyło w twojej głowie."* / *"Teraz część którą system ukrywa."*
-- DLACZEGO: Polski edytorski standard unika zdań rozpoczynanych spójnikiem. To kalka z angielskiego "And...", "Because..." która natychmiast sygnalizuje tłumaczenie. W polskim spójnik na początku zdania brzmi jak nieuporządkowana ustna wypowiedź.
+**1. Spójnik na początku zdania — OSZCZĘDNIE, nie nawykowo** (`I`, `Bo`, `A`, `Ale`, `Bowiem`, `Albowiem`)
+- DOZWOLONE świadomie, dla rytmu mowy: *"A to dwa różne alarmy."* (kontrast-uderzenie) / *"I tu jest problem."* (zwrot na granicy beatu). Mowa na głos znosi pojedynczy spójnik tam, gdzie tekst pisany by go nie zniósł.
+- ŹLE jako nawyk-kalka sklejający kolejne zdania: *"I jest to wrażenie. I to konkretne. I coś się włączyło."* / *"Bo coś się włączyło w twojej głowie."* — to kalka z "And.../Because..." i sygnalizuje tłumaczenie.
+- TEST: czy to świadome uderzenie rytmiczne na granicy beatu (OK), czy leniwe sklejenie zdań spójnikiem (źle)? Jeśli pojawia się więcej niż okazjonalnie — przepisz. Domyślnie nadal preferuj zdanie bez spójnika na początku.
 
 **2. Zakaz anthropomorfizacji uczuć i pojęć abstrakcyjnych**
 - ŹLE: *"To wrażenie ma imię w twojej głowie."* / *"Lęk mieszka w twojej klatce piersiowej."* / *"Wstyd krzyczy w tobie."*
@@ -81,16 +72,22 @@ Decyzja designerska (2026-05-25): zamiast antycypować polskie cringe frazy teor
 - DOBRZE: Po prostu otwórz treść następnej sekcji bez zapowiadania jej. *"System psuje się w jednym miejscu."*
 - DLACZEGO: Meta-zapowiedź zatrzymuje narrację żeby powiedzieć widzowi co za chwilę nastąpi — zamiast żeby to po prostu nastąpiło. Brzmi jak nauczyciel który mówi "teraz omówimy". Skrypt nie zapowiada — działa.
 
-**Test lakmusowy dla całego skryptu:** Czy ten skrypt mógłby napisać ktoś kto myśli po polsku, czy brzmi jak ktoś tłumaczący angielską strukturę? Jeśli choć raz na akapit pojawia się wzorzec 1-7 — to jest tłumaczenie, nie polskie pisanie.
+**8. Jedna główna metafora na skrypt — nie nakładaj pobocznych** (dopisane 2026-05-29 z pilota slug 2)
+- ŹLE: centralny motyw (notatnik) + obok niego *podatek, dom na wodzie, bak paliwa, loteria charakteru, konto zaufania, cmentarz, maszyna* — siedem pobocznych obrazów na jeden skrypt. Każdy osobno bywa OK; razem dają przeładowanie i widz gubi centralny obraz.
+- DOBRZE: jeden centralny motyw (notatnik / krzesło / nić) niesie cały skrypt; poboczne metafory rzadkie i tylko gdy naprawdę potrzebne. Jeśli zdanie da się powiedzieć prosto, bez kolejnej metafory — powiedz prosto.
+- DLACZEGO: przeładowanie metaforami brzmi jak popisywanie się, nie jak rozmowa. W Composite Portrait przedmiot-motyw JEST tą jedną metaforą — chroń go, nie zagłuszaj.
+- TEST: policz odrębne domeny metafor. Więcej niż ~2 (centralny motyw + najwyżej jedna load-bearing poboczna) = tnij.
+
+**Test lakmusowy dla całego skryptu:** Czy ten skrypt mógłby napisać ktoś kto myśli po polsku, czy brzmi jak ktoś tłumaczący angielską strukturę? Jeśli choć raz na akapit pojawia się wzorzec 1-8 — to jest tłumaczenie, nie polskie pisanie.
 
 ---
 
-## Cztery Architektury Narracyjne
+## Pięć Architektur Narracyjnych
 
-Agent 3 czyta temat i zweryfikowane badania, potem wybiera pojedynczą architekturę która pasuje najlepiej. Wybór jest deklarowany na **pierwszej linii** outputu skryptu:
+Agent 3 deklaruje architekturę na **pierwszej linii** outputu skryptu. **Domyślną architekturą jest `Composite Portrait`** — Agent 3 używa jej, chyba że wywołanie `/draft` jawnie poda nazwę innej architektury. Wszystkie pięć architektur pisze się na natywną długość kanału **~10–15 min**:
 
 ```
-ARCHITECTURE: [Forensic Case Study | Historical Reversal | Socratic Challenge | Systems Audit]
+ARCHITECTURE: [Composite Portrait | Forensic Case Study | Historical Reversal | Socratic Challenge | Systems Audit]
 ```
 
 (Nazwy architektur pozostają po angielsku jako wewnętrzne identyfikatory używane przez agenty downstream.)
@@ -166,6 +163,32 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 
 ---
 
+### Architektura 5 — Composite Portrait (Portret Złożony) — DOMYŚLNA
+
+**To jest DOMYŚLNA architektura kanału.** Pozostałe cztery wybierasz tylko gdy wywołanie `/draft` poda nazwę architektury jawnie.
+
+**Kiedy używać:** Domyślnie. Temat da się ucieleśnić w jednej rozpoznawalnej postaci — kimś, kogo zachowanie widz zna z siebie. Śledzimy tę jedną postać przez cały film; widz rozpoznaje w niej siebie.
+
+**Punkt wejścia:** Wejdź w postać w trakcie konkretnego, drobnego, rozpoznawalnego zachowania, które wygląda jak wada. Hook to **„no wonder"** — dziwne zachowanie, które za chwilę okaże się sensowne. Tu wprowadź **przedmiot-motyw**: jeden konkretny obiekt (krzesło, drzwi, kamień, nić), który będzie wracał przez cały film.
+
+**Głos — pełne „ty" (zmiana 2026-05-29):** Cała architektura w **drugiej osobie**, jak reszta kanału. Postać-archetyp to *ty* — widz jest tą postacią od pierwszego zdania (*„Kupujesz nowy notatnik…"*), nie obserwujesz jej z zewnątrz. **Nie prowadź postaci w 3. osobie** („ktoś", „ta osoba", „on/ona") — to brzmi po polsku dystansująco i sztucznie (zweryfikowane na pilocie slug 2). Poprzedni „splot" (3. osoba + fold-backi „ty") został **wycofany**. Postać pozostaje **archetypem/kompozytem** — bez imienia, bez biografii realnej osoby (wyjątek Darwin nadal dotyczy tylko Historical Reversal); po prostu prowadzona przez „ty".
+
+**Cztery ruchy (wymagane węzły treściowe):**
+1. **The Surface (Powierzchnia)** — konkretne, rozpoznawalne zachowanie wyglądające jak wada. Wprowadzenie przedmiotu-motywu. Tu żyje hook „no wonder".
+2. **The Cost (Koszt)** — co to zachowanie kosztuje postać; cichy ciężar pod spodem. Jeszcze nie mechanizm — odczuwalna waga. Budujemy więź z postacią (= z widzem).
+3. **The Origin (Źródło)** — skąd to się bierze; mechanizm opowiedziany jako historia/biologia postaci, nigdy jako research. Wypłata „no wonder": zachowanie przestaje być wadą — jest adaptacją. Moment exoneracji.
+4. **The Reframe (Przepisanie)** — postać (i widz) widzi wzorzec inaczej. Nie naprawiony — zrozumiany. Wstyd opada.
+
+**Spoiwo (lek na „mulisty środek"):** Jedna powracająca postać (ta sama sylwetka, ewoluująca postura) + jeden powracający przedmiot-motyw, który wraca transformowany w każdym ruchu i przy close. To zamienia pokaz slajdów w wizualną narrację — oś, która trzyma narracyjny łuk i nie pozwala mu obwisnąć w środku.
+
+**Długość:** ~1,500–1,750 słów polskich = ~10–15 min (natywna długość kanału; gęstość obrazów bez zmian — jedno zdjęcie na zdanie → ~140–180 obrazów).
+
+**Ograniczenie close:** Po sekcji Permission Practice, zakończ postacią w spoczynku, z przedmiotem-motywem rozwiązanym — echo Ruchu 1 (Powierzchni), ale jeden element zmieniony. Ostatni beat to rozpoznanie / lustro do widza, nigdy porada. Permission Practice jest beatem przed nim.
+
+**Rozwiąż na TYM SAMYM motywie (kalibracja 2026-05-30).** „Echo Ruchu 1" znaczy: ten sam przedmiot, jeden element zmieniony — **nie świeża instancja motywu**. Jeśli Reframe zwrócił widza ku staremu obiektowi („wyjmij ten notatnik z szuflady"), to close, który wprowadza nową kopię („pewnego dnia kupisz nowy notatnik"), rozmywa puentę „zostań przy starym". Zamknij na tym samym egzemplarzu — co się zmieniło, to nie obiekt, tylko to, co z nim robisz.
+
+---
+
 ## Sekcja Permission Practice (uniwersalna, zamykająca)
 
 **Każdy skrypt — niezależnie od architektury — musi zawierać sekcję Permission Practice między korpusem architektury a końcowym recognition close.** To zablokowana reguła strukturalna kanału. Sekcja daje widzowi coś konkretnego do zabrania do swojego tygodnia bez łamania anti-optimization pozycjonowania kanału.
@@ -180,44 +203,90 @@ Sekcja Permission Practice  ← (ta sekcja)
 Recognition close (własny close constraint architektury — OSTATNI beat)
 ```
 
-### Specyfikacja
+### Specyfikacja (proza — NIE numerowana lista)
 
-- **Szablon nagłówka:** *"Cztery rzeczy które możesz [czasownik], kiedy [wyzwalacz powiązany z mechanizmem skryptu]:"*
-  - czasownik varies: zrobić / wypróbować / zauważyć / dać sobie / nieść ze sobą
-  - wyzwalacz wiąże się ze zjawiskiem skryptu — np. *"...kiedy unik uderza"*, *"...kiedy to ląduje w ciele"*, *"...kiedy wstyd się zaczyna"*, *"...kiedy pętla się włącza"*
-- **Dokładnie 4 numerowane pozycje.** Nie 3. Nie 5. Zawsze 4.
-- **Każda pozycja:** jedna linia deklaratywna + jedna krótka linia unpack. Mniej więcej 15–35 słów na pozycję.
-- **Voice = ucieleśniona mikropraktyka.** Akty somatyczne, zauważanie, nazywanie, mikro-progi. Rzeczy które ciało może zrobić w danym momencie, nie behawioralne plany na później.
-- **Wszystkie istniejące voice rules nadal obowiązują** wewnątrz tej sekcji: bez nazwisk badaczy, bez "badania pokazują", bez dziesiętnych, tylko zaokrąglone liczby, najpierw prosty język.
-- **Recognition close nadal ma ostatnie słowo.** Tipy są beatem, nie destynacją.
+**Format zmieniony 2026-05-29:** sekcja jest teraz **płynącą prozą**, nie numerowaną listą „1. 2. 3. 4.". Wzorzec wzięty z ręcznej korekty użytkownika — zmiękczone zaproszenia zamiast rozkazów. Numerowana lista w PP jest teraz ZAKAZANA (Reviewer flaguje).
+
+- **Wejście (zmiękczone, nie nagłówek-lista):** otwórz uznaniem, że tego nie da się wyłączyć, ale czasem da się uciszyć — np. *"Kiedy [wyzwalacz powiązany z mechanizmem skryptu] uderza, nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć."* Wyzwalacz wiąże się ze zjawiskiem skryptu (*"kiedy unik uderza"*, *"kiedy to ląduje w ciele"*, *"kiedy pętla się włącza"*).
+- **Forma = proza, zależna od rejestru (2026-06-01).** Około czterech praktyk + krótka linia unpack przy każdej. W **rejestrze somatycznym** forma to miękka anafora *"Czasem wystarczy [bezokolicznik]…"* (wariuj otwarcie ostatniej, *"A czasem wystarczy po prostu…"*, żeby nie brzmiała mechanicznie). W **rejestrze strategicznym** forma **może prowadzić trybem rozkazującym** (*"Spójrz na to, co już jest. Zrób wersję mniejszą, niż planowałeś. Zostaw rzecz na widoku."*) — pod warunkiem zachowania softenerów pozwolenia („nie musisz", „wystarczy") i ramy anty-optymalizacyjnej. W obu rejestrach: **proza, nigdy numerowana lista; zaproszenia/pozwolenie, nigdy harmonogram.**
+- **Voice = ucieleśniona mikropraktyka.** Akty somatyczne (oddech, dłoń, postawa), zauważanie (lokalizowanie wrażenia w ciele), nazywanie (jedno słowo na głos), mikro-progi (napisz pierwsze zdanie, potem przestań). Rzeczy które ciało może zrobić w danym momencie, nie plany na później.
+- **Softening pressure.** Każda praktyka z imperatywem ma temporalny softener: *czasem / teraz / na chwilę / tylko jedną minutę / wystarczy że / nie musisz / tam gdzie*. Bez softenerów brzmi jak prescripcja, nie pozwolenie.
+- **Dociśnij, nie rozmywaj (kalibracja 2026-05-30; doprecyzowane 2026-06-01).** PP może być ostrzejsza i bardziej konkretna — tnij watę, wybieraj mocniejszy aktywny czasownik. W rejestrze strategicznym „dociśnięcie" może iść aż do trybu rozkazującego (Spójrz/Zrób/Zostaw) — ale **softener pozwolenia i rama anty-optymalizacyjna zostają zawsze**. Granica nie biegnie między „zaproszenie" a „rozkaz" (tryb rozkazujący w rejestrze strategicznym jest OK), tylko między **pozwoleniem a harmonogramem/optymalizacją**: „Zrób wersję mniejszą, niż planowałeś" = pozwolenie (OK); „Zaplanuj tydzień w blokach" = optymalizacja (zakaz). Rejestr somatyczny zostaje miękki („Czasem wystarczy…").
+- **Wszystkie istniejące voice rules nadal obowiązują:** bez nazwisk badaczy, bez "badania pokazują" (poza jedną dozwoloną kotwicą kliniczną w korpusie skryptu — patrz „Zbanowane frazy", wyjątek kotwicy klinicznej; w samej PP zwykle jej nie ma), bez dziesiętnych, tylko zaokrąglone liczby, najpierw prosty język.
+- **Recognition close nadal ma ostatnie słowo.** Praktyki są beatem, nie destynacją.
+
+### Dwa rejestry — somatyczny (domyślny) / strategiczny (2026-05-31)
+
+Permission Practice ma **dwa rejestry**. Wspólne w obu: proza (nigdy numerowana lista), ~4 praktyki, softenery pozwolenia, rama anty-optymalizacyjna, recognition close po sekcji. Różni się *treść* mikropraktyk **oraz forma** (2026-06-01): somatyczny → miękka anafora „Czasem wystarczy…"; strategiczny → może tryb rozkazujący z softenerami. Który rejestr wybierasz, zależy od tematu, nie od gustu.
+
+- **Reguła wyzwalacza:** *Czy temat daje widzowi realny ruch zewnętrzny, który mógłby zrobić w tym tygodniu — wybrać, przeramować, zbudować prosty system, świadomie coś odłożyć?*
+  - **NIE** (jedyny prawdziwy ruch jest wewnętrzny — pozwolić sobie poczuć, przestać walczyć, zauważyć) → **rejestr somatyczny**. To domyślny, dotychczasowy rejestr: oddech, dłoń, postawa, nazywanie, mikro-progi. Większość tematów kanału (zazdrość, wstyd, lęk) tu należy.
+  - **TAK** (temat ma genuine mapę — kariera „za dużo zainteresowań", paraliż decyzji, układanie życia wokół czegoś) → **rejestr strategiczny**: mikropraktyki **behawioralne** — wybór jednej rzeczy na sezon, odłożenie-nie-wyrzucenie, przeramowanie pracy jako gruntu, zapisanie zajawki, świadome odpuszczenie reszty.
+- **Granica anty-self-help (krytyczna — rejestr strategiczny ≠ optymalizacja):** test lakmusowy poniżej obowiązuje bez zmian. Różnica między pozwoleniem a poradą: rejestr strategiczny daje *prawo* do ruchu — w prozie „Czasem wystarczy…" albo trybem rozkazującym z softenerem („Zrób wersję mniejszą, niż planowałeś. Nie chodzi o rozmiar, chodzi o powrót.") — a **nigdy** harmonogramu, listy ani zadania domowego („zaplanuj tydzień w blokach", „zrób audyt w tabeli", „w tym tygodniu spróbuj…"). Softener i rama pozwolenia zostają — to wciąż permission, nie productivity. Forma (tryb rozkazujący vs anafora) jest dozwolona; harmonogram/audyt nie.
+- **Research-invisible bez wyjątku:** ruch praktyczny podajesz jako zwykłe ludzkie zaproszenie, nigdy jako nazwany framework, nazwisko ani żargon (żadnego „serial mastery / far transfer / second brain").
+- **Recognition close nadal zamyka — także w rejestrze strategicznym.** Mapa jest beatem przed rozpoznaniem, nie ostatnim słowem. Nawet film, który zainspirował ten rejestr (M-shaped), kończy na rozpoznaniu („to ty łączysz rzeczy, których inni nie łączą"), nie na strategii.
 
 ### Test lakmusowy
 
-Dla każdego tipu zapytaj: *"Czy ta linia mogłaby pojawić się niezmieniona na blogu o produktywności lub w generycznym self-help wątku?"* Jeśli tak — źle. Przepisz jako somatyczny, zauważający lub mikro-progowy akt.
+Dla każdej praktyki zapytaj: *"Czy ta linia mogłaby pojawić się niezmieniona na blogu o produktywności lub w generycznym self-help wątku?"* Jeśli tak — źle. Przepisz jako somatyczny, zauważający lub mikro-progowy akt, w prozie *"Czasem wystarczy…"*.
 
-### Poprawne przykłady (głos ucieleśnionej mikropraktyki)
+### Poprawny przykład (proza, anafora „Czasem wystarczy")
 
 ```
-Cztery rzeczy które możesz zrobić, kiedy unik uderza:
+Kiedy ten alarm uderza, nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć.
 
-1. Nazwij to co czujesz na głos, jednym słowem. Dźwięk wynosi
-   to na zewnątrz w sposób w jaki myślenie nigdy nie potrafi.
-2. Dłoń na klatce piersiowej, wydech dłuższy niż wdech. Twój
-   układ nerwowy odczytuje powolne wydechy jako bezpieczeństwo.
-3. Napisz pierwsze zdanie które byś powiedział/a, potem zamknij
-   notes. Próg ma większe znaczenie niż akcja.
-4. Zauważ gdzie opór mieszka w twoim ciele. Po prostu zauważ.
-   Nie musisz tego ruszać.
+Czasem wystarczy zatrzymać się przy jednej rzeczy i powiedzieć sobie, że nie widzisz całej historii. Nie po to, żeby oceniać.
+
+Czasem wystarczy położyć dłoń na klatce piersiowej, tam gdzie czujesz ten ciężar, i zrobić trzy wydechy dłuższe niż wdechy. Układ nerwowy nie słucha argumentów, ale wolny wydech odczytuje jako sygnał, że w tej chwili nic ci nie grozi.
+
+Czasem wystarczy nazwać jednym słowem, czego ci brakuje — nie „wszystkiego", tylko jednej rzeczy. Samo nazwanie zwykle trochę porządkuje chaos.
+
+A czasem wystarczy po prostu zauważyć, gdzie jesteś, kiedy to wraca. Nie musisz nic z tym teraz robić.
 ```
 
-### Złe przykłady (Agent 4a usunie te — nie pisz)
+### Poprawny przykład — rejestr strategiczny (temat z ruchem zewnętrznym, np. „za dużo zainteresowań")
 
+Ta sama proza i softenery co wyżej; mikropraktyki są behawioralne (wybór, odłożenie, przeramowanie), ale wciąż **pozwolenie**, nie harmonogram. Recognition close idzie PO tej sekcji.
+
+```
+Kiedy znów łapiesz się na tym, że chcesz robić wszystko naraz, nie musisz tego w sobie dusić. Ale czasem da się to trochę ułożyć.
+
+Czasem wystarczy wybrać jedną rzecz na ten jeden sezon — nie na zawsze, na ten sezon — i dać sobie prawo odłożyć resztę. Nie wyrzucić. Odłożyć.
+
+Czasem wystarczy zapisać gdzieś tę zajawkę, która właśnie cię złapała, i wrócić do tego, co już zacząłeś. Zapisana nie ucieka. Czeka.
+
+Czasem wystarczy spojrzeć na to, z czego się utrzymujesz, nie jak na klatkę, tylko jak na grunt — coś, co trzyma cię stabilnie na tyle, żebyś mógł próbować dalej.
+
+A czasem wystarczy zauważyć, że to, co braliś za rozproszenie, bywa po prostu tym, jak twoja głowa łączy rzeczy, których inni nie łączą.
+```
+
+### Poprawny przykład — rejestr strategiczny, forma rozkazująca (slug-2 „Praktyka powrotu", 2026-06-01)
+
+Ta sama rama (pozwolenie, softenery, recognition close po sekcji), ale praktyki prowadzone **trybem rozkazującym** zamiast anaforą „Czasem wystarczy…". To wzorzec z ręcznej redakcji użytkownika — dozwolony w rejestrze strategicznym.
+
+```
+Kiedy ta pusta kratka znowu się pojawi — bo pojawi się prędzej czy później — nie musisz od razu uciszać głosu, który mówi, że wszystko przepadło. Wystarczy zrobić coś mniejszego.
+
+Spójrz na to, co już jest. Nie po to, żeby się pocieszać, tylko żeby zobaczyć, że wcześniejsze pełne kratki nigdzie nie zniknęły.
+
+Zrób wersję mniejszą, niż planowałeś. Jedno zdanie zamiast całej strony. Pięć minut zamiast godziny. W tej chwili nie chodzi o rozmiar — chodzi o to, żeby wrócić do następnej kratki, zamiast czekać na kolejny idealny początek.
+
+Zostaw rzecz na widoku. Notatnik otwarty na biurku. Buty przy drzwiach. Nie musisz pamiętać o wszystkim sam, jeśli otoczenie pamięta trochę za ciebie.
+```
+
+Zwróć uwagę: „nie musisz", „wystarczy", „nie chodzi o rozmiar" — softenery pozwolenia trzymają to po stronie permission mimo trybu rozkazującego. Recognition close idzie PO tej sekcji.
+
+### Złe przykłady (Reviewer flaguje — nie pisz)
+
+- *"Cztery rzeczy, które możesz zrobić: 1. … 2. … 3. … 4. …"* ← stary numerowany format, zastąpiony prozą
 - *"Zaplanuj tę rozmowę — nie czekaj na właściwy moment."* ← scheduling tip, optimization framing
 - *"Zapisz 3 rzeczy za które jesteś wdzięczny/a."* ← list-making tip, generic self-help
 - *"Porozmawiaj o tym z terapeutą."* ← outsourced action, not embodied
 - *"Ustal jasne granice z szefem."* ← generic advice, not somatic
 - *"W tym tygodniu spróbuj raz dziennie powiedzieć nie."* ← homework framing
 - *"Praktykuj uważność 10 minut dziennie."* ← prescriptive routine, not in-the-moment
+- *"Zaplanuj swój tydzień w blokach po 90 minut."* ← rejestr strategiczny ZEŚLIZGNĄŁ się w optymalizację/scheduling — to już productivity, nie pozwolenie
+- *"Zrób audyt swoich zainteresowań w tabeli i oceń każde od 1 do 10."* ← homework + list-making; pozwolenie nie wystawia zadań domowych
 
 ---
 
@@ -237,163 +306,6 @@ Używaj `[Visual Pause]` w osobnej linii żeby oznaczyć moment w którym cisza 
 
 ---
 
-## Mapy Rejestru Wizualnego
+## Mapy Rejestru Wizualnego — przeniesione
 
-Agent 5 czyta linię `ARCHITECTURE:` na górze skryptu i aplikuje **rejestr wizualny specyficzny dla beatu** do każdej sekcji. Rejestr jest *kierunkiem*, nie checklistą — jego zadanie to zapewnić żeby beat-symptom nie wyglądał jak beat-mechanizm który nie wygląda jak close.
-
-Każdy rejestr specyfikuje: *Nastrój (Mood)*, *Preferowane kompozycje*, *Rodziny metafor*, *Skala*, i czego *unikać (Avoid)*. Agent 5 nadal musi wymyślić konkretne ujęcie.
-
-**Uwaga:** Pola Mood/Compositions/Metaphors/Avoid pozostają po angielsku — Agent 5 generuje prompty obrazów dla Gemini po angielsku, więc słownictwo wizualne jest w EN dla spójności z prompt pipeline.
-
----
-
-### Forensic Case Study
-
-**Beat 1 — The Symptom (opening)**
-- Mood: clinical observation, quiet, intimate
-- Preferred compositions: close-up of posture detail, overhead of figure in empty space, still-life of a single object
-- Metaphor families: clinical evidence — a clipboard, a single chair, a phone face-down on a mattress, a stethoscope on a desk
-- Scale: small, single-subject, intimate
-- Avoid: dynamic action, multi-figure scenes, dramatic motion
-
-**Beat 2 — The Investigation**
-- Mood: forensic, diagrammatic, evidence-gathering
-- Preferred compositions: object-forward (magnifying glass, lab instruments), cross-section/cutaway, two-figure contrast (researcher vs. subject), labeled diagrammatic illustration without text
-- Metaphor families: investigation tools — magnifier, microscope, evidence board, schematic diagram, exposed mechanism, dissection layout
-- Scale: medium with annotated detail
-- Avoid: empty environments — populate with evidence
-
-**Beat 3 — The Culprit (mechanism revealed)**
-- Mood: revelation, structural, unveiling
-- Preferred compositions: cross-section, cutaway, scale-shift (the small made enormous), x-ray transparency, anatomical view
-- Metaphor families: anatomy revealed — brain cross-section, exposed gear, machine interior, root system underground, building cutaway
-- Scale: dramatic, the hidden made huge
-- Avoid: surface-level exteriors, generic faceless figure poses
-
-**Beat 4 — The Implication (close)**
-- Mood: quiet, resolving, wide
-- Preferred compositions: wide (figure-in-landscape), figure-walking-away, doorframe/passage, figure on a threshold
-- Metaphor families: return to life — open doorway, horizon line, single figure walking forward, dawn-window, an empty path
-- Scale: expansive, figure small but resolved
-- Avoid: tight intimacy, claustrophobia
-
----
-
-### Historical Reversal
-
-**Beat 1 — The Old Belief**
-- Mood: dignified, period, settled
-- Preferred compositions: formal portrait pose, single-figure dignified, old-textbook layout, framed picture on a wall
-- Metaphor families: period authority — old textbook, lecture podium, wall-mounted portrait, framed certificate, dusty leather-bound book
-- Scale: medium, formal, centered
-- Avoid: motion, contemporary objects, asymmetry
-
-**Beat 2 — The Discovery That Broke It**
-- Mood: dynamic, unexpected angle, off-balance
-- Preferred compositions: dutch-angle equivalent (tilted horizon line), two-figure contrast (old vs. new), object-forward with a single new instrument
-- Metaphor families: a hand reaching past a barrier, a single new tool, a notebook page mid-write, a paper torn down the middle
-- Scale: medium with one element breaking the frame's symmetry
-- Avoid: settled formal compositions — break the visual rhythm of beat 1
-
-**Beat 3 — The New Mechanism**
-- Mood: modern, diagrammatic, clean
-- Preferred compositions: cross-section, schematic diagram, flowchart-like sequence, anatomical cutaway
-- Metaphor families: modern science — clean diagram, flowchart arrows, exposed circuit board, anatomical illustration
-- Scale: medium with annotated detail
-- Avoid: period imagery, formal portraits
-
-**Beat 4 — The Rewrite**
-- Mood: side-by-side weight, recognition, settled-new
-- Preferred compositions: diptych (before/after), two-figure contrast (then/now), erasure-and-replace layout
-- Metaphor families: comparison artifacts — left page vs. right page, framed old vs. open new, a hand crossing out and rewriting
-- Scale: balanced, two-element composition
-- Avoid: single-element shots — this beat is *about* the contrast
-
----
-
-### Socratic Challenge
-
-**Beat 1 — The Question**
-- Mood: open, suspended, facing-the-unknown
-- Preferred compositions: back-of-head shot (figure looking away from viewer), figure facing a blank wall, figure on a threshold
-- Metaphor families: the unanswered — blank wall, empty page, closed door, fork in a path
-- Scale: medium, figure-centered, surrounded by space
-- Avoid: answers, resolution imagery, multi-figure scenes
-
-**Beat 2 — Logical Step 1**
-- Mood: instructional, careful, single-idea
-- Preferred compositions: object-forward (one prop), close-up of a single hand on a single object, isolated still-life
-- Metaphor families: foundational objects — a single brick, a single key, a single coin, an open palm
-- Scale: tight, one-element
-- Avoid: complexity, multiple objects
-
-**Beat 3 — Logical Step 2**
-- Mood: building, additive, sequence
-- Preferred compositions: two-element still-life, hand placing a second object beside the first, sequential frames
-- Metaphor families: stacking — two bricks, a hand bridging two objects, a chain link
-- Scale: medium, two-element
-- Avoid: chaos, more than two focal points
-
-**Beat 4 — Logical Step 3**
-- Mood: completing, click-into-place
-- Preferred compositions: three-element arrangement, completed structure, fitting-together imagery
-- Metaphor families: locking mechanisms — three bricks forming an arch, a key entering a lock, a final puzzle piece
-- Scale: medium, structural
-- Avoid: incompleteness imagery
-
-**Beat 5 — The Answer**
-- Mood: revelation, quiet recognition
-- Preferred compositions: scale-shift (the small made enormous), cross-section, single-element revealed
-- Metaphor families: opened-up — door swung open, lid lifted off a box, curtain pulled back, a single object now in full light
-- Scale: dramatic
-- Avoid: dimming, atmospheric haze (style forbids it anyway)
-
-**Beat 6 — The Question Reframed**
-- Mood: returned-but-changed, settled
-- Preferred compositions: echo of Beat 1 composition (back-of-head, threshold) — but now with one element changed
-- Metaphor families: same scene, new posture — open door instead of closed, figure stepping forward instead of standing still
-- Scale: medium, deliberately echoing the opener
-- Avoid: a brand-new visual register — the *return* is the point
-
----
-
-### Systems Audit
-
-**Beat 1 — The System Description**
-- Mood: engineering-precise, schematic, cool
-- Preferred compositions: schematic diagram, exposed-machine, flowchart-style layout, cross-section
-- Metaphor families: machine anatomy — gears in a row, pipes and valves, a circuit board, a cutaway engine
-- Scale: medium with annotated detail
-- Avoid: human warmth, organic curves
-
-**Beat 2 — The Failure Mode**
-- Mood: malfunction, interruption, jam
-- Preferred compositions: object-forward with one element broken/displaced, close-up of a jammed gear, before/after split
-- Metaphor families: breakage — bent gear, snapped wire, leaking pipe, an arrow halted mid-flight, a stuck lever
-- Scale: medium, single-failure-point
-- Avoid: full-system shots — zoom in on the broken part
-
-**Beat 3 — The Trigger**
-- Mood: cause-and-effect, sequence
-- Preferred compositions: sequential frames (3 panels), domino-effect arrangement, input-leading-to-output
-- Metaphor families: trigger chain — a hand pressing a button, a pebble starting a rockslide, a match approaching a fuse
-- Scale: medium, sequential
-- Avoid: static single-shot imagery — show the chain
-
-**Beat 4 — What the System Is Actually Optimizing For**
-- Mood: pulled-back, reveal-of-purpose, redirection
-- Preferred compositions: wide reveal showing where outputs actually go, two-figure contrast (expected vs. actual destination), redirected-flow diagram
-- Metaphor families: misdirection — water flowing somewhere unexpected, a track switching, a current pulling sideways
-- Scale: wide, redirective
-- Avoid: tight close-ups — pull back to show the *real* destination
-
-**Beat 5 — The Diagnostic Conclusion**
-- Mood: settled, system-at-rest, accepting
-- Preferred compositions: the system shown calmly, working-as-designed, an annotated schematic
-- Metaphor families: accepted-machine — a clock ticking steadily, a river flowing in its bed, an engine idling
-- Scale: medium, balanced
-- Avoid: triumph imagery, transformation imagery — this is *acceptance*, not victory
-
----
-
-**Uwaga dla Agenta 5:** Każdy beat powyżej jest *kierunkiem*, nie checklistą. Użyj composition + metaphor + scale jako punktów startowych i wymyśl konkretne ujęcie. Rejestr istnieje żeby zapewnić, że beat-symptom nie wygląda jak beat-mechanizm nie wygląda jak close.
+**Pełne mapy rejestru wizualnego (Mood / Compositions / Metaphor families / Scale / Avoid dla każdego beatu wszystkich pięciu architektur) żyją wyłącznie w `workflows/pipeline/05_visuals.md`** — czyta je tylko Agent 5 (wizualny). Drafter (3a), Revisor (3b) i Reviewer (3c) ich NIE potrzebują: piszą i oceniają narrację po polsku, nie prompty obrazów. Trzymanie tej kopii tutaj tylko obciążało agentów piszących tekst ~200 liniami angielskiego słownictwa wizualnego nie dla nich. Ten plik (`narrative_architectures.md`) jest teraz właścicielem **struktury narracyjnej** (kształt, ruchy, umiejscowienie Permission Practice, banowane wzorce strukturalne) — nie warstwy wizualnej.

@@ -1,4 +1,3 @@
-anthropic
 google-cloud-aiplatform
 google-genai
 requests
@@ -7,7 +6,6 @@ python-slugify
 Pillow
 python-docx
 pdfplumber
-google-cloud-texttospeech
 google-api-python-client
 google-auth-oauthlib
 numpy

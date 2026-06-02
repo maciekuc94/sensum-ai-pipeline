@@ -12,6 +12,7 @@ import sys
 import os
 import xml.etree.ElementTree as ET
 from datetime import date
+from pathlib import Path
 
 import requests
 
@@ -34,6 +35,17 @@ REQUEST_TIMEOUT = 30  # seconds
 GEMINI_MODEL = "gemini-3.1-pro-preview"
 
 
+def _load_prompt() -> str:
+    """Load research prompt template from workflows/pipeline/01_research_prompt.md."""
+    path = Path(__file__).parent.parent.parent / "workflows" / "pipeline" / "01_research_prompt.md"
+    lines = path.read_text(encoding="utf-8").splitlines()
+    body = [l for l in lines if not l.startswith("#") and not l.startswith("<!--")]
+    return "\n".join(body).strip()
+
+
+_RESEARCH_PROMPT_TEMPLATE = _load_prompt()
+
+
 def query_gemini(topic: str) -> tuple[str, dict]:
     """Query Gemini 3.1 Pro with Google Search Grounding for a research overview.
     Uses google-genai SDK (required for grounding on Gemini 2.5+).
@@ -48,18 +60,7 @@ def query_gemini(topic: str) -> tuple[str, dict]:
         print(f"  Initializing google-genai client (project={project}, location={location})...")
         client = genai.Client(vertexai=True, project=project, location=location)
 
-        prompt = (
-            f"You are a scientific research assistant. Provide a comprehensive research overview "
-            f"on the psychology topic: '{topic}'.\n\n"
-            f"Include:\n"
-            f"1. Key peer-reviewed findings with specific study names and author citations\n"
-            f"2. Core scientific concepts explained in plain language\n"
-            f"3. Prominent researchers in this area\n"
-            f"4. Key statistics or effect sizes from published studies\n"
-            f"5. Ongoing debates or areas of uncertainty in the research\n\n"
-            f"Cite your sources with author names and publication years wherever possible. "
-            f"Prioritize peer-reviewed academic sources over popular articles."
-        )
+        prompt = _RESEARCH_PROMPT_TEMPLATE.format(topic=topic)
 
         print(f"  Querying {GEMINI_MODEL} with Google Search Grounding...")
         response = client.models.generate_content(

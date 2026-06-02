@@ -65,12 +65,12 @@ This loop is how the framework improves over time.
 ```
 .tmp/                    # Temporary files (scraped data, intermediate exports). Regenerated as needed.
 tools/
-  pipeline/              # Agent scripts 0–6, 8–10 + align (the full production chain)
+  pipeline/              # Agent scripts 0–8 + align (the full production chain)
   intelligence/          # Intelligence Agent + intelligence module (analyzer, collector, db, slide_builder, vision)
   dev/                   # Support tools: add_grain.py
   utils.py               # Shared utilities (all agents import from here)
 workflows/
-  pipeline/              # Numbered SOPs 00–11 (one per agent step)
+  pipeline/              # Numbered SOPs 00–08 (one per pipeline agent), plus align.md and intelligence.md
   guides/                # style_guide.md, style_guide_images.md, narrative_architectures.md
 outputs/
   videos_pl/             # Polish-channel videos (one folder per slug). videos_en/ exists for legacy English content.

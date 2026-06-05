@@ -190,7 +190,7 @@ def run(skip_vision: bool = False, skip_comments: bool = False, days: int = 30):
     sentiment = analyzer.comment_sentiment(comments)
     timing = analyzer.publish_timing(all_videos)
     evergreen = analyzer.evergreen_split(all_videos)
-    gaps = analyzer.content_gaps(all_videos, PROJECT_ROOT / "outputs")
+    gaps = analyzer.content_gaps(all_videos, PROJECT_ROOT / "outputs" / "videos_pl")
 
     results = {
         "channels": channels,

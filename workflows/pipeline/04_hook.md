@@ -4,6 +4,8 @@
 
 Agent 4 is the **final quality gate before recording** — and it does not just score, it **refines**. It evaluates the opening of `04_final.md` against a two-tier rubric and rewrites the first 37 words (the 15-second window) until both tiers pass. This is the moment where YouTube's algorithm and the viewer's brain both decide whether to keep watching.
 
+Od 2026-06-05 dyscyplina 15 sekund zaczyna się już w drafterze (3a, Etap 1 — blok „Zimne otwarcie", wskazujący na tę samą bibliotekę 6 wzorców). Agent 4 działa więc głównie jako **weryfikator**: dobrze napisane otwarcie zwykle zalicza Tier 1 i wraca w `REWRITE_15S` verbatim, a przepisanie jest wyjątkiem, nie regułą.
+
 Since 2026-05-29 Agent 4 runs **inside the Claude Code session** — the model (Opus 4.8) is the one already loaded, no Gemini/Anthropic API call. It is driven by the `/hook <slug>` slash command (see `.claude/commands/hook.md`). The deterministic part — sentence-aware splicing of the new opening, one-time backup, and log writing — stays in `agent4_hook.py --apply`, which makes **no LLM call**.
 
 The script chain is: `3a → 3b ↔ 3c → 4 → record`.

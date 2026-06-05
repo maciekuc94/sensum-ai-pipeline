@@ -514,7 +514,9 @@ def _load_niche_signals() -> str:
     Sidecar is produced by Agent 11 alongside the weekly PPTX report.
     Agent 8 uses it as additional context for tag selection.
     """
-    intel_dir = Path("outputs/intelligence")
+    # Anchor to the project root (tools/pipeline/agent8_publish.py → parents[2]),
+    # not the CWD — a relative path silently returns "" when run from elsewhere.
+    intel_dir = Path(__file__).resolve().parents[2] / "outputs" / "intelligence"
     if not intel_dir.exists():
         return ""
     files = sorted(intel_dir.glob("*_tag_signals.md"), reverse=True)

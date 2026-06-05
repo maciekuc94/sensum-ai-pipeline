@@ -1,10 +1,11 @@
 """
-Agent 7: Thumbnail Generation — render 5 thumbnail image candidates for a given output.
+Render engine — render thumbnail image candidates for a given output (used by /package).
 
 Two-step process:
-  1. Concepts (5 full image prompts) are generated IN-SESSION in Claude Code on
-     Opus 4.8 via the `/thumbnails <slug>` slash command — no Gemini, no Anthropic
-     API. The command writes them to md/07_prompts.md.
+  1. Concepts (full image prompts) are generated IN-SESSION in Claude Code on
+     Opus 4.8 via the `/package <slug>` slash command — no Gemini, no Anthropic
+     API. The command writes them to md/07_prompts.md (`## Thumbnail N` headers).
+     (Legacy: the retired `/thumbnails` command wrote the same file format.)
   2. THIS script renders each prompt via Gemini 3 Pro Image Preview (Vertex AI)
      and post-processes (resize -> background enforce -> optional grain).
 

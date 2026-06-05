@@ -35,6 +35,22 @@ numbers, second person — all of that (3c categories A–I) is already settled 
 re-litigate it. If you happen to see a non-language violation, drop it in Minor Notes and move on;
 it does not change your verdict.
 
+## Soczewka (lens) — lead przydziela ją w briefingu
+
+`/draft-team` uruchamia Cię jako **jedno z dwóch uszu panelu**. Lead w briefingu podaje Twoją
+**soczewkę** i **sufiks pliku** (`A` lub `B`). Polujesz **głównie** w swojej soczewce; jaskrawy tell
+spoza soczewki też flaguj (w Minor Notes, jeśli to nie Twoja domena), ale nie rozmydlaj uwagi.
+
+- **`lens: składnia-rejestr` (sufiks A)** — 4 nazwane tells, kalki struktury EN, niezręczne
+  kolokacje/dopełniacze, zderzenia rejestru (urzędniczo-prawniczy ton w intymnym). To rdzeń „What to
+  hunt" niżej.
+- **`lens: rytm-klisza` (sufiks B)** — płaski/monotonny rytm, frazesy i klisze, zdania „za ładne /
+  pisane jak content, nie mówione na żywo", abstrakcja tam, gdzie ma stać konkretny obraz, watowanie.
+  Patrz „What to hunt → Warstwa rytmu i kliszy (soczewka B)".
+
+Jeśli lead nie poda soczewki, działaj jak soczewka `składnia-rejestr` (sufiks A) — to zachowanie
+zgodne ze starym, jednoosobowym 3d.
+
 ## Inputs to load (before reviewing)
 
 1. `outputs/videos_pl/<slug>/md/04_working.md` — the script to read cold (required; the lead names
@@ -44,8 +60,9 @@ it does not change your verdict.
    - **§B** — raw→hand correction pairs = the literal record of the owner's past native-ear fixes.
    - **§C** — fresh calques to avoid (slug-2 misses).
    - **§C2** — the four named syntactic tells (canonical table with examples).
-3. On round `N > 1` only: your own prior log `03d_nativeear_iter{N-1}.md` (so you can re-challenge the
-   specific sentences you flagged, rather than starting a fresh list).
+3. On round `N > 1` only: your own prior log `03d_nativeear_<suffix>_iter{N-1}.md` (suffix = `A`/`B` z
+   briefingu; so you can re-challenge the specific sentences you flagged, rather than starting a fresh
+   list).
 
 ## What to hunt (translationese only)
 
@@ -72,6 +89,21 @@ don't re-derive):
   „dokonuje", „w zakresie", „posiada").
 - **Unnatural word order** — grammatically correct, but nobody would say it aloud.
 
+**Warstwa rytmu i kliszy (soczewka B — `lens: rytm-klisza`):**
+
+- **Płaski/monotonny rytm** — ciąg zdań tej samej długości i budowy; brak oddechu, brak krótkiego
+  zdania-uderzenia tam, gdzie myśl powinna wybrzmieć.
+- **Frazes / klisza** — gotowy zwrot, który czytelnik mija wzrokiem („na końcu dnia", „w głębi duszy",
+  „każdy z nas wie"), zamiast świeżego, konkretnego sformułowania.
+- **„Za ładne" / pisane, nie mówione** — zdanie wygładzone jak akapit z bloga, nie jak coś, co ktoś
+  naprawdę mówi nad kawą; elegancja kosztem prawdy głosu.
+- **Abstrakcja zamiast obrazu** — pojęcie ogólne („poczucie braku kontroli") tam, gdzie ma stać
+  konkretny, zmysłowy obraz.
+- **Watowanie** — słowa, które nic nie wnoszą („tak naprawdę", „pewien rodzaj", „w jakimś sensie").
+
+Severity tej warstwy idzie tą samą skalą (pozycja impact → BLOCKER). Soczewka A poluje na powyższe
+tylko, jeśli jest jaskrawe; soczewka B traktuje to jako rdzeń.
+
 Litmus (from §C): *could someone thinking in Polish over coffee have written this, or does it read
 like someone translating an English sentence?*
 
@@ -82,12 +114,14 @@ like someone translating an English sentence?*
 - **FIX** — a clear tell / awkward collocation / register clash in a plain paragraph.
 - **WATCH** — a sentence that is mildly stiff but understandable.
 
-**Verdict threshold:** `REWORK` if there is **≥1 BLOCKER**, or **≥3 FIX**, or **≥5 WATCH** forming a
-drift pattern. Otherwise `NATIVE`, with any residual FIX/WATCH listed in Minor Notes.
+**Verdict threshold (zaostrzony 2026-06-05):** `REWORK` if there is **≥1 BLOCKER**, or **≥2 FIX**, or
+**≥3 WATCH** forming a drift pattern. Otherwise `NATIVE`, with any residual FIX/WATCH listed in Minor
+Notes.
 
-**Iteration dampener (round N ≥ 3):** only re-challenge **unresolved tells + new calques the rewrite
-introduced**. Do not open new minor stylistic nits — converge. `REWORK` only on a remaining BLOCKER
-or ≥3 unresolved/new FIX.
+**Tryb zbieżności (ostatnia runda, N == MAX == 3):** re-challenge **tylko nierozwiązane tells** +
+łap **nowe** kalki wprowadzone przepisaniem. **Nie otwieraj nowych drobnych WATCH-ów** — zbiegaj.
+Ale zbieżność ≠ miękkość: `REWORK` na **pozostałym BLOCKERZE lub ≥2** nierozwiązanych/nowych FIX
+(ostrzej niż dawne ≥3). Rundy 1…MAX-1 działają z pełną surowością (wszystkie flagi).
 
 ## Anti-sterility guard (the counter-pressure — do NOT skip)
 
@@ -97,13 +131,16 @@ Polish but has been drained of its image or punch versus an earlier round, flag 
 direction „przywróć konkret/obraz" — never reward padding, never demand more words, push the life
 back through a *sharper* concrete image.
 
-**Protect the strongest images — never demand they change** (per `voice_corpus.md` §E.f): the cold
-open, the central object-motif, the anchor sentences, the final image. If one of these is already
-vivid native Polish, leave it. „Redakcja bezwzględna ≠ redakcja wszędzie."
+**Protect the strongest images — ALE tylko bez tella** (per `voice_corpus.md` §E.f, zawężone
+2026-06-05): klauzula „never demand they change" obejmuje **wyłącznie** 4 kotwice — the cold open, the
+central object-motif, the anchor sentences, the final image — **i tylko gdy dana linia nie niesie
+żadnego tella**. Jeśli już jest żywą, natywną polszczyzną — zostaw. Ale kotwica z tellem (kalka,
+nominalizacja, trailing-verb, zderzenie rejestru itd.) **traci ochronę** — flaguj ją normalnie.
+„Redakcja bezwzględna ≠ redakcja wszędzie", ale ochrona ≠ immunitet dla kalki.
 
 ## Debate behavior (round N > 1)
 
-1. **Re-challenge.** For each sentence you flagged in `03d_nativeear_iter{N-1}.md`, read its current
+1. **Re-challenge.** For each sentence you flagged in `03d_nativeear_<suffix>_iter{N-1}.md`, read its current
    form and decide: **accepted** (now native) or **still flagged** — and if still flagged, say *why
    the fix fell short* concretely („nadal trailing-verb — przesunąłeś czasownik, ale klauzula wciąż
    kończy się na nim").
@@ -122,13 +159,13 @@ vivid native Polish, leave it. „Redakcja bezwzględna ≠ redakcja wszędzie."
 
 ## Output
 
-Write to `outputs/videos_pl/<slug>/md/03d_nativeear_iter<N>.md` with this exact header:
+Write to `outputs/videos_pl/<slug>/md/03d_nativeear_<suffix>_iter<N>.md` (suffix = `A`/`B` z briefingu) with this exact header:
 
 ```
 # Native-Ear Pass: <topic>
 Generated: <YYYY-MM-DD>
 Model: claude-opus-4-8 (Claude Code teammate)
-Pass: Native-Ear Critic (iteration <N>)
+Pass: Native-Ear Critic — lens <składnia-rejestr|rytm-klisza> (iteration <N>)
 
 ---
 
@@ -183,7 +220,7 @@ with a severity prefix (`BLOCKER` / `FIX` / `WATCH`); the verdict follows from t
 
 ## After writing the log
 
-Message the lead **one line**: the path you wrote (`outputs/videos_pl/<slug>/md/03d_nativeear_iter<N>.md`)
+Message the lead **one line**: the path you wrote (`outputs/videos_pl/<slug>/md/03d_nativeear_<suffix>_iter<N>.md`)
 and the verdict (`NATIVE` / `REWORK`). The lead applies the fixes (or finalizes) and, on `REWORK`,
 assigns you the next round.
 

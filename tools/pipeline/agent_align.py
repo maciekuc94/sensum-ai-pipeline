@@ -172,6 +172,9 @@ def main(args: argparse.Namespace) -> None:
                 start=w["start"],
                 end=w["end"],
                 matched=w["matched"],
+                # .get with default keeps backward-compat with alignment.json
+                # files written before force_break_before existed.
+                force_break_before=w.get("force_break_before", False),
             )
             for w in payload["aligned_words"]
         ]

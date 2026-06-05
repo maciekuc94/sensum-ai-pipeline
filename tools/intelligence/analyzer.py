@@ -73,7 +73,7 @@ def trending_topics(videos: list[dict], top_n: int = 40) -> Counter:
     """Word frequency across all video titles, stop-word filtered."""
     counts: Counter = Counter()
     for v in videos:
-        words = re.findall(r"[a-zA-Z']+", v.get("title", "").lower())
+        words = re.findall(r"[^\W\d_]+(?:'[^\W\d_]+)?", v.get("title", "").lower())
         for w in words:
             w = w.strip("'")
             if len(w) > 3 and w not in STOP_WORDS:
@@ -137,14 +137,14 @@ def content_gaps(videos: list[dict], corpus_dir: Path, top_n: int = 10) -> list[
         if not script.exists():
             continue
         text = script.read_text(encoding="utf-8", errors="ignore").lower()
-        words = re.findall(r"[a-zA-Z']+", text)
+        words = re.findall(r"[^\W\d_]+(?:'[^\W\d_]+)?", text)
         corpus_words.update(w.strip("'") for w in words if len(w) > 3)
 
     # Weight by engagement: views × (likes + comments) / views = likes + comments
     topic_scores: dict[str, float] = {}
     for v in videos:
         score = v.get("likes", 0) + v.get("comment_count", 0)
-        words = re.findall(r"[a-zA-Z']+", v.get("title", "").lower())
+        words = re.findall(r"[^\W\d_]+(?:'[^\W\d_]+)?", v.get("title", "").lower())
         for w in words:
             w = w.strip("'")
             if len(w) > 4 and w not in STOP_WORDS and w not in corpus_words:
@@ -163,7 +163,7 @@ def comment_sentiment(comments: list[dict], top_n: int = 20) -> Counter:
     counts: Counter = Counter()
     for c in comments:
         text = c.get("text", "").lower()
-        words = re.findall(r"[a-zA-Z]+", text)
+        words = re.findall(r"[^\W\d_]+", text)
         for w in words:
             if w in FEELING_WORDS:
                 counts[w] += 1
@@ -234,7 +234,7 @@ def top_title_words(videos: list[dict], top_n: int = 30) -> Counter:
     trigger_set = set(EMOTIONAL_TRIGGER_WORDS)
     counts: Counter = Counter()
     for v in videos:
-        words = re.findall(r"[a-zA-Z]+", v.get("title", "").lower())
+        words = re.findall(r"[^\W\d_]+", v.get("title", "").lower())
         for w in words:
             if w in trigger_set:
                 counts[w] += 1

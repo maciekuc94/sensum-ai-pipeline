@@ -635,7 +635,7 @@ Return a single JSON object. No preamble, no commentary outside the JSON block.
 
 ```json
 {{
-  "description_hook": "Block 1 — Hook Segment fragments.\\n\\nBlock 2 — Explanatory Block with identity-absolution framing naming 3–5 concepts.",
+  "description_hook": "Exactly 5 sentences of natural Polish prose (viewer's experience, reframe, \\"W tym filmie...\\", extra context, CTA) — under 80 words, no fragments.",
   "chapters": [
     {{"label": "Introduction", "placeholder": "00:00"}},
     {{"label": "Chapter Name", "placeholder": "[XX:XX]"}}
@@ -653,7 +653,7 @@ Return a single JSON object. No preamble, no commentary outside the JSON block.
 ```
 
 Rules:
-- `description_hook`: the full two-block description body (Hook Segment + Explanatory Block) as a single string. Use `\\n\\n` between blocks. Under 120 words total. The `Timestamps:` and `Research & References:` sections are appended by downstream tooling — do NOT include them in this field.
+- `description_hook`: the full description body — exactly 5 sentences of natural Polish prose (no fragments, no list), under 80 words total, following the Description Architecture above. The `Timestamps:` and `Research & References:` sections are appended by downstream tooling — do NOT include them in this field.
 - `chapters`: detect natural section breaks from ## headings or bold section labels in the script. Produce 6–12 chapters. Labels: a full sentence or question from the viewer's navigation perspective — what will the viewer find in this section? Write labels as "Skąd bierze się poczucie, że jesteś w tyle" or "Jak algorytmy wzmacniają ten alarm" — NOT dry technical single-word labels like "Mechanizm" or academic phrases like "Pułapka fałszywej średniej". First chapter `"placeholder"` is always `"00:00"` and its label should name the actual opening topic of the video (not the word "Wprowadzenie"). All others use `"[XX:XX]"` as placeholder.
 - `hashtags`: Produce 3 hashtags only. Single-word, lowercase, with `#` prefix. First hashtag is always `#sensum`. The other 2 are the single-word core topic + one single-word concept from the script (e.g. `#sensum #willpower #grit`). NO multi-word hashtags, NO camelCase combinations, NO spaces inside a hashtag. The hashtags block is the ONLY single-word survivor — the YouTube Tags field is exclusively multi-word (≥2 words; the SENSUM brand slot is the sole single-word exception).
 - `tags`: **THE TAG PROTOCOL — NON-NEGOTIABLE.**

@@ -63,7 +63,7 @@ outputs/videos_pl/{slug}/md/                            outputs/videos_pl/{slug}
     │   │  (manual gate — review both before generating images/thumbs)
     │   │
     ▼   ▼
-[Agent 6: Images] (manual)             [Agent 7: Thumbnails] (manual — `/thumbnails`)
+[Agent 6: Images] (manual)             [Agent 7→Package] (manual — `/package`)
     │  Gemini 3 Pro Image Preview         │  Opus 4.8 concepts (in-session) → Gemini 3 Pro Image render
     ▼                                     ▼
 outputs/videos_pl/{slug}/images/         outputs/videos_pl/{slug}/thumbnails*/
@@ -207,15 +207,15 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "emotional-dysregu
 
 Renders each prompt via Gemini 3 Pro Image Preview at 16:9. See [06_images.md](06_images.md).
 
-### Step 10 — Generate Thumbnails (manual)
+### Step 10 — Generate Package: titles + thumbnails (manual)
 
-In Claude Code (generates 5 concepts in-session, then renders):
+In Claude Code (generates 3 packaging strategies in-session, then renders 3):
 
 ```text
-/thumbnails emotional-dysregulation-in-adhd
+/package emotional-dysregulation-in-adhd
 ```
 
-Five thumbnail concepts via Opus 4.8 (in-session, no API) → rendered by `agent7_thumbnails.py --render` on Gemini 3 Pro Image Preview. Grain added manually in Canva after the title overlay. See [07_thumbnails.md](07_thumbnails.md).
+Three packaging strategies (title + napis + visual concept) via Opus 4.8 (in-session, no API) → 3 thumbnails rendered by `agent7_thumbnails.py --render` on Gemini 3 Pro Image Preview. Grain + napis overlay added manually in Canva. Runs before `/publish` (its title feeds Agent 8). See [07_package.md](07_package.md).
 
 ### Align — Post-Record (DaVinci Bundle)
 
@@ -249,7 +249,7 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 4  | `docx/script.docx` | Teleprompter-ready script (edit → save as `script_corrected.docx`) |
 | 8 | `md/08_publish.md` | Titles, 5 Shorts packages, YouTube metadata |
 | 9 | `images/image_NNN.png` | Generated 16:9 images |
-| 10 | `thumbnails_no_grain/thumbnail_NN.png` | 5 thumbnail concepts at 1920×1080 |
+| 10 | `thumbnails_no_grain/thumbnail_NN.png` | 3 packaging thumbnails at 1920×1080 |
 | Align | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` | DaVinci bundle |
 | 3, 5, 6, 8 | `docx/*.docx` | Word exports of the corresponding markdown |
 
@@ -285,7 +285,7 @@ workflows/pipeline/04_hook.md       — Agent 4 (hook gate)
 workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
 workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
 workflows/pipeline/06_images.md      — Agent 6 (image generation, manual)
-workflows/pipeline/07_thumbnails.md  — Agent 7 (thumbnails, manual)
+workflows/pipeline/07_package.md     — Package (title+thumbnail strategist, manual)
 workflows/pipeline/intelligence.md — Intelligence Agent (weekly niche report)
 workflows/pipeline/align.md          — Align (post-record DaVinci bundle)
 workflows/guides/style_guide.md      — Script style rules

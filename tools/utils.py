@@ -204,7 +204,7 @@ def load_style_guide(filename: str = "style_guide.md") -> str:
 # NOTE: query_claude() (direct Anthropic API) was removed on 2026-05-29. The
 # pipeline no longer makes any Claude/Anthropic API call — all Claude work runs
 # in-session in Claude Code on Opus 4.8 via slash commands (/draft, /hook,
-# /visuals, /thumbnails). ANTHROPIC_API_KEY is no longer required. Text models
+# /visuals, /package). ANTHROPIC_API_KEY is no longer required. Text models
 # that remain are Gemini (Vertex AI) for research and image rendering only.
 
 

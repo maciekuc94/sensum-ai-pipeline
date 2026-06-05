@@ -12,7 +12,7 @@ Two-step process:
 This script makes NO Claude/Anthropic API call. It only renders.
 
 Usage:
-    /thumbnails <slug>                                            # generate concepts in-session, then render
+    /package <slug>                                            # generate concepts in-session, then render
     PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render
     PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render --no-grain
     PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render --indices 1,4 --count 2
@@ -38,7 +38,7 @@ IMAGE_MODEL = "gemini-3-pro-image-preview"
 GRAIN_INTENSITY = 12  # project standard (Gaussian std dev on 0–255)
 REQUEST_DELAY = 20    # seconds between Vertex AI calls to stay under QPM quota
 
-PROMPTS_MD = "md/07_prompts.md"   # written by /thumbnails (in-session concepts)
+PROMPTS_MD = "md/07_prompts.md"   # written by /package (in-session strategies)
 
 NEGATIVE_TEXT = (
     "\n\nAvoid in this image: face, eyes, nose, mouth, facial features, "
@@ -65,13 +65,13 @@ def _parse_prompts_text(text: str) -> list[str]:
 
 
 def _load_prompts_md(slug: str) -> list[str]:
-    """Load the 5 concepts written in-session by /thumbnails to md/07_prompts.md."""
+    """Load the concepts written in-session by /package to md/07_prompts.md."""
     try:
         text = read_output(slug, PROMPTS_MD)
     except FileNotFoundError:
         raise FileNotFoundError(
             f"No concepts found at {PROMPTS_MD}.\n"
-            f"Generate them in-session first:  /thumbnails {slug}"
+            f"Generate them in-session first:  /package {slug}"
         )
     prompts = _parse_prompts_text(text)
     if not prompts:
@@ -149,7 +149,7 @@ def _generate_image(
 def main():
     if len(sys.argv) < 2:
         print("Usage: PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render [--no-grain] [--indices 1,4] [--count 2]")
-        print("       (generate concepts first in Claude Code:  /thumbnails <slug>)")
+        print("       (generate concepts first in Claude Code:  /package <slug>)")
         sys.exit(1)
 
     slug = sys.argv[1]

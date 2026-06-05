@@ -118,15 +118,20 @@ def fetch_recent_videos(api_key: str, channel_id: str, days: int = 30) -> list[d
             print(f"  Warning: playlistItems failed for {channel_id} — {e}")
             break
 
+        reached_cutoff = False
         for item in resp.get("items", []):
             pub = item["snippet"].get("publishedAt", "")
             if pub < cutoff:
-                next_page = None
+                reached_cutoff = True
                 break
             vid = item["snippet"]["resourceId"].get("videoId")
             if vid:
                 video_ids.append(vid)
 
+        # Uploads playlists are newest-first: once we cross the cutoff every
+        # later page is older still — stop paging instead of burning API quota.
+        if reached_cutoff:
+            break
         next_page = resp.get("nextPageToken")
         if not next_page:
             break

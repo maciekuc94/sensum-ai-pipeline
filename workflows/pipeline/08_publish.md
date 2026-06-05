@@ -25,6 +25,8 @@ As of 2026-06-02 Agent 8 runs **in-session on Opus 4.8 (no API)** via `/publish 
 
 # STEP 1 — Titles (long-form, 5 candidates)
 
+> **Package handoff (preferred source).** If `md/07_package.md` exists (written by `/package`), its **3 strategy titles are the canonical title set** — co-designed with the thumbnails for curiosity-gap synergy. Read them, list all 3 under `## Titles`, and treat the one marked `[PRIMARY — recommended]` (or the first if unmarked) as the strongest for the step-4 primary-keyword extraction. **Skip the 5-candidate generation below** in that case. Generate the 5 candidates here ONLY when `07_package.md` is absent (standalone `/publish` run).
+
 Generate exactly **5 long-form title variants** in Polish. Each must function as an **identity reframe, paradox, or system-level architectural reveal** — never as instruction, advice, or a list.
 
 ## TITLE ARCHITECTURE — Identity Provocation Blueprint

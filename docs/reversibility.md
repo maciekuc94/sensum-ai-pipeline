@@ -195,3 +195,94 @@ git tag -l 'en-pipeline-*' 'agent-chain-*'
 Przyszłe tagi (jeśli zostaną dodane):
 - `en-pipeline-v2` — gdyby angielski pipeline został zaktualizowany niezależnie od polskiego
 - `pl-pipeline-v1` — gdyby chcieć tagować stabilną wersję polskiego pipeline'u dla łatwego powrotu z eksperymentów
+
+---
+
+## Mechanizm szósty — /package zastępuje /thumbnails (2026-06-05)
+
+`/thumbnails` (Agent 7: 5 konceptów wg typów kompozycji, bez tekstu) został zastąpiony przez `/package` — strateg opakowania, który projektuje 3 strategie `{tytuł + napis + koncept}` z luką informacyjną, renderuje 3 miniatury i podaje tytuł do `/publish`. **Silnik renderu (`tools/pipeline/agent7_thumbnails.py`) NIE został usunięty** — `/package` go używa (zmieniono tylko docstring).
+
+### Co zostało usunięte
+- `workflows/pipeline/07_thumbnails.md` (SOP, **śledzony przez git** → odtwarzalny z historii).
+- `.claude/commands/thumbnails.md` (komenda; `.claude/` jest w `.gitignore`, **nie ma jej w historii git** → pełna treść zarchiwizowana niżej).
+
+### Przywrócenie SOP-a (śledzony przez git)
+
+```bash
+git log --oneline -- workflows/pipeline/07_thumbnails.md   # znajdź commit sprzed usunięcia
+git checkout <commit> -- workflows/pipeline/07_thumbnails.md
+```
+
+### Przywrócenie komendy /thumbnails (NIE w gicie — odtwórz z tej kopii)
+
+`.claude/` jest ignorowane przez gita, więc komenda nigdy nie trafiła do historii. Aby ją przywrócić, zapisz poniższą treść z powrotem do `.claude/commands/thumbnails.md`:
+
+````markdown
+---
+description: Agent 7 thumbnails — generate 5 concepts in-session on Opus 4.8 (no API), then render each via Gemini.
+argument-hint: <slug>
+allowed-tools: Read, Write, Bash, Glob
+---
+
+# /thumbnails — Agent 7 Thumbnail Concepts (in-session, Opus 4.8)
+
+You generate **5 distinct, production-ready thumbnail image prompts** in-session — no Gemini, no Anthropic API — then hand them to `agent7_thumbnails.py --render`, which renders each via Gemini 3 Pro Image Preview. Argument `$1` is the slug under `outputs/videos_pl/`.
+
+> **Manual agent.** Only run `/thumbnails` when the user explicitly asks. It costs image-render credits and time.
+
+## Workflow
+
+1. **Validate inputs.** Confirm both `outputs/videos_pl/$1/md/04_final.md` and `outputs/videos_pl/$1/md/08_publish.md` exist. If either is missing, tell the user which agent to run first (Agent 3 / Agent 8) and stop.
+
+2. **Load source + rubric + brand constants:**
+   - `outputs/videos_pl/$1/md/04_final.md` — the script (theme, emotional angles)
+   - `outputs/videos_pl/$1/md/08_publish.md` — titles + hooks
+   - `workflows/pipeline/07_thumbnails.md` — the composition-type rubric and concept rules (single source of truth)
+   - `tools/utils.py` — copy the exact `CHARACTER_DESCRIPTION` and `STYLE_SUFFIX` string constants **verbatim** (do not paraphrase; these are the brand contract)
+
+3. **Generate 5 thumbnail prompts** following `07_thumbnails.md`:
+   - One per composition type, in the order listed there; all 5 must be visually DISTINCT (different composition, metaphor, emotional angle).
+   - Each prompt ~400 words: open with the scene concept, embed `CHARACTER_DESCRIPTION` verbatim **only if a figure appears**, then close with `STYLE_SUFFIX` verbatim.
+   - Two colors only (#F4E5CA flat sage beige background, #582F0E dark brown ink), Scientific Etching style, no text/labels/numbers, no cropped heads, no decorative borders. (These are enforced again at render time by the negative prompt, but write them correctly.)
+
+4. **Write the concepts** to `outputs/videos_pl/$1/md/07_prompts.md` in exactly this format (the renderer parses `## Thumbnail N` headers):
+   ```
+   # Thumbnail Prompts: <topic>
+   Generated: <YYYY-MM-DD>
+   Model: claude-opus-4-8 (Claude Code)
+
+   ## Thumbnail 1
+
+   <full prompt for composition type 1>
+
+   ---
+
+   ## Thumbnail 2
+
+   <full prompt for composition type 2>
+
+   ---
+   ... (through Thumbnail 5)
+   ```
+
+5. **Render** via Bash:
+   ```bash
+   PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py "$1" --render --no-grain
+   ```
+   `--no-grain` is the default for thumbnails — grain is added manually in Canva after the title overlay. The renderer applies the negative prompt, resizes to 1920×1080, and enforces the sage-beige background. Rate limit: 20s between Vertex AI calls.
+
+6. **Report back:** how many thumbnails rendered, the output folder (`thumbnails_no_grain/`), and remind the user grain + title overlay happen in Canva.
+
+## Notes
+
+- **You are the model.** Write the 5 prompts in this conversation — no API call. The Python step only renders (Gemini) and post-processes; it makes no Claude/Anthropic call.
+- Pull `CHARACTER_DESCRIPTION` and `STYLE_SUFFIX` from `tools/utils.py` at runtime so the brand constants stay single-sourced — never invent or summarize them.
+- To re-roll specific thumbnails after editing `07_prompts.md`, render a subset: `... --render --indices 2,5`.
+````
+
+### (Opcjonalnie) cofnięcie handoffu tytułu w publishu
+
+```bash
+git checkout <commit> -- workflows/pipeline/08_publish.md
+# .claude/commands/publish.md i .claude/agents/publish-copywriter.md edytuj ręcznie (nie są w gicie)
+```

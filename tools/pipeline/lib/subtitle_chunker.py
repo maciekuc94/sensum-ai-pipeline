@@ -73,6 +73,24 @@ _AUX_VERBS = {
     "do", "does", "did",
     "will", "would", "shall", "should", "can", "could", "may", "might", "must",
 }
+# Polish sticky words — the channel ships Polish subtitles, so Polish function
+# words must bind to the following word and never dangle at a line end.
+# Polish typography HARD RULE: one-letter words (w, z, i, a, o, u) must never
+# end a line. Common short prepositions / conjunctions stick too. Stored
+# lowercase with correct UTF-8 diacritics (matches _normalize_word output).
+_POLISH_ONE_LETTER = {"w", "z", "i", "a", "o", "u"}
+_POLISH_SHORT_FUNCTION = {
+    # prepositions
+    "do", "na", "za", "od", "po", "we", "ze", "ku", "nad", "pod", "bez",
+    "przez", "przed", "oraz", "dla", "ponad", "spod", "znad",
+    # conjunctions / particles
+    "lub", "albo", "ani", "czy", "że", "by", "bo", "więc",
+    "lecz", "gdyż", "aby", "żeby", "iż",
+    # negation / reflexive that should not strand the verb
+    "nie", "się",
+}
+_POLISH_STICKY = _POLISH_ONE_LETTER | _POLISH_SHORT_FUNCTION
+
 _CONJUNCTIONS_SPLIT_PREFERRED = {"and", "or", "but", "so", "yet", "because", "while", "when"}
 
 _WORD_NORM_RE = re.compile(r"[^\w']+", re.UNICODE)
@@ -132,6 +150,7 @@ def _is_sticky(word: str) -> bool:
         or w in _POSSESSIVES
         or w in _PREPOSITIONS
         or w in _AUX_VERBS
+        or w in _POLISH_STICKY
     )
 
 

@@ -729,9 +729,9 @@ def run_metadata_pass(topic: str, script: str, research: str, titles_text: str =
     tags_len = len(", ".join(trimmed_tags))
     dropped = len(raw_tags) - len(trimmed_tags)
     if dropped > 0:
-        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars (trimmed {dropped} from tail to fit 450-char target; doctrine 10–15; YouTube cap is 500)")
+        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars (trimmed {dropped} from tail to fit 450-char target; doctrine 5–8; YouTube cap is 500)")
     else:
-        within_doctrine = "within doctrine" if 10 <= len(trimmed_tags) <= 15 else f"OUTSIDE doctrine 10–15"
+        within_doctrine = "within doctrine" if 5 <= len(trimmed_tags) <= 8 else f"OUTSIDE doctrine 5–8"
         print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars ({within_doctrine}; under 450-char target; YouTube cap is 500)")
 
     return meta

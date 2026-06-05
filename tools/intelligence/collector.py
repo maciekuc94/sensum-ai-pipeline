@@ -45,7 +45,8 @@ def discover_channels(api_key: str, queries: list[str] | None = None) -> set[str
                 q=q,
                 type="channel",
                 maxResults=10,
-                relevanceLanguage="en",
+                relevanceLanguage="pl",
+                regionCode="PL",
             ).execute()
             for item in resp.get("items", []):
                 found.add(item["snippet"]["channelId"])

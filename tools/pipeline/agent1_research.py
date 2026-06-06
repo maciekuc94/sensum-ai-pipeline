@@ -10,22 +10,14 @@ Usage:
 
 import sys
 import os
-import xml.etree.ElementTree as ET
+import re
+import json
 from datetime import date
 from pathlib import Path
 
-import requests
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from tools.utils import make_slug, next_output_number, write_output, get_env
-
-# ---------------------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------------------
-
-PUBMED_SEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-PUBMED_FETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
-REQUEST_TIMEOUT = 30  # seconds
+from tools.utils import make_slug, next_output_number, write_output, get_env, query_gemini_text
+from tools.research_sources import gather_peer_reviewed
 
 
 # ---------------------------------------------------------------------------
@@ -66,9 +58,12 @@ def query_gemini(topic: str) -> tuple[str, dict]:
         response = client.models.generate_content(
             model=GEMINI_MODEL,
             contents=prompt,
+            # gemini-3.1-pro-preview emits variable thinking tokens; 8192 was too tight
+            # and could silently truncate the answer to empty (MAX_TOKENS). 16384 leaves
+            # room for both thinking and a richer grounded research summary.
             config=types.GenerateContentConfig(
                 tools=[types.Tool(google_search=types.GoogleSearch())],
-                max_output_tokens=8192,
+                max_output_tokens=16384,
             ),
         )
 
@@ -88,128 +83,72 @@ def query_gemini(topic: str) -> tuple[str, dict]:
 
 
 # ---------------------------------------------------------------------------
-# PubMed API
+# Peer-reviewed sources (multi-query across PubMed + Europe PMC)
 # ---------------------------------------------------------------------------
 
-def _pubmed_search(query: str, retmax: int = 10) -> list[str]:
-    """Return a list of PubMed IDs for the query."""
-    params = {
-        "db": "pubmed",
-        "term": query,
-        "retmax": retmax,
-        "retmode": "json",
-    }
-    ncbi_key = os.getenv("NCBI_API_KEY")
-    if ncbi_key:
-        params["api_key"] = ncbi_key
-
-    resp = requests.get(PUBMED_SEARCH_URL, params=params, timeout=REQUEST_TIMEOUT)
-    resp.raise_for_status()
-    data = resp.json()
-    return data.get("esearchresult", {}).get("idlist", [])
-
-
-def _pubmed_fetch(pmids: list[str]) -> list[dict]:
-    """Fetch paper details for a list of PubMed IDs; returns list of dicts."""
-    if not pmids:
-        return []
-
-    params = {
-        "db": "pubmed",
-        "id": ",".join(pmids),
-        "rettype": "abstract",
-        "retmode": "xml",
-    }
-    ncbi_key = os.getenv("NCBI_API_KEY")
-    if ncbi_key:
-        params["api_key"] = ncbi_key
-
-    resp = requests.get(PUBMED_FETCH_URL, params=params, timeout=REQUEST_TIMEOUT)
-    resp.raise_for_status()
-
-    root = ET.fromstring(resp.text)
-    papers = []
-
-    for article in root.iter("PubmedArticle"):
-        paper: dict = {}
-
-        # Title
-        title_el = article.find(".//ArticleTitle")
-        paper["title"] = (title_el.text or "").strip() if title_el is not None else ""
-
-        # Authors
-        authors = []
-        for author in article.findall(".//Author"):
-            last = author.findtext("LastName", "")
-            initials = author.findtext("Initials", "")
-            if last:
-                authors.append(f"{last} {initials}".strip())
-        paper["authors"] = authors
-
-        # Year
-        year_el = article.find(".//PubDate/Year")
-        if year_el is None:
-            year_el = article.find(".//PubDate/MedlineDate")
-        paper["year"] = (year_el.text or "")[:4] if year_el is not None else ""
-
-        # Abstract
-        abstract_parts = article.findall(".//AbstractText")
-        paper["abstract"] = " ".join(
-            (el.text or "") for el in abstract_parts if el.text
-        ).strip()
-
-        # DOI
-        doi = ""
-        for id_el in article.findall(".//ArticleId"):
-            if id_el.get("IdType") == "doi":
-                doi = id_el.text or ""
-                break
-        paper["doi"] = doi
-
-        papers.append(paper)
-
-    return papers
-
-
-def _make_pubmed_query(topic: str) -> str:
-    """Convert a colloquial topic string to a PubMed-appropriate 3-5 keyword query."""
+def _derive_subqueries(topic: str) -> list[str]:
+    """
+    Break a colloquial topic into 4-6 short keyword sub-queries, one per mechanism,
+    so the peer-reviewed search spans the whole topic instead of one narrow ANDed
+    query. Each sub-query is 3-5 academic keywords / MeSH terms, no punctuation.
+    Falls back to [topic] on any failure.
+    """
+    prompt = (
+        "Break the following research topic into 4-6 distinct sub-topics, one per "
+        "underlying mechanism or construct. For each, write a short academic search "
+        "query of 3-5 keywords or MeSH terms (no punctuation, no stop words, no "
+        "question marks). Return ONLY a JSON array of query strings, nothing else.\n\n"
+        f"Topic: {topic}"
+    )
     try:
-        import google.genai as genai
-
-        project = get_env("GOOGLE_CLOUD_PROJECT")
-        location = "global"
-        client = genai.Client(vertexai=True, project=project, location=location)
-
-        prompt = (
-            f"Convert this topic to a short PubMed search query using 3-5 academic keywords "
-            f"or MeSH terms. No punctuation, no question marks, no stop words. "
-            f"Return only the query string, nothing else.\n\nTopic: {topic}"
+        text, _ = query_gemini_text(
+            prompt, model=GEMINI_MODEL, max_tokens=2048, step_label="deriving sub-queries"
         )
-        response = client.models.generate_content(model="gemini-3.1-pro-preview", contents=prompt)
-        query = response.text.strip().strip('"').strip("'")
-        print(f"  PubMed query derived: {query!r}")
-        return query
+        queries = _parse_query_list(text)
+        if queries:
+            print(f"  Derived {len(queries)} sub-queries:")
+            for q in queries:
+                print(f"    - {q}")
+            return queries
+        print("  [WARNING] Could not parse sub-queries — falling back to raw topic.")
     except Exception as exc:
-        print(f"  [WARNING] Could not derive PubMed query ({exc}), using raw topic.")
-        return topic
+        print(f"  [WARNING] Sub-query derivation failed ({exc}) — using raw topic.")
+    return [topic]
 
 
-def query_pubmed(topic: str) -> list[dict]:
-    """Search PubMed for the top 10 papers on a topic. Returns list of paper dicts."""
-    print("  Searching PubMed...")
-    pubmed_query = _make_pubmed_query(topic)
-    try:
-        pmids = _pubmed_search(pubmed_query, retmax=10)
-        if not pmids:
-            print("  [WARNING] PubMed returned no results.")
-            return []
-        print(f"  Found {len(pmids)} PubMed IDs — fetching details...")
-        papers = _pubmed_fetch(pmids)
-        print(f"  Retrieved {len(papers)} PubMed papers.")
-        return papers
-    except Exception as exc:
-        print(f"  [WARNING] PubMed query failed: {exc}")
+def _parse_query_list(text: str) -> list[str]:
+    """Parse a Gemini response into a list of query strings (JSON array or newlines)."""
+    if not text:
         return []
+    # Strip code fences if present.
+    cleaned = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.MULTILINE).strip()
+    # Try JSON first.
+    try:
+        start, end = cleaned.find("["), cleaned.rfind("]")
+        if start != -1 and end != -1:
+            arr = json.loads(cleaned[start : end + 1])
+            qs = [str(q).strip() for q in arr if str(q).strip()]
+            if qs:
+                return qs[:6]
+    except Exception:
+        pass
+    # Fall back to newline / bullet list.
+    lines = []
+    for line in cleaned.splitlines():
+        q = re.sub(r'^[\s\-\*\d\.\)"]+', "", line).strip().strip('"').strip("'")
+        if q and len(q.split()) <= 8:
+            lines.append(q)
+    return lines[:6]
+
+
+def gather_research_papers(topic: str) -> list[dict]:
+    """Derive sub-queries and gather deduplicated peer-reviewed papers across providers."""
+    print("  Deriving mechanism sub-queries...")
+    subqueries = _derive_subqueries(topic)
+    print("  Searching PubMed + Europe PMC...")
+    papers = gather_peer_reviewed(subqueries)
+    print(f"  Total peer-reviewed papers gathered: {len(papers)}")
+    return papers
 
 
 # ---------------------------------------------------------------------------
@@ -233,7 +172,7 @@ def _doi_link(doi: str) -> str:
 def build_markdown(
     topic: str,
     gemini_text: str,
-    pubmed_papers: list[dict],
+    papers: list[dict],
 ) -> str:
     today = date.today().isoformat()
     lines: list[str] = []
@@ -248,11 +187,8 @@ def build_markdown(
     lines.append("## Key Findings")
     lines.append("")
 
-    # Collect brief citation bullets from PubMed (use title + authors + year)
-    finding_sources: list[dict] = []
-    for p in pubmed_papers:
-        if p.get("abstract"):
-            finding_sources.append(p)
+    # Collect brief citation bullets from the gathered papers (title + authors + year)
+    finding_sources: list[dict] = [p for p in papers if p.get("abstract")]
 
     if finding_sources:
         for p in finding_sources[:5]:
@@ -266,7 +202,7 @@ def build_markdown(
                 snippet += "."
             lines.append(f"- {snippet} ({first_author}, {year})")
     else:
-        lines.append("- See PubMed section below for paper-level findings.")
+        lines.append("- See Peer-Reviewed Sources section below for paper-level findings.")
 
     lines.append("")
 
@@ -291,7 +227,7 @@ def build_markdown(
 
     seen_titles: set[str] = set()
 
-    def _add_row(p: dict, source_label: str) -> None:
+    def _add_row(p: dict) -> None:
         title = (p.get("title") or "").strip()
         norm = title.lower()
         if norm in seen_titles or not title:
@@ -302,36 +238,39 @@ def build_markdown(
         doi = _doi_link(p.get("doi") or "")
         # Escape pipe characters in title
         safe_title = title.replace("|", "\\|")
-        lines.append(f"| {safe_title} | {authors} | {year} | {doi} | {source_label} |")
+        lines.append(f"| {safe_title} | {authors} | {year} | {doi} | {p.get('source', '—')} |")
 
-    for p in pubmed_papers:
-        _add_row(p, "PubMed")
+    for p in papers:
+        _add_row(p)
 
     lines.append("")
 
     # ------------------------------------------------------------------
-    # PubMed Results
+    # Peer-Reviewed Sources — abstracts (Agent 2 reads this as its grounding pool)
     # ------------------------------------------------------------------
-    lines.append("## PubMed Results")
+    lines.append("## Peer-Reviewed Sources")
     lines.append("")
-    if pubmed_papers:
-        for i, p in enumerate(pubmed_papers, start=1):
+    if papers:
+        for i, p in enumerate(papers, start=1):
             title = p.get("title") or "Untitled"
             authors = _authors_str(p.get("authors") or [])
             year = p.get("year") or "n.d."
             doi = p.get("doi") or ""
+            source = p.get("source") or "—"
+            venue = p.get("venue") or ""
             abstract = p.get("abstract") or "_No abstract available._"
 
             lines.append(f"### {i}. {title}")
             lines.append(f"**Authors:** {authors}  ")
             lines.append(f"**Year:** {year}  ")
+            lines.append(f"**Source:** {source}{f' — {venue}' if venue else ''}  ")
             if doi:
                 lines.append(f"**DOI:** <https://doi.org/{doi}>  ")
             lines.append("")
             lines.append(abstract)
             lines.append("")
     else:
-        lines.append("_No PubMed results retrieved._")
+        lines.append("_No peer-reviewed results retrieved._")
         lines.append("")
 
     # ------------------------------------------------------------------
@@ -375,13 +314,13 @@ def main() -> None:
     print(f"[1/2] Querying {GEMINI_MODEL} with Google Search Grounding...")
     gemini_text, gemini_usage = query_gemini(topic)
 
-    # Step 2 — PubMed
-    print("[2/2] Querying PubMed API...")
-    pubmed_papers = query_pubmed(topic)
+    # Step 2 — Peer-reviewed sources (multi-query, 2 providers)
+    print("[2/2] Gathering peer-reviewed sources (PubMed + Europe PMC)...")
+    papers = gather_research_papers(topic)
 
     # Synthesize
     print("\nSynthesizing results into markdown...")
-    content = build_markdown(topic, gemini_text, pubmed_papers)
+    content = build_markdown(topic, gemini_text, papers)
 
     # Save
     output_path = write_output(slug, "md/01_research.md", content)

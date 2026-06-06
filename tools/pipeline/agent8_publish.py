@@ -9,8 +9,8 @@ single-sourced in `workflows/pipeline/08_publish.md`. This script now provides t
 deterministic bookends that bracket the in-session run, plus the legacy Gemini path:
 
   --signals   PRE-step. Derive the topic from the script, scrape YouTube autocomplete
-              and load the latest niche tag signals, write `.tmp/08_signals.md` for the
-              in-session long-form-tags step to read.
+              and write `.tmp/08_signals.md` for the in-session long-form-tags step to
+              read.
   --finalize  POST-step. Read the in-session-written `md/08_publish.md`, then in place:
               annotate each shorts clip block with its script quarter (Q1–Q4), trim the
               long-form tag line to the 450-char budget, validate every Short has a clip
@@ -90,7 +90,7 @@ _BRAND_AVOID = [
 # D. --api: metadata pass (signals scraper, prompt, parser, runner)     ~L469
 # E. --api: master output builder                                        ~L766
 # F. --extract bookend (narration docx → .tmp/08_narration.md)          ~L798
-# G. --signals bookend (autocomplete scrape + niche signals loader)     ~L841
+# G. --signals bookend (autocomplete scrape -> .tmp/08_signals.md)      ~L841
 # H. --finalize bookend (Q-tag annotation, tag trim, validate, docx)    ~L921
 # I. --api: legacy 3-pass Gemini orchestrator                           ~L972
 # J. CLI entry point (argparse + main)                                  ~L1036
@@ -507,36 +507,13 @@ def _alphabet_soup(base_query: str) -> list[str]:
     return list(dict.fromkeys(results))
 
 
-
-def _load_niche_signals() -> str:
-    """Return the most recent {week}_tag_signals.md content, or '' if none exists.
-
-    Sidecar is produced by Agent 11 alongside the weekly PPTX report.
-    Agent 8 uses it as additional context for tag selection.
-    """
-    # Anchor to the project root (tools/pipeline/agent8_publish.py → parents[2]),
-    # not the CWD — a relative path silently returns "" when run from elsewhere.
-    intel_dir = Path(__file__).resolve().parents[2] / "outputs" / "intelligence"
-    if not intel_dir.exists():
-        return ""
-    files = sorted(intel_dir.glob("*_tag_signals.md"), reverse=True)
-    if not files:
-        return ""
-    try:
-        return files[0].read_text(encoding="utf-8")
-    except Exception as exc:
-        print(f"  niche signals read failed: {type(exc).__name__}: {exc}")
-        return ""
-
-
-def _build_metadata_prompt(topic: str, script: str, research: str, suggestions: list[str], niche_signals: str = "", titles_text: str = "") -> str:
+def _build_metadata_prompt(topic: str, script: str, research: str, suggestions: list[str], titles_text: str = "") -> str:
     avoid_kw = ", ".join(f'"{k}"' for k in _BRAND_AVOID)
     suggestions_block = (
         "\n".join(f"- {s}" for s in suggestions[:300])
         if suggestions
         else "(unavailable)"
     )
-    niche_block = niche_signals.strip() if niche_signals.strip() else "(unavailable)"
     titles_block = titles_text.strip() if titles_text.strip() else "(unavailable)"
 
     return f"""\
@@ -552,7 +529,6 @@ Operating principles:
 - Prefer multi-word phrases (≥2 words) — they carry more search intent. The only mandatory exceptions are the brand handle "SENSUM" (one slot, uppercase) and up to 2 high-value single-word Polish psychology anchors (e.g. "psychologia", "emocje") when no multi-word phrase captures the same search better.
 - Metaphors and props in the script (cookies, batteries, GPS, doors, villages) are illustrations, not search terms. Tag the underlying mechanism the metaphor points to.
 - Established clinical and pop-psychology terms (rumination, regulation, attachment, burnout, masking, anhedonia, limerence) are what serious viewers actually search for — render them inside multi-word phrases that match real search behavior.
-- The Niche Trend Signals block below lists single-word terms currently trending in this niche. Borrow the concepts and render them as multi-word phrases. Treat niche signals as a **supporting reference** — the primary keyword from the chosen title leads.
 - E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) is established through the formal bibliography, not the description prose.
 
 ## Description Architecture
@@ -624,9 +600,6 @@ When a concept has multiple landmark sources (original study + replication, orig
 ## Audience Search Signals (YouTube autocomplete)
 {suggestions_block}
 
-## Niche Trend Signals (latest weekly intelligence report — internal niche data)
-{niche_block}
-
 ---
 
 ## Task
@@ -660,7 +633,7 @@ Rules:
   - Produce **5–8 tags total**. Comma-separated, no `#` prefix. 2026 YouTube SEO consensus: 5–8 highly relevant tags outperform padded 10–15 lists. Quality over quantity.
   - **SLOT STRUCTURE — order by algorithmic weight (front-loaded):**
     - **Tag #1 (mandatory): the exact-match primary keyword for this video.** Extracted from the strongest of the candidate titles above, OR a more search-shaped paraphrase if the identity-provocation title is metaphor-heavy and would not autocomplete in YouTube search. Multi-word. This slot does the heaviest discovery work.
-    - **Tags #2–#6: long-tail intent phrases.** 2–4 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("dlaczego zawsze zaczynam od nowa"), clinical/mechanism phrases rendered as searches ("rozregulowanie układu nerwowego", "pętla ruminacji"). Niche Trend Signals get rendered here as multi-word phrases (signal "regulacja" → "regulacja emocji psychologia").
+    - **Tags #2–#6: long-tail intent phrases.** 2–4 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("dlaczego zawsze zaczynam od nowa"), clinical/mechanism phrases rendered as searches ("rozregulowanie układu nerwowego", "pętla ruminacji").
     - **SENSUM**: include exactly once (uppercase). Brand tag, single-word permitted.
     - **Optional: up to 2 single-word Polish psychology anchors** (e.g. "psychologia", "emocje") — use ONLY if no multi-word phrase captures the same high-volume search better.
   - **The intent test.** For each phrase: *"Would a real person living this problem type these exact words into YouTube search?"* If not, cut it.
@@ -712,13 +685,7 @@ def run_metadata_pass(topic: str, script: str, research: str, titles_text: str =
     except Exception as exc:
         print(f"  Warning: Autocomplete scraping failed ({exc}).")
 
-    niche_signals = _load_niche_signals()
-    if niche_signals:
-        print(f"  Loaded niche tag signals ({len(niche_signals)} chars)")
-    else:
-        print("  No niche tag signals found (Agent 11 sidecar absent — skipping)")
-
-    prompt = _build_metadata_prompt(topic, script, research, suggestions, niche_signals, titles_text)
+    prompt = _build_metadata_prompt(topic, script, research, suggestions, titles_text)
     raw, _ = _query_gemini(prompt, "pass 3 — YouTube metadata", max_tokens=8192)
 
     meta = _parse_metadata(raw)
@@ -858,12 +825,11 @@ def run_signals(slug: str, topic_override: str = "") -> None:
 
     Determines a Polish search seed (`--topic=` override from `/publish`, else
     the research/script heading), scrapes YouTube autocomplete (alphabet-soup)
-    and loads the latest weekly niche tag signals, then writes both into one
-    small markdown file the `/publish` long-form-tags step reads. Fails soft —
-    if the network is down the suggestions block is `(unavailable)` and the
-    in-session step proceeds on script + niche signals alone.
+    and writes it into a small markdown file the `/publish` long-form-tags step
+    reads. Fails soft — if the network is down the suggestions block is
+    `(unavailable)` and the in-session step proceeds on the script alone.
     """
-    print(f"\n=== Agent 8 --signals (autocomplete + niche signals) ===")
+    print(f"\n=== Agent 8 --signals (autocomplete) ===")
     print(f"Slug : {slug}\n")
 
     narration = _load_narration(slug)
@@ -878,16 +844,9 @@ def run_signals(slug: str, topic_override: str = "") -> None:
     except Exception as exc:
         print(f"  Warning: Autocomplete scraping failed ({exc}).")
 
-    niche_signals = _load_niche_signals()
-    if niche_signals:
-        print(f"  Loaded niche tag signals ({len(niche_signals)} chars)")
-    else:
-        print("  No niche tag signals found (Intelligence Agent sidecar absent — skipping)")
-
     suggestions_block = (
         "\n".join(f"- {s}" for s in suggestions[:300]) if suggestions else "(unavailable)"
     )
-    niche_block = niche_signals.strip() if niche_signals.strip() else "(unavailable)"
 
     content = f"""\
 # Agent 8 signals — {topic}
@@ -897,9 +856,6 @@ Transient input for the `/publish` long-form-tags step. Not a deliverable.
 
 ## Audience Search Signals (YouTube autocomplete)
 {suggestions_block}
-
-## Niche Trend Signals (latest weekly intelligence report — internal niche data)
-{niche_block}
 """
     path = write_output(slug, SIGNALS_FILENAME, content)
     print(f"\n  Saved: {path}")
@@ -1053,7 +1009,7 @@ def _usage() -> None:
     print()
     print("  (preferred) generate the package in-session:  /publish <slug>")
     print("  --extract   materialize narration -> .tmp/08_narration.md (docx Claude can't Read)")
-    print("  --signals   PRE bookend: scrape autocomplete + niche signals -> .tmp/08_signals.md")
+    print("  --signals   PRE bookend: scrape autocomplete -> .tmp/08_signals.md")
     print("  --finalize  POST bookend: Q1-Q4 + tag trim + validate + docx over md/08_publish.md")
     print("  --api       legacy Gemini 3-pass orchestrator (writes md/08_publish.md itself)")
 

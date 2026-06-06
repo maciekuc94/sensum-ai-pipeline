@@ -25,6 +25,8 @@ from tools.utils import read_output, write_output, get_env
 RESEARCH_FILENAME = "md/01_research.md"
 OUTPUT_FILENAME = "md/02_verified_research.md"
 
+VERIFY_TEMPERATURE = 0.0  # deterministic — verification is a correctness gate
+
 # ---------------------------------------------------------------------------
 # Vertex AI / Gemini
 # ---------------------------------------------------------------------------
@@ -55,10 +57,15 @@ def query_gemini_verify(research_content: str) -> tuple[str, dict]:
         print(f"  Initializing google-genai client (project={project}, location={location})...")
         client = genai.Client(vertexai=True, project=project, location=location)
 
-        # Extract PubMed abstracts as the grounding source
+        # Extract the peer-reviewed abstracts as the grounding source.
+        # Agent 1 now writes "## Peer-Reviewed Sources" (PubMed + Europe PMC);
+        # fall back to the legacy "## PubMed Results" heading
+        # so older research files still verify.
         pubmed_abstracts = ""
-        if "## PubMed Results" in research_content:
-            pubmed_abstracts = research_content.split("## PubMed Results")[1].split("\n##")[0].strip()
+        for heading in ("## Peer-Reviewed Sources", "## PubMed Results"):
+            if heading in research_content:
+                pubmed_abstracts = research_content.split(heading)[1].split("\n##")[0].strip()
+                break
 
         prompt = VERIFICATION_PROMPT_TEMPLATE.format(
             pubmed_abstracts=pubmed_abstracts or "_No PubMed abstracts available — flag all claims._",
@@ -69,8 +76,14 @@ def query_gemini_verify(research_content: str) -> tuple[str, dict]:
         response = client.models.generate_content(
             model=GEMINI_MODEL,
             contents=prompt,
+            # gemini-3.1-pro-preview emits variable thinking tokens (~5k+ observed).
+            # 8192 was too tight: when thinking spiked it consumed the whole budget,
+            # truncating the answer to empty (MAX_TOKENS) — a nondeterministic failure.
+            # With the larger multi-source grounding pool there are more claims to
+            # verify, so 24576 gives headroom for thinking + a longer claim list.
             config=types.GenerateContentConfig(
-                max_output_tokens=8192,
+                max_output_tokens=24576,
+                temperature=VERIFY_TEMPERATURE,
             ),
         )
 

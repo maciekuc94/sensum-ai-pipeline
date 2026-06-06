@@ -86,7 +86,7 @@ Pełna lista zakazanych fraz research-framingowych i szczegóły wyjątku kotwic
 
 ## Pięć Architektur Narracyjnych
 
-Agent 3 deklaruje architekturę na **pierwszej linii** outputu skryptu. **Domyślną architekturą jest `Composite Portrait`** — Agent 3 używa jej, chyba że wywołanie `/draft` jawnie poda nazwę innej architektury. Wszystkie pięć architektur pisze się na natywną długość kanału **~10–15 min**:
+Agent 3 deklaruje architekturę na **pierwszej linii** outputu skryptu. **Architekturę wybiera krok poprzedzający 3a** (`03_architecture_select.md` → `md/03_architecture.md`): najlepsze dopasowanie do tematu (best-fit), z anti-repeat tiebreakiem przeciw architekturze ostatnich 1–2 slugów przy bliskim remisie. `Composite Portrait` to sygnaturowy kształt kanału i fallback, ale **nie jest już ślepym domyślnym** — musi wygrać dopasowaniem jak każda inna. Override: `/draft <slug> "<Nazwa>"` wymusza architekturę i pomija selektor. Wszystkie pięć architektur pisze się na natywną długość kanału **~10–15 min**:
 
 ```
 ARCHITECTURE: [Composite Portrait | Forensic Case Study | Historical Reversal | Socratic Challenge | Systems Audit]
@@ -110,7 +110,7 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 3. Sprawca — konkretna przyczyna, wyjaśniona językiem codziennym, bez jargon-first translations.
 4. Zwyczajna implikacja — co ten ekstremalny przypadek ujawnia o codziennym doświadczeniu widza
 
-**Ograniczenie close:** Po sekcji Permission Practice (patrz universal section niżej), zakończ implikacją dla życia widza. Moment rozpoznania jest OSTATNIM beatem — tipy są beatem przed nim, nie destynacją.
+**Ograniczenie close:** Po sekcji Permission Practice — **jeśli była** (jest opcjonalna; patrz universal section niżej) — zakończ implikacją dla życia widza. Moment rozpoznania jest OSTATNIM beatem; praktyki, jeśli były, są beatem przed nim, nie destynacją.
 
 ---
 
@@ -126,7 +126,7 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 3. Jak to naprawdę działa — opisane jako codzienna obserwacja, nigdy jako *"co nowe badania ujawniają"*. Mechanizm pojawia się jako oczywisty z perspektywy czasu.
 4. Przepisanie — co widz teraz rozumie co przeczy temu czego go uczono
 
-**Ograniczenie close:** Po sekcji Permission Practice, zakończ na tym co widz teraz wie czego większość ludzi nie wie. Ciężar wiedzy o tym jest OSTATNIM beatem — tipy są beatem przed nim.
+**Ograniczenie close:** Po sekcji Permission Practice (jeśli była — jest opcjonalna), zakończ na tym co widz teraz wie czego większość ludzi nie wie. Ciężar wiedzy o tym jest OSTATNIM beatem; praktyki, jeśli były, są beatem przed nim.
 
 ---
 
@@ -144,7 +144,7 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 5. Odpowiedź — powinna wyglądać jakby widz sam ją wypracował
 6. Pytanie przeformułowane — wróć do pytania otwierającego, teraz z innym znaczeniem
 
-**Ograniczenie close:** Po sekcji Permission Practice, ostatnia linia powinna echo otwierającego pytania, ale odpowiedź jest teraz oczywista. Przeformułowane pytanie jest OSTATNIM beatem — tipy są beatem przed nim.
+**Ograniczenie close:** Po sekcji Permission Practice (jeśli była — jest opcjonalna), ostatnia linia powinna echo otwierającego pytania, ale odpowiedź jest teraz oczywista. Przeformułowane pytanie jest OSTATNIM beatem; praktyki, jeśli były, są beatem przed nim.
 
 ---
 
@@ -154,6 +154,8 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 
 **Punkt wejścia:** Opisz mózg lub zachowanie jako złożony system. Używaj terminów inżynieryjnych w prostym polskim — opóźnienie (latency), pętla rekurencyjna, cache, przepustowość, tryb awarii, sygnał, override. Trzymaj ton precyzyjny i chłodny, nie kliniczny.
 
+**Chłód opisuje mechanizm, nigdy człowieka (north-star, 2026-06-04).** To jedyna architektura z chłodnym rejestrem — ale chłód należy do *opisu maszyny*, nie do *adresu do widza*. Nadal mówisz DO osoby, która słucha sama wieczorem; precyzja dotyczy mechanizmu, ciepło dotyczy widza. **Nie audytuj człowieka** — audytuj sygnał/pętlę/tryb awarii, a widzowi pokaż, że rozumiesz, co czuje. (Złota zasada: `voice_corpus.md` §0; bramka: 3c kat. K. Sygnał ostrzegawczy: slug-3 o wstydzie wyszedł jak diagnostyka *osoby* — to naruszenie, nie „taka architektura".)
+
 **Wymagane węzły treściowe:**
 1. Opis systemu — czym jest i co jest zaprojektowany żeby robić
 2. Tryb awarii pod lupą — co się psuje i jak
@@ -161,15 +163,15 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 4. Co system *naprawdę* optymalizuje — często inne niż osoba myśli
 5. Diagnostyczna konkluzja — co zachowanie systemu ujawnia
 
-**Ograniczenie close:** Po sekcji Permission Practice, zakończ tym czego system *potrzebuje* — nie tym co *osoba powinna zrobić*. System ma własną logikę. Uszanuj ją. To stwierdzenie logiki systemu jest OSTATNIM beatem — tipy są beatem przed nim.
+**Ograniczenie close:** Po sekcji Permission Practice (jeśli była — jest opcjonalna), zakończ tym czego system *potrzebuje* — nie tym co *osoba powinna zrobić*. System ma własną logikę. Uszanuj ją. To stwierdzenie logiki systemu jest OSTATNIM beatem; praktyki, jeśli były, są beatem przed nim.
 
 ---
 
-### Architektura 5 — Composite Portrait (Portret Złożony) — DOMYŚLNA
+### Architektura 5 — Composite Portrait (Portret Złożony) — SYGNATUROWA / FALLBACK
 
-**To jest DOMYŚLNA architektura kanału.** Pozostałe cztery wybierasz tylko gdy wywołanie `/draft` poda nazwę architektury jawnie.
+**To jest sygnaturowy kształt kanału i fallback** — ale **nie ślepy domyślny**. Selektor (krok 1.6) wybiera ją tylko wtedy, gdy temat naprawdę najlepiej do niej pasuje; przy serii pod rząd anti-repeat tiebreak może przesunąć wybór na inną architekturę. Pozostałe cztery wybiera się tak samo — dopasowaniem do tematu lub jawnym override `$2`.
 
-**Kiedy używać:** Domyślnie. Temat da się ucieleśnić w jednej rozpoznawalnej postaci — kimś, kogo zachowanie widz zna z siebie. Śledzimy tę jedną postać przez cały film; widz rozpoznaje w niej siebie.
+**Kiedy używać:** Temat da się ucieleśnić w jednej rozpoznawalnej postaci — kimś, kogo zachowanie widz zna z siebie. Śledzimy tę jedną postać przez cały film; widz rozpoznaje w niej siebie.
 
 **Punkt wejścia:** Wejdź w postać w trakcie konkretnego, drobnego, rozpoznawalnego zachowania, które wygląda jak wada. Hook to **„no wonder"** — dziwne zachowanie, które za chwilę okaże się sensowne. Tu wprowadź **przedmiot-motyw**: jeden konkretny obiekt (krzesło, drzwi, kamień, nić), który będzie wracał przez cały film.
 
@@ -185,33 +187,40 @@ Architektura to **kształt**, nie sztywny szablon. Używaj jej do określenia pu
 
 **Długość:** ~1,500–1,750 słów polskich = ~10–15 min (natywna długość kanału; gęstość obrazów bez zmian — jedno zdjęcie na zdanie → ~140–180 obrazów).
 
-**Ograniczenie close:** Po sekcji Permission Practice, zakończ postacią w spoczynku, z przedmiotem-motywem rozwiązanym — echo Ruchu 1 (Powierzchni), ale jeden element zmieniony. Ostatni beat to rozpoznanie / lustro do widza, nigdy porada. Permission Practice jest beatem przed nim.
+**Ograniczenie close:** Po sekcji Permission Practice (jeśli była — jest opcjonalna), zakończ postacią w spoczynku, z przedmiotem-motywem rozwiązanym — echo Ruchu 1 (Powierzchni), ale jeden element zmieniony. Ostatni beat to rozpoznanie / lustro do widza, nigdy porada. Permission Practice, jeśli była, jest beatem przed nim.
 
 **Rozwiąż na TYM SAMYM motywie (kalibracja 2026-05-30).** „Echo Ruchu 1" znaczy: ten sam przedmiot, jeden element zmieniony — **nie świeża instancja motywu**. Jeśli Reframe zwrócił widza ku staremu obiektowi („wyjmij ten notatnik z szuflady"), to close, który wprowadza nową kopię („pewnego dnia kupisz nowy notatnik"), rozmywa puentę „zostań przy starym". Zamknij na tym samym egzemplarzu — co się zmieniło, to nie obiekt, tylko to, co z nim robisz.
 
 ---
 
-## Sekcja Permission Practice (uniwersalna, zamykająca)
+## Sekcja Permission Practice (opcjonalna, gdy pasuje — 2026-06-06)
 
-**Każdy skrypt — niezależnie od architektury — musi zawierać sekcję Permission Practice między korpusem architektury a końcowym recognition close.** To zablokowana reguła strukturalna kanału. Sekcja daje widzowi coś konkretnego do zabrania do swojego tygodnia bez łamania anti-optimization pozycjonowania kanału.
+**Permission Practice jest OPCJONALNA, nie obowiązkowa** (zmiana 2026-06-06; wcześniej „zablokowana reguła strukturalna — każdy skrypt musi zawierać"). Mikropraktyki pojawiają się **tylko jeśli z centralnego obrazu / mechanizmu tego skryptu wynika prawdziwy, konkretny ruch**, który widz mógłby zrobić. Gdy temat go nie unosi — **nie doklejaj praktyk na siłę**; skrypt idzie prosto do recognition close. Wymuszone „cztery praktyki, bo tak" produkowały generyczne, przyklejone ćwiczenia (spalona rama „dłoń na klatce + trzy wydechy" powtórzona slug 1→2→3).
+
+**Reguła decyzji (Drafter):** zapytaj *„Czy z obrazu tego skryptu wynika konkretny ruch, który widz mógłby naprawdę zrobić — czy każda praktyka byłaby doklejona?"* Jeśli wynika → wpleć 1–4 praktyki płynną prozą (zasady niżej). Jeśli nie → pomiń całą sekcję, zostaw recognition close. (Czytelnik 1 / spójność flaguje doklejoną praktykę jako szew; bramka doktryny nie wymaga PP.)
+
+**Recognition close zostaje obowiązkowy** — niezależnie od tego, czy PP jest obecna, rozpoznanie ma ostatnie słowo.
+
+Gdy PP **jest** obecna, obowiązują wszystkie poniższe zasady (proza nie lista, softenery, dwa rejestry, testy genericzności). Gdy jej nie ma — pomijasz całą sekcję, a recognition close idzie wprost po korpusie architektury.
 
 ### Umieszczenie
 
 ```
-Korpus architektury (Forensic / Historical / Socratic / Systems)
+Korpus architektury (Forensic / Historical / Socratic / Systems / Composite)
   ↓
-Sekcja Permission Practice  ← (ta sekcja)
+[Sekcja Permission Practice]  ← OPCJONALNA (tylko jeśli temat unosi praktykę)
   ↓
-Recognition close (własny close constraint architektury — OSTATNI beat)
+Recognition close (własny close constraint architektury — OSTATNI beat, ZAWSZE)
 ```
 
 ### Specyfikacja (proza — NIE numerowana lista)
 
 **Format zmieniony 2026-05-29:** sekcja jest teraz **płynącą prozą**, nie numerowaną listą „1. 2. 3. 4.". Wzorzec wzięty z ręcznej korekty użytkownika — zmiękczone zaproszenia zamiast rozkazów. Numerowana lista w PP jest teraz ZAKAZANA (Reviewer flaguje).
 
-- **Wejście (zmiękczone, nie nagłówek-lista):** otwórz uznaniem, że tego nie da się wyłączyć, ale czasem da się uciszyć — np. *"Kiedy [wyzwalacz powiązany z mechanizmem skryptu] uderza, nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć."* Wyzwalacz wiąże się ze zjawiskiem skryptu (*"kiedy unik uderza"*, *"kiedy to ląduje w ciele"*, *"kiedy pętla się włącza"*).
+- **Wejście (zmiękczone, zakotwiczone w materiale skryptu).** Funkcja wejścia jest stała: (a) uznać, że wyzwalacz wróci, (b) zaproponować mniejszy ruch. **Sformułowanie NIE jest stałe — i nie ma być.** Nie używaj wyczerpanej ramy *"Kiedy [X] uderza… nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć."* — ta konkretna konstrukcja powtórzyła się dosłownie między odcinkami (slug 2 ↔ slug 3) i jest teraz spalona. Zbuduj wejście z **centralnej metafory / przedmiotu-motywu / języka mechanizmu TEGO skryptu** (pusta kratka i notatnik; zegar bez wskazówek; zsunięta wskazówka czujnika), tak by jego brzmienie było nieprzenoszalne do innego odcinka. Przepuść wynik przez **test genericzności** (niżej): jeśli wejście mogłoby otworzyć PP dowolnego innego skryptu bez zmiany — jest zbyt generyczne, przepisz z metafory.
 - **Forma = proza, zależna od rejestru (2026-06-01).** Około czterech praktyk + krótka linia unpack przy każdej. W **rejestrze somatycznym** forma to miękka anafora *"Czasem wystarczy [bezokolicznik]…"* (wariuj otwarcie ostatniej, *"A czasem wystarczy po prostu…"*, żeby nie brzmiała mechanicznie). W **rejestrze strategicznym** forma **może prowadzić trybem rozkazującym** (*"Spójrz na to, co już jest. Zrób wersję mniejszą, niż planowałeś. Zostaw rzecz na widoku."*) — pod warunkiem zachowania softenerów pozwolenia („nie musisz", „wystarczy") i ramy anty-optymalizacyjnej. W obu rejestrach: **proza, nigdy numerowana lista; zaproszenia/pozwolenie, nigdy harmonogram.**
 - **Voice = ucieleśniona mikropraktyka.** Akty somatyczne (oddech, dłoń, postawa), zauważanie (lokalizowanie wrażenia w ciele), nazywanie (jedno słowo na głos), mikro-progi (napisz pierwsze zdanie, potem przestań). Rzeczy które ciało może zrobić w danym momencie, nie plany na później.
+- **Praktyki też zakotwicz w materiale skryptu.** Tam gdzie się da, prowadź mikropraktyki przez **przedmiot-motyw / metaforę tego skryptu** (slug-2 robi to dobrze: „wróć do następnej kratki", „zostaw notatnik na widoku") zamiast sięgać odruchowo po domyślny zestaw „dłoń na klatce + trzy wydechy". Domyślne akty somatyczne są dozwolone, ale tylko jeśli mechanizm skryptu naprawdę jest o ciele — nie jako wypełniacz, gdy temat ma własny obraz. Każdą praktykę przepuść przez test genericzności (niżej): jeśli mogłaby pojawić się w PP dowolnego innego skryptu bez zmiany — przepisz ją w słownictwie tego skryptu.
 - **Softening pressure.** Każda praktyka z imperatywem ma temporalny softener: *czasem / teraz / na chwilę / tylko jedną minutę / wystarczy że / nie musisz / tam gdzie*. Bez softenerów brzmi jak prescripcja, nie pozwolenie.
 - **Dociśnij, nie rozmywaj (kalibracja 2026-05-30; doprecyzowane 2026-06-01).** PP może być ostrzejsza i bardziej konkretna — tnij watę, wybieraj mocniejszy aktywny czasownik. W rejestrze strategicznym „dociśnięcie" może iść aż do trybu rozkazującego (Spójrz/Zrób/Zostaw) — ale **softener pozwolenia i rama anty-optymalizacyjna zostają zawsze**. Granica nie biegnie między „zaproszenie" a „rozkaz" (tryb rozkazujący w rejestrze strategicznym jest OK), tylko między **pozwoleniem a harmonogramem/optymalizacją**: „Zrób wersję mniejszą, niż planowałeś" = pozwolenie (OK); „Zaplanuj tydzień w blokach" = optymalizacja (zakaz). Rejestr somatyczny zostaje miękki („Czasem wystarczy…").
 - **Wszystkie istniejące voice rules nadal obowiązują:** bez nazwisk badaczy, bez "badania pokazują" (poza jedną dozwoloną kotwicą kliniczną w korpusie skryptu — patrz „Zbanowane frazy", wyjątek kotwicy klinicznej; w samej PP zwykle jej nie ma), bez dziesiętnych, tylko zaokrąglone liczby, najpierw prosty język.
@@ -232,14 +241,22 @@ Permission Practice ma **dwa rejestry**. Wspólne w obu: proza (nigdy numerowana
 
 Dla każdej praktyki zapytaj: *"Czy ta linia mogłaby pojawić się niezmieniona na blogu o produktywności lub w generycznym self-help wątku?"* Jeśli tak — źle. Przepisz jako somatyczny, zauważający lub mikro-progowy akt, w prozie *"Czasem wystarczy…"*.
 
+### Test genericzności (przeciw duplikatom między odcinkami)
+
+Drugi, równoległy test — dotyczy **wejścia PP ORAZ każdej praktyki**: *"Czy to zdanie mogłoby otworzyć / pojawić się w sekcji Permission Practice **dowolnego innego odcinka SENSUM** bez żadnej zmiany?"* Jeśli tak — jest zbyt generyczne; przepisz, zakotwiczając je w **centralnej metaforze / przedmiocie-motywie / języku mechanizmu TEGO skryptu**.
+
+Ten test jest *intrinsic* — nie wymaga oglądania innych skryptów. Dlatego łapie powtórzenia, których 3c/3d nie widzą (recenzują jeden odcinek w izolacji). To **zamiast** rosnącej listy fraz zakazanych: nie banujemy konkretnych zdań — pytamy, czy zdanie należy do tego skryptu, czy do żadnego. Spalona rama „Kiedy [X] uderza… nie da się… Ale czasem…" jest dokładnie tym, co ten test ma wychwytywać: pasuje wszędzie, więc nie należy nigdzie.
+
+> **⚠ Te bloki ilustrują MECHANIZM (rytm, softenery, rejestr, umiejscowienie recognition close) — NIE są zdaniami do skopiowania.** Każdy używa metafory *swojego* skryptu i celowo ma **inny kształt wejścia** (zauważysz: nie wszystkie zaczynają się tak samo). Twoje wejście i praktyki muszą być w słownictwie *twojego* skryptu. Jeśli którąkolwiek linię stąd dałoby się przekleić do innego odcinka bez zmiany — jest zbyt generyczna (patrz Test genericzności). Anafora „Czasem wystarczy…" to *forma rejestru somatycznego* i wolno ją dzielić; konkretna treść (alarm, dłoń, wydechy, pusta kratka) — nie.
+
 ### Poprawny przykład (proza, anafora „Czasem wystarczy")
 
 ```
-Kiedy ten alarm uderza, nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć.
+Ten alarm rzadko da się wyłączyć od razu. Ale dźwięk można trochę ściszyć.
 
 Czasem wystarczy zatrzymać się przy jednej rzeczy i powiedzieć sobie, że nie widzisz całej historii. Nie po to, żeby oceniać.
 
-Czasem wystarczy położyć dłoń na klatce piersiowej, tam gdzie czujesz ten ciężar, i zrobić trzy wydechy dłuższe niż wdechy. Układ nerwowy nie słucha argumentów, ale wolny wydech odczytuje jako sygnał, że w tej chwili nic ci nie grozi.
+Czasem wystarczy na moment rozluźnić szczękę i opuścić ramiona o centymetr niżej. Ciało nie słucha argumentów, ale to drobne poluzowanie samo mówi mu, że nie musi teraz być w gotowości.
 
 Czasem wystarczy nazwać jednym słowem, czego ci brakuje — nie „wszystkiego", tylko jednej rzeczy. Samo nazwanie zwykle trochę porządkuje chaos.
 
@@ -251,7 +268,7 @@ A czasem wystarczy po prostu zauważyć, gdzie jesteś, kiedy to wraca. Nie musi
 Ta sama proza i softenery co wyżej; mikropraktyki są behawioralne (wybór, odłożenie, przeramowanie), ale wciąż **pozwolenie**, nie harmonogram. Recognition close idzie PO tej sekcji.
 
 ```
-Kiedy znów łapiesz się na tym, że chcesz robić wszystko naraz, nie musisz tego w sobie dusić. Ale czasem da się to trochę ułożyć.
+Tej ochoty, żeby robić wszystko naraz, nie musisz w sobie dusić. Czasem wystarczy ją trochę ułożyć.
 
 Czasem wystarczy wybrać jedną rzecz na ten jeden sezon — nie na zawsze, na ten sezon — i dać sobie prawo odłożyć resztę. Nie wyrzucić. Odłożyć.
 
@@ -264,7 +281,7 @@ A czasem wystarczy zauważyć, że to, co braliś za rozproszenie, bywa po prost
 
 ### Poprawny przykład — rejestr strategiczny, forma rozkazująca (slug-2 „Praktyka powrotu", 2026-06-01)
 
-Ta sama rama (pozwolenie, softenery, recognition close po sekcji), ale praktyki prowadzone **trybem rozkazującym** zamiast anaforą „Czasem wystarczy…". To wzorzec z ręcznej redakcji użytkownika — dozwolony w rejestrze strategicznym.
+Ten blok ilustruje **wyłącznie formę praktyk** — tryb rozkazujący (Spójrz / Zrób / Zostaw) zamiast anafory „Czasem wystarczy…", dozwolony w rejestrze strategicznym, prowadzony przez przedmiot-motyw skryptu (kratka, notatnik). **NIE bierz jego wejścia jako wzoru** — pierwsze zdanie poniżej („Kiedy ta pusta kratka znowu się pojawi — bo pojawi się prędzej czy później —…") to dokładnie spalona rama, która powtórzyła się między odcinkami; zostawione tu tylko jako zapis historyczny slug-2. Twoje wejście buduj od nowa z własnej metafory.
 
 ```
 Kiedy ta pusta kratka znowu się pojawi — bo pojawi się prędzej czy później — nie musisz od razu uciszać głosu, który mówi, że wszystko przepadło. Wystarczy zrobić coś mniejszego.

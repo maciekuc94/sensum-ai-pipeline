@@ -67,7 +67,7 @@ Review and edit these prompts before expanding. Run --expand to assemble full Im
 ...
 ```
 
-Extract `<topic>` from the first `# ` heading of `04_final.md`. Extract `<architecture>` from the `ARCHITECTURE:` line (first non-blank line of the script body). Default to `Composite Portrait` if missing (the channel default).
+Extract `<topic>` from the first `# ` heading of `04_final.md`. Extract `<architecture>` from `md/03_architecture.md` (first line `ARCHITECTURE: <name>`) — as of 2026-06-04 the `ARCHITECTURE:` line no longer lives in `04_final.md` (stripped at finalize so it can't leak into the recorded script). Fallback for older slugs without `03_architecture.md`: read the `ARCHITECTURE:` line from the script, else `Composite Portrait` (the channel default).
 
 **Critical:** write only the core visual description in `**Visual:**` — do NOT prepend CHARACTER_DESCRIPTION or append STYLE_SUFFIX. The expand step injects those constants automatically.
 
@@ -123,7 +123,7 @@ When in doubt, ask: does the sentence want the viewer to see a *person*, or to s
 
 ### Beat Sequence & Visual Register
 
-**Read the script's `ARCHITECTURE:` line and apply the matching register below.**
+**Read the architecture from `md/03_architecture.md` (first line `ARCHITECTURE: <name>`; fallback: the script's `ARCHITECTURE:` line for older slugs) and apply the matching register below.**
 
 ---
 
@@ -482,7 +482,7 @@ The compact `05_prompts.md` may be corrupted or already expanded. If it already 
 
 **Beat field missing, wrong, or all the same beat**
 
-Confirm the script's first non-blank, non-header line begins `ARCHITECTURE:` followed by one of the five names exactly. If the line is missing, `/visuals` falls back to Composite Portrait (the channel default) — which is wrong for any forced short-form architecture. Fix `04_final.md` and re-run.
+Confirm `md/03_architecture.md` exists and its first line is `ARCHITECTURE:` followed by one of the five names exactly (this is the source of truth since 2026-06-04 — the `ARCHITECTURE:` line is intentionally stripped from `04_final.md`). If `03_architecture.md` is missing, `/visuals` falls back to the script's `ARCHITECTURE:` line, then to Composite Portrait (the channel default) — which is wrong for any forced short-form architecture. Re-run the architecture-selection step (or `/draft`) to regenerate `03_architecture.md`.
 
 **Investigation-beat images all show generic faceless figures**
 

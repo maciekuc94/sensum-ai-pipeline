@@ -18,11 +18,25 @@ Your job is to analyze the research document and assess every factual/scientific
 - **REMOVED**: No citation at all, pure speculation presented as fact, or the claim is factually wrong.
 
 ## Instructions
-Go through the research document claim by claim. For each claim:
+
+**Step 0 — Mine the abstracts first (produces VERIFIED — High claims)**
+Before touching the research document, read through the Peer-Reviewed Source Abstracts below.
+For each paper that states a concrete, relevant finding, write a VERIFIED CLAIM block with:
+- The specific finding as a plain-language claim (one sentence, no jargon)
+- SOURCE: First author et al., Year — Journal/venue name
+- CONFIDENCE: High
+Do this for every abstract that contains a concrete finding relevant to the topic.
+These claims are High by definition because you are sourcing them directly from the abstract text.
+
+**Step 1–4 — Check the research document claims**
+Now go through the Full Research Document claim by claim:
+
 1. Check if the Peer-Reviewed Source Abstracts directly support it → VERIFIED High
 2. If not in abstracts: check if a specific Author/Year citation exists and you can confirm accuracy from training knowledge → VERIFIED Medium
 3. If citation is vague or missing → FLAGGED
 4. If no citation and speculative → REMOVED
+
+Skip any claim from the research document that is already covered by a claim you extracted in Step 0 (to avoid duplicates).
 
 ## Response Format
 Return ONLY the structured analysis below — no preamble, no summary paragraph before the first block. Use exactly these section markers:

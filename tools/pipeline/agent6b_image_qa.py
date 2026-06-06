@@ -43,6 +43,7 @@ from tools.utils import get_output_dir, get_env, write_output, read_output
 
 QA_REPORT_FILENAME = "md/06_qa.md"
 QA_MODEL = "gemini-2.5-flash"
+QA_TEMPERATURE = 0.0  # deterministic — image QA is a binary style gate
 REQUEST_DELAY = 1.0  # seconds between Vertex AI calls
 
 QA_PROMPT = (
@@ -106,6 +107,7 @@ def _audit_one(client, image_path: Path) -> tuple[str, str]:
                 genai_types.Part.from_bytes(data=img_bytes, mime_type="image/png"),
                 QA_PROMPT,
             ],
+            config=genai_types.GenerateContentConfig(temperature=QA_TEMPERATURE),
         )
     except Exception as exc:
         return "ERROR", f"vertex call failed: {exc}"

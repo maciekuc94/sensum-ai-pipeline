@@ -272,7 +272,7 @@ def query_gemini_text(
 def log_cost(slug: str, agent: str, data: dict) -> None:
     """No-op. cost_log.json is no longer written (not needed per user, 2026-05-29).
 
-    Kept as an importable no-op so existing callers (agent_align, intelligence) don't
+    Kept as an importable no-op so existing callers (agent_align) don't
     break. Remove the calls entirely if/when convenient.
     """
     return

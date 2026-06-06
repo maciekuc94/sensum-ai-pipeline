@@ -1,14 +1,19 @@
-# Workflow: Script Writing (B++ v2 chain — in-session on Opus 4.8)
+# Workflow: Script Writing (flowing-essay chain — in-session on Opus 4.8)
+
+> **⚠ Przepisane 2026-06-06.** Stary łańcuch (3a Drafter → 3b Revisor ↔ 3c Reviewer triage PASS/FLAG → 3d Native-Ear panel) został **wygaszony**. „## Purpose" i tabela niżej są zaktualizowane; **starsze bloki per-agent w dalszej części tego pliku mogą jeszcze opisywać stary triage — autorytatywne są prompty `03{a,b,c,d,e}_*.md` + `.claude/commands/draft.md` + CLAUDE.md §„Script chain (Agent 3)".**
 
 ## Purpose
 
-Step 3 produces the production-ready Polish script via three passes, **all running in-session in Claude Code on Opus 4.8 (no API)** since 2026-05-29:
+Step 3 produces the production-ready Polish script as a **flowing essay-voiceover z nutą liryzmu, spójny** (target voice: `style_guide.md` §2.5 + `voice_corpus.md` §A), **all in-session on Opus 4.8 (no API)**:
 
-1. **3a Drafter** — writes the first complete draft from verified research, **voice-first (two stages: write native Polish, then apply doctrine)** (prompt: `03a_drafter.md`)
-2. **3b Revisor** — full-script revision pass: **MOVE 0 naturalness sweep (open-ended)** + 11 named diff-derived moves (prompt: `03b_revisor.md`)
-3. **3c Reviewer** — judges the revised script (PASS / FLAG) without rewriting, **incl. category J (translationese / native-ear gate)** (prompt: `03c_reviewer.md`)
+1. **3a Drafter** — writes the first complete draft, voice-first, aiming at the flowing-essay texture; **Permission Practice optional** (only if a real concrete move arises) (prompt: `03a_drafter.md`).
+2. **Panel of 2 cold readers** (`script-reader` teammates) read `04_working.md` cold and give **holistic editorial feedback**, ending with `PŁYNIE`/`REWORK`:
+   - **Czytelnik 1 — spójność/przepływ** (+ „PP na siłę") (prompt: `03c_reviewer.md`)
+   - **Czytelnik 2 — głos/liryzm/kalki/ciepło** (prompt: `03d_native_ear.md`)
+3. **3b Integrator** — the one hand that **rewrites the WHOLE script** each round from both reader logs (prompt: `03b_revisor.md`).
+4. **3e thin doctrine gate** — final non-negotiables check → `04_final.md` (prompt: `03e_doctrine_gate.md`).
 
-The Revisor and Reviewer run in a **loop** (max 5 iterations, exits on PASS). If the Reviewer flags critical issues, the Revisor re-runs with that feedback. The loop **never returns to the Drafter** — the Drafter runs once. The whole chain is orchestrated by the `/draft` slash command in one session, at zero API cost.
+The readers and Integrator run in a **loop** (soft cap ~5 rounds, exits when **both** readers say `PŁYNIE`, else ship-with-WARNING). The Drafter runs once. Orchestrated by `/draft` in one session, zero API cost. **Holistic feedback, not categorical triage** — no BLOCKER/FIX/WATCH, no iteration-dampener, no anti-sterility brake on polishing.
 
 When the loop exits (PASS, or max iterations hit), the final revised draft is copied to `md/04_final.md`. If it exited on FLAG at max iterations, a warning header is prepended.
 

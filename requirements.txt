@@ -6,6 +6,7 @@ python-slugify
 Pillow
 python-docx
 pdfplumber
-google-api-python-client
 google-auth-oauthlib
 numpy
+faster-whisper
+soundfile

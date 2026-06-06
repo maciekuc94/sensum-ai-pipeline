@@ -6,7 +6,44 @@ Zastępuje angielski transkrypt (orchid/dandelion) jako podstawową referencję 
 
 ---
 
+## §0. Złota zasada — zanim cokolwiek napiszesz
+
+**Mów DO człowieka, nie opisuj systemu.**
+
+Piszesz kameralny monolog do **jednej osoby**, która słucha sama, wieczorem, w słuchawkach — jej własnym, wewnętrznym głosem. Nie wykład, nie poradnik, nie „content edukacyjny". Ktoś, kto rozumie, co ona czuje, i siedzi obok.
+
+Najczęstszy błąd pipeline'u to **„mózg inżyniera"**: esej zsuwa się w *audyt mechanizmu* — poprawny, kompletny, ale chłodny. Wyjaśnia, zamiast dotykać. (Sygnał ostrzegawczy ze slug-3: skrypt o wstydzie wyszedł jak diagnostyka systemu — z dosłownym „ARCHITECTURE: Systems Audit" na górze.)
+
+**Test po każdym akapicie:** czy to brzmi jak ktoś, kto rozumie, co czuję — czy jak instrukcja obsługi mnie samego? Jeśli to drugie — przepisz cieplej.
+
+Walidacja przed wyjaśnieniem: najpierw wyląduj uczucie, dopiero potem mechanizm. Ciepło nie jest hookiem — to cały rejestr. (To jest north-star całego łańcucha — egzekwuje go Czytelnik 2: głos i ciepło.)
+
+---
+
 ## A. Wzorcowe pasaże (czytaj na głos — tak ma brzmieć)
+
+**Domyślny rejestr: reportaż mówiony — zauważaj konkret, nie dowodź abstrakcji (2026-06-06, przebudowane na bazie nagranych slug-1 i slug-2).** To jest kotwica **rejestru** (jak masz brzmieć), nie szablonu (co masz mówić). Architektura, centralna metafora, temat, obrazy — zmieniają się **co odcinek** (selektor architektur + nowy przedmiot-motyw za każdym razem). Stały jest tylko głos. Spójność głosu = rozpoznawalność kanału, nie monotonia — Tochman pisze pięćdziesiąt różnych reportaży i wciąż brzmi jak Tochman. Monotonia rodzi się gdzie indziej: gdy zamrażasz konkretny **ruch** (ta sama anafora „Czasem…", ta sama praktyka „dłoń na klatce") w szablon — tego nie rób (patrz §E + test genericzności w `narrative_architectures.md`).
+
+**Jedna zasada nad wszystkimi: głos ZAUWAŻA, nie ARGUMENTUJE.** Esej dowodzi tezy logicznymi mostkami; reportaż kładzie na stole konkretną rzecz i pozwala jej nieść sens. Twój rejestr to drugie. Trzy sygnatury (wprost z nagranych skryptów):
+
+1. **Konkret niesie sens.** Każdą abstrakcję natychmiast zakotwicz w fizycznym przedmiocie albo scenie. Gdy tekst robi się pojęciowy — w następnym zdaniu wróć do rzeczy.
+2. **Krótkie, proste szyki.** Podmiot–orzeczenie. Długie zdanie z trzema podrzędnymi rozbij na trzy.
+3. **Proste spójniki, wskazujące na rzecz.** „Dlatego", „I tu", „Bo", „Kiedy" — nie eseistyczne meta-mostki („I tu jest pierwsza rzecz, która nie powinna się zgadzać", „Cała różnica jest w tym, że…", „Zostaje pytanie…").
+
+**Ta sama myśl, dwa rejestry — naucz się słyszeć różnicę:**
+
+❌ Esej (unosi abstrakcję i argumentuje ją w powietrzu):
+> Bo jedno drobne potknięcie to przecież jeszcze nie wyrok na całego człowieka. A jednak za każdym razem ten wyrok zapada. Cała różnica jest w tym, kogo ten głos sądzi.
+
+✓ Reportaż (konkret niesie sens — verbatim slug-2):
+> Jedna pusta kratka przestaje być jednym dniem. Zaczyna znaczyć coś więcej. Nie to, że wypadłeś z rytmu — to, że „taki już jesteś".
+
+Oba mówią to samo. Lewy unosi pojęcia („potknięcie → wyrok → człowiek") i dowodzi ich; prawy kładzie na stole **kratkę** i pozwala jej zrobić robotę. Pisz prawą stroną.
+
+**Spójność bez eseju — skąd się bierze „bieg".** Tekst klei się **nie** eseistyczną tkanką łączącą, tylko **jednym fizycznym motywem niesionym przez całość** (zegar w slug-1; pusta kratka / notatnik w slug-2). Motyw wraca i ewoluuje — to jest cohesion. Bieg, który płynie samym konkretem (verbatim slug-2):
+> Dlatego szuflada z porzuconymi rzeczami to nie jest muzeum lenistwa. To archiwum prób, które w pewnym momencie skleiły się z samooceną. Porzucony plan treningowy, aplikacja do języka, książka zatrzymana na tej samej stronie — to nie mówi o słabości. Mówi o tym, jak szybko działanie przestało być tylko działaniem.
+
+Krótkie pasaże poniżej (slug-1) pokazują **akcent i kotwicę** — szczyty wyrastające z takiego biegu, nie domyślny rytm całości.
 
 **Otwarcie przez scenę, nie przez tezę:**
 
@@ -50,15 +87,19 @@ Zastępuje angielski transkrypt (orchid/dandelion) jako podstawową referencję 
 > Nie jesteś spóźniony.
 > Patrzysz na zegar, który nie pokazuje prawdziwego czasu.
 
-**Permission Practice jako proza (anafora „Czasem wystarczy", zmiękczone wejście):**
+**Permission Practice — dziel TYLKO formę, nie treść:**
 
-> Kiedy ten alarm uderza, nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć.
+To, co tu pokazane, to **kadencja rejestru somatycznego** — anafora „Czasem wystarczy [bezokolicznik]…", zmiękczone wejście, krótka linia unpack po każdej praktyce. **Tę kadencję wolno powtarzać między odcinkami.** Czego NIE wolno: konkretnej treści ani zdania wejścia.
+
+> ⚠ **Uwaga:** poniższy tekst to verbatim slug-1 i był źródłem powtórzeń — to samo wejście „Kiedy [X] uderza… Ale czasem da się go trochę uciszyć" i ta sama praktyka „dłoń na klatce + trzy wydechy" wróciły potem w slug-2 i slug-3. **Nie przeklejaj.** Każdy odcinek buduje wejście i praktyki z **własnej** centralnej metafory (patrz „Test genericzności" w `narrative_architectures.md`).
+
+Forma (kadencja do dzielenia):
+
+> [zmiękczone wejście zbudowane z metafory TEGO skryptu — uznaj, że wyzwalacz wróci; zaproponuj mniejszy ruch]
 >
-> Czasem wystarczy położyć dłoń na klatce piersiowej, tam, gdzie czujesz ten ciężar, i zrobić trzy wydechy dłuższe niż wdechy.
-> Układ nerwowy nie bardzo słucha argumentów. Ale dłuższy wydech odczytuje jako sygnał, że w tej chwili nic ci nie grozi.
+> Czasem wystarczy [aktywny bezokolicznik praktyki zakotwiczonej w mechanizmie skryptu]. [Jedna linia unpack — dlaczego to działa.]
 >
-> A czasem wystarczy po prostu zauważyć, gdzie jesteś, kiedy to wraca.
-> Nie musisz od razu nic z tym robić.
+> A czasem wystarczy po prostu [ostatnia, lżejsza praktyka]. Nie musisz od razu nic z tym robić.
 
 ---
 
@@ -108,7 +149,7 @@ Konkretne zdania, które maszyna wyprodukowała, a które brzmią jak tłumaczen
 | **Genitive-stack** | łańcuch dopełniaczy tłumaczący angielski compound noun zamiast prostego zwrotu | „**jakość twojego życia**" / „**poczucie kontroli nad sytuacją**" | „**jak żyjesz**" / „że masz to pod kontrolą" |
 | **Trailing verb / nienaturalny szyk** | czasownik wypchnięty na sam koniec zdania kalką z EN struktury zależnej — odbiera dynamikę | „To jest mechanizm, który strach w tobie **uruchamia**." | „To mechanizm, który **uruchamia** w tobie strach." |
 
-**Waga (dla 3c):** tell w hooku, zdaniu-kotwicy, Permission Practice albo recognition close = BLOCKER (te miejsca niosą uderzenie). Ten sam tell w zwykłym akapicie = FIX. (Rejestr-zgrzyt i nawykowy spójnik na początku to osobne, już-nazwane kategorie — nie powielaj ich tu.)
+**Waga (dla Czytelnika 2 / głos):** tell w hooku, zdaniu-kotwicy, Permission Practice albo recognition close — w pozycji impaktowej wymusza `REWORK` (te miejsca niosą uderzenie). Ten sam tell w zwykłym akapicie → Feedback z kierunkiem, sam w sobie nie musi blokować. (Rejestr-zgrzyt i nawykowy spójnik na początku to osobne, już-nazwane kategorie — nie powielaj ich tu.)
 
 ---
 
@@ -190,3 +231,21 @@ Preferuj utrwalone polskie idiomy nad podręcznikowe sformułowania.
 
 **f. Chroń szczyty — nie ruszaj, co już działa.**
 Operator cutu jawnie wymienił fragmenty, których nie dotknął: cold open, „szuflada nie jest muzeum lenistwa", „szczoteczka przy umywalce", finałowa „pusta kratka". To są najmocniejsze punkty — każda ingerencja by je osłabiła. **Redakcja bezwzględna nie znaczy redakcja wszędzie.**
+
+---
+
+## G. Bezrodzajowość — pary korekt (neutral-first, 2026-06-04)
+
+Kanał słucha **jedna osoba** — ma się czuć adresowana niezależnie od płci. Domyślnie pisz bezpłciowo; **czas teraźniejszy** (bezrodzajowy w polskim) to narzędzie nr 1. Formy zdradzające płeć — czas przeszły w formie męskiej („obiecałeś", „byłeś"), przymiotniki orzecznikowe („leniwy", „zmęczony") — przepisuj na teraźniejszy / bezosobowy / czasownik. Pary do ucha (analogicznie do §B/§C):
+
+| ❌ Rodzajowo (męskie) | ✓ Neutralnie |
+|---|---|
+| „obiecałeś sobie, że wstaniesz" | „dajesz sobie słowo, że wstaniesz" / „postanawiasz wstać" |
+| „byłeś posłuszny temu sygnałowi" | „za długo słuchasz tego sygnału" |
+| „jesteś leniwy / słaby" | „nie chce ci się ruszyć" / „brakuje ci sił" |
+| „znowu zawiodłeś" | „znów ci nie wyszło" / „znów się nie udało" |
+| cytat wewn.: „zrobiłem coś źle" / „jestem zły" | „coś poszło źle" / „jestem do niczego" |
+
+**Cytat wewnętrzny — trudny przypadek.** Para **„coś poszło źle" / „jestem do niczego"** jest bezpłciowa i dlatego to dobre, stałe zdanie-motyw. Tracisz dźwiękowe echo *źle/zły* (a „zły" myli się ze złością) — ale zyskujesz tekst mówiący do wszystkich. To jedyne miejsce, gdzie inkluzywność kosztuje grę słów; wybierz świadomie.
+
+**Świadomy wyjątek dozwolony**, gdy neutralna forma realnie psuje zdanie — ale to wyjątek, nie domyślny tryb. (Reguła: `03a_drafter.md`; bramka: `03c_reviewer.md` kat. D.)

@@ -4,6 +4,8 @@ This pipeline takes a psychology topic from raw idea to a production-ready narra
 
 For high-level operating invariants (color palette, file layout, model routing, locked output formats), see [CLAUDE.md](../../CLAUDE.md). For per-step detail, see the matching `workflows/pipeline/NN_*.md` file.
 
+> **⚠ Stage 3 rewritten 2026-06-06.** The script chain is now **Drafter → 2 cold readers (spójność + głos/liryzm) ↔ Integrator → doctrine gate** (flowing-essay target, `PŁYNIE`/`REWORK` verdicts, soft cap ~5). References below to a „3b Revisor ↔ 3c Reviewer PASS/FLAG loop" + „3d Native-Ear panel" are stale — authoritative: `03_script.md`, `03{a,b,c,d,e}_*.md`, `.claude/commands/draft.md`, CLAUDE.md §„Script chain (Agent 3)".
+
 ---
 
 ## Architecture
@@ -81,14 +83,6 @@ outputs/videos_pl/{slug}/edit/
             Import into DaVinci Resolve → final edit → publish
 ```
 
-Out-of-band, on a weekly cron:
-
-```
-[Intelligence Agent: Niche Intelligence]   (tools/intelligence/intelligence.py)
-   YouTube API + Gemini Vision → outputs/intelligence/YYYY-WNN_*.pptx
-   Sidecar `YYYY-WNN_tag_signals.md` is auto-read by Agent 8.
-```
-
 ---
 
 ## Prerequisites
@@ -113,8 +107,6 @@ GOOGLE_CLOUD_LOCATION=us-central1
 Optional:
 
 ```
-YOUTUBE_API_KEY=your-youtube-data-api-key   # Intelligence Agent only
-SENSUM_CHANNEL_ID=UCxxxxxxxxxxxxx           # Intelligence Agent only
 NCBI_API_KEY=your-ncbi-key                 # raises PubMed rate limits
 ```
 
@@ -124,7 +116,7 @@ NCBI_API_KEY=your-ncbi-key                 # raises PubMed rate limits
 gcloud auth application-default login
 ```
 
-Required for Agents 1, 2, 6, 7, and the Intelligence Agent.
+Required for Agents 1, 2, 6, and 7.
 
 ---
 
@@ -286,7 +278,6 @@ workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
 workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
 workflows/pipeline/06_images.md      — Agent 6 (image generation, manual)
 workflows/pipeline/07_package.md     — Package (title+thumbnail strategist, manual)
-workflows/pipeline/intelligence.md — Intelligence Agent (weekly niche report)
 workflows/pipeline/align.md          — Align (post-record DaVinci bundle)
 workflows/guides/style_guide.md      — Script style rules
 workflows/guides/style_guide_images.md — Image style rules

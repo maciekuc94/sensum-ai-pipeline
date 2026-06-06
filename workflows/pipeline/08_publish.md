@@ -120,7 +120,7 @@ Detect natural section breaks from the `## ` headings / bold section labels / to
 
 # STEP 4 — Long-form Tags
 
-First read `.tmp/08_signals.md` (YouTube autocomplete + niche trend signals).
+First read `.tmp/08_signals.md` (YouTube autocomplete suggestions).
 
 ## Operating principles
 
@@ -129,14 +129,13 @@ First read `.tmp/08_signals.md` (YouTube autocomplete + niche trend signals).
 - Prefer multi-word phrases (≥2 words) — they carry more search intent.
 - Metaphors and props in the script (cookies, batteries, GPS, doors, villages) are illustrations, not search terms. Tag the underlying mechanism the metaphor points to.
 - Established clinical / pop-psychology terms (ruminacja, regulacja, przywiązanie, wypalenie, maskowanie) are what serious viewers actually search for — render them inside multi-word phrases that match real search behavior.
-- The Niche Trend Signals block lists single-word terms currently trending in this niche. Borrow the concepts and render them as multi-word phrases (signal "regulacja" → "regulacja emocji psychologia"). Treat niche signals as a **supporting reference** — the primary keyword from the chosen title leads.
 
 ## THE TAG PROTOCOL — NON-NEGOTIABLE
 
 - Produce **5–8 tags total**. Comma-separated, no `#` prefix. 2026 YouTube SEO consensus: 5–8 highly relevant tags outperform padded lists. Quality over quantity.
 - **SLOT STRUCTURE — order by algorithmic weight (front-loaded):**
   - **Tag #1 (mandatory): the exact-match primary keyword** for this video (from the strongest candidate title, or a more search-shaped paraphrase). Multi-word. This slot does the heaviest discovery work.
-  - **Tags #2–#6: long-tail intent phrases.** 2–4 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("dlaczego zawsze zaczynam od nowa"), clinical/mechanism phrases rendered as searches ("rozregulowanie układu nerwowego", "pętla ruminacji"). Niche Trend Signals get rendered here as multi-word phrases.
+  - **Tags #2–#6: long-tail intent phrases.** 2–4 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("dlaczego zawsze zaczynam od nowa"), clinical/mechanism phrases rendered as searches ("rozregulowanie układu nerwowego", "pętla ruminacji").
   - **SENSUM**: include exactly once (uppercase). Brand tag — the only single-word entry permitted.
   - **Optional: up to 2 single-word Polish psychology anchors** (e.g. "psychologia", "emocje") — ONLY if no multi-word phrase captures the same high-volume search better.
 - **The intent test.** For each phrase: *"Would a real person living this problem type these exact words into YouTube search?"* If not, cut it.
@@ -346,7 +345,7 @@ Paste the comma-separated string into Tags (no `#`). **Tag #1 = exact-match prim
 |---------|-----|
 | `02_verified_research.md not found` | Run Agent 2 first |
 | Script source missing | Run `/draft` then `/hook` (exports `docx/script.docx`); or edit to `docx/script_corrected.docx` |
-| `--signals` returns 0 suggestions | Network issue — tags step falls back on script + niche signals; suggestions block shows `(unavailable)` |
+| `--signals` returns 0 suggestions | Network issue — tags step falls back on the script; suggestions block shows `(unavailable)` |
 | Tag block exceeds budget | `--finalize` trims from the tail and prints the final length; reorder so weak tags are last |
 | `[Q?]` on a clip block | The quote did not substring-match the narration — the model paraphrased; edit the quote to match the script verbatim or regenerate that Short |
 | `[MISSING]` on a clip block | A Short was written without its `**Script Lines to Clip:**` block — locate the lines manually or regenerate step 6 |

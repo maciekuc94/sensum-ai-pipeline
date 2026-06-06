@@ -4,7 +4,7 @@
 
 The Align agent (`tools/pipeline/agent_align.py`) eliminates the 2-4 hours of manual work that used to happen in DaVinci after recording the voiceover. It runs forced alignment between the recorded WAV and the canonical script, then emits four files into `outputs/videos/{slug}/edit/`:
 
-> Note: this is the "post-record" step, distinct from `tools/intelligence/intelligence.py`. The file is `agent_align.py` (no number) so the two never get confused.
+> Note: this is the "post-record" step. The file is `agent_align.py` (no number) — it's a satellite, not a numbered pipeline stage.
 
 | File | What it does in DaVinci |
 |---|---|

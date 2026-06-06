@@ -2,11 +2,13 @@
 
 > **Experimental feature.** Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings and Claude Code v2.1.32+.
 
+> **⚠ `/draft` panel rewritten 2026-06-06.** `/draft` no longer spawns the two-ear **Native-Ear panel** (`nativeear-A/B`, NATIVE/REWORK translationese). It now spawns **two `script-reader` teammates** — Czytelnik 1 (spójność/przepływ) + Czytelnik 2 (głos/liryzm) — giving holistic editorial feedback (`PŁYNIE`/`REWORK`); the lead is the Integrator who rewrites the whole script each round. Sections below describing the `/draft` Native-Ear panel are stale (the `/publish` 8d Native-Copy Critic still applies). Authoritative: `.claude/commands/draft.md`, `03{c,d}_*.md`, design spec `docs/superpowers/specs/2026-06-06-flowing-essay-script-chain-design.md`.
+
 ---
 
 ## Quick-Start Checklist
 
-1. Set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `.claude/settings.local.json` (done)
+1. Set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in committed `.claude/settings.json` (done)
 2. Verify version: `claude --version` (need ≥ 2.1.32)
 3. Prompt the lead with task + team structure in natural language
 4. Use **Shift+Down** to cycle teammates in in-process mode
@@ -335,6 +337,46 @@ Implement [feature] across the stack. Spawn three teammates:
 5. **Lead as synthesizer, not implementer**: the lead's job is coordination and synthesis, not doing work itself.
 6. **Hooks as quality gates**: use `TeammateIdle` + `TaskCompleted` hooks to enforce standards automatically, not through manual review.
 7. **Named teammates for predictability**: give teammates predictable names you can reference in follow-up prompts.
+
+---
+
+## SENSUM Project Teams
+
+Two pipeline commands use Agent Teams. Both follow the same pattern — **a cold-context native-Polish
+critic with its own context window** reading prose it didn't write (replacing the owner's manual Copilot
+pass) — and both **fall back to their in-session single-session command** if Agent Teams is unavailable.
+Only one team can exist at a time, so **always tear the team down** before running the other.
+
+### `/draft <slug> [architecture] [--sciezka]` — script chain + Native-Ear panel (default)
+- Lead runs 3a + the 3b↔3c loop in-session (3c scoped to categories **A–I**); a **panel of two
+  cold-context `native-ear-critic` teammates** owns category **J** (translationese) in a ≤3-round
+  debate: `nativeear-A` (soczewka składnia-rejestr) + `nativeear-B` (soczewka rytm-klisza).
+- **Panel aggregation:** suma flag obu uszu; werdykt rundy = `NATIVE` tylko gdy **oba** ucha NATIVE.
+  Próg każdego ucha: `≥1 BLOCKER / ≥2 FIX / ≥3 WATCH`. Ostatnia runda = tryb zbieżności (re-challenge
+  nierozwiązanych + nowe kalki, bez nowych WATCH-ów). **Hard-stop:** nierozwiązany BLOCKER w pozycji
+  impact przy ostatniej rundzie zatrzymuje i pyta użytkownika (popraw / przyjmij z ostrzeżeniem / jedna
+  dodatkowa runda) zamiast cichego ship.
+- Artifacts: `md/03d_nativeear_A_iter*.md`, `md/03d_nativeear_B_iter*.md`. Prompts:
+  `workflows/pipeline/03d_native_ear.md`, `.claude/agents/native-ear-critic.md`,
+  `.claude/commands/draft.md`.
+- Auto-fallback: fully in-session (no team) when Agent Teams is unavailable — 3c runs A–J. No separate command, no `--solo` flag.
+
+### `/publish <slug>` — publish package + Native-Copy debate (default)
+- **Roster (3 generators + 1 critic):** lead (in-session) owns validation, the
+  `--extract`/`--signals`/`--finalize` bookends, chapters (step 3) + bibliography (step 5), assembly,
+  and debate rewrites. Teammates: `pubcopy` (`publish-copywriter`) → titles/description/Shorts copy;
+  `pubseo` (`publish-seo`) → long-form + Shorts tags; `pubclips` (`publish-clips`) → Triple-Retention
+  clip selection; `pubcritic` (`native-copy-critic`, Agent 8d) → cold language-only debate on the
+  human-facing copy (titles, description, chapter labels, Shorts titles/descriptions — never tags,
+  bibliography, or verbatim quotes).
+- **Two dependency waves:** wave 1 = clips + titles/description + (lead) chapters/bibliography/`--signals`
+  in parallel; wave 2 = Shorts copy + all tags (need clips + titles). Generators write disposable
+  `.tmp/08_{copy,tags,clips}.md`; lead assembles `md/08_working.md`; critic writes
+  `md/08d_nativecopy_iter*.md`. **File ownership is strict — two agents never edit one file.**
+- Prompts: `workflows/pipeline/08d_native_copy.md` (critic) + `08_publish.md` (the 9 step-prompts the
+  generators run); roles: `.claude/agents/{native-copy-critic,publish-copywriter,publish-seo,publish-clips}.md`;
+  orchestration: `.claude/commands/publish.md`.
+- Auto-fallback: fully in-session (all 9 steps, no debate) when Agent Teams is unavailable. No separate command, no `--solo` flag.
 
 ---
 

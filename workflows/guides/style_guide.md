@@ -23,10 +23,11 @@ To mają być teksty do czytania na głos w filmach YouTube.
 
 **Priorytety:**
 - naturalna polszczyzna
+- **płynność i spójność prozy** — tekst klei się w jedną całość; myśl płynie ze zdania w zdanie, jeden obraz niesie sekcję (patrz §2.5)
 - klarowna logika
-- mocny rytm zdań
 - emocjonalna precyzja
-- kilka zapamiętywalnych zdań-kotwic
+- rytm w służbie płynności (nie staccato dla samego uderzenia)
+- kilka zapamiętywalnych zdań-kotwic — zasłużonych przez płynność, nie sypanych co linię
 - spójność tonu od początku do końca
 
 **Pisz:**
@@ -75,11 +76,35 @@ Argument ma być logiczny i czytelny, ale zdania mają dobrze „leżeć w ustac
 **Najważniejsze cechy stylu:**
 1. Jasność
 2. Naturalność
-3. Rytm
+3. **Płynność (spójność prozy)** — tekst klei się w jeden bieg
 4. Precyzja emocjonalna
 5. Mówioność
-6. Spójność tonu
-7. Mocne, zapamiętywalne zdania-kotwice
+6. **Nuta liryzmu** — jeden obraz niesiony, nie ozdoba doklejana
+7. Rytm w służbie płynności
+8. Spójność tonu
+9. Mocne zdania-kotwice — zasłużone, nie sypane co linię
+
+---
+
+## 2.5. Reportaż mówiony — konkret niesie sens (2026-06-06, przecelowane na bazie nagranych skryptów)
+
+**Domyślny rejestr to reportaż mówiony, nie esej.** Głos **ZAUWAŻA** konkretną rzecz i pozwala jej nieść sens — nie **DOWODZI** tezy logicznymi mostkami. Tekst ma się *kleić*, ale spójność bierze się z **jednego fizycznego motywu niesionego przez całość** (zegar, pusta kratka, notatnik), nie z eseistycznej tkanki łączącej. Wzór do ucha (nagrane slug-1/slug-2): `voice_corpus.md` §A — to kanon, ta sekcja jest skrótem.
+
+**Trzy zasady:**
+
+1. **Konkret niesie sens.** Każdą abstrakcję natychmiast zakotwicz w fizycznym przedmiocie albo scenie; gdy tekst robi się pojęciowy, w następnym zdaniu wróć do rzeczy. Łącz zdania prostymi spójnikami wskazującymi na rzecz („Dlatego", „I tu", „Bo", „Kiedy") — **nie** eseistycznymi meta-mostkami („I tu jest pierwsza rzecz, która nie powinna się zgadzać", „Cała różnica jest w tym, że…", „Zostaje pytanie…").
+2. **Nieś jeden obraz.** Weź centralny fizyczny motyw i rozwijaj go przez sekcję (np. „pusta kratka → odczytana jak wyrok → jedno pole między polami"), zamiast wprowadzać nową metaforę co dwie linie. To jest źródło spójności — motyw wraca i ewoluuje.
+3. **Krótkie, proste szyki; uderzenia jako przyprawa.** Podmiot–orzeczenie; długie zdanie z trzema podrzędnymi rozbij na trzy. Mocne, krótkie zdanie-kotwica zostaje — ale na końcu biegu, zasłużone. (Rytm i kotwice: §5 — czytaj je przez tę zasadę.)
+
+**Wzorzec przed/po — ta sama myśl, dwa rejestry:**
+
+❌ **Esej (argumentuje abstrakcję w powietrzu):**
+> Bo jedno drobne potknięcie to przecież jeszcze nie wyrok na całego człowieka. A jednak za każdym razem ten wyrok zapada. Cała różnica jest w tym, kogo ten głos sądzi.
+
+✓ **Reportaż (konkret niesie sens — verbatim slug-2):**
+> Jedna pusta kratka przestaje być jednym dniem. Zaczyna znaczyć coś więcej. Nie to, że wypadłeś z rytmu — to, że „taki już jesteś".
+
+Oba mówią to samo. Lewy unosi pojęcia („potknięcie → wyrok → człowiek") i dowodzi ich; prawy kładzie na stole **kratkę** i pozwala jej zrobić robotę. Pisz prawą stroną. **Pełny korpus:** `voice_corpus.md` §A.
 
 ---
 
@@ -100,13 +125,15 @@ Każdy kolejny fragment ma wynikać z poprzedniego. Słuchacz ma czuć: *„tak,
 **E. Praktyczne wyjście lub rama końcowa**
 Na końcu: lekkie odciążenie, zmiana perspektywy, 2–4 praktyczne sposoby, albo mocna rama interpretacyjna. Końcówka ma brzmieć jak **część tego samego eseju**, nie jak osobny poradnik.
 
-> Obowiązkowa sekcja **Permission Practice** (~4 ucieleśnione mikropraktyki jako płynąca proza „Czasem wystarczy…", jeden beat przed recognition close) jest zdefiniowana w `workflows/guides/narrative_architectures.md`. **Od 2026-05-29 jest prozą, nie numerowaną listą — numerowane listy preskrypcyjne są teraz zakazane w całym skrypcie.** **Od 2026-05-31 ma dwa rejestry** — somatyczny (domyślny) i strategiczny (gdy temat ma realny ruch zewnętrzny, np. kariera); oba zostają **pozwoleniem**, nie optymalizacją. Reguła wyzwalacza i przykłady: `narrative_architectures.md`, „Dwa rejestry".
+> **Opcjonalna** sekcja **Permission Practice** (od 2026-06-06 — wcześniej obowiązkowa): mikropraktyki pojawiają się **tylko jeśli z centralnego obrazu / mechanizmu skryptu wynika prawdziwy, konkretny ruch**, który widz mógłby zrobić — nigdy doklejane na siłę. Gdy są: płynąca proza (nie numerowana lista — te są zakazane w całym skrypcie), ~1–4 praktyki, dwa rejestry (somatyczny domyślny / strategiczny gdy temat ma realny ruch zewnętrzny), zawsze **pozwolenie**, nie optymalizacja. Gdy temat nie unosi praktyki — skrypt idzie prosto do recognition close. **Recognition close zostaje obowiązkowy — ma ostatnie słowo.** Pełna reguła: `narrative_architectures.md`, „Sekcja Permission Practice (opcjonalna)".
 
 ---
 
 ## 4. Zasady języka i tonu
 
-**Bezpośredni adres:** Zawsze „ty" i „twój/twoja". Mów do widza bezpośrednio, jeden na jeden.
+**Złota zasada (north-star):** Mów DO człowieka, nie opisuj systemu — kameralny monolog do jednej osoby, nie audyt mechanizmu. Pełny north-star + test per akapit: `voice_corpus.md` §0; bramka: `03c_reviewer.md` kat. K.
+
+**Bezpośredni adres:** Zawsze „ty" i „twój/twoja". Mów do widza bezpośrednio, jeden na jeden. **I bezrodzajowo (neutral-first, 2026-06-04):** słucha jedna osoba — ma się czuć adresowana niezależnie od płci. Domyślnie present tense (bezrodzajowy) / formy bezosobowe; unikaj form męskich zdradzających płeć („obiecałeś", „leniwy"). Pełna reguła + pary korekt: `03a_drafter.md` (forma gramatyczna) i `voice_corpus.md` §G; bramka: `03c_reviewer.md` kat. D.
 
 **Walidacja przed wyjaśnieniem:** Najpierw wyląduj uczucie. Widz musi rozpoznać siebie zanim wprowadzisz jakikolwiek mechanizm. Empatia nie jest hookiem — to cały rejestr.
 
@@ -126,9 +153,13 @@ Na końcu: lekkie odciążenie, zmiana perspektywy, 2–4 praktyczne sposoby, al
 
 **Priorytet: idiomatyczna polszczyzna.** Unikaj zdań logicznie poprawnych, ale brzmiących jak kalka z angielskiego. Naturalność jest ważniejsza niż efektowność.
 
+**Myślnik (pauza):** używaj myślnika „ — " (z odstępami po obu stronach) jako pauzy oddechu, konsekwentnie w całym tekście. Nie mieszaj go z dywizem „-" (ten zostaje tylko do złożeń typu „biało-czarny").
+
 ---
 
 ## 5. Rytm zdań i zdania-kotwice
+
+**Czytaj tę sekcję przez §2.5: płynność jest domyślną teksturą, a poniższe „uderzenia" to przyprawa.** Krótkie zdanie-cios działa tylko wtedy, gdy wyrasta z płynnego biegu i go domyka — nie gdy cały tekst jest pocięty na fragmenty. Jeśli łapiesz się na tym, że sekcja to same krótkie linie jedna pod drugą, to nie „mocny rytm", to rozbita proza — zlej ją w bieg i zostaw jedno uderzenie na koniec.
 
 **Buduj rytm przez mieszanie długości zdań:**
 - Krótkich zdań — do uderzenia
@@ -175,6 +206,8 @@ Ten styl korzysta z trzech rejestrów, które można łączyć:
 **Rejestr metaforyczny** — jedna celna metafora, jeden obraz przewodni, jeden motyw powracający.
 
 **Ważne:** Przejścia między rejestrami muszą być płynne. Nie wolno gwałtownie przeskakiwać z emocjonalnego monologu do technicznego wykładu do poetyckiej metafory bez kontroli tonu.
+
+**Rejestr analityczny zostaje ciepły (north-star).** Nawet w trybie analitycznym mówisz DO osoby — opisuj *mechanizm*, nigdy nie audytuj *człowieka*. Jeśli całość zsuwa się w chłodną diagnostykę systemu, to nie „rejestr analityczny", to złamanie złotej zasady (`voice_corpus.md` §0; bramka 3c kat. K).
 
 ---
 
@@ -373,6 +406,8 @@ Tam gdzie zdanie próbuje zmieścić zbyt wiele członów, jedno krótkie ląduj
 - ❌ "Jesteś podłączony do zegara, który nie ma wskazówek." → ✓ "Patrzysz na zegar, który nie pokazuje prawdziwego czasu."
 
 **Test:** Czy zdanie ma 3+ człony tam, gdzie jedna krótka myśl wystarczy? Skróć.
+
+**Ale uwaga (2026-06-06):** to nie jest licencja na pocięcie całego tekstu na fragmenty. Skracaj *przeładowane* zdanie (3+ człony, które się duszą) — nie tnij płynnego biegu na serię pocisków. Domyślny rejestr to reportaż mówiony — bieg niesiony konkretem (§2.5); „uderzenie" jest pojedynczym akcentem domykającym bieg, nie domyślnym kształtem każdego zdania.
 
 Nie restartuj raz postawionej tezy. Exoneracja („to nie wada charakteru, to mechanizm") powiedziana mocno raz nie potrzebuje trzech powtórzeń tego samego mechanizmu — stwierdź i idź dalej.
 

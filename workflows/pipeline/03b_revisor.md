@@ -1,24 +1,25 @@
-# Workflow: Agent 3b — Script Revisor (Claude Code, in-session)
+# Workflow: Agent 3b — Script Integrator (Claude Code, in-session)
 
 ## Purpose
 
-Step 3b runs a **full-script Copilot-style revision pass** over the draft from Agent 3a — sentence-by-sentence. It carries an **open-ended fluency mandate (MOVE 0)** plus 11 diff-derived named moves. This is **not** a single-weakest-moment critique; it is full-pass curation. A sentence is left untouched **only if it is already natural spoken Polish** — not merely because it fails to match a named pattern. The named patterns are examples inside the broader fluency mandate, not the whole job. (This closes the gap that let calques like „Znasz to uczucie z palców" pass a clean loop: the old closed pattern-set only caught what it was named to catch.)
+Step 3b is the **Integrator — the one hand that rewrites the whole script** each round of the chain (2026-06-06). It reads the current `04_working.md` plus the **holistic feedback from the two cold readers** (Czytelnik 1 — spójność/przepływ; Czytelnik 2 — głos/liryzm) and produces a **single, coherent whole-script rewrite** toward the flowing-essay target. One hand owns every word so the voice stays seamless — never two agents editing one script.
 
-Since 2026-05-29 Agent 3b runs **inside the Claude Code session** — the model (Opus 4.8) is the one already loaded in the current conversation, no Gemini/Anthropic API call. It is driven by the `/draft` slash command, which orchestrates the Revisor↔Reviewer loop in-session (see `.claude/commands/draft.md`).
+**This is integration, not patch-application.** You do NOT merely fix the exact sentences the readers quoted. Where Czytelnik 1 says a section reads as choppy fragments, you **re-flow the whole section** into a connected bieg; where Czytelnik 2 says a line is flat/clunky/calqued, you sharpen it — and you protect the strongest images. The named fluency moves below (MOVE 0 + tells) are your craft toolbox for *how* to rewrite well; the readers' notes are *what* to fix. A line is left untouched only if it is already living, native Polish that flows — not merely because no reader quoted it.
 
-On iteration 2+, the Revisor also reads the prior `03c_review_iter{N-1}.md` (Reviewer feedback) and the prior `03b_revised_iter{N-1}.md`, and addresses **only** the issues the Reviewer flagged.
+Since 2026-05-29 this step runs **inside the Claude Code session** — the model (Opus 4.8) is the one already loaded, no Gemini/Anthropic API call. It is driven by the `/draft` slash command, which orchestrates the reader↔integrator loop in-session (see `.claude/commands/draft.md`).
 
-## Inputs to load (before revising)
+On every round you read the two reader logs for that round (`03_read_cohesion_iter{N}.md`, `03_read_voice_iter{N}.md`) plus the current `04_working.md`. On round 2+ integrate the new feedback, protect what already flows, and do not undo settled lines.
 
-1. `outputs/videos_pl/<slug>/md/03a_draft.md` — the **original draft**, always the base for revision (required)
-2. `workflows/guides/voice_corpus.md` — the ear: exemplar Polish (§A) + native-ear correction pairs (§B) + calques to avoid (§C). This is the reference for MOVE 0 (naturalness sweep).
-3. `workflows/guides/style_guide.md` — Polish style guide (context)
-4. `workflows/guides/narrative_architectures.md` — narrative shapes + Permission Practice spec (context)
-5. On iteration > 1 only:
-   - `outputs/videos_pl/<slug>/md/03c_review_iter{N-1}.md` — prior Reviewer verdict + flagged issues
-   - `outputs/videos_pl/<slug>/md/03b_revised_iter{N-1}.md` — your prior revision (the one the Reviewer flagged)
+## Inputs to load (before integrating)
 
-   Guard: if the prior revision is shorter than 40% of the draft, treat it as broken — ignore both prior files and revise as if iteration 1.
+1. `outputs/videos_pl/<slug>/md/04_working.md` — the **current script** (round N), the base for this rewrite (required)
+2. `outputs/videos_pl/<slug>/md/03_read_cohesion_iter{N}.md` — Czytelnik 1's holistic feedback (spójność/przepływ + „PP na siłę") for this round
+3. `outputs/videos_pl/<slug>/md/03_read_voice_iter{N}.md` — Czytelnik 2's holistic feedback (głos/liryzm/kalki) for this round
+4. `workflows/guides/voice_corpus.md` — the ear: płynący pasaż na czele §A (default texture) + native-ear pairs (§B) + calques (§C/§C2). Reference for MOVE 0 and the flow rewrite.
+5. `workflows/guides/style_guide.md` — voice/idiom + **§2.5 (płynność i spójność — domyślna tekstura)**.
+6. `workflows/guides/narrative_architectures.md` — narrative shapes + **optional** Permission Practice spec (context)
+
+Guard: if `04_working.md` is shorter than 40% of the draft, treat it as broken — stop and report rather than rewrite from a truncated base.
 
 ## Output
 
@@ -28,7 +29,7 @@ Write to `outputs/videos_pl/<slug>/md/03b_revised_iter{N}.md` with this exact he
 # Script Revision: <topic>
 Generated: <YYYY-MM-DD>
 Model: claude-opus-4-8 (Claude Code)
-Pass: Revisor (iteration <N>)
+Pass: Integrator (runda <N>)
 
 ---
 
@@ -49,20 +50,20 @@ Pass: Revisor (iteration <N>)
 
 The text below is the prompt the model must execute. Treat the placeholders (`{style_guide}`, `{narrative_architectures}`, `{draft_text}`, and on iteration > 1 the `{iteration_block}`) as the contents of the files you already loaded — substitute mentally, do not emit literal braces.
 
-`{iteration_block}` is empty on iteration 1. On iteration > 1 it expands to:
+`{iteration_block}` carries the two readers' feedback for the current round:
 
 ```
-## Iteration <N> — Reviewer flagged your previous revision
+## Runda <N> — feedback dwóch czytelników (na zimno)
 
-Reviewer feedback from previous iteration:
+Czytelnik 1 — spójność i przepływ:
 
-<contents of 03c_review_iter{N-1}.md>
+<contents of 03_read_cohesion_iter{N}.md>
 
-Your previous revision (the one Reviewer flagged):
+Czytelnik 2 — głos i liryzm:
 
-<contents of 03b_revised_iter{N-1}.md>
+<contents of 03_read_voice_iter{N}.md>
 
-**Twoje zadanie w tej iteracji:** Wróć do ORYGINALNEGO draftu (Script Draft poniżej) jako bazy i zastosuj wszystkie wcześniejsze rewizje **plus** napraw konkretne issues które Reviewer wyflagował. Nie wprowadzaj nowych zmian poza tymi z listy Reviewera. Jeśli Reviewer powiedział "fix X w paragraph 4" — fix tylko X. Reszta poprzedniej revision musi zostać zachowana (jest already dobra wg Reviewera, skoro nie była flagged).
+**Twoje zadanie w tej rundzie:** Weź bieżący skrypt (`04_working.md`, niżej) i **przepisz go jako całość**, scalając feedback obu czytelników w jeden płynący esej. Re-flow tam, gdzie spójność kuleje; wyostrz tam, gdzie głos jest płaski albo kalkowy. Chroń to, co już płynie i jest mocne (cold open, centralny obraz, kotwice, recognition close) — o ile nie niosą tella. Nie cofaj ustalonych, żywych linii i nie przekorygowuj w spłaszczenie.
 ```
 
 ---
@@ -71,9 +72,11 @@ Jesteś Copilot-style revisorem dla polskich skryptów SENSUM. Twoja praca to **
 
 **Skrypt jest po polsku. Twój output również po polsku.**
 
-## Twoja filozofia revision
+## Twoja filozofia — integracja, nie łatanie
 
-To NIE jest single-weakest-moment critique — to **full-pass curation z uchem do polszczyzny**. Przechodzisz przez KAŻDE zdanie i pytasz najpierw: *czy to brzmi jak naturalne, mówione polskie zdanie?* Jeśli nie — przepisujesz je dla płynności, **nawet jeśli nie pasuje do żadnego z nazwanych wzorców niżej** (to jest RUCH 0). Dopiero potem sprawdzasz nazwane wzorce 1–11. **Zdanie zostawiasz nietknięte tylko wtedy, gdy jest już naturalną polszczyzną** — nie dlatego, że „nie pasuje do żadnego wzorca". Nazwane wzorce to przykłady wewnątrz szerszego mandatu płynności, nie cała robota.
+**Nadrzędny cel każdej rundy: skrypt ma PŁYNĄĆ jako jeden esej-voiceover, nie kleić się z urywanych fragmentów.** To jest cel #1 — ponad pojedynczym zdaniem. Bierzesz całościowy feedback obu czytelników i **scalasz go w jeden spójny rewrite całości**: tam gdzie Czytelnik 1 mówi „ta sekcja to lista urwań" albo „ta praktyka jest doklejona" — **przepływasz całą sekcję** (tkanka łącząca, jeden niesiony obraz, §2.5; usuń PP doklejoną na siłę); tam gdzie Czytelnik 2 mówi „ta linia jest płaska / kalka / za ozdobna" — **wyostrzasz ją**, chroniąc najmocniejsze obrazy.
+
+To NIE jest single-weakest-moment critique ani patch-application — to **full-pass curation z uchem do polszczyzny i okiem do spójności**. Przechodzisz przez KAŻDE zdanie i pytasz: *czy to brzmi jak naturalne, mówione polskie zdanie — i czy płynie z poprzednim?* Jeśli nie — przepisujesz dla płynności i spójności, **nawet jeśli żaden czytelnik tego zdania nie zacytował** (to jest RUCH 0 rozszerzony o przepływ). Nazwane wzorce 1–11 to Twój warsztat *jak* przepisać dobrze. **Zdanie zostawiasz nietknięte tylko wtedy, gdy jest już żywą, natywną polszczyzną, która płynie** — nie dlatego, że „nie pasuje do żadnego wzorca" ani „nikt go nie zaznaczył".
 
 ## Tryb pracy — dwa przebiegi (2026-06-01, hybryda)
 
@@ -146,6 +149,8 @@ RUCH 0 jest nadrzędny; poniższe to skatalogowane, częste przypadki w jego obr
 - **Strategiczny** („beat ścieżki", gdy temat ma realny ruch zewnętrzny) → **może** tryb rozkazujący („Spójrz na to, co już jest. Zrób wersję mniejszą, niż planowałeś. Zostaw rzecz na widoku.") — pod warunkiem zachowania softenerów pozwolenia („nie musisz", „wystarczy"), ramy anty-optymalizacyjnej i recognition close po sekcji.
 
 **NIE konwertuj strategicznego, imperatywnego PP z powrotem na „Czasem wystarczy…"** — to zubaża świadomy wybór rejestru. Jeśli draft przychodzi już jako proza w którymkolwiek rejestrze — zostaw rejestr, popraw tylko prozę. Tylko **numerowaną listę** przekształć w prozę. W rejestrze somatycznym preferuj aktywne bezokoliczniki (zrobić / położyć / powiedzieć / nazwać); pasywne „zauważyć" tylko gdy mechanizm naprawdę o zauważaniu.
+
+**Spalona rama wejścia (2026-06-04):** jeśli wejście PP używa wyczerpanej ramy „Kiedy [X] uderza… nie zawsze da się go wyłączyć. Ale czasem da się go trochę uciszyć" (powtórzyła się slug-1→2→3) — **przepisz wejście z centralnej metafory / przedmiotu-motywu tego skryptu**, zachowując rejestr i funkcję (uznaj, że wyzwalacz wróci; zaproponuj mniejszy ruch). To samo, gdy pierwsza praktyka to odruchowe „dłoń na klatce + trzy wydechy", a mechanizm skryptu nie jest o ciele. Test: czy wejście/praktyka dałoby się przekleić do PP innego odcinka bez zmiany? Jeśli tak — zakotwicz w metaforze. (Nie zmieniaj rejestru — zmień tylko źródło obrazu.)
 
 ### 8. Softening pressure (temporalne softenery)
 ❌ "Twoje ciało nie potrzebuje, żebyś rozwiązał problem" → ✓ "Twoje ciało nie potrzebuje, żebyś **teraz** rozwiązał problem"
@@ -223,17 +228,18 @@ Zwróć **kompletny zrewidowany skrypt** — od pierwszej linii (ARCHITECTURE: .
 ## Self-check before saving
 
 - [ ] Output begins with the `ARCHITECTURE:` line, unchanged from the draft
+- [ ] **Skrypt PŁYNIE jako jeden esej (cel #1):** tkanka łącząca prowadzi myśl, jeden obraz niesiony przez sekcję; żadna sekcja nie jest listą urwań; krótkie uderzenia tylko jako zasłużony akcent (§2.5)
 - [ ] **Pass 1 (global) done before Pass 2 (per-section):** cross-section flow, motif thread, thesis-stated-once, protected single climax, inter-section dedup — then per-section fluency
 - [ ] `## ` section headers preserved (not stripped, not renumbered); only `[...]` bracket tags removed
 - [ ] **MOVE 0 applied:** every sentence reads as natural spoken Polish; calques / awkward genitives / register clashes rewritten toward `voice_corpus.md` §A — even ones matching no named pattern
 - [ ] 2026-06-01 tells swept: no diffuse re-resolution (one climax), no anaphora-tik (≤1 use of „Czasem…" frame, only in somatic PP), ≤2 „Może" openers in the last third, no near-proximity lexical echoes, no textbook phrasings
 - [ ] Word count within ±10% of the draft (never below ~70%)
-- [ ] Permission Practice preserved as **flowing prose** (~4 practices) in the right register (somatic „Czasem wystarczy…" / strategic imperative-with-softeners) + recognition close after it — NOT a numbered list; strategic imperative NOT reverted to „Czasem wystarczy…"
+- [ ] Permission Practice **only if it fits** (optional) — if present: flowing prose (~1–4 practices), right register, NOT a numbered list, not reverted between registers; if a reader flagged it as bolted-on, it was cut. Recognition close is always the last word
 - [ ] No `[...]` production tags anywhere
 - [ ] No habitual conjunction-stitched sentences (`I… I… I…`); a single deliberate `A`/`I` for spoken rhythm is allowed
 - [ ] Entirely second person (ty / twój / ci) — no 3rd-person figure („ktoś", „ta osoba"), including in `Composite Portrait`
 - [ ] One central metaphor — secondary metaphors thinned; at most 2–3 attention-imperatives
 - [ ] No mini-lecture paragraphs (abstract setup → concrete object); thesis stated once, not restarted
 - [ ] Strongest 2–4 anchor sentences on their own lines (breath)
-- [ ] On iteration > 1: only the Reviewer-flagged issues changed vs the prior revision; everything else preserved
+- [ ] Both reader logs integrated as a **whole-script rewrite** (not just quoted-sentence patches); choppy sections re-flowed; settled living lines preserved, not undone
 - [ ] Header format matches the **Output** section exactly (`Model: claude-opus-4-8 (Claude Code)`)

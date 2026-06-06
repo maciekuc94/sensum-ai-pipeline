@@ -16,6 +16,10 @@ def split_into_paragraphs(text):
         block = block.strip()
         if not block or block.startswith("#"):
             continue
+        if re.fullmatch(r"[-*_=]{3,}", block):      # dywizor markdown (---, ***, ___)
+            continue
+        if block.startswith("ARCHITECTURE:"):        # maszynowa metadana (zdejmowana w 04_final)
+            continue
         paras.append(re.sub(r"\s*\n\s*", " ", block))
     return paras
 
@@ -80,6 +84,12 @@ def _selftest():
     assert sents[0]["is_peak"] is True
     assert sents[3]["is_peak"] is True
     assert sents[2]["is_peak"] is False
+    # — pomija nagłówek/dywizor/metadane (realny format 04_working.md) —
+    wf = "# Script Draft\nGenerated: x\n\n---\n\nARCHITECTURE: Forensic Case Study\n\n## Tytuł\n\nPrawdziwy cold open. Druga linia.\n\nZamknięcie."
+    ws = segment_script(wf)
+    assert ws[0]["text"] == "Prawdziwy cold open.", ws[0]
+    assert ws[0]["is_peak"] is True, ws
+    assert all("ARCHITECTURE" not in x["text"] and x["text"] != "---" for x in ws), ws
     print("OK")
 
 

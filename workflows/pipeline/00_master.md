@@ -4,7 +4,7 @@ This pipeline takes a psychology topic from raw idea to a production-ready narra
 
 For high-level operating invariants (color palette, file layout, model routing, locked output formats), see [CLAUDE.md](../../CLAUDE.md). For per-step detail, see the matching `workflows/pipeline/NN_*.md` file.
 
-> **⚠ Stage 3 rewritten 2026-06-06.** The script chain is now **Drafter → 2 cold readers (spójność + głos/liryzm) ↔ Integrator → doctrine gate** (flowing-essay target, `PŁYNIE`/`REWORK` verdicts, soft cap ~5). References below to a „3b Revisor ↔ 3c Reviewer PASS/FLAG loop" + „3d Native-Ear panel" are stale — authoritative: `03_script.md`, `03{a,b,c,d,e}_*.md`, `.claude/commands/draft.md`, CLAUDE.md §„Script chain (Agent 3)".
+> **⚠ Stage 3 rewritten 2026-06-07 (lean cutover).** The script chain is now **3a Writer → 3b Checker → 3c Fixer** — three cold Opus subagents, one pass, no loop, no panel, no API (`/draft <slug>`). Any reference below to readers / Integrator / Revisor / Reviewer / architectures is stale — authoritative: `03a_writer.md`, `03b_checker.md`, `03c_fixer.md`, `.claude/commands/draft.md`, `workflows/guides/voice_brief.md`, CLAUDE.md §„Script chain (Agent 3)".
 
 ---
 
@@ -32,16 +32,13 @@ outputs/videos_pl/{slug}/md/01_research.md
 outputs/videos_pl/{slug}/md/02_verified_research.md
     │
     ▼
-[Agent 3: Script — 3a Drafter → loop[3b Revisor ↔ 3c Reviewer], ALL in-session via `/draft <slug>`]
-    │  3a Drafter   — Opus 4.8 (Claude Code, in-session) writes ~1,700-word narration
-    │  3b Revisor   — Opus 4.8 (in-session) applies 8 diff-derived revision moves (iter 1-N)
-    │  3c Reviewer  — Opus 4.8 (in-session) verdicts PASS/FLAG (no rewrite)
-    │  Loop: max 5 iterations; on PASS or exhaust → copy latest 03b_revised_iter{N}.md → 04_final.md
-    │  (no API — legacy Gemini path survives behind agent3.py --api)
+[Agent 3: Script — 3a Writer → 3b Checker → 3c Fixer, 3 cold Opus subagents via `/draft <slug>`]
+    │  3a Writer   — Opus 4.8 (cold subagent) writes the whole ~1000-1500-word narration, one loose pass
+    │  3b Checker  — Opus 4.8 (cold subagent) reads it holistically, lists translationese + natural rewrites
+    │  3c Fixer    — Opus 4.8 (cold subagent) swaps flagged sentences surgically → 04_final.md
+    │  One pass, no loop, no API (legacy Gemini path inert behind agent3.py --api)
     ▼
-outputs/videos_pl/{slug}/md/03b_revised_iter{N}.md  (+ 03a_draft.md, 03c_review_iter{N}.md intermediates)
-                                  →  finalized to:
-outputs/videos_pl/{slug}/md/04_final.md
+outputs/videos_pl/{slug}/md/03a_draft.md → 03b_corrections.md → 04_final.md
     │
     ▼
 [Agent 4: Hook Gate — `/hook <slug>`]  ◀──── must verdict RECORD before voiceover
@@ -154,7 +151,7 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "emotional-dysregu
 
 Gemini 3.1 Pro fact-checks every claim against peer-reviewed sources. Review every Flagged claim before continuing.
 
-### Step 3 — Script (Drafter → Revisor ↔ Reviewer loop, B++ v2)
+### Step 3 — Script (Writer → Checker → Fixer, 3 cold subagents)
 
 In Claude Code:
 
@@ -162,7 +159,7 @@ In Claude Code:
 /draft emotional-dysregulation-in-adhd
 ```
 
-That slash command runs the whole script chain **in-session on Opus 4.8 — no API**: Drafter (3a) saves `md/03a_draft.md`, then the Revisor↔Reviewer loop (3b↔3c) runs in the same session up to 5 iterations, exiting on Reviewer PASS or max. The latest `md/03b_revised_iter{N}.md` is finalized to `md/04_final.md`. Review `md/03c_review_iter{N}.md` (Reviewer verdict) and `md/04_final.md`. (Legacy Gemini path: `python tools/pipeline/agent3.py "<slug>"` with `--api`, flags `--max-iterations N` / `--start-iteration N`.) See [03_script.md](03_script.md), [03a_drafter.md](03a_drafter.md), [03b_revisor.md](03b_revisor.md), [03c_reviewer.md](03c_reviewer.md).
+That slash command runs the whole script chain **in-session on Opus 4.8 — no API** as three cold subagents, one pass: **3a Writer** saves `md/03a_draft.md`, **3b Checker** reads it cold and writes the Polish-grammar correction list `md/03b_corrections.md`, **3c Fixer** applies the swaps surgically to `md/04_final.md`. No loop. Review `md/03b_corrections.md` and `md/04_final.md`; the final editorial pass is yours on `docx/script_corrected.docx`. (Legacy Gemini path inert behind `agent3.py --api`.) See [03a_writer.md](03a_writer.md), [03b_checker.md](03b_checker.md), [03c_fixer.md](03c_fixer.md), [voice_brief.md](../guides/voice_brief.md).
 
 ### Step 4 — Hook Gate
 
@@ -230,10 +227,9 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 0 | `md/00_materials_insights.md` | Book insights extracted from reference PDF (optional) |
 | 1 | `md/01_research.md` | Raw research from Gemini and PubMed |
 | 2 | `md/02_verified_research.md` | Claims categorised as Verified, Flagged, or Removed |
-| 3a | `md/03a_draft.md` | First-pass narration (input to 3b Revisor) |
-| 3b | `md/03b_revised.md` | Revised script (overwritten each Revisor iteration) |
-| 3c | `md/03c_review.md` | Reviewer verdict (PASS / FLAG) with per-issue notes |
-| 3 (finalize) | `md/04_final.md` | Orchestrator copies `03b_revised.md` after loop exits |
+| 3a | `md/03a_draft.md` | Writer's first-pass narration (input to Checker) |
+| 3b | `md/03b_corrections.md` | Checker's translationese list: quote + why + natural rewrite |
+| 3c (finalize) | `md/04_final.md` | Fixer's surgically-corrected script |
 | 4  | `md/04_hook.md` | Hook score per attempt + final verdict |
 | 4  | `md/04_final.bak.md` | Pre-hook-refine backup (first run only) |
 | 5 | `md/05_prompts.md` | One Imagen prompt per sentence/beat |
@@ -272,15 +268,14 @@ Every factual claim in the final script must originate from the **Verified Claim
 workflows/pipeline/00_materials.md   — Agent 0 (reference book extraction)
 workflows/pipeline/01_research.md    — Agent 1
 workflows/pipeline/02_verify.md      — Agent 2
-workflows/pipeline/03_script.md      — Agents 3a (Drafter) / 3b (Revisor) / 3c (Reviewer) — B++ v2 loop
+workflows/pipeline/03a_writer.md     — Agent 3a (Writer); 03b_checker.md / 03c_fixer.md — Checker / Fixer
 workflows/pipeline/04_hook.md       — Agent 4 (hook gate)
 workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
 workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
 workflows/pipeline/06_images.md      — Agent 6 (image generation, manual)
 workflows/pipeline/07_package.md     — Package (title+thumbnail strategist, manual)
 workflows/pipeline/align.md          — Align (post-record DaVinci bundle)
-workflows/guides/style_guide.md      — Script style rules
+workflows/guides/voice_brief.md      — Script-voice canon (6 rules)
 workflows/guides/style_guide_images.md — Image style rules
-workflows/guides/narrative_architectures.md — 4 narrative shapes + visual register maps
 workflows/guides/davinci_subtitle_preset.md — One-time DaVinci subtitle preset
 ```

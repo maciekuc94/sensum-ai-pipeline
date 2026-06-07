@@ -210,9 +210,9 @@ The sentences you quote in "sentence" fields must be clean narration text only.
 """
 
 # ---------------------------------------------------------------------------
-# Visual Register Maps — one per architecture
-# Source of truth: workflows/narrative_architectures.md (## Visual Register Maps)
-# This dict mirrors that doc so the agent is self-contained.
+# Visual Register Maps — one per architecture (legacy --expand path)
+# Source of truth: this dict itself (narrative_architectures.md retired 2026-06-07).
+# Note: the lean /draft no longer tags scripts with an architecture — this path is legacy.
 # ---------------------------------------------------------------------------
 
 VISUAL_REGISTER_MAPS = {

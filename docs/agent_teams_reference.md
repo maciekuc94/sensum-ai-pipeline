@@ -2,7 +2,7 @@
 
 > **Experimental feature.** Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in settings and Claude Code v2.1.32+.
 
-> **⚠ `/draft` panel rewritten 2026-06-06.** `/draft` no longer spawns the two-ear **Native-Ear panel** (`nativeear-A/B`, NATIVE/REWORK translationese). It now spawns **two `script-reader` teammates** — Czytelnik 1 (spójność/przepływ) + Czytelnik 2 (głos/liryzm) — giving holistic editorial feedback (`PŁYNIE`/`REWORK`); the lead is the Integrator who rewrites the whole script each round. Sections below describing the `/draft` Native-Ear panel are stale (the `/publish` 8d Native-Copy Critic still applies). Authoritative: `.claude/commands/draft.md`, `03{c,d}_*.md`, design spec `docs/superpowers/specs/2026-06-06-flowing-essay-script-chain-design.md`.
+> **⚠ `/draft` no longer uses Agent Teams (2026-06-07 lean cutover).** `/draft` now runs **three cold Opus subagents** (Writer → Checker → Fixer) via the plain `Agent` tool — no team, no panel, one pass. **Only `/publish` still uses Agent Teams.** Every `/draft` section below (incl. the SENSUM `/draft` entry) is stale. Authoritative: `.claude/commands/draft.md`, `workflows/pipeline/03a_writer.md` / `03b_checker.md` / `03c_fixer.md`.
 
 ---
 
@@ -342,24 +342,16 @@ Implement [feature] across the stack. Spawn three teammates:
 
 ## SENSUM Project Teams
 
-Two pipeline commands use Agent Teams. Both follow the same pattern — **a cold-context native-Polish
-critic with its own context window** reading prose it didn't write (replacing the owner's manual Copilot
-pass) — and both **fall back to their in-session single-session command** if Agent Teams is unavailable.
-Only one team can exist at a time, so **always tear the team down** before running the other.
+**One pipeline command uses Agent Teams: `/publish`.** (`/draft` was cut over to three cold subagents on
+2026-06-07 — no team.) Its pattern: **a cold-context native-Polish critic with its own context window**
+reading prose it didn't write (replacing the owner's manual Copilot pass), with **fall back to the
+in-session single-session command** if Agent Teams is unavailable.
 
-### `/draft <slug> [architecture] [--sciezka]` — script chain + Native-Ear panel (default)
-- Lead runs 3a + the 3b↔3c loop in-session (3c scoped to categories **A–I**); a **panel of two
-  cold-context `native-ear-critic` teammates** owns category **J** (translationese) in a ≤3-round
-  debate: `nativeear-A` (soczewka składnia-rejestr) + `nativeear-B` (soczewka rytm-klisza).
-- **Panel aggregation:** suma flag obu uszu; werdykt rundy = `NATIVE` tylko gdy **oba** ucha NATIVE.
-  Próg każdego ucha: `≥1 BLOCKER / ≥2 FIX / ≥3 WATCH`. Ostatnia runda = tryb zbieżności (re-challenge
-  nierozwiązanych + nowe kalki, bez nowych WATCH-ów). **Hard-stop:** nierozwiązany BLOCKER w pozycji
-  impact przy ostatniej rundzie zatrzymuje i pyta użytkownika (popraw / przyjmij z ostrzeżeniem / jedna
-  dodatkowa runda) zamiast cichego ship.
-- Artifacts: `md/03d_nativeear_A_iter*.md`, `md/03d_nativeear_B_iter*.md`. Prompts:
-  `workflows/pipeline/03d_native_ear.md`, `.claude/agents/native-ear-critic.md`,
-  `.claude/commands/draft.md`.
-- Auto-fallback: fully in-session (no team) when Agent Teams is unavailable — 3c runs A–J. No separate command, no `--solo` flag.
+### `/draft <slug>` — RETIRED from Agent Teams (2026-06-07)
+`/draft` no longer spawns any team. It runs **three cold Opus subagents** (Writer → Checker → Fixer)
+through the plain `Agent` tool — one pass, no loop, no panel. See `.claude/commands/draft.md` +
+`workflows/pipeline/03a_writer.md` / `03b_checker.md` / `03c_fixer.md`. The cold-critic Agent-Teams
+pattern now lives **only** in `/publish` (below).
 
 ### `/publish <slug>` — publish package + Native-Copy debate (default)
 - **Roster (3 generators + 1 critic):** lead (in-session) owns validation, the

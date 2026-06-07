@@ -25,11 +25,11 @@ You're working inside the **WAT framework** (Workflows, Agents, Tools). This arc
 
 ## Channel Language (2026-05-25 — Polish localization)
 
-**This pipeline produces Polish-language SENSUM content.** The channel is `@sensumpolska` on YouTube. All script-writing agents (3a/3b/3c/4b/8) generate Polish output; style guides (`workflows/guides/style_guide.md`, `workflows/guides/narrative_architectures.md`) are in Polish. The English pipeline as it stood on 2026-05-25 is preserved at Git tag `en-pipeline-v1` and English versions of style guides live alongside Polish ones as `.en.md` files. The legacy English channel `@hello.sensum` is dormant.
+**This pipeline produces Polish-language SENSUM content.** The channel is `@sensumpolska` on YouTube. All script-writing agents (3a writer / 3b checker / 3c fixer / 8) generate Polish output; the voice canon (`workflows/guides/voice_brief.md`) is in Polish. The English pipeline as it stood on 2026-05-25 is preserved at Git tag `en-pipeline-v1`. The legacy English channel `@hello.sensum` is dormant.
 
-**To restore English behavior** (any granularity — single file, full pipeline, branch): see `docs/reversibility.md` for ready-to-copy `git checkout en-pipeline-v1 -- <path>` commands.
+**To restore English behavior** (any granularity — single file, full pipeline, branch): `git checkout en-pipeline-v1 -- <path>`.
 
-**Banned-phrase lists for Polish are intentionally empty** in both Polish style guides — they fill in *empirically* as the readers / doctrine gate and the user flag real cringe-phrases from shipped Polish scripts. The English guides accumulated their banned-phrase lists across dozens of scripts; the Polish guides start blank and grow the same way.
+**No banned-phrase lists.** The lean draft chain deliberately keeps none — the cold checker (3b) catches calques/translationese live, reading the whole script with a fault-finding native ear, which beats any frozen list. The user's final docx pass is the last filter.
 
 **Research is still in English.** Agents 1/2 produce `01_research.md` and `02_verified_research.md` in English (PubMed + Europe PMC + Gemini sources are English-language). Polish script agents read English research and produce Polish output — this is intentional, not a bug. Do not localize Agents 0/1/2.
 
@@ -65,8 +65,8 @@ This loop is how the framework improves over time.
 ```
 .tmp/                    # Temporary files (scraped data, intermediate exports). Regenerated as needed.
 .claude/
-  commands/              # Slash commands (user-invoked): /draft /hook /visuals /package /publish (/draft + /publish default to Agent-Teams panels; auto-fallback in-session)
-  agents/                # Agent-Teams teammates (script-reader: cohesion + voice/lyricism cold readers; native-copy critic; publish specialists)
+  commands/              # Slash commands (user-invoked): /draft /hook /visuals /package /publish (/draft = 3 cold Opus subagents; /publish defaults to Agent-Teams, auto-fallback in-session)
+  agents/                # Agent-Teams teammates for /publish (native-copy critic; publish specialists)
   skills/                # Auto-invoked skills (model picks via `description`): doctrine guards (scientific-etching-guard, native-voice-guard) + natural-language routers (render-images, write-script, score-hook, package-thumbnail, publish-package) that fire on plain-language requests outside the slash commands
 tools/
   pipeline/              # Agent scripts 0–8 + align (the full production chain)
@@ -75,7 +75,7 @@ tools/
   research_sources.py    # Peer-reviewed source aggregation for Agent 1 (PubMed + Europe PMC)
 workflows/
   pipeline/              # Numbered SOPs 00–08 (one per pipeline agent), plus align.md
-  guides/                # style_guide.md, style_guide_images.md, narrative_architectures.md
+  guides/                # voice_brief.md (script-voice canon), style_guide_images.md
 outputs/
   videos_pl/             # Polish-channel videos (one folder per slug). videos_en/ exists for legacy English content.
   channel_assets/        # Shared brand assets (logo, fonts, colors)
@@ -92,7 +92,7 @@ outputs/
 
 Operative rules live here; the *why/history* behind each lives in auto-memory (`project_*.md`, lazy-loaded), full specs in `workflows/guides/` + `workflows/pipeline/` + `docs/`. Pointers below are canonical — don't re-narrate decisions here.
 
-**No Claude API — everything in-session (Opus 4.8).** Zero Anthropic API calls. `/draft`, `/hook`, `/visuals`, `/package`, `/publish` all run in-session; `query_claude()` removed, `ANTHROPIC_API_KEY` not required. Gemini (Vertex AI) only for research (0/1/2), image render (6, package-render), QA (6b). In-session prompts single-sourced in `workflows/pipeline/03{a,b,c,d,e}_*.md`, `04_hook.md`, `05_visuals.md`, `07_package.md`, `08_publish.md`. Legacy Gemini paths survive behind `--api`.
+**No Claude API — everything in-session (Opus 4.8).** Zero Anthropic API calls. `/draft`, `/hook`, `/visuals`, `/package`, `/publish` all run in-session; `query_claude()` removed, `ANTHROPIC_API_KEY` not required. Gemini (Vertex AI) only for research (0/1/2), image render (6, package-render), QA (6b). In-session prompts single-sourced in `workflows/pipeline/03a_writer.md` / `03b_checker.md` / `03c_fixer.md`, `04_hook.md`, `05_visuals.md`, `07_package.md`, `08_publish.md`. Legacy Gemini paths survive behind `--api`.
 
 **Windows encoding.** Prefix Bash pipeline runs with `PYTHONIOENCODING=utf-8` (avoids Unicode codec errors), e.g. `PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "slug"`.
 
@@ -100,20 +100,21 @@ Operative rules live here; the *why/history* behind each lives in auto-memory (`
 
 ### Script voice — the non-negotiables
 
-- **Research-invisible.** Warm therapist talking to one person; research entirely invisible (channel is research-*grounded*, never research-*forward*). No researcher names / study years / "badania pokazują" / decimals / counts in narration; all citations live in the Agent 8 description. Forbidden PL research-framing phrases + rationale: memory `feedback_no_inline_citations.md`; spec `style_guide.md`.
+Pełny kanon: `workflows/guides/voice_brief.md` (6 reguł). Poniżej operacyjny destylat — wiążący dla każdej edycji prozy (in-session, `/draft`, freeform przez `native-voice-guard`):
+
+- **Research-invisible.** Warm therapist talking to one person; research entirely invisible (channel is research-*grounded*, never research-*forward*). No researcher names / study years / "badania pokazują" / decimals / counts in narration; all citations live in the Agent 8 description. Rationale: memory `feedback_no_inline_citations.md`.
 - **Number policy.** Round, framed numbers only ("roughly half", "most people"). Banned: decimals, effect sizes, p-values, study/participant counts, methodology terms. Even a round number stated as fact ("blisko połowy…") reads as an uncited stat — describe the phenomenon instead. If a number doesn't land emotionally, cut it.
-- **Jargon policy.** Plain language first; name a scientific term only if it's memorable AND appears once, late, after the idea landed. Never jargon-then-translation.
-- **Darwin exception** (Historical Reversal only): Darwin may be named as the structural antagonist (the "wrong view"). No other figures/researchers.
-- **Clinical-anchor exception** (any architecture): exactly one established clinical anchor per script may be framed „Badania nad [efektem] pokazują, że…" (e.g. „efekt świeżego startu"). No author/year/number/methodology alongside it; a second research-framing frame is caught by the doctrine gate (`03e`).
-- **Permission Practice** (OPTIONAL since 2026-06-06 — was mandatory): include micro-practices **only if a real concrete move arises from the script's central image** — never bolted on. If the topic doesn't carry one, go straight to the recognition close. When present: flowing prose („Czasem wystarczy…" anaphora), ~1–4 practices, **never** a numbered list (banned everywhere); two registers — somatic (default) vs strategic („beat ścieżki", topic-triggered external move; `--sciezka` forces). **Recognition close stays mandatory — always the last word.** Drafter judges fit; Czytelnik 1 flags a bolted-on PP as a seam. Spec: `narrative_architectures.md` „Sekcja Permission Practice (opcjonalna)" / „Dwa rejestry". Rationale: memory `project_path_beat_register.md`, `project_pp_prose_and_style_calibration.md`.
-- **Bezrodzajowość + ciepło.** Address the viewer gender-neutrally (present-tense / impersonal default; inner quote „coś poszło źle"); speak DO the person, never describe the system. Spec: `voice_corpus.md` §0 + §G; enforced by Czytelnik 2 (głos/ciepło) + doctrine gate (gender/person). Rationale: memory `project_voice_doctrine.md`.
-- **Craft calibration.** One central metaphor per script (don't stack); at most 2–3 attention-imperatives („Zwróć uwagę"/„Popatrz"/…); no uncited round-number stat. Enforced in `style_guide.md` / 3a / readers / doctrine gate. Rationale: memory `project_pp_prose_and_style_calibration.md`.
+- **Jargon ≠ feelings.** Plain language first; name a scientific term only if memorable AND once, late, after the idea landed — never jargon-then-translation. **But naming feelings (wstyd, wina, lęk, wyrzuty sumienia) is NOT jargon — it's the core; name them outright.** Only true clinical jargon ("dysonans poznawczy", "kwantyfikator") is banned.
+- **One research-frame exception.** As the "wrong view" you may name a historical figure (e.g. Darwin) and, at most once, an established clinical anchor („Badania nad [efektem] pokazują, że…", e.g. „efekt świeżego startu"). No living researchers; no year/number/methodology alongside it.
+- **Permission Practice — optional + light.** Include a micro-practice only if a real concrete move grows from the central image; if not, go straight to the recognition close. When present: flowing prose („Czasem wystarczy…" anaphora), **never** a numbered list. **Recognition close always last.** Rationale: memory `project_pp_prose_and_style_calibration.md`, `project_path_beat_register.md`.
+- **Natural gender + warmth.** Speak DO the person, warmly, never auditing the system. Natural masculine generic is fine — do NOT contort into impersonal forms if it kills the rhythm (relaxed 2026-06-07; forced bezrodzajowość retired). Rationale: memory `project_voice_doctrine.md`.
+- **Craft calibration.** One central metaphor per script (don't stack); at most 2–3 attention-imperatives („Zwróć uwagę"/„Popatrz"); no uncited round-number stat. Rationale: memory `project_pp_prose_and_style_calibration.md`.
 
 ### Script chain (Agent 3)
 
-- **Architecture per topic.** `/draft` runs an in-session selector (Step 1.6) before 3a — scores all 5 architectures on topic-fit, writes `md/03_architecture.md`. Composite Portrait is eligible but no longer the blind default; anti-repeat is a tiebreak only; `$2` forces a named architecture. The `ARCHITECTURE:` line is stripped from the recorded `04_final.md`/`script.docx`. Spec: `03_architecture_select.md`. Rationale: memory `project_architecture_selection.md`, `project_composite_portrait.md`.
-- **Flowing-essay chain (2026-06-06 redesign).** Target voice: **płynny esej-voiceover z nutą liryzmu, spójny** (`style_guide.md` §2.5, `voice_corpus.md` §A — płynący pasaż na czele; default texture is connected prose, NOT staccato fragments). Chain in-session: **3a Drafter** (voice-first, flowing texture, PP optional) → copy to `04_working.md` → **panel of 2 cold readers** (Czytelnik 1 spójność/przepływ → `03c_reviewer.md`; Czytelnik 2 głos/liryzm/kalki → `03d_native_ear.md`) → **3b Integrator** rewrites the WHOLE script (one hand) from both reader logs → loop until **both readers say `PŁYNIE`** (soft cap ~5 rounds, else ship-with-WARNING) → **thin doctrine gate** (`03e_doctrine_gate.md`) → `04_final.md`. Readers give **holistic editorial feedback, not categorical triage** (no BLOCKER/FIX/WATCH, no iteration-dampener, no anti-sterility brake on polishing). The old defensive 3c (categories A–K) is retired; its non-negotiables live in `03e`. Spec: `03{a,b,c,d,e}_*.md` + `voice_corpus.md`. Rationale: spec `docs/superpowers/specs/2026-06-06-flowing-essay-script-chain-design.md`. Reversibility: `docs/reversibility.md`.
-- **Agent Teams (default in `/draft` + `/publish`).** `/draft` spawns **two cold-context `script-reader` teammates** (lens spójność + lens głos-liryzm), each reading `04_working.md` cold and giving whole-script editorial feedback, debating fixes across rounds; the lead (Integrator) owns every rewrite so the voice stays one hand. Panel passes when **both** verdicts are `PŁYNIE` (parser: first non-blank line after `## VERDICT` is `PŁYNIE`/`REWORK`). `/publish` uses 3 specialist generators + a cold-context Native-Copy Critic (8d). Both **auto-fall back to fully in-session (no team) when Agent Teams is unavailable** — no separate command, no `--solo` flag. Need `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (committed `.claude/settings.json`), and require **one team at a time** (mandatory teardown — a lingering team blocks the other). Full spec: `docs/agent_teams_reference.md`.
+- **Lean 3-agent flow (2026-06-07 redesign).** `/draft <slug>` runs **three cold-context Opus subagents in sequence**, each blind to the others; the lead only passes files. **3a Writer** reads the research + the 6-rule `voice_brief.md` and writes the whole narration loosely, in one pass (`md/03a_draft.md`). **3b Checker** reads that draft cold, holistically, with a fault-finding native ear („to prawdopodobnie źle napisany AI-tekst — znajdź dziwne zdania") and lists every calque / koślawy szyk with a natural rewrite (`md/03b_corrections.md`). **3c Fixer** swaps each flagged sentence for its natural version surgically — no whole rewrite — and writes `md/04_final.md`. **One pass, no loop, no panel, no API.** Spec: `03a_writer.md` / `03b_checker.md` / `03c_fixer.md` + `voice_brief.md`. Rationale: brainstorm `brainstorms/2026-06-07-lean-draft-redesign.md`.
+- **Why cold subagents.** The same model in one context rubber-stamps its own weird sentences (proven this redesign: the old reader panel + `/refine` were no-ops). A fresh context reading the whole text with fault-finding framing — replicating plain-chat conditions — actually catches them. That asymmetry is the whole design.
+- **The user's docx pass is the ceiling.** The machine delivers ~99%; final editorial judgment happens on `docx/script_corrected.docx`. We don't iterate the machine to perfection. `/publish` still uses Agent Teams (3 specialists + Native-Copy Critic 8d, auto-fallback in-session); spec `docs/agent_teams_reference.md`.
 
 ### Images & publish
 
@@ -129,7 +130,7 @@ All agents except 0/1 take a **slug** (output dir under `outputs/videos_pl/`), n
 
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agentN_name.py "<slug>"   # standard Python agent (Windows: keep the prefix)
-/draft <slug> [architecture] [--sciezka]   # Agent 3 — selector + 3a Drafter + 2 cold readers (spójność+głos) ↔ Integrator loop (miękki ~5) + doctrine gate; auto-fallback in-session
+/draft <slug>                              # Agent 3 — pisarz → checker → fixer (3 zimne subagenty Opus, jeden przebieg, no API)
 /hook <slug>                               # Agent 4 hook gate → agent4_hook.py --apply
 /visuals <slug>                            # Agent 5 → agent5_visuals.py --expand
 /publish <slug>                            # Agent 8 — 9 steps + Native-Copy Critic 8d (default); bookends --extract / --signals / --finalize; auto-fallback in-session
@@ -137,7 +138,7 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agentN_name.py "<slug>"   # standar
 ls outputs/videos_pl/                      # list existing slugs
 ```
 
-**Parallel-safe after Agent 3:** Agents 5 and 8 simultaneously (6 depends on 5); `/package` runs after `/hook`, before `/publish`. **Legacy Gemini paths** sit behind `--api` (`agent3.py` flags `--max-iterations N` / `--start-iteration N` apply there only); the in-session slash commands are the default entry points. Style guides: `workflows/guides/`.
+**Parallel-safe after Agent 3:** Agents 5 and 8 simultaneously (6 depends on 5); `/package` runs after `/hook`, before `/publish`. **Legacy Gemini paths** sit behind `--api` (inert — in-session slash commands are the default). Voice canon: `workflows/guides/voice_brief.md`.
 
 ## Agent Chain
 
@@ -150,12 +151,10 @@ All pipeline scripts live in `tools/pipeline/`.
 | 0 (optional) | `pipeline/agent0_materials.py` | Gemini 3.1 Pro | PDF + topic | `md/00_materials_insights.md` |
 | 1 | `pipeline/agent1_research.py` | Gemini 3.1 Pro + PubMed + Europe PMC | topic string | `md/01_research.md` |
 | 2 | `pipeline/agent2_verify.py` | Gemini 3.1 Pro | `01_research.md` | `md/02_verified_research.md` |
-| 3 (whole chain) | `/draft <slug>` (Claude Code slash command; Drafter → 2 cold readers ↔ Integrator loop → doctrine gate; auto-fallback in-session) | Opus 4.8 (in-session lead + 2 teammate contexts — no API) | `02_verified_research.md` | `03_architecture.md`, `03a_draft.md`, `04_working.md`, `03_read_cohesion_iter*.md`, `03_read_voice_iter*.md`, `03b_revised_iter*.md` + `md/04_final.md` |
-| 3a | (inside `/draft`) | Opus 4.8 (in-session — no API) | `02_verified_research.md` | `md/03a_draft.md` |
-| 3b Integrator | (inside `/draft`) one-hand whole-script rewrite | Opus 4.8 in-session — no API | `04_working.md` + both reader logs (round N) | `md/03b_revised_iter{N}.md` → `04_working.md` |
-| 3c Czytelnik 1 (spójność) | (inside `/draft`) `script-reader` teammate | Opus 4.8 (teammate — no API) | `04_working.md` | `md/03_read_cohesion_iter{N}.md` |
-| 3d Czytelnik 2 (głos/liryzm) | (inside `/draft`) `script-reader` teammate | Opus 4.8 (teammate — no API) | `04_working.md` | `md/03_read_voice_iter{N}.md` |
-| 3e doctrine gate | (inside `/draft`) lead in-session | Opus 4.8 — no API | final `04_working.md` | `md/04_final.md` (strips `ARCHITECTURE:`) |
+| 3 (whole chain) | `/draft <slug>` (Claude Code slash command; pisarz → checker → fixer, 3 cold Opus subagents, one pass, no API) | Opus 4.8 (in-session lead + 3 cold subagent contexts — no API) | `02_verified_research.md` | `md/03a_draft.md`, `md/03b_corrections.md` + `md/04_final.md` |
+| 3a writer | (inside `/draft`) cold subagent; `03a_writer.md` + `voice_brief.md` | Opus 4.8 (cold subagent — no API) | `02_verified_research.md` | `md/03a_draft.md` |
+| 3b checker | (inside `/draft`) cold subagent; holistic fault-finding PL read; `03b_checker.md` | Opus 4.8 (cold subagent — no API) | `md/03a_draft.md` | `md/03b_corrections.md` |
+| 3c fixer | (inside `/draft`) cold subagent; surgical swap-in; `03c_fixer.md` | Opus 4.8 (cold subagent — no API) | `md/03a_draft.md` + `md/03b_corrections.md` | `md/04_final.md` |
 | 4 **(gate)** | `/hook <slug>` + `agent4_hook.py --apply` | Opus 4.8 in-session (legacy: `--api` Gemini) | `04_final.md` | `md/04_hook.md` + revised `04_final.md` in place + `docx/script.docx` |
 | 5 | `/visuals <slug>` (Claude Code slash command) | Opus 4.8 (Claude Code, in-session — no API) | `04_final.md` (or `script_corrected.docx` if present) | `md/05_prompts.md` |
 | 8 | `/publish <slug>` (Claude Code slash command; 3 specialist generators + Native-Copy Critic 8d by default, auto-fallback in-session; bookends `agent8_publish.py --extract/--signals/--finalize`) | Opus 4.8 (in-session lead + 4 teammate contexts — no API; legacy: `--api` Gemini + web scrape) | `script_corrected.docx` → `script.docx` → `04_final.md` + `02_verified_research.md` | `md/08_publish.md` + `docx/08_publish.docx` + `md/08d_nativecopy_iter*.md` |

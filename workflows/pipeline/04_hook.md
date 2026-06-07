@@ -196,7 +196,7 @@ cp outputs/videos_pl/<slug>/md/04_final.bak.md outputs/videos_pl/<slug>/md/04_fi
 ## Reference
 
 - Working theory and pattern library: [docs/specs/2026-05-15-15-second-hook-research.md](../../docs/specs/2026-05-15-15-second-hook-research.md)
-- Architecture choices for the hook shape: [workflows/guides/narrative_architectures.md](../guides/narrative_architectures.md)
+- Voice canon for the hook (warmth, recognition-open, research-invisible): [workflows/guides/voice_brief.md](../guides/voice_brief.md)
 
 ---
 

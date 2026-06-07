@@ -5,7 +5,7 @@
 1. nie re-litygować tego samego skryptu przy każdej sesji,
 2. rosnąć empirycznie (jak banned-phrase lists) — jedna realna lekcja na skrypt, nie teoria.
 
-**Czego ten log NIE jest.** To nie korpus głosu (ten jest w `voice_corpus.md` — *polski*, *pozytywny wzór do ucha*). Skrypty tutaj są **angielskie i strukturalne** — uczymy się z nich *architektury emocjonalnej* (jak budują exonerację, gdzie kładą drzwi do praktyki, jak zamykają), nigdy ich *języka* (są research-forward — wszystko, czego kanał nie pisze). Pliki źródłowe leżą w `reference_scripts/`.
+**Czego ten log NIE jest.** To nie kanon głosu (ten jest w `voice_brief.md` — *polski*, 6 reguł). Skrypty tutaj są **angielskie i strukturalne** — uczymy się z nich *architektury emocjonalnej* (jak budują exonerację, gdzie kładą drzwi do praktyki, jak zamykają), nigdy ich *języka* (są research-forward — wszystko, czego kanał nie pisze). Pliki źródłowe leżą w `reference_scripts/`.
 
 **Reguła czytania nowego skryptu (proces, nie narzędzie):**
 
@@ -20,9 +20,9 @@
 
 | Skrypt (`reference_scripts/`) | Jedna lekcja | Zmiana w pipeline? |
 |---|---|---|
-| `m-shaped-future_career-too-many-interests.en.txt` | Permission-first, *potem* praktyczna mapa, a i tak zamyka na rozpoznaniu („to ty łączysz rzeczy, których inni nie łączą"). Mapa landuje, bo wstyd zdjęty pierwszy. | **TAK** — zrodził **rejestr strategiczny Permission Practice** („beat ścieżki"), 2026-05-31. Spec: `narrative_architectures.md` „Dwa rejestry". |
+| `m-shaped-future_career-too-many-interests.en.txt` | Permission-first, *potem* praktyczna mapa, a i tak zamyka na rozpoznaniu („to ty łączysz rzeczy, których inni nie łączą"). Mapa landuje, bo wstyd zdjęty pierwszy. | **TAK** — zrodził **rejestr strategiczny Permission Practice** („beat ścieżki"), 2026-05-31. (Historyczne — architektury i „Dwa rejestry" wycofane 2026-06-07; PP jest teraz opcjonalna/lekka, `voice_brief.md`.) |
 | `people-who-cry-easily_super-sensor.en.txt` | „Prescription" jest somatyczna/wewnętrzna (take a breath, honor silence) — czysta permission, bez mapy. | **NIE** (potwierdza) — dowodzi, że beat ścieżki musi być **opcjonalny i wyzwalany tematem**; ten temat zostaje w rejestrze somatycznym. |
-| *(oba powyżej)* | Oba są skrajnie research-forward: „Research shows", „neuroscientists call this…", nazwisko (Luhmann), żargon (far transfer, Zettelkasten, HSP, vantage sensitivity), 8K resolution, orchid/dandelion. | **NIE** — *potwierdzają* regułę de-żargonu / research-invisible, nie zmieniają jej. Lekcja = czego **nie** przepisywać. (Uwaga: orchid/dandelion to dawna angielska kotwica rytmu, zastąpiona przez `voice_corpus.md`.) |
+| *(oba powyżej)* | Oba są skrajnie research-forward: „Research shows", „neuroscientists call this…", nazwisko (Luhmann), żargon (far transfer, Zettelkasten, HSP, vantage sensitivity), 8K resolution, orchid/dandelion. | **NIE** — *potwierdzają* regułę de-żargonu / research-invisible, nie zmieniają jej. Lekcja = czego **nie** przepisywać. (Uwaga: orchid/dandelion to dawna angielska kotwica rytmu, zastąpiona przez kanon głosu.) |
 
 ---
 

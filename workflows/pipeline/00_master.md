@@ -36,7 +36,7 @@ outputs/videos_pl/{slug}/md/02_verified_research.md
     │  3a Writer   — Opus 4.8 (cold subagent) writes the whole ~1000-1500-word narration, one loose pass
     │  3b Checker  — Opus 4.8 (cold subagent) reads it holistically, lists translationese + natural rewrites
     │  3c Fixer    — Opus 4.8 (cold subagent) swaps flagged sentences surgically → 04_final.md
-    │  One pass, no loop, no API (legacy Gemini path inert behind agent3.py --api)
+    │  One pass, no loop, no API
     ▼
 outputs/videos_pl/{slug}/md/03a_draft.md → 03b_corrections.md → 04_final.md
     │
@@ -159,7 +159,7 @@ In Claude Code:
 /draft emotional-dysregulation-in-adhd
 ```
 
-That slash command runs the whole script chain **in-session on Opus 4.8 — no API** as three cold subagents, one pass: **3a Writer** saves `md/03a_draft.md`, **3b Checker** reads it cold and writes the Polish-grammar correction list `md/03b_corrections.md`, **3c Fixer** applies the swaps surgically to `md/04_final.md`. No loop. Review `md/03b_corrections.md` and `md/04_final.md`; the final editorial pass is yours on `docx/script_corrected.docx`. (Legacy Gemini path inert behind `agent3.py --api`.) See [03a_writer.md](03a_writer.md), [03b_checker.md](03b_checker.md), [03c_fixer.md](03c_fixer.md), [voice_brief.md](../guides/voice_brief.md).
+That slash command runs the whole script chain **in-session on Opus 4.8 — no API** as three cold subagents, one pass: **3a Writer** saves `md/03a_draft.md`, **3b Checker** reads it cold and writes the Polish-grammar correction list `md/03b_corrections.md`, **3c Fixer** applies the swaps surgically to `md/04_final.md`. No loop. Review `md/03b_corrections.md` and `md/04_final.md`; the final editorial pass is yours on `docx/script_corrected.docx`. See [03a_writer.md](03a_writer.md), [03b_checker.md](03b_checker.md), [03c_fixer.md](03c_fixer.md), [voice_brief.md](../guides/voice_brief.md).
 
 ### Step 4 — Hook Gate
 

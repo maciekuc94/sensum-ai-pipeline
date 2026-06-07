@@ -77,8 +77,8 @@ Slug : emotional-dysregulation-in-adhd
 
 Saved: outputs/videos/emotional-dysregulation-in-adhd/md/02_verified_research.md
 
-Done. Review the output, then run Agent 3:
-  python tools/pipeline/agent3.py "emotional-dysregulation-in-adhd"
+Done. Review the output, then run Agent 3 in Claude Code:
+  /draft emotional-dysregulation-in-adhd
 ```
 
 ---
@@ -231,6 +231,6 @@ Once you are satisfied that the verified research is solid and flagged/removed
 claims have been reviewed, run Agent 3 to produce the first draft of the video
 script:
 
-```bash
-python tools/pipeline/agent3.py "emotional-dysregulation-in-adhd"
+```text
+/draft emotional-dysregulation-in-adhd
 ```

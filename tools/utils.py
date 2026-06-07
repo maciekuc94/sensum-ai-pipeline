@@ -178,29 +178,6 @@ def read_output(slug: str, filename: str) -> str:
     return file_path.read_text(encoding="utf-8")
 
 
-
-def load_style_guide(filename: str = "style_guide.md") -> str:
-    """Load a style guide from the workflows/ directory relative to the project root.
-
-    Args:
-        filename: The filename inside workflows/ (default: style_guide.md)
-
-    Returns:
-        File contents as a string.
-
-    Raises:
-        FileNotFoundError: If the file doesn't exist, with a helpful message.
-    """
-    project_root = Path(__file__).parent.parent
-    path = project_root / "workflows" / "guides" / filename
-    if not path.exists():
-        raise FileNotFoundError(
-            f"Style guide not found at: {path}\n"
-            f"Expected file: workflows/{filename} in the project root."
-        )
-    return path.read_text(encoding="utf-8")
-
-
 # NOTE: query_claude() (direct Anthropic API) was removed on 2026-05-29. The
 # pipeline no longer makes any Claude/Anthropic API call — all Claude work runs
 # in-session in Claude Code on Opus 4.8 via slash commands (/draft, /hook,

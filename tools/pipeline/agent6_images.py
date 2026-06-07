@@ -411,7 +411,6 @@ def sync_scripts(slug: str) -> None:
 
     04_final.md: strips old [IMAGE: ...] markers, inserts [IMAGE_NNN]
     before the sentence each image maps to.
-    03b_revised.md: strips old [IMAGE: ...] markers only.
     """
     print(f"\n=== Agent 9: Sync Scripts with Image Pipeline ===")
     print(f"Slug : {slug}")
@@ -476,14 +475,6 @@ def sync_scripts(slug: str) -> None:
 
     write_output(slug, "md/04_final.md", cleaned)
     print(f"  md/04_final.md: stripped old markers, inserted {inserted}/{len(image_sentences)} [IMAGE_NNN] markers")
-
-    try:
-        draft_content = read_output(slug, "md/03b_revised.md")
-        draft_cleaned = re.sub(r'\[IMAGE:[^\]]+\]\s*\n?', '', draft_content)
-        write_output(slug, "md/03b_revised.md", draft_cleaned)
-        print(f"  md/03b_revised.md: stripped old [IMAGE: ...] markers")
-    except FileNotFoundError:
-        print("  md/03b_revised.md not found — skipping")
 
     print(f"\nDone. Scripts are now consistent with 05_prompts.md.")
 

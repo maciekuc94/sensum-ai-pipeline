@@ -64,26 +64,22 @@ verdict.
 2. `workflows/pipeline/08_publish.md` — the **target register lives here**, not in narration anchors:
    read STEP 1's LANGUAGE RULES + BAD vs GOOD title examples, and STEP 2's good description example
    and hard rules. Rewrite *toward* that sound.
-3. `workflows/guides/voice_corpus.md` — your translationese anchor:
-   - **§C2** — the four named syntactic tells (canonical table with examples).
-   - **§C** — fresh calques to avoid.
-   (§A narration exemplars are for flowing script prose — use them only as a loose ear, the copy
-   register is shorter and punchier.)
-4. On round `N > 1` only: your own prior log `08d_nativecopy_iter{N-1}.md` (so you can re-challenge the
+3. On round `N > 1` only: your own prior log `08d_nativecopy_iter{N-1}.md` (so you can re-challenge the
    specific lines you flagged, rather than starting a fresh list).
 
 ## What to hunt (translationese only)
 
-**The four named tells** (canonical examples + ✓ targets live in `voice_corpus.md` §C2 — point there,
-don't re-derive):
+**The four named tells** (canonical set — your translationese checklist; self-contained):
 
-- **Pronoun flood** — copied possessives Polish drops when the owner is obvious.
+- **Pronoun flood** — copied possessives Polish drops when the owner is obvious („Twój mózg robi swoją
+  rzecz" → „Mózg robi swoje").
 - **Rzeczownikomania / nominalizacja** — a deverbal abstract noun where living Polish stands on a verb
   („utrata kontroli" → „tracisz kontrolę").
 - **Genitive-stack** — a chain of dopełniacze translating an English compound noun („jakość twojego
   życia" → „jak żyjesz").
 - **Trailing verb / unnatural word order** — the verb shoved to the end of the clause by EN
-  dependent-clause structure.
+  dependent-clause structure („To jest mechanizm, który strach w tobie uruchamia." → „To mechanizm,
+  który uruchamia w tobie strach.").
 
 **Plus** the rest of the translationese layer, tuned for marketing copy:
 

@@ -14,7 +14,7 @@ w tabelach, subtelne ziarno papieru (SVG noise), inicjal (drop cap), podwojna li
 mastheadem, ornament zamiast linii ---. Paleta: tlo #F4E5CA, atrament #582F0E + odcienie
 #EBD9B8 / #CDB488 (uzyte WYLACZNIE wewnatrz dokumentu, nie w generowanych grafikach).
 
-Parser blokow reuzyty z md_to_docx_sensum (jedno zrodlo md).
+Parser blokow Markdown wbudowany (samodzielny, bez zaleznosci od innych narzedzi).
 
 Uzycie (z korzenia repo):
   PYTHONIOENCODING=utf-8 python tools/dev/md_to_pdf_sensum.py <plik.md> [<plik2.md> ...]
@@ -27,15 +27,61 @@ import base64
 import glob as globmod
 import html as htmllib
 import io
-import sys
+import re
 from pathlib import Path
-
-# parser bloków + regex inline = jedno źródło z konwerterem docx (ten sam katalog)
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from md_to_docx_sensum import parse_blocks, INLINE_RE  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 LOGO = ROOT / "outputs" / "channel_assets" / "SENSUM_LOGO.png"
+
+
+# ----- parser markdown -> bloki (samodzielny; PDF nie zalezy od konwertera docx) -----
+SEP_RE = re.compile(r"^\s*\|?(\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$")
+HR_RE = re.compile(r"^\s*([-*_])\1{2,}\s*$")
+INLINE_RE = re.compile(r"(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)")
+
+
+def parse_blocks(md):
+    """Markdown -> lista blokow [(kind, payload)]. Samodzielny parser (bez zaleznosci od docx)."""
+    blocks = []
+    lines = md.splitlines()
+    i, n = 0, len(lines)
+    while i < n:
+        s = lines[i].strip()
+        if s.startswith("|") and s.endswith("|") and "|" in s[1:]:
+            tbl = []
+            while i < n:
+                t = lines[i].strip()
+                if not (t.startswith("|") and t.endswith("|") and "|" in t[1:]):
+                    break
+                if not SEP_RE.match(t):
+                    tbl.append([c.strip() for c in t[1:-1].split("|")])
+                i += 1
+            if tbl:
+                blocks.append(("table", tbl))
+            continue
+        i += 1
+        if s == "" or s == ">":
+            continue
+        if s.startswith("<details") or s.startswith("</details"):
+            continue
+        m = re.match(r"<summary>(.*?)</summary>", s)
+        if m:
+            blocks.append(("summary", m.group(1)))
+        elif HR_RE.match(s):
+            blocks.append(("hr", None))
+        elif s.startswith("### "):
+            blocks.append(("h3", s[4:]))
+        elif s.startswith("## "):
+            blocks.append(("h2", s[3:]))
+        elif s.startswith("# "):
+            blocks.append(("h1", s[2:]))
+        elif s.startswith("> "):
+            blocks.append(("quote", s[2:]))
+        elif s.startswith("- ") or s.startswith("* "):
+            blocks.append(("bullet", s[2:]))
+        else:
+            blocks.append(("p", s))
+    return blocks
 
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -95,7 +141,37 @@ table code{ font-size:.92em; }
 """
 
 
+# emoji kolorowe -> brazowe glify tekstowe (utrzymanie dwukolorowej palety SENSUM)
+_GLYPH_MAP = {
+    "✅": "✓",  # ✅ -> ✓
+    "✔": "✓",  # ✔ -> ✓
+    "❌": "✗",  # ❌ -> ✗
+    "✖": "✗",  # ✖ -> ✗
+    "\U0001f7e2": "●",  # 🟢 -> ●
+    "\U0001f534": "●",  # 🔴 -> ●
+    "\U0001f7e1": "◐",  # 🟡 -> ◐
+    "⭐": "★",  # ⭐ -> ★
+}
+# glify, ktore maja warianty emoji — wymuszamy prezentacje tekstowa (monochrom)
+_TEXT_PRESENTATION = "✓✗⚠"
+
+
+def _demojify(text):
+    text = text.replace("�", "")  # usun znaki-zaslepki (uszkodzone zrodlo md)
+    for k, v in _GLYPH_MAP.items():
+        if k in text:
+            text = text.replace(k, v)
+    text = text.replace("️", "")  # usun VS16 (wymuszenie wariantu emoji)
+    out = []
+    for ch in text:
+        out.append(ch)
+        if ch in _TEXT_PRESENTATION:
+            out.append("︎")  # VS15 -> wymus tekst (brazowy, nie kolorowy emoji)
+    return "".join(out)
+
+
 def inline_html(text):
+    text = _demojify(text)
     out = []
     for part in INLINE_RE.split(text):
         if not part:

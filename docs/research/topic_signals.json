@@ -1,0 +1,2048 @@
+{
+  "signals": [
+    {
+      "topic_pl": "Dlaczego czujesz się jak oszust, nawet kiedy ci wychodzi",
+      "search_phrase_pl": "dlaczego czuję się jak oszust mimo sukcesów",
+      "archetype": "impostor syndrome / fear of being found out",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Im więcej osiągasz, tym mocniej czujesz, że zaraz cię zdemaskują - bo wierzysz, że to nie ty, tylko zbieg okoliczności.",
+      "a_rationale": "Syndrom oszusta to evergreen rdzeń lane SENSUM - PoW/School of Life i topic-channele (HealthyGamer) wracają do 'fear of being exposed' latami; emocja, nie protokół.",
+      "demand_sugg_total": 27,
+      "demand_sugg_related": 0,
+      "demand_samples": [
+        "dlaczego czuję gorycz w ustach",
+        "dlaczego czuję zapachy których nie ma",
+        "dlaczego czuję niepokój",
+        "dlaczego czuję się ciągle zmęczona",
+        "dlaczego czuję się słabo",
+        "dlaczego czuję"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 215457,
+      "yt_top_ontopic": []
+    },
+    {
+      "topic_pl": "Dlaczego czujesz się niepotrzebny, choć nikt cię nie odrzucił",
+      "search_phrase_pl": "dlaczego czuję się niepotrzebna",
+      "archetype": "feeling worthless / 'I don't matter' core wound",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Nosisz w sobie ciche przekonanie, że gdyby cię zabrakło, świat by tego nie zauważył - i ustawiasz całe życie tak, żeby tego nie sprawdzać.",
+      "a_rationale": "Poczucie 'nie mam wartości / nie liczę się' to ponadkulturowa rana dzieciństwa, rdzeń katalogów Crappy Childhood Fairy / Teahan; autocomplete PL potwierdza dosłownie 'czuję się niepotrzebna'.",
+      "demand_sugg_total": 17,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "dlaczego czuję się niepotrzebna"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 611313,
+      "yt_top_ontopic": []
+    },
+    {
+      "topic_pl": "Dlaczego cudza pochwała spływa po tobie, a jedna krytyka zostaje na tygodnie",
+      "search_phrase_pl": "dlaczego nie umiem przyjąć komplementu",
+      "archetype": "negativity bias of low self-worth / can't take a compliment",
+      "architecture": "Systems Audit",
+      "emotional_core": "Komplement odbijasz w sekundę, a jedno krzywe słowo zostaje w tobie tygodniami - bo gdzieś w środku wierzysz, że krytyka mówi prawdę, a pochwała kłamie.",
+      "a_rationale": "Asymetria 'pochwała znika, krytyka zostaje' to klasyczny, evergreen temat psych-YT (School of Life 'why we hate compliments'); mechanizm filtrujący dowody na własną wartość - chłodny audyt sygnału, ciepło do widza.",
+      "demand_sugg_total": 21,
+      "demand_sugg_related": 11,
+      "demand_samples": [
+        "dlaczego nie umiem kochać",
+        "dlaczego nie umiem płakać",
+        "dlaczego nie umiem odpoczywać",
+        "dlaczego nie umiem rozmawiać z ludźmi",
+        "dlaczego nie umiem bekac",
+        "dlaczego nie umiem zrobić pompki",
+        "dlaczego nie umiem podejmowac decyzji",
+        "dlaczego nie umiem okazywać uczuć"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 487654,
+      "yt_top_ontopic": []
+    },
+    {
+      "topic_pl": "Dlaczego czekasz, aż będziesz gotowy, zanim pozwolisz sobie zacząć",
+      "search_phrase_pl": "dlaczego czuję że nie jestem wystarczająco dobry",
+      "archetype": "'not good enough yet' / chronic unreadiness",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Odkładasz to, na czym ci zależy, do dnia, w którym będziesz wystarczająco dobry - a ten dzień nigdy nie nadchodzi, bo poprzeczka cofa się razem z tobą.",
+      "a_rationale": "'Nie jestem jeszcze wystarczająco dobry' to evergreen rana niewystarczalności w lane SENSUM (Pursuit of Wonder o czekaniu na gotowość); singel Blondiee 'NIEWYSTARCZAJĄCA' (267K) potwierdza, że słowo monetyzuje uwagę po polsku.",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 0,
+      "demand_samples": [
+        "dlaczego czuję gorycz w ustach",
+        "dlaczego czuję zapachy których nie ma",
+        "dlaczego czuję niepokój",
+        "dlaczego czuję się ciągle zmęczona",
+        "dlaczego czuję się słabo",
+        "dlaczego czuję"
+      ],
+      "supply_ontopic_n": 7,
+      "supply_pl_max_views": 16718,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 1285138,
+      "yt_top_ontopic": [
+        {
+          "t": "Gdy wystarczająco pokochasz siebie – przyciągniesz miłość, na którą zasługujesz! | Carl Jung",
+          "ch": "Głębia Umysłu",
+          "v": 16718,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=YmExhse2dt8"
+        },
+        {
+          "t": "„Nie jestem wystarczająco dobry” – Syndrom Oszusta u Dorosłych i z ADHD. Coach o Realnych Problemach",
+          "ch": "Zieliński Jerzy",
+          "v": 6422,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=jZbCvKAwYhY"
+        },
+        {
+          "t": "65. Pięć umiejętności, które pomogą Ci być wystarczająco dobrym rodzicem. Maria Berlińska",
+          "ch": "Wydawnictwo Element",
+          "v": 5806,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Sj9B2fdDesQ"
+        },
+        {
+          "t": "Perfekcjonizm. Dlaczego nigdy nie czujesz się wystarczająco dobry?",
+          "ch": "Recykling Myśli",
+          "v": 2345,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=u12T8itUcJ0"
+        },
+        {
+          "t": "„Nie jestem wystarczająco dobry” – tajemnica powszechnego poczucia niedoskonałości",
+          "ch": "BBS – Bridging Between Sciences",
+          "v": 128,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Wxf0vj4rKUk"
+        },
+        {
+          "t": "Być wystarczająco dobrym",
+          "ch": "Izabela Wojtachnik Coaching i Szkolenia",
+          "v": 60,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=9kao2WbVsYM"
+        },
+        {
+          "t": "Dlaczego nigdy nie czujesz się wystarczająco dobry? Psychologia ludzi, którzy zawsze chcą więcej",
+          "ch": "Inny Umysł",
+          "v": 5,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Nc3uzy3YTEc"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego czujesz, że musisz zasłużyć na to, żeby istnieć",
+      "search_phrase_pl": "dlaczego czuję że muszę zasłużyć na odpoczynek",
+      "archetype": "conditional worth / 'I must earn my existence'",
+      "architecture": "Historical Reversal",
+      "emotional_core": "Odpoczynek bez powodu wydaje ci się kradzieżą - jakbyś musiał wciąż czymś spłacać samo prawo do zajmowania miejsca.",
+      "a_rationale": "Warunkowa wartość ('jesteś wart tyle, ile produkujesz') to evergreen temat School of Life / Einzelgänger; daje czyste odwrócenie wpajanej 'prawdy', że odpoczynek trzeba sobie zasłużyć - rdzeń emocji, nie protokół.",
+      "demand_sugg_total": 11,
+      "demand_sugg_related": 0,
+      "demand_samples": [
+        "dlaczego czuję gorycz w ustach",
+        "dlaczego czuję zapachy których nie ma",
+        "dlaczego czuję niepokój",
+        "dlaczego czuję się ciągle zmęczona",
+        "dlaczego czuję się słabo",
+        "dlaczego czuję"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 25,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 631018,
+      "yt_top_ontopic": [
+        {
+          "t": "🌿 Odpoczynek jest w porządku. Nie musisz na niego zapracować. | Uspokajający przekaz uzdrawiający...",
+          "ch": "Tenzin’s Ancient Healing",
+          "v": 25,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=yAox6d3BMnA"
+        },
+        {
+          "t": "Odpoczynek bez wyrzutów sumienia? - co musisz wiedzieć, aby odzyskać energię",
+          "ch": "Ula Nec",
+          "v": 13,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=J4x7MQxjgmI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego twoje osiągnięcia nigdy nie czują się twoje",
+      "search_phrase_pl": "dlaczego nie czuję dumy z własnych osiągnięć",
+      "archetype": "discounting success / external attribution of worth",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Każdy sukces tłumaczysz szczęściem, pomocą innych albo łatwizną zadania - nigdy sobą - więc dowody na własną wartość przelatują przez ciebie, nie zostawiając śladu.",
+      "a_rationale": "Mechanizm 'sukces był przypadkiem' to udokumentowana, kontrintuicyjna manifestacja niskiej samooceny - evergreen u topic-channeli (HealthyGamer o atrybucji); inny objaw niż syndrom oszusta (tu: rozbrajanie dowodów po fakcie, nie lęk przed demaskacją).",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 0,
+      "demand_samples": [
+        "dlaczego nie",
+        "dlaczego niebo jest niebieskie",
+        "dlaczego nie mogę spać w nocy",
+        "dlaczego nie mam internetu",
+        "dlaczego nie moge wyslac smsa",
+        "dlaczego nie obsada"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 445522,
+      "yt_top_ontopic": []
+    },
+    {
+      "topic_pl": "Dlaczego wstydzisz się samego siebie, choć nikt cię nie ocenia",
+      "search_phrase_pl": "wstydzę się siebie",
+      "archetype": "core shame / toxic self-judgment",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Najsurowszego sędziego nosisz w sobie - patrzysz na siebie cudzymi, najgorszymi oczami i kulisz się przed widownią, której nie ma.",
+      "a_rationale": "Wstyd-rdzeń to evergreen lane SENSUM; PL dowód wielkości: emce□ 'Dlaczego odczuwamy wstyd?' 512K + autocomplete 'wstydzę się siebie'. Inny objaw/metafora niż 'wstyd za własne życie' (tam: gdzie/kim jestem; tu: wewnętrzny sędzia patrzący na samego mnie).",
+      "demand_sugg_total": 10,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "wstydzę się",
+        "wstydzę się iść do dentysty",
+        "wstydzę się iść do dentysty forum",
+        "wstydzę się po angielsku",
+        "wstydzę się siebie",
+        "wstydzę się iść na siłownię",
+        "wstydzę się iść do ginekologa",
+        "wstydzę się swojego wyglądu"
+      ],
+      "supply_ontopic_n": 5,
+      "supply_pl_max_views": 246867,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 246867,
+      "yt_top_ontopic": [
+        {
+          "t": "Agnieszka Musiał || Już się nie wstydzę (Official Video)",
+          "ch": "Langusta na palmie",
+          "v": 246867,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=1l-1y3HAXGM"
+        },
+        {
+          "t": "Już się nie wstydzę LIVE || Trasa “Już się nie wstydzę”",
+          "ch": "Langusta na palmie",
+          "v": 36569,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=7lgVzP5DQsw"
+        },
+        {
+          "t": "Czego się wstydzę? 🙈 O wstydzie według Brené Brown i jak sobie z nim radzę? | Jola Szymańska",
+          "ch": "Jola Szymańska",
+          "v": 20989,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=ljNczwz4n8w"
+        },
+        {
+          "t": "Wstydzę się okresu - wstydzę się siebie. Jak sobie z tym poradzić?",
+          "ch": "Voca Ilnicka",
+          "v": 1864,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=l2tqy-MCzhw"
+        },
+        {
+          "t": "8. Dogonić Siebie - Nie wstydzę się tego",
+          "ch": "Dogonić Siebie",
+          "v": 30,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=W2hgR1k0VJI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Samotny w pełnym pokoju — dlaczego bywasz najbardziej sam wśród ludzi",
+      "search_phrase_pl": "dlaczego czuję się samotny wśród ludzi",
+      "archetype": "loneliness / disconnection-amid-people (alone in a crowd)",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Najgłębsza samotność to nie ta, gdy jesteś sam, tylko ta, gdy siedzisz wśród bliskich i nikt nie widzi, co naprawdę czujesz — i powoli przestajesz wierzyć, że kiedykolwiek zobaczy.",
+      "a_rationale": "Evergreen rdzeń lane SENSUM — 'lonely in a crowd' to flagowy temat School of Life / Pursuit of Wonder; rdzeniem jest emocja bycia-niezauważonym, nie protokół. PL dowód kategorii: JASNA STRONA 'Dlaczego czujesz się samotny' 111K (Z2).",
+      "demand_sugg_total": 19,
+      "demand_sugg_related": 2,
+      "demand_samples": [
+        "dlaczego czuję się samotny",
+        "dlaczego człowiek czuje się samotny"
+      ],
+      "supply_ontopic_n": 9,
+      "supply_pl_max_views": 38591,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 520038,
+      "yt_top_ontopic": [
+        {
+          "t": "OBEJRZYJ JEŚLI CZUJESZ SIĘ SAMOTNY! Jak poradzić sobie z samotnością?",
+          "ch": "Inner War Saga",
+          "v": 38591,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=VDA8-6Rt_-8"
+        },
+        {
+          "t": "jak nie czuć się samotnym wśród ludzi?",
+          "ch": "sara cwalina",
+          "v": 10444,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=t5KXDWUQ9w0"
+        },
+        {
+          "t": "Dlaczego jesteś SAMOTNY i bez PRZYJACIÓŁ? | Carl Jung",
+          "ch": "Filozofia Życia",
+          "v": 7463,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=mFSoBWZP7go"
+        },
+        {
+          "t": "ODKRYJ TAJEMNICA SAMOTNOŚCI MŁODYCH LUDZI",
+          "ch": "W Sumie Ciekawe",
+          "v": 1708,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=6Lzf55aIN6w"
+        },
+        {
+          "t": "Dlaczego czujesz się samotny, nawet wśród ludzi? (Samotność emocjonalna)",
+          "ch": "Psyche Wyjaśnia",
+          "v": 924,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=JC0_2UT99AU"
+        },
+        {
+          "t": "Psychologia Ludzi, Którzy Czują Się Samotni Wśród Ludzi",
+          "ch": "Psychologia Umysłu",
+          "v": 517,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=HZktmstH_hw"
+        },
+        {
+          "t": "Dlaczego czuję się samotny?",
+          "ch": "Odnaleźć Siebie",
+          "v": 427,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=8NqkwHb1Zgw"
+        },
+        {
+          "t": "Psychologia Ludzi, Którzy Naprawdę Lubią Samotność",
+          "ch": "Prawdziwa Psychologia Życia",
+          "v": 390,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=6D2ii9Lxz7U"
+        },
+        {
+          "t": "Dlaczego w święta czujesz się najbardziej samotny | MROCZNA psychologia tłumu",
+          "ch": "Labirynt Myśli",
+          "v": 60,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=vV095DnFimI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego nie potrafisz kochać — chociaż bardzo chcesz",
+      "search_phrase_pl": "dlaczego nie potrafię kochać",
+      "archetype": "blocked attachment / inability to love (defended heart)",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "To nie jest tak, że nie masz w sobie miłości — masz ją zamkniętą za drzwiami, które kiedyś nauczyłeś się trzymać zaryglowane, żeby cię nie zabolało, i teraz nie pamiętasz, jak się je otwiera.",
+      "a_rationale": "Twardy PL popyt z Z3 — 'dlaczego nie potrafię kochać' to pierwsza podpowiedź autocomplete pod 'dlaczego nie potrafię...'. Evergreen rana przywiązania (Crappy Childhood Fairy / HealthyGamer rdzeń); emocja, nie porada. Pytanie w rdzeniu = Socratic.",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "dlaczego nie potrafię kochać",
+        "dlaczego nie potrafię płakać",
+        "dlaczego nie potrafię się zakochać",
+        "dlaczego nie potrafię rozmawiać z ludźmi",
+        "dlaczego nie potrafię cieszyć się życiem",
+        "dlaczego nie potrafię okazywać uczuć",
+        "dlaczego nie potrafię schudnąć",
+        "dlaczego nie potrafię być szczęśliwa"
+      ],
+      "supply_ontopic_n": 13,
+      "supply_pl_max_views": 206058,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 211803,
+      "yt_top_ontopic": [
+        {
+          "t": "A co jeśli nie umiesz kochać?",
+          "ch": "Langusta na palmie",
+          "v": 206058,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=-FA1mqGa2lQ"
+        },
+        {
+          "t": "OG kamka - nie potrafię kochać (prod.kubuś)",
+          "ch": "kamka",
+          "v": 58796,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=qULCEzSRo3o"
+        },
+        {
+          "t": "DLACZEGO NIE MOGĘ PRZESTAĆ GO KOCHAĆ?",
+          "ch": "Stosunkowo",
+          "v": 24875,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=G98bUahQ9qo"
+        },
+        {
+          "t": "Dlaczego chcę kochać, a nie potrafię? [P&P#70]",
+          "ch": "STREFA WODZA",
+          "v": 12386,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=bJZAW1b9CAs"
+        },
+        {
+          "t": "Czemu pozwoliłeś kochać - (wersja dla Kobiet)",
+          "ch": "Muzyka Serc",
+          "v": 11042,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=AfVJiOFamSM"
+        },
+        {
+          "t": "THE BILL - Nie Potrafię Kochać",
+          "ch": "The Bill",
+          "v": 9324,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=8BH80ZaW0zo"
+        },
+        {
+          "t": "Dlaczego nie umiemy kochać?  Dlaczego rozpadają się relacje?",
+          "ch": "Izabela Trędowicz",
+          "v": 8665,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=HksmgLsEocA"
+        },
+        {
+          "t": "Czy każdy potrafi KOCHAĆ? Co zrobić, kiedy ON mówi, że nie wie czym jest MIŁOŚĆ?",
+          "ch": "Patryk Wójcik - Psychologia na wynos",
+          "v": 7394,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=CIIPoIccGwI"
+        },
+        {
+          "t": "SOCJOPATA👉CZY SOCJOPATA POTRAFI KOCHAĆ⁉️👩‍❤️‍💋‍👨⛔️",
+          "ch": "Patryk Janas",
+          "v": 6455,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=mZMSytGNNDI"
+        },
+        {
+          "t": "WM#09 Jak kochać tych co nie kochają? | ks. Marek Dziewiecki",
+          "ch": "2ryby.pl",
+          "v": 5545,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=H9LprOgLQ-Q"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Mur, który miał cię chronić — dlaczego odpychasz ludzi, których chcesz blisko",
+      "search_phrase_pl": "dlaczego odpycham ludzi na których mi zależy",
+      "archetype": "avoidant attachment / push-pull intimacy",
+      "architecture": "Systems Audit",
+      "emotional_core": "Wycofujesz się dokładnie wtedy, gdy ktoś zaczyna być ważny — nie dlatego, że ci nie zależy, tylko dlatego, że bliskość kiedyś oznaczała niebezpieczeństwo, a ciało wciąż traktuje czułość jak alarm.",
+      "a_rationale": "Unikanie bliskości to evergreen temat Einzelgänger / HealthyGamer (avoidant attachment robi duże zasięgi po angielsku). PL kategoria monetyzuje uwagę (relacje: Gosia Ohme 116K, Z2). Mechanizm-jako-system pasuje do Systems Audit — ale chłód opisuje alarm, nie człowieka.",
+      "demand_sugg_total": 4,
+      "demand_sugg_related": 3,
+      "demand_samples": [
+        "dlaczego odpycham od siebie ludzi",
+        "dlaczego odpycham ludzi",
+        "dlaczego odpycham od siebie facetow"
+      ],
+      "supply_ontopic_n": 1,
+      "supply_pl_max_views": 22330,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 455442,
+      "yt_top_ontopic": [
+        {
+          "t": "JAK ROZPOZNAĆ, ŻE FACETOWI  NAPRAWDĘ NA TOBIE ZALEŻY⁉️👩‍❤️‍💋‍👨❤️",
+          "ch": "Patryk Janas",
+          "v": 22330,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=J_x8g59kUfI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego nie umiesz okazywać uczuć — nawet tym, których kochasz",
+      "search_phrase_pl": "dlaczego nie potrafię okazywać uczuć",
+      "archetype": "emotional inexpressiveness / learned guardedness",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Czujesz mnóstwo w środku, ale w momencie, gdy trzeba to pokazać, twarz zastyga i słowa nie wychodzą — nie dlatego, że jesteś zimny, tylko dlatego, że dawno nauczyłeś się, że pokazywanie uczuć jest ryzykowne.",
+      "a_rationale": "Bezpośredni Z3 — 'dlaczego nie potrafię okazywać uczuć' w autocomplete pod 'nie potrafię...'. Evergreen lane (emotional numbness/alexithymia u Teahan/HealthyGamer). Kontrintuicyjny objaw (dużo czuję, nic nie pokazuję) = dziwna manifestacja → Forensic.",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "dlaczego nie potrafię kochać",
+        "dlaczego nie potrafię płakać",
+        "dlaczego nie potrafię się zakochać",
+        "dlaczego nie potrafię rozmawiać z ludźmi",
+        "dlaczego nie potrafię cieszyć się życiem",
+        "dlaczego nie potrafię okazywać uczuć",
+        "dlaczego nie potrafię schudnąć",
+        "dlaczego nie potrafię być szczęśliwa"
+      ],
+      "supply_ontopic_n": 5,
+      "supply_pl_max_views": 17530,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 211803,
+      "yt_top_ontopic": [
+        {
+          "t": "Dziewczyna Nie Okazuje Uczuć I Nie Chce Być Dotykana Ani Się Przytulać - Co Robić",
+          "ch": "Paweł Grzywocz",
+          "v": 17530,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=v4Zb1_mySDE"
+        },
+        {
+          "t": "jak okazywać uczucia // DOMINIKA i MACIEK, w rozmowie z Waldemarem Chudziakiem",
+          "ch": "Fundacja Drzwi Otwarte",
+          "v": 9438,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=R0tOiyNeobc"
+        },
+        {
+          "t": "Kiedy Ona Kocha, ale Boi Się Pokazać – 6 ukrytych znaków jej uczuć",
+          "ch": "Psychologia Jej Zachowań",
+          "v": 3308,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=HG2J4WdCpp8"
+        },
+        {
+          "t": "💋 NIE OKAZUJE UCZUĆ (DLACZEGO ONA JEST OZIĘBŁA?) 💋",
+          "ch": "JakZdobycKobietePL",
+          "v": 2017,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=nTVqXegBY_A"
+        },
+        {
+          "t": "Film dla mężczyzn mających problem z okazywaniem uczuć",
+          "ch": "Zrozumiec siebie",
+          "v": 574,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=IkPFMlo0nUI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Ludzie, którzy wolą być sami — wybór czy blizna",
+      "search_phrase_pl": "czy to normalne że wolę być sam",
+      "archetype": "chosen solitude vs protective withdrawal",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Mówisz sobie, że po prostu lubisz swój spokój, i częściowo to prawda — ale gdzieś pod spodem jest też cicha ulga, że skoro nikogo nie wpuściłeś, to nikt cię nie zostawił.",
+      "a_rationale": "Evergreen lane temat (Einzelgänger cały kanał o byciu samemu). PL bilingual-served ryzyko: PBS robi dokładnie 'Ludzie, którzy lubią być sami' jako listicle — luka jakościowa na ciepłe rozpoznanie. Pytanie 'wybór czy blizna?' = Socratic.",
+      "demand_sugg_total": 28,
+      "demand_sugg_related": 18,
+      "demand_samples": [
+        "czy to normalne",
+        "czy to normalne że kot śpi prawie cały dzień",
+        "czy to normalne ze pies chrapie",
+        "czy to normalne ze kot chrapie",
+        "czy to normalne że jedna pierś jest większa od drugiej",
+        "czy to normalne ze noworodek ciagle spi",
+        "czy to normalne ze dziecko chrapie",
+        "czy to normalne ze noworodek kicha"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 8585,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 156156909,
+      "yt_top_ontopic": [
+        {
+          "t": "7 powodów, dla których z wiekiem unikasz ludzi — i dlaczego to zupełnie normalne",
+          "ch": "Zrozumieć",
+          "v": 8585,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=xihYHx2WCfI"
+        },
+        {
+          "t": "TRN - Wolę być sam",
+          "ch": "WspolnyProjekt",
+          "v": 2150,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=xFQGAdhg1Z8"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Tłumacz, który nigdy nie odpoczywa — dlaczego czujesz się samotny, choć ciągle jesteś z ludźmi",
+      "search_phrase_pl": "dlaczego czuję się samotny mimo że mam ludzi",
+      "archetype": "performed self / people-pleasing loneliness (unseen behind the mask)",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Jesteś miły, pomocny, zawsze dostępny — i właśnie dlatego nikt nie zna prawdziwego ciebie; pokazujesz wersję, która ma być lubiana, a potem dziwisz się, czemu mimo tylu ludzi wokół nikt nie jest naprawdę blisko.",
+      "a_rationale": "Evergreen przecięcie people-pleasing × samotność (School of Life 'why nice people are lonely'). Różny objaw i metafora od 'samotny w pełnym pokoju' (tu: maska/wystawiona wersja siebie, nie 'alone in a crowd'). PL relacyjny cluster monetyzuje (Z2).",
+      "demand_sugg_total": 19,
+      "demand_sugg_related": 2,
+      "demand_samples": [
+        "dlaczego czuję się samotny",
+        "dlaczego człowiek czuje się samotny"
+      ],
+      "supply_ontopic_n": 5,
+      "supply_pl_max_views": 111954,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 1285138,
+      "yt_top_ontopic": [
+        {
+          "t": "Dlaczego czujesz się samotny i co możesz z tym zrobić",
+          "ch": "JASNA STRONA",
+          "v": 111954,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=XMKB_07EvfY"
+        },
+        {
+          "t": "OBEJRZYJ JEŚLI CZUJESZ SIĘ SAMOTNY! Jak poradzić sobie z samotnością?",
+          "ch": "Inner War Saga",
+          "v": 38591,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=VDA8-6Rt_-8"
+        },
+        {
+          "t": "Dlaczego czujesz się SAMOTNY, mimo że nie jesteś sam? (PUŁAPKA MÓZGU) | Psychologia w 3 minuty!",
+          "ch": "Dlaczego?",
+          "v": 211,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=JmtNUwdnetI"
+        },
+        {
+          "t": "Dlaczego czujesz się samotny? Zapytaj Maćka #2",
+          "ch": "Maciej Kuczmański",
+          "v": 107,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=bK_u8_4B3KA"
+        },
+        {
+          "t": "Dlaczego czuję się samotny mimo że mam ludzi wokół?",
+          "ch": "Czarne Kaptury",
+          "v": 13,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=FtCXH2fJDEo"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego trzymasz wszystkich na dystans — i nazywasz to niezależnością",
+      "search_phrase_pl": "dlaczego nie potrafię nikomu zaufać",
+      "archetype": "compulsive self-reliance / fear of dependency (counter-dependence)",
+      "architecture": "Historical Reversal",
+      "emotional_core": "Nauczyłeś się nie potrzebować nikogo, bo kiedyś potrzebowanie kończyło się zawodem — i teraz twoja samowystarczalność, z której jesteś dumny, jest też ścianą, która nie wpuszcza nikogo do środka.",
+      "a_rationale": "Evergreen przeramowanie 'niezależność = siła' → 'to obrona przed bliskością' (lane: Crappy Childhood Fairy / Teahan o hyper-independence jako trauma response). Stare przekonanie obalone przez współczesne rozumienie przywiązania → Historical Reversal. Różny objaw (zaufanie/zależność) od 'mur który miał cię chronić'.",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "dlaczego nie potrafię kochać",
+        "dlaczego nie potrafię płakać",
+        "dlaczego nie potrafię się zakochać",
+        "dlaczego nie potrafię rozmawiać z ludźmi",
+        "dlaczego nie potrafię cieszyć się życiem",
+        "dlaczego nie potrafię okazywać uczuć",
+        "dlaczego nie potrafię schudnąć",
+        "dlaczego nie potrafię być szczęśliwa"
+      ],
+      "supply_ontopic_n": 6,
+      "supply_pl_max_views": 44561,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 27302516,
+      "yt_top_ontopic": [
+        {
+          "t": "8 Rzeczy, Które Musisz Po Cichu Wyeliminować Ze Swojego Życia | Nie Mów Nikomu",
+          "ch": "Pancerna Mądrość",
+          "v": 44561,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=F7KJm2mkS7c"
+        },
+        {
+          "t": "Dlaczego w budowlance nie można ufać nikomu? Adam Stań o prawie, szkoleniach i chaosie w branży #14",
+          "ch": "Dwie Twarze Podcast",
+          "v": 32184,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=S4g1KQSls2I"
+        },
+        {
+          "t": "Jeśli jesteś duchowo przebudzony, nigdy nie ujawniaj tych 5 rzeczy nikomu! – Carl Jung",
+          "ch": "Psychologia Wrażliwości",
+          "v": 14959,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=st-h6appclY"
+        },
+        {
+          "t": "Psychologia Dlaczego Ludzie Nie Ufają NIKOMU",
+          "ch": "Machiavelli BEZ CENZURY",
+          "v": 1411,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=GQkU129XCPw"
+        },
+        {
+          "t": "Nikomu nie ufaj (Część 1) – Wojciech Wójcik | Thriller Pełen Zdrad, Tajemnic i Zaskakujących Zwrotów",
+          "ch": "Trinh Nguyen",
+          "v": 1058,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Manhjdtacec"
+        },
+        {
+          "t": "Dlaczego Ludzie, Którzy DORASTALI w CHAOSIE, NIE UFAJĄ NIKOMU",
+          "ch": "Machiavelli BEZ CENZURY",
+          "v": 288,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=5UWcG1AmWXA"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego nie potrafisz po prostu przyjąć, że ktoś cię kocha",
+      "search_phrase_pl": "dlaczego nie potrafię przyjąć miłości",
+      "archetype": "unlovable-core / fear-of-being-truly-seen",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Czujesz, że jesteś kochany 'na próbę' — że gdy druga osoba zobaczy cię naprawdę, odejdzie; więc czekasz na moment, w którym wszystko się wyda.",
+      "a_rationale": "Pursuit of Wonder / School of Life i topic-channele (Teahan) mają wieloletnie eseje o poczuciu bycia niekochanym i lęku przed bliskością; evergreen rana relacyjna. Inny objaw niż 'nie potrafię kochać' (tu: niemożność PRZYJĘCIA miłości, nie dania).",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "dlaczego nie potrafię kochać",
+        "dlaczego nie potrafię płakać",
+        "dlaczego nie potrafię się zakochać",
+        "dlaczego nie potrafię rozmawiać z ludźmi",
+        "dlaczego nie potrafię cieszyć się życiem",
+        "dlaczego nie potrafię okazywać uczuć",
+        "dlaczego nie potrafię schudnąć",
+        "dlaczego nie potrafię być szczęśliwa"
+      ],
+      "supply_ontopic_n": 4,
+      "supply_pl_max_views": 7043,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 7354489,
+      "yt_top_ontopic": [
+        {
+          "t": "Jej serce | Historia o odwadze przyjmowania miłości i stawianiu granic",
+          "ch": "Andrzej Kulka — Opowieści z Życia",
+          "v": 7043,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=NXbzDaONqFQ"
+        },
+        {
+          "t": "\"Miłości pragnę, nie ofiary\": co Bóg naprawdę mówi przez Ozeasza?",
+          "ch": "Spiżarnia Wiary",
+          "v": 1829,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=1i2ESfdcLzk"
+        },
+        {
+          "t": "ANATOMIA MIŁOŚCI 1972",
+          "ch": "Kino Polskie 2023",
+          "v": 978,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=NYH5j_mm7U4"
+        },
+        {
+          "t": "Dlaczego Bóg Nie Odpowiada Od Razu? Prawda, Którą Trudno Przyjąć",
+          "ch": "Boski Szept",
+          "v": 468,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=BunFLPqngNA"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Nie jesteś leniwy — po prostu nie masz już z czego czerpać",
+      "search_phrase_pl": "dlaczego nic mi się nie chce i jestem ciągle zmęczona",
+      "archetype": "exhaustion-mistaken-for-laziness / depletion not defect",
+      "architecture": "Composite Portrait",
+      "emotional_core": "To, co bierzesz za lenistwo, jest pustym bakiem po cichym, długim wyczerpaniu — nie wadą charakteru.",
+      "a_rationale": "Rdzeń 'wyczerpanie mylone z lenistwem' to evergreen lane SENSUM — HealthyGamerGG 'Anhedonia' 735K, Dr. Scott Eilers 348K; format-anchor PoW/School of Life latami wraca do 'nie jesteś leniwy, jesteś wyczerpany'. Emocja (wstyd za bezczynność), nie protokół.",
+      "demand_sugg_total": 18,
+      "demand_sugg_related": 4,
+      "demand_samples": [
+        "dlaczego nic mi się nie chce",
+        "dlaczego nic mi się nie chce robić",
+        "dlaczego nic mi sie nie chce zrobić",
+        "dlaczego nic mi się nie chce nie mam motywacji"
+      ],
+      "supply_ontopic_n": 5,
+      "supply_pl_max_views": 233035,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 1327592,
+      "yt_top_ontopic": [
+        {
+          "t": "Dlaczego NIC ci się NIE CHCE?",
+          "ch": "Stanisław Trojanowski",
+          "v": 233035,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=e9miGjVYDjk"
+        },
+        {
+          "t": "\"Nic mi się nie chce!\" - to nie jest lenistwo! Twój mózg próbuje ci coś powiedzieć",
+          "ch": "Jak Lepiej Żyć ☯️ Medytacja i rozwój świadomości",
+          "v": 3938,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=vmN3yciVNJk"
+        },
+        {
+          "t": "Dlaczego nic mi się nie chce? Może to nie lenistwo, tylko hormony!",
+          "ch": "Sylwia Malikowski ",
+          "v": 455,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=cFUENDVHpc8"
+        },
+        {
+          "t": "Nic mi się nie chce i już nie mam siły udawać",
+          "ch": "Cat KRM",
+          "v": 97,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=mlz8Ofg2lN4"
+        },
+        {
+          "t": "Dlaczego jesteś ciągle zmęczony i nic Się nie chce?",
+          "ch": "Bartłomiej Słowiński",
+          "v": 73,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=UO4ujEeSNS8"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Dlaczego rano już jesteś zmęczony tym, czego jeszcze nie zacząłeś",
+      "search_phrase_pl": "dlaczego jestem zmęczony zanim cokolwiek zrobię",
+      "archetype": "anticipatory-fatigue / the task is heavy before you touch it",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Sam ciężar wyobrażenia sobie zadania zużywa siłę, zanim go dotkniesz — i dlatego utykasz, choć 'nic nie zrobiłeś'.",
+      "a_rationale": "Kontrintuicyjny objaw (zmęczenie PRZED wysiłkiem) idealny na Forensic — evergreen w lane (Einzelgänger/PoW o 'mental load'). Anhedonia/zmęczenie performuje po polsku (348K–735K). Emocja, nie technika.",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 9,
+      "demand_samples": [
+        "dlaczego jestem zmęczony",
+        "dlaczego jestem zmęczony po pracy",
+        "dlaczego jestem zmęczony rano",
+        "dlaczego jestem zmęczony po niemiecku",
+        "dlaczego jestem zmęczony po szkole",
+        "dlaczego jestem ciągle zmęczony",
+        "dlaczego jestem ciągle zmęczony i senny",
+        "dlaczego jestem ciągle zmęczony i śpiący"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 60680,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 45958837,
+      "yt_top_ontopic": [
+        {
+          "t": "Jesteś ciągle ZMĘCZONY?🥱 Obejrzyj ten film i dowiedz się jak mieć więcej energii!",
+          "ch": "Okiem Chemika",
+          "v": 60680,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=h66cRVIUBJ4"
+        },
+        {
+          "t": "Dlaczego probiotyki Ci NIE POMOGĄ (zanim zrobisz TE 5 rzeczy)",
+          "ch": "Sylwester & Wiktoria Kłos",
+          "v": 17263,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=mGC_iW7Qb-c"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Czekasz na dzień, w którym wreszcie ci się zachce — a on nie przychodzi",
+      "search_phrase_pl": "dlaczego czekam aż mi się zachce a nigdy się nie chce",
+      "archetype": "waiting-for-motivation / the false sequence",
+      "architecture": "Historical Reversal",
+      "emotional_core": "Wierzysz, że motywacja przyjdzie pierwsza i wtedy ruszysz — ale to przekonanie jest dokładnie tym, co cię trzyma w bezruchu.",
+      "a_rationale": "Klasyczne odwrócenie 'motywacja → działanie' obalone przez współczesne rozumienie działania-przed-motywacją — flagowy temat lane (School of Life, PoW 500K+). Evergreen, emocjonalny rdzeń: tęsknota za 'tym dniem', nie protokół.",
+      "demand_sugg_total": 9,
+      "demand_sugg_related": 5,
+      "demand_samples": [
+        "dlaczego dlugo czekam na wynik histopatologiczny",
+        "dlaczego dlugo czekam na wynik cytologii",
+        "dlaczego długo czekam na zwrot podatku",
+        "dlaczego dlugo czekam na wynik rezonansu magnetycznego",
+        "dlaczego ciągle czekam"
+      ],
+      "supply_ontopic_n": 1,
+      "supply_pl_max_views": 17690,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 146691238,
+      "yt_top_ontopic": [
+        {
+          "t": "Co jeśli nikt Cię nie chce?",
+          "ch": "Julitta Dębska Psycholog i Coach Relacji",
+          "v": 17690,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=0t4yIbHx6ZI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Stoisz w miejscu nie dlatego, że nie wiesz dokąd — tylko dlatego, że każda droga oznacza stratę reszty",
+      "search_phrase_pl": "dlaczego nie potrafię podjąć decyzji co dalej w życiu",
+      "archetype": "decision-paralysis / every choice is a small grief",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Brak kierunku to często nie pustka, lecz cichy żal, że wybór jednej drogi to pożegnanie wszystkich pozostałych.",
+      "a_rationale": "Paraliż decyzyjny jako żałoba-po-niewybranym to evergreen egzystencjalny lane (School of Life, PoW). Polskie 'jak znaleźć cel/sens' (177K) jest, ale w ramie wykładu — luka na sokratejskie rozpoznanie. Emocja straty, nie poradnik kariery.",
+      "demand_sugg_total": 21,
+      "demand_sugg_related": 11,
+      "demand_samples": [
+        "dlaczego nie potrafię kochać",
+        "dlaczego nie potrafię płakać",
+        "dlaczego nie potrafię się zakochać",
+        "dlaczego nie potrafię rozmawiać z ludźmi",
+        "dlaczego nie potrafię cieszyć się życiem",
+        "dlaczego nie potrafię okazywać uczuć",
+        "dlaczego nie potrafię schudnąć",
+        "dlaczego nie potrafię być szczęśliwa"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 21254,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 397908,
+      "yt_top_ontopic": [
+        {
+          "t": "Rozstać się czy być razem? - kiedy być pewnym tej decyzji",
+          "ch": "Natalia Tur Podcast Tuż Obok ",
+          "v": 21254,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=qu8rbCndOZM"
+        },
+        {
+          "t": "Rozwód, praca, dzieci… i dalej milczysz. Dlaczego nie sięgasz po pomoc?",
+          "ch": "Mind Balance Center",
+          "v": 172,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=aQl_aiTvDNA"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Twoje życie nie zatrzymało się nagle — osuwało się tak wolno, że tego nie zauważyłeś",
+      "search_phrase_pl": "czuję że stoję w miejscu od kilku lat",
+      "archetype": "slow-drift stagnation / the invisible standstill",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Utknięcie rzadko jest dramatem; to suma tysiąca małych 'jutro', których nikt nie widział, łącznie z tobą.",
+      "a_rationale": "'Powolny dryf życia' to evergreen egzystencjalny lane (Einzelgänger, PoW o 'how life slips by'). Polskie 'czuję że przegrałem życie' (Z3) + 'jak nie odkładać życia na jutro' (235K) dowodzą popytu; podaż to techniki, nie rozpoznanie dryfu.",
+      "demand_sugg_total": 12,
+      "demand_sugg_related": 2,
+      "demand_samples": [
+        "czuję że stoję nad przepaścią",
+        "czuję że stoję w miejscu"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 85498998,
+      "yt_top_ontopic": []
+    },
+    {
+      "topic_pl": "Im dłużej zwlekasz, tym trudniej zacząć — i wiesz o tym, co tylko pogarsza sprawę",
+      "search_phrase_pl": "im dłużej odkładam tym trudniej zacząć",
+      "archetype": "shame-procrastination loop / the snowball of avoidance",
+      "architecture": "Systems Audit",
+      "emotional_core": "Zwłoka karmi się wstydem za zwłokę: każdy nietknięty dzień dokłada ciężaru do następnego, aż start wydaje się niemożliwy.",
+      "a_rationale": "Pętla wstyd→unik→większy wstyd to evergreen mechanizm (PoW, HealthyGamer o 'procrastination shame spiral'). Polski Niedźwiecki 'Dlaczego odkładasz wszystko na później' 109K dowodzi popytu emocjonalnego; reszta podaży to techniki. Pętla, nie porada.",
+      "demand_sugg_total": 10,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "im dłużej tym lepiej w nju na kartę",
+        "im dłużej tym lepiej",
+        "im dłużej patrzysz w otchłań",
+        "im dłużej tym lepiej santander",
+        "im dłużej czekasz na przyszłość tym będzie krótsza",
+        "im dłużej biegacz biegnie tym stężenie hormonu antydiuretycznego w jego krwi jest",
+        "im dłużej tym lepiej nju",
+        "im dłużej czekasz tym lepiej smakuje"
+      ],
+      "supply_ontopic_n": 1,
+      "supply_pl_max_views": 438,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 1993512,
+      "yt_top_ontopic": [
+        {
+          "t": "Odkładam nas- Magdalena Łyszcz",
+          "ch": "Magdalena Łyszcz",
+          "v": 438,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=D36AfGuQ7ng"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Nie odpoczywasz, kiedy odpoczywasz — i dlatego nigdy nie masz siły, by ruszyć",
+      "search_phrase_pl": "dlaczego po odpoczynku nadal jestem zmęczony",
+      "archetype": "guilty-rest / stillness that doesn't restore",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Twój bezruch nie jest regeneracją; to czuwanie z poczuciem winy, które męczy bardziej niż samo działanie.",
+      "a_rationale": "Kontrintuicyjny objaw (odpoczynek, który nie regeneruje) idealny na Forensic — evergreen w lane (PoW, Einzelgänger o 'rest and guilt'). Polskie 'dlaczego jestem ciągle zmęczona' bogato w Z3; podaż kliniczna o depresji, luka na ten konkretny mechanizm.",
+      "demand_sugg_total": 11,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "dlaczego pies kuleje po odpoczynku"
+      ],
+      "supply_ontopic_n": 10,
+      "supply_pl_max_views": 17659,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 85562,
+      "yt_top_ontopic": [
+        {
+          "t": "Ciągle ciężko pracujesz i nadal nic nie masz? | Piotr Nabielec",
+          "ch": "Podcast Charyzmatyczny",
+          "v": 17659,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=VKynJ6ZtLsY"
+        },
+        {
+          "t": "Zmęczona, zmęczony, zmęczeni…",
+          "ch": "Polski lekarz nadaje ze Szwecji",
+          "v": 856,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=ZwJESOETnKI"
+        },
+        {
+          "t": "Dobry rodzic też potrzebuje odpoczynku",
+          "ch": "rodzinaikariera",
+          "v": 670,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=NLMDttDsz14"
+        },
+        {
+          "t": "BÓG WIDZI CIĘ NAWET W CISZY — GDY JESTEŚ ZMĘCZONY, ON NADAL JEST BLISKO 🤍",
+          "ch": "Bóg Zawsze Wybiera Ciebie",
+          "v": 318,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=wlMJOG2GgHg"
+        },
+        {
+          "t": "✨Pełnia Życia #8 Sztuka Odpoczynku – Jak Zwolnić w Świecie Pełnym Bodźców 🧘‍♀️",
+          "ch": "R&W Make Things Happen",
+          "v": 103,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=cyJiOwnPeGg"
+        },
+        {
+          "t": "dlaczego jesteś zmęczona, mimo odpoczynku? sposoby na lepszy sen i więcej energii | taodplanów",
+          "ch": "taodplanów",
+          "v": 71,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Aq4VFcwuMR8"
+        },
+        {
+          "t": "Dlaczego mimo odpoczynku nadal jesteś zmęczony⁉️ (w kontekście długowieczności)",
+          "ch": "Longevity Center",
+          "v": 58,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=j0qwOGRPuOQ"
+        },
+        {
+          "t": "Błędy w odpoczynku, które trzymają Cię nadal w napięciu (i jak je naprawić)",
+          "ch": "Sylwia Domin_Pole Mocy",
+          "v": 40,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=CQt6L1JF4JM"
+        },
+        {
+          "t": "KLUCZ 40 - SAMOTNOŚĆ i WARTOŚĆ ODPOCZYNKU przy WSPÓŁPRACY",
+          "ch": "Przełomowe Rozmowy - Małgorzata Trznadel",
+          "v": 25,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=yaJ3Fge1XqA"
+        },
+        {
+          "t": "Dlaczego jestem zawsze zmęczony? | Dr Asha Prasad",
+          "ch": "Dr. Asha Prasad",
+          "v": 11,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=K52Is5mZOMk"
+        }
+      ]
+    },
+    {
+      "topic_pl": "boję się, że stanę się swoją matką (albo swoim ojcem)",
+      "search_phrase_pl": "boję się że będę jak matka",
+      "archetype": "inherited-self / becoming-the-parent-you-feared",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Łapiesz się na geście, tonie głosu, reakcji, której przysięgałeś sobie nigdy nie powtórzyć — i przez sekundę widzisz w lustrze rodzica, przed którym uciekałeś.",
+      "a_rationale": "Najmocniejszy evergreen w lane: Crappy Childhood Fairy / Patrick Teahan / HealthyGamer mają flagowe filmy 500k+ na 'becoming your parent'; autocomplete PL bardzo bogaty ('boję się że będę jak matka' w wielu wariantach, w tym jako szukana książka); rdzeniem emocja (lęk, wstyd), nie protokół.",
+      "demand_sugg_total": 21,
+      "demand_sugg_related": 21,
+      "demand_samples": [
+        "boję się koronarografii",
+        "boję się",
+        "boję się o ciebie",
+        "boję się po angielsku",
+        "boję się kolonoskopii forum",
+        "boję się że mam raka szyjki macicy forum",
+        "boję się że będę jak matka",
+        "boję się że będę jak matka książka"
+      ],
+      "supply_ontopic_n": 3,
+      "supply_pl_max_views": 601410,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 235807408,
+      "yt_top_ontopic": [
+        {
+          "t": "Matylda/Łukasiewicz - Matka",
+          "ch": "Adult Contemporary",
+          "v": 601410,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Emcpp_-Ur4w"
+        },
+        {
+          "t": "Matylda/Łukasiewicz - Matka (Niematka)",
+          "ch": "Adult Contemporary",
+          "v": 47131,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=tqM3b8RD-cg"
+        },
+        {
+          "t": "Matka z poczuciem winy to matka narcystyczna? Typy matek",
+          "ch": "Natalia Tur Podcast Tuż Obok ",
+          "v": 11765,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=UHoqmIt0zZA"
+        }
+      ]
+    },
+    {
+      "topic_pl": "ciągle przepraszasz za to, że w ogóle jesteś",
+      "search_phrase_pl": "dlaczego ciągle za wszystko przepraszam",
+      "archetype": "self-erasure / the child who learned to disappear",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Mówisz 'przepraszam', zanim ktokolwiek się zezłości — bo w domu nauczyłeś się, że zajmowanie miejsca było ryzykowne, a bycie niewidzialnym było bezpieczne.",
+      "a_rationale": "People-pleasing/self-erasure to udowodniony evergreen u PoW i topic-channeli (Teahan, HealthyGamer) z flagowcami 500k+; tu w wersji rodzinno-dziecięcej, czysta emocja wstydu i lęku, nie porada o granicach.",
+      "demand_sugg_total": 21,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "dlaczego ciagle wszystko mnie boli"
+      ],
+      "supply_ontopic_n": 6,
+      "supply_pl_max_views": 56834810,
+      "supply_pl_over100k": 3,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 56834810,
+      "yt_top_ontopic": [
+        {
+          "t": "Sobota - Przepraszam (prod. Matheo) VIDEO / SOBOTA",
+          "ch": "StoproRap",
+          "v": 56834810,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=mLSyOuT4SGc"
+        },
+        {
+          "t": "K.M.S ft.Beton, Majo, DZK - Wszystko mi jedno ♫",
+          "ch": "K.M.S Oficjalnie",
+          "v": 6977760,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=wCLxILgaj5k"
+        },
+        {
+          "t": "Paweł Motyl - Przepraszam za wszystko 💔",
+          "ch": "Paweł Motyl",
+          "v": 697533,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=T39Z-TfkkMA"
+        },
+        {
+          "t": "Dlaczego ciągle przepraszasz za wszystko. Psychologia to wyjaśnia",
+          "ch": "Psychologia Umysłu",
+          "v": 221,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=M4a1OmbESdI"
+        },
+        {
+          "t": "Psychologia ludzi, którzy przepraszają za wszystko",
+          "ch": "Cichy Umysł",
+          "v": 151,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=_xDkgGee2LY"
+        },
+        {
+          "t": "Dlaczego ciągle przepraszasz? Psychologia ludzi, którzy przepraszają za wszystko",
+          "ch": "Inny Umysł",
+          "v": 7,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=xDmEHHAbYh4"
+        }
+      ]
+    },
+    {
+      "topic_pl": "nie umiesz płakać, choć bardzo byś chciał",
+      "search_phrase_pl": "dlaczego nie potrafię płakać",
+      "archetype": "frozen-feeling / emotional numbness from childhood",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Coś w tobie się zamknęło dawno temu — patrzysz na własny smutek zza szyby i nie możesz go dosięgnąć, jakby płacz był luksusem, na który nigdy nie dostałeś pozwolenia.",
+      "a_rationale": "Anhedonia/emocjonalne odrętwienie to potwierdzony Z2 (HealthyGamer 735k 'Anhedonia', Kati Morton 610k, Scott Eilers 348k) i evergreen w lane; dziwny, kontrintuicyjny symptom idealny pod studium kryminalistyczne, rdzeniem emocja nie protokół. Inny objaw niż 'nie okazywać uczuć' (tu: konkretnie płacz/łzy).",
+      "demand_sugg_total": 21,
+      "demand_sugg_related": 10,
+      "demand_samples": [
+        "dlaczego nie potrafię kochać",
+        "dlaczego nie potrafię płakać",
+        "dlaczego nie potrafię się zakochać",
+        "dlaczego nie potrafię rozmawiać z ludźmi",
+        "dlaczego nie potrafię cieszyć się życiem",
+        "dlaczego nie potrafię okazywać uczuć",
+        "dlaczego nie potrafię schudnąć",
+        "dlaczego nie potrafię być szczęśliwa"
+      ],
+      "supply_ontopic_n": 5,
+      "supply_pl_max_views": 223962,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 10650505,
+      "yt_top_ontopic": [
+        {
+          "t": "💞 Dlaczego nikt nie może słuchać tej piosenki bez łez? — 🎶 „Pozwól mi płakać”",
+          "ch": "Lisowski🎶",
+          "v": 223962,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=lVlsrMFtuLE"
+        },
+        {
+          "t": "Jak przestać płakać z byle powodu? - czyli dlaczego ciągle płaczę | Tandem Psycholog",
+          "ch": "Tandem Psycholog",
+          "v": 11556,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=ju9-X_Zawcc"
+        },
+        {
+          "t": "Jak Uwolnić Zablokowane Emocje? Historia Kobiety, która Nie Potrafi Płakać #UwalnianieEmocji",
+          "ch": "Ogarnij Się i Zacznij Żyć - Totalna Biologia",
+          "v": 805,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=gQfY-yN-l4k"
+        },
+        {
+          "t": "Dlaczego nie potrafisz płakać, nawet gdy boli",
+          "ch": "CICHE RANY",
+          "v": 106,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=YSc_GhUG-xA"
+        },
+        {
+          "t": "„Dlaczego wyglądasz jak moja mamusia, kiedy stara się nie płakać?” — zapytało dziecko CEO.",
+          "ch": "Poruszające Historie tl4",
+          "v": 4,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Obv7J3pnlPI"
+        }
+      ]
+    },
+    {
+      "topic_pl": "wstydzisz się tego, skąd jesteś — domu, rodziny, dzieciństwa",
+      "search_phrase_pl": "wstydzę się swojej rodziny",
+      "archetype": "origin-shame / shame about where you come from",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Zmieniasz temat, gdy ktoś pyta o twój dom rodzinny; nosisz w sobie cichy wstyd za to, co cię ukształtowało, jakby pochodzenie było wadą, którą trzeba ukrywać.",
+      "a_rationale": "Wstyd jako rdzeń to potwierdzony PL Z2 (emce□ 'Dlaczego odczuwamy wstyd?' 512k) i evergreen u SoL/PoW; ten kąt (wstyd POCHODZENIA, nie życia) ma własny objaw i metaforę, więc nie repeat względem 'wstyd za własne życie'.",
+      "demand_sugg_total": 15,
+      "demand_sugg_related": 15,
+      "demand_samples": [
+        "wstydzę się",
+        "wstydzę się iść do dentysty",
+        "wstydzę się iść do dentysty forum",
+        "wstydzę się po angielsku",
+        "wstydzę się siebie",
+        "wstydzę się iść na siłownię",
+        "wstydzę się iść do ginekologa",
+        "wstydzę się swojego wyglądu"
+      ],
+      "supply_ontopic_n": 9,
+      "supply_pl_max_views": 130374,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 266964,
+      "yt_top_ontopic": [
+        {
+          "t": "Wstydzę się mojego biednego ojca! Mam nowego bogatego ojca",
+          "ch": "Essa Tim",
+          "v": 130374,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=7jPgC309bD8"
+        },
+        {
+          "t": "Wstydził się swojej żony i zabrał modelkę na galę — ale to ona skradła cały wieczór!",
+          "ch": "Robou2626",
+          "v": 65794,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=bcnh9WIkrGs"
+        },
+        {
+          "t": "Wstydząc się swojej żony, zabrał sekretarkę — ale to, co zrobiła, wprawiło wszystkich w osłupienie",
+          "ch": "Robou2626",
+          "v": 13769,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=NEECrNFaI0A"
+        },
+        {
+          "t": "Wstydzę się wiary, co z tym zrobić? [Q&A#272] Remi Recław SJ",
+          "ch": "Mocni w Duchu",
+          "v": 9194,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Je_8096SZxo"
+        },
+        {
+          "t": "„Tato, Wstydzę Się Ciebie, Wynoś Się\" – Powiedziała Córka Na Obiedzie. A Ja…",
+          "ch": " Zimna Zemsta",
+          "v": 7122,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=4GzTocDc6FU"
+        },
+        {
+          "t": "Wstyd rodziny | Historia o sile, która rodzi się gdy przestajesz przepraszać za siebie",
+          "ch": "Andrzej Kulka — Opowieści z Życia",
+          "v": 6947,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=v-kZOlVbksY"
+        },
+        {
+          "t": "Odcięła się od swojej rodziny, nie wiedziała ile ma rodzeństwa! | Kobieta na krańcu świata",
+          "ch": "tvnpl",
+          "v": 6874,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=GdCqNICILhE"
+        },
+        {
+          "t": "Grzechem jest wstydzić się swojej mamy Ks Piotr Pawlukiewicz #pawlukiewicz",
+          "ch": "Rafał Gołębiowski",
+          "v": 6598,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=ex3Abvwqhgs"
+        },
+        {
+          "t": "Moja mama spojrzała na mnie i powiedziała: „Wstydzę się ciebie” — odpowiedziałam tak, że zamilkli",
+          "ch": "Cień zemsty",
+          "v": 5675,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=7hhj1_iL9no"
+        }
+      ]
+    },
+    {
+      "topic_pl": "wciąż starasz się zasłużyć na miłość, której nigdy nie dostałeś za darmo",
+      "search_phrase_pl": "dlaczego ciągle muszę coś udowadniać",
+      "archetype": "earning-love / the unwinnable bid for a parent's approval",
+      "architecture": "Systems Audit",
+      "emotional_core": "Pracujesz, osiągasz, dajesz z siebie wszystko — a w środku czujesz, że to nigdy nie wystarcza, bo gonisz uznanie rodzica, który już dawno przestał patrzeć.",
+      "a_rationale": "Conditional-love / chasing approval to evergreen u topic-channeli (Teahan, HealthyGamer) z dużymi zasięgami; daje się czysto opisać jako pętla z trybem awarii (audyt systemu, chłód na mechanizm, ciepło na widza), rdzeń emocjonalny nie optymalizacyjny.",
+      "demand_sugg_total": 15,
+      "demand_sugg_related": 3,
+      "demand_samples": [
+        "dlaczego ciągle muszę odchrząkiwanie",
+        "dlaczego ciągle muszę odchrząkiwać",
+        "dlaczego ciągle muszę coś robić"
+      ],
+      "supply_ontopic_n": 4,
+      "supply_pl_max_views": 390772,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 20390196,
+      "yt_top_ontopic": [
+        {
+          "t": "Nie muszę być idealna ✨ (Piosenka o samoakceptacji i walce z perfekcjonizmem) - Nuta Serca",
+          "ch": "Nuta Serca",
+          "v": 390772,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=r6LdKLZ2CoY"
+        },
+        {
+          "t": "Nie musisz już udowadniać, że zasługujesz. Masz prawo po prostu wziąć. - [Umysł Milionerek] - odc.33",
+          "ch": "Umysł Milionerek",
+          "v": 560,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=7AprTNEORMc"
+        },
+        {
+          "t": "CIĄGLE musisz coś udowadniać? Znam ten ból.",
+          "ch": "Facet po 40",
+          "v": 52,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=SBOfBmt2qpM"
+        },
+        {
+          "t": "Jak Przestać Się Zmuszać - Z Trybu „MUSZĘ” w Tryb „CHCĘ” | Zmiana Schematów Myślenia",
+          "ch": "Odkoduj Swój Umysł",
+          "v": 14,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=zN5ftjf6plM"
+        }
+      ]
+    },
+    {
+      "topic_pl": "powtarzasz w głowie zdania, które usłyszałeś jako dziecko",
+      "search_phrase_pl": "dlaczego jestem dla siebie taki surowy",
+      "archetype": "inherited inner critic / the borrowed harsh voice",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Popełniasz drobny błąd i słyszysz w głowie nie swój głos, tylko czyjś — surowy, znajomy, sprzed lat; krytyk, którego nie zatrudniłeś, ale którego nosisz codziennie.",
+      "a_rationale": "Wewnętrzny krytyk z dzieciństwa to evergreen u HealthyGamer/Teahan i format-anchorów; dziwny mechanizm 'cudzego głosu w twojej głowie' świetnie unosi studium kryminalistyczne, czysta emocja wstydu/lęku.",
+      "demand_sugg_total": 17,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "dlaczego jestem taki"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 2764,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 153264,
+      "yt_top_ontopic": [
+        {
+          "t": "Bóg to nie surowy sędzia, ale „Złota Rączka”, która Cię naprawi #pawlukiewicz",
+          "ch": "Rafał Gołębiowski",
+          "v": 2764,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=j3L9fczM5nk"
+        },
+        {
+          "t": "Jezus mówi do Ciebie - nie bądź dla siebie taki surowy",
+          "ch": "Przewodnicy duchowi",
+          "v": 994,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=sAvgHxJL8Eg"
+        }
+      ]
+    },
+    {
+      "topic_pl": "czujesz się winny, gdy jest ci dobrze",
+      "search_phrase_pl": "dlaczego czuję się winny gdy jest mi dobrze",
+      "archetype": "survivor / undeserving-of-good guilt",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Ledwo poczujesz spokój albo radość, a już coś w tobie się napina — jakbyś nie miał prawa do lekkości, jakby szczęście trzeba było odpokutować.",
+      "a_rationale": "Wina i poczucie niezasługiwania na dobro to evergreen u School of Life / Einzelgänger i topic-channeli; pytanie w rdzeniu ('dlaczego nie wolno mi mieć dobrze?') idealne pod wyzwanie sokratejskie, czysta emocja.",
+      "demand_sugg_total": 17,
+      "demand_sugg_related": 0,
+      "demand_samples": [
+        "dlaczego czuję gorycz w ustach",
+        "dlaczego czuję zapachy których nie ma",
+        "dlaczego czuję niepokój",
+        "dlaczego czuję się ciągle zmęczona",
+        "dlaczego czuję się słabo",
+        "dlaczego czuję"
+      ],
+      "supply_ontopic_n": 1,
+      "supply_pl_max_views": 4351,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 455442,
+      "yt_top_ontopic": [
+        {
+          "t": "Dlaczego po rozstaniu z unikającym czujesz się winny i niewystarczający?",
+          "ch": "unikowy_pl Poznaj unikający styl przywiązania",
+          "v": 4351,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Lvzy1X-Ywuk"
+        }
+      ]
+    },
+    {
+      "topic_pl": "ciągle czekasz, aż rodzic wreszcie powie 'jestem z ciebie dumny'",
+      "search_phrase_pl": "dlaczego potrzebuję akceptacji rodziców",
+      "archetype": "the waiting child / unmet need for parental recognition",
+      "architecture": "Historical Reversal",
+      "emotional_core": "Jesteś dorosły, a wciąż mierzysz swoje życie cudzym spojrzeniem; czekasz na zdanie, które może nigdy nie padnie, i nie umiesz przestać go potrzebować.",
+      "a_rationale": "Tęsknota za uznaniem rodzica to evergreen u topic-channeli (Teahan, HealthyGamer); odwraca utrwalone 'dorosłość = niezależność od rodziców' na 'część ciebie wciąż czeka', co czysto unosi odwrócenie historyczne; rdzeń emocjonalny. Inny objaw niż 'zasłużyć na miłość' (tu: czekanie na słowo, nie zarabianie pracą).",
+      "demand_sugg_total": 10,
+      "demand_sugg_related": 4,
+      "demand_samples": [
+        "dlaczego potrzebuję dużo snu",
+        "dlaczego potrzebuję komunii świętej genially",
+        "dlaczego potrzebuję zasad genially",
+        "dlaczego potrzebuję"
+      ],
+      "supply_ontopic_n": 8,
+      "supply_pl_max_views": 356772,
+      "supply_pl_over100k": 3,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 1285142,
+      "yt_top_ontopic": [
+        {
+          "t": "Nie wiń siebie i swoich rodziców || dr Agnieszka Kozak BALANS #38",
+          "ch": "balans",
+          "v": 356772,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=ojsQHej1sAk"
+        },
+        {
+          "t": "Jakich rodziców potrzebują dzieci? || dr hab. n. med. Wojciech Feleszko #53",
+          "ch": "balans",
+          "v": 186332,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=K9nZtmM4Qlk"
+        },
+        {
+          "t": "Dlaczego „to zawsze wina rodziców”? | 7 metrów pod ziemią",
+          "ch": "7 metrów pod ziemią | Rafał Gębura",
+          "v": 172145,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=mtpRBmmZseE"
+        },
+        {
+          "t": "Dlaczego powtarzamy błędy swoich rodziców? | Robert Rutkowski MIŁOŚĆ #1",
+          "ch": "Miłość",
+          "v": 70089,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=xQC85gINFTA"
+        },
+        {
+          "t": "Uwięzieni w słowach rodziców. Dlaczego mówimy słowa, których nie chcemy",
+          "ch": "dr Agnieszka Kozak",
+          "v": 49715,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=7k_8dq4fIxs"
+        },
+        {
+          "t": "Jak zachowania niedojrzałych rodziców odbijają się na Tobie i Twoim życiu? | Iga Stanek",
+          "ch": "Podcast Charyzmatyczny",
+          "v": 41868,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=58DtX3cg_0Y"
+        },
+        {
+          "t": "Dorosłe dzieci/Zależność od rodziców",
+          "ch": "Psychologia relacji",
+          "v": 41023,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=_I50-6qTU9A"
+        },
+        {
+          "t": "Potrzebujesz AKCEPTACJI innych? Rozmowy o drapieżnictwie #7 (Rafał Mazur)",
+          "ch": "Marcin Osman",
+          "v": 11470,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=_EcwJWsxNA0"
+        }
+      ]
+    },
+    {
+      "topic_pl": "boisz się mieć dziecko, żeby nie skrzywdzić go tak, jak ciebie skrzywdzono",
+      "search_phrase_pl": "boję się że skrzywdzę swoje dziecko jak mnie",
+      "archetype": "breaking-the-cycle / fear of passing on the wound",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Część ciebie pragnie rodziny, a część boi się, że niesiesz w sobie to samo, co cię zraniło — i że mimo wszystkich obietnic powtórzysz cykl.",
+      "a_rationale": "Przerwanie międzypokoleniowego cyklu to udowodniony evergreen u Crappy Childhood Fairy/Teahan z flagowcami 500k+; autocomplete potwierdza PL demand ('boję się że urodzę chore dziecko', 'boję się że będę jak matka'); czysta emocja lęku i wstydu, nie porada rodzicielska. Inny objaw niż 'stanę się swoją matką' (tu: lęk o DZIECKO, nie o siebie w lustrze).",
+      "demand_sugg_total": 18,
+      "demand_sugg_related": 18,
+      "demand_samples": [
+        "boję się koronarografii",
+        "boję się",
+        "boję się o ciebie",
+        "boję się po angielsku",
+        "boję się kolonoskopii forum",
+        "boję się że mam raka szyjki macicy forum",
+        "boję się że będę jak matka",
+        "boję się że będę jak matka książka"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 3424096,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 19375451,
+      "yt_top_ontopic": [
+        {
+          "t": "K-popowe Łowczynie Demonów Zamieniły Moje Dziecko W DEMONA!",
+          "ch": "Zhong",
+          "v": 3424096,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=q0KWoFE-1B8"
+        },
+        {
+          "t": "MODLITWA MOCY - BOŻE, Z TOBĄ SIĘ NIE BOJĘ, Z TOBĄ PRZETRWAM WSZYSTKO CO MNIE SPOTKA",
+          "ch": "Modlitwa Codzienna",
+          "v": 5907,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Ss-2SNMMLFc"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Robisz wszystko jak należy, a w środku nic nie czujesz",
+      "search_phrase_pl": "dlaczego nic mnie nie cieszy mimo że wszystko mam",
+      "archetype": "emotional numbness / anhedonia jako ochrona, nie wada",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Życie wygląda poprawnie z zewnątrz, ale w środku jest cicho i głucho — jakby ktoś ściszył dźwięk całego świata, a ty udajesz, że słyszysz.",
+      "a_rationale": "Anhedonia/odrętwienie to udowodniony evergreen w lane SENSUM — wielokanałowo (HealthyGamer 735K, Kati Morton 610K, Eilers 348K) plus polskie pokrycie kategorii (Kasia Sawicka 181K), rdzeniem jest emocja (utrata czucia), nie protokół. Otwiera dziwnym objawem (wszystko na miejscu, zero radości) → Forensic.",
+      "demand_sugg_total": 16,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "dlaczego nic mnie nie cieszy"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 628543,
+      "yt_top_ontopic": []
+    },
+    {
+      "topic_pl": "Czekasz, aż życie się w końcu zacznie",
+      "search_phrase_pl": "czuję że odkładam życie na później",
+      "archetype": "the deferred life / 'życie zacznie się, kiedy…'",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Cały czas masz wrażenie, że to jeszcze nie to prawdziwe życie — że ono zacznie się później, kiedy coś się ułoży — a tymczasem mija dzień po dniu w poczekalni.",
+      "a_rationale": "'Odkładanie życia / życie zacznie się później' to klasyczny evergreen egzystencjalny School of Life; polskie pokrycie kategorii silne ('Jak nie odkładać życia na jutro?' 235K, 'nic ci się nie chce' 233K), ale w formacie porad/listicle — luka na ciepłe rozpoznanie.",
+      "demand_sugg_total": 10,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "czuję że przegrałem życie"
+      ],
+      "supply_ontopic_n": 16,
+      "supply_pl_max_views": 45227,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 45227,
+      "yt_top_ontopic": [
+        {
+          "t": "Żyję tu i teraz nie odkładam życia na później...",
+          "ch": "KAŻDY MA SWOJĄ HISTORIĘ Marta Żuk",
+          "v": 45227,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=qOI_Gf1DmcQ"
+        },
+        {
+          "t": "⚠️ Przestań odkładać na później swoje życie! Jak podejmować decyzje?",
+          "ch": "Krzysztof Król",
+          "v": 37905,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=u_MCG4JPfzM"
+        },
+        {
+          "t": "Stary dziad, staruch, stary pierdziel - tak się czujesz? Przestań odkładać swoje życie na później!",
+          "ch": "Krzysztof Król",
+          "v": 16140,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=z9JLMAOCdrU"
+        },
+        {
+          "t": "3 Kroki, By Przestać Być Widzem We Własnym Życiu [KONIEC ODKŁADANIA NA PÓŹNIEJ]",
+          "ch": "Wojciech Pytlarz",
+          "v": 10639,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=covjrwUsZkE"
+        },
+        {
+          "t": "Odkładanie na później - Jak szybko i łatwo pozbyć się prokrastynacji",
+          "ch": "Wirus Wiedzy",
+          "v": 5458,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Ad6EjvWpF2c"
+        },
+        {
+          "t": "8 HOBBY, KTÓRE NA ZAWSZE ODMIENIĄ TWOJE ŻYCIE | STOICYZM",
+          "ch": "Filozofia dla Zwycięzców",
+          "v": 4069,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=8G2FoQGxgAw"
+        },
+        {
+          "t": "Obejrzyj to, a przestaniesz odkładać życie na później (NAPRAWDĘ) | Friedrich Nietzsche",
+          "ch": "Ścieżka Wewnętrzna",
+          "v": 350,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=GieVN5gafAU"
+        },
+        {
+          "t": "Posłuchaj, jeśli ciągle odkładasz życie na jutro... (Później) @SŁOWAKTÓREBRZMIĄ",
+          "ch": "SŁOWA, KTÓRE BRZMIĄ",
+          "v": 246,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=XSn7NEUMIhE"
+        },
+        {
+          "t": "Małe decyzje, wielkie życie | Poranny Motywator #mindset #przemiana #rozwójosobisty ",
+          "ch": "Joanna Zjawin-Kenc",
+          "v": 181,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=u3EEtqKa6bU"
+        },
+        {
+          "t": "Iluzja Czasu i Pieniędzy – Dlaczego Odkładamy Życie Na Później?",
+          "ch": "Mądrość w Pigułce - Filozofia, Która Działa",
+          "v": 151,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=dT5FWDSAtak"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Mijają lata, a ty czujesz, że ich nie przeżyłeś",
+      "search_phrase_pl": "dlaczego czas tak szybko leci i nic nie pamiętam",
+      "archetype": "the unremembered years / czas przelatuje obok",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Patrzysz wstecz i nie umiesz odróżnić jednego roku od drugiego — jakby czas przeleciał obok ciebie, a ty nie zdążyłeś go dotknąć.",
+      "a_rationale": "'Dlaczego lata zlewają się w jedno / dlaczego czas leci coraz szybciej' to udowodniony evergreen egzystencjalny w esej-lane (Pursuit of Wonder, School of Life regularnie), rdzeniem emocja straty, nie protokół zarządzania czasem.",
+      "demand_sugg_total": 17,
+      "demand_sugg_related": 11,
+      "demand_samples": [
+        "dlaczego czas tak szybko leci",
+        "dlaczego czas przyspieszył",
+        "dlaczego czas szybko leci",
+        "dlaczego czas płynie szybciej",
+        "dlaczego czas tak szybko ucieka",
+        "dlaczego czas tak szybko leci zapytaj",
+        "dlaczego czas tak wolno leci",
+        "dlaczego czas tak szybko biegnie"
+      ],
+      "supply_ontopic_n": 5,
+      "supply_pl_max_views": 80762527,
+      "supply_pl_over100k": 4,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 80762527,
+      "yt_top_ontopic": [
+        {
+          "t": "Perfect - Wszystko ma swój czas (official video)",
+          "ch": "Agencja Muzyczna Polskiego Radia",
+          "v": 80762527,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=kZuYff81-Fc"
+        },
+        {
+          "t": "Popatrz jak szybko mija czas",
+          "ch": "Julia Ametyst",
+          "v": 4869195,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=cqe0YAV8fCU"
+        },
+        {
+          "t": "Jak ten czas nam leci | Polski Schlager",
+          "ch": "R-JayMelody",
+          "v": 925118,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=DB77VlQkjCs"
+        },
+        {
+          "t": "Ta piosenka zostaje w głowie na długo… Czas Przemija (Official Video). Rockowa Ballada o Życiu",
+          "ch": "Brain Error",
+          "v": 884273,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=zv7KHQ_jOKg"
+        },
+        {
+          "t": "Czas za szybko ucieka. Co robić?",
+          "ch": "Miss Niacyna Live",
+          "v": 491,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=bZlqHYlQWfU"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Wstajesz rano i nie wiesz, po co",
+      "search_phrase_pl": "po co żyję skoro nic nie ma sensu",
+      "archetype": "loss of meaning / pustka sensu",
+      "architecture": "Socratic Challenge",
+      "emotional_core": "Nie chodzi o to, że jest źle — chodzi o to, że nie wiesz, do czego to wszystko zmierza, i ten brak punktu na horyzoncie jest cięższy niż każdy konkretny problem.",
+      "a_rationale": "Sens życia / pustka egzystencjalna to ścisły evergreen Einzelgänger/SoL; PL kategoria mocno monetyzuje uwagę (Sasana 436K, NWASD 177K, Selfmastery 167K) — ale w rejestrze wykładowo-buddyjskim, nie ciepłego rozpoznania DO jednej osoby.",
+      "demand_sugg_total": 20,
+      "demand_sugg_related": 4,
+      "demand_samples": [
+        "po co żyję",
+        "po co żyję genially",
+        "po co ja żyję",
+        "wiem po co żyję"
+      ],
+      "supply_ontopic_n": 3,
+      "supply_pl_max_views": 1700,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 13911405,
+      "yt_top_ontopic": [
+        {
+          "t": "ŻYCIE NIE MA SENSU !",
+          "ch": "rudyfilozof",
+          "v": 1700,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=G9pwDjYh2iI"
+        },
+        {
+          "t": "Życie jest bez sensu i wszyscy umrzemy",
+          "ch": "Soul Sand",
+          "v": 1578,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=gYHx-HRK-lQ"
+        },
+        {
+          "t": "Gdy Boże działanie nie ma sensu... - www.KosciolOnline.tv",
+          "ch": "KosciolOnline.tv",
+          "v": 389,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=-eeVUif1l2E"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Wypaliłeś się i nawet odpoczynek już nie pomaga",
+      "search_phrase_pl": "jestem ciągle zmęczona mimo że dużo śpię",
+      "archetype": "burnout-as-depletion / wypalenie poza zmęczeniem",
+      "architecture": "Systems Audit",
+      "emotional_core": "Najpierw był zmęczony, potem wyczerpany, a teraz jest coś gorszego — obojętność, w której weekend nic nie naprawia, bo to nie ciało odmówiło, tylko coś głębiej.",
+      "a_rationale": "Wypalenie/chroniczne wyczerpanie to evergreen z bardzo silnym werbalizowanym PL popytem (autocomplete 'dlaczego ciągle jestem zmęczona' najbogatszy klaster) + pokrewny film 191K; rdzeniem emocja wyczerpania-do-obojętności, nie protokół snu. Inny objaw niż 'guilty-rest' (tu: skala wypalenia, czuwanie z poczuciem winy odsiane).",
+      "demand_sugg_total": 18,
+      "demand_sugg_related": 11,
+      "demand_samples": [
+        "jestem ciągle zmęczona",
+        "jestem ciągle senna i zmęczona",
+        "jestem ciągle śpiąca i zmęczona",
+        "jestem ciągle zmęczona i chce mi się spać",
+        "jestem ciągle zmęczona co robić",
+        "jestem ciągle zmęczona i nic mi się nie chce",
+        "jestem ciągle zmęczona i wszystko mnie boli",
+        "jestem ciągle zmęczona forum"
+      ],
+      "supply_ontopic_n": 2,
+      "supply_pl_max_views": 516598,
+      "supply_pl_over100k": 2,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 30333373,
+      "yt_top_ontopic": [
+        {
+          "t": "Jeśli masz dużo stresu, koniecznie obejrzyj ten film 🔴 STRES i KORTYZOL",
+          "ch": "Dr Bartek Kulczyński",
+          "v": 516598,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=S8bUagLdRRM"
+        },
+        {
+          "t": "Dziwne objawy. Po nich poznasz, że masz za dużo stresu",
+          "ch": "Dr Bartek Kulczyński",
+          "v": 467414,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=muyZwqK65KA"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Masz wszystko, a i tak czujesz, że czegoś brakuje",
+      "search_phrase_pl": "dlaczego czuję pustkę mimo że mam dobre życie",
+      "archetype": "the hollow at the center / pustka w środku mimo 'dobrego życia'",
+      "architecture": "Composite Portrait",
+      "emotional_core": "Z zewnątrz nie masz prawa narzekać — i właśnie dlatego ten brak jest tak samotny, bo nie umiesz go nazwać ani usprawiedliwić nawet przed sobą.",
+      "a_rationale": "'Wewnętrzna pustka mimo dobrego życia' ma bezpośredni polski dowód zasięgowy (Kasia Sawicka 'Dlaczego czuję wewnętrzną pustkę' 181K) i jest evergreen School of Life; emocja (niewytłumaczalny brak), nie optymalizacja. Inny objaw niż 'nic nie czuję' (tu: brak/tęsknota, nie odrętwienie).",
+      "demand_sugg_total": 13,
+      "demand_sugg_related": 2,
+      "demand_samples": [
+        "dlaczego czuję pustkę",
+        "dlaczego czuję pustkę w głowie"
+      ],
+      "supply_ontopic_n": 4,
+      "supply_pl_max_views": 181555,
+      "supply_pl_over100k": 2,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 955742,
+      "yt_top_ontopic": [
+        {
+          "t": "Dlaczego czuję wewnętrzną pustkę?  Wewnętrzne dziecko. Dysocjacja emocji.",
+          "ch": "Kasia Sawicka",
+          "v": 181555,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=moXxy3fEuQo"
+        },
+        {
+          "t": "Co zrobić, gdy lęk kontroluje Twoje życie? | Marcin Matych dr Nerwica",
+          "ch": "Podcast Charyzmatyczny",
+          "v": 172003,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=eEjip5kAcM8"
+        },
+        {
+          "t": "PUSTKA, Którą Czujesz Mimo że Twoje Życie Wygląda Dobrze — Skąd NAPRAWDĘ Pochodzi",
+          "ch": "Siła Myśli i Umysłu",
+          "v": 95,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=gOATaF9tjc0"
+        },
+        {
+          "t": "Mam wszystko… więc dlaczego wciąż czuję pustkę? | Maria Baranowska o wypaleniu i podświadomości",
+          "ch": "SPA DLA UMYSŁU",
+          "v": 38,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=OU1SLvaq7IE"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Boisz się, że twoje życie już się nie zmieni",
+      "search_phrase_pl": "czuję że przegrałem życie",
+      "archetype": "quiet resignation / 'już za późno, to już tak zostanie'",
+      "architecture": "Historical Reversal",
+      "emotional_core": "Doszedłeś do punktu, w którym ciszej myślisz 'to już tak będzie zawsze' — i to nie rozpacz, tylko spokojna, ciężka rezygnacja, która przeraża bardziej niż ból.",
+      "a_rationale": "Poczucie 'przegranego/zamkniętego życia' ma twardy autocomplete PL ('czuję że przegrałem życie') + pokrewny film 318K (beznadzieja); evergreen egzystencjalny. Historical Reversal odwraca utrwalone 'po pewnym wieku już się nie zmienisz' — emocja, nie porada.",
+      "demand_sugg_total": 10,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "czuję że przegrałem życie"
+      ],
+      "supply_ontopic_n": 6,
+      "supply_pl_max_views": 1022772,
+      "supply_pl_over100k": 1,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 1022772,
+      "yt_top_ontopic": [
+        {
+          "t": "„To był AMOK”. Jak uzależnienie od HAZARDU zmienia życie? – 7 metrów pod ziemią",
+          "ch": "7 metrów pod ziemią | Rafał Gębura",
+          "v": 1022772,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Yz2EtXUU1Og"
+        },
+        {
+          "t": "Masz poczucie, że zmarnowałeś swoje życie? Pamiętaj, że nie jesteś w tym sam (kilka trudnych pytań)",
+          "ch": "Patryk Wójcik - Psychologia na wynos",
+          "v": 22863,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=BANDgoUB92A"
+        },
+        {
+          "t": "Zdecydowałam, że chcę zakończyć swoje życie... | Historia Emilki",
+          "ch": "Szukając Boga",
+          "v": 12310,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=DPGq48hzFQ4"
+        },
+        {
+          "t": "Czułem, że przegrałem życie... | Historia Adama",
+          "ch": "Szukając Boga",
+          "v": 8356,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=efTLNpPDUQk"
+        },
+        {
+          "t": "Po 40...Budzisz się rano i czujesz, że przegrałeś życie.",
+          "ch": "Freeyourself_poland - Jakub Kotuła",
+          "v": 1850,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=D695wni5Pgo"
+        },
+        {
+          "t": "Przegrałem życie - szczere wyznanie - moja droga do równowagi.",
+          "ch": "Maciej Rogacewicz podcast Męskie SPA",
+          "v": 967,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=nlBeI7y-P_0"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Patrzysz na siebie i czujesz, że marnujesz swój potencjał",
+      "search_phrase_pl": "czuję że marnuję swój potencjał i życie",
+      "archetype": "the wasted potential / 'mogłem być kimś więcej'",
+      "architecture": "Forensic Case Study",
+      "emotional_core": "Gdzieś w środku wiesz, że było cię na więcej — i ten cichy zarzut wobec samego siebie wraca każdego wieczoru, choć nie umiesz powiedzieć, gdzie konkretnie się rozminąłeś.",
+      "a_rationale": "'Marnowanie potencjału / mogłem być kimś więcej' to evergreen School of Life; w PL temat krąży jako clickbait-optymalizacja (Simonte 196K) — czysta luka na ciepłe, nie-oceniające rozpoznanie. Emocja (cichy zarzut do siebie), nie protokół.",
+      "demand_sugg_total": 11,
+      "demand_sugg_related": 2,
+      "demand_samples": [
+        "czuję że przegrałem życie",
+        "czuję że marnuje życie"
+      ],
+      "supply_ontopic_n": 9,
+      "supply_pl_max_views": 39411,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0.0,
+      "supply_raw_max_views_NOISY": 10165347,
+      "yt_top_ontopic": [
+        {
+          "t": "Jedna rzecz, która ZMIENI Twoje życie na zawsze!",
+          "ch": "sukces.pl",
+          "v": 39411,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=xZygXIQo0Vs"
+        },
+        {
+          "t": "10 rzeczy, które będzie kosztować Cię nowe życie",
+          "ch": "Live Better • Julia Ziółkowska",
+          "v": 34503,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Ikge46c164U"
+        },
+        {
+          "t": "dr Joe Dispenza - Jak uwolnić swój nadprzyrodzony potencjał (1/2)",
+          "ch": "czuj duch reborn",
+          "v": 7810,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=kD_i1sHhQuQ"
+        },
+        {
+          "t": "Dlaczego czujesz, że marnujesz swój potencjał | Dr John Demartini",
+          "ch": "Dr John Demartini",
+          "v": 1556,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=82QHZb_t9W4"
+        },
+        {
+          "t": "Jak przestać marnować swój potencjał – Arystoteles",
+          "ch": "Droga do Mądrości",
+          "v": 614,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=F5nkq7ecesU"
+        },
+        {
+          "t": "Jak odkryć swój potencjał?",
+          "ch": "Bozena Burzynska",
+          "v": 340,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=Yf28FQzvNGA"
+        },
+        {
+          "t": "8 Marnotrawstwo - niewykorzystany potencjał ludzki",
+          "ch": "Karoleana Piasecka",
+          "v": 134,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=28--oQQT8IU"
+        },
+        {
+          "t": "Masz w sobie więcej, niż myślisz! Jak odkryć swój prawdziwy POTENCJAŁ? 🚀💡",
+          "ch": "Motywana ",
+          "v": 72,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=dplBj_kp9bg"
+        },
+        {
+          "t": "Jak przestać marnować swój potencjał i odzyskać kontrolę nad życiem",
+          "ch": "Sebastiandijon ",
+          "v": 40,
+          "en": false,
+          "url": "https://www.youtube.com/watch?v=VF6IlTkS9zA"
+        }
+      ]
+    },
+    {
+      "topic_pl": "Przestałeś się czymkolwiek ekscytować",
+      "search_phrase_pl": "dlaczego nic mnie już nie interesuje",
+      "archetype": "loss of desire / zanik chęci i ciekawości",
+      "architecture": "Systems Audit",
+      "emotional_core": "Kiedyś coś cię ciągnęło — film, plan, człowiek — a teraz wszystko jest letnie i obojętne, i najbardziej brakuje ci nie radości, tylko samego pragnienia, żeby czegoś chcieć.",
+      "a_rationale": "Zanik chęci/ciekawości ('nic mnie nie interesuje, nic mi się nie chce') ma jeden z najbogatszych werbalizowanych klastrów PL w autocomplete + pokrewny film 233K; evergreen odrętwienia. Systems Audit czyta to jako tryb awarii układu motywacji, ciepło wobec widza — nie diagnoza osoby. Inny objaw niż 'nic nie czuję' (tu: zanik PRAGNIENIA/chęci, nie radości).",
+      "demand_sugg_total": 17,
+      "demand_sugg_related": 1,
+      "demand_samples": [
+        "dlaczego nic mnie nie interesuje"
+      ],
+      "supply_ontopic_n": 0,
+      "supply_pl_max_views": 0,
+      "supply_pl_over100k": 0,
+      "supply_en_share": 0,
+      "supply_raw_max_views_NOISY": 518281,
+      "yt_top_ontopic": []
+    }
+  ]
+}

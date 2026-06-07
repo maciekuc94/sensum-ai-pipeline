@@ -41,7 +41,6 @@ Użycie:
   python tools/pipeline/refine_segment.py x --selftest      # testy
 """
 import re, json, argparse, os, sys
-from collections import Counter
 
 _ABBREV = {"np", "itd", "itp", "tj", "tzn", "tzw", "ok", "por", "wg", "nr", "godz", "min"}
 
@@ -152,9 +151,9 @@ git commit -m "feat(refine): deterministyczna segmentacja zdań PL z selftest"
     assert [x["id"] for x in sents] == ["s001", "s002", "s003", "s004"], sents
     assert sents[0]["prev"] == "" and sents[0]["next"] == "Drugie zdanie."
     assert sents[1]["prev"] == "Pierwsze zdanie sceny."
-    # — chronione szczyty: cold open (akapit 0), close (ostatni akapit), krótka samotna kotwica —
+    # — chronione szczyty: cold open (akapit 0) + close (ostatni akapit) —
     assert sents[0]["is_peak"] is True   # cold open
-    assert sents[3]["is_peak"] is True   # close + samotne krótkie zdanie
+    assert sents[3]["is_peak"] is True   # close
     assert sents[2]["is_peak"] is False  # środek
 ```
 
@@ -181,15 +180,11 @@ def segment_script(text):
 
 
 def _mark_peaks(sents, n_paras):
-    """Chronione: cold open (akapit 0), close (ostatni akapit),
-    samotna krótka kotwica (akapit = jedno zdanie ≤ 9 słów)."""
-    per_para = Counter(s["para"] for s in sents)
+    """Chronione szczyty: cold open (akapit 0) + close (ostatni akapit).
+    (Kotwice/motyw — semantyczne — chroni konserwatywny panel + człowiek, nie heurystyka.)"""
     last = n_paras - 1
     for s in sents:
-        cold_open = s["para"] == 0
-        close = s["para"] == last
-        anchor = per_para[s["para"]] == 1 and len(s["text"].split()) <= 9
-        s["is_peak"] = bool(cold_open or close or anchor)
+        s["is_peak"] = bool(s["para"] == 0 or s["para"] == last)
 ```
 
 - [ ] **Step 4: Uruchom selftest — ma PRZEJŚĆ**
@@ -270,7 +265,10 @@ const STYLE = 'Kanal SENSUM: cieply monolog do JEDNEJ osoby, druga osoba ("ty"),
 const FLAG_RULE = 'KRYTERIUM (konserwatywne): flaguj TYLKO gdy zdanie (a) ARGUMENTUJE ABSTRAKCJE — unosi pojecie bez fizycznej kotwicy / odwraca sie od "ty" w generyczna rame / pietrzy zmiekczacze pisanego dowodu; ALBO (b) jest JAWNA KALKA — polski SAM W SOBIE brzmi koslawo/nie-natywnie. CHRON crafted-concrete: dopracowany konkretny obraz, gramatycznie natywny, nawet literacki, ZOSTAJE (keepOriginal=true). Crafted-concrete wygrywa. W razie watpliwosci: keepOriginal=true.'
 
 // args = tablica zdan {id, text, prev, next, is_peak} z refine_segment.py
-const sentences = (args || []).filter(s => s && !s.is_peak)
+// (toleruj args podany jako tablica LUB jako string JSON — komenda/harness moze przekazac jedno lub drugie)
+let _args = args
+if (typeof _args === 'string') { try { _args = JSON.parse(_args) } catch (e) { _args = [] } }
+const sentences = (Array.isArray(_args) ? _args : []).filter(s => s && !s.is_peak)
 
 const INTENT = { type:'object', additionalProperties:false, properties:{ intent:{type:'string'} }, required:['intent'] }
 const GEN = { type:'object', additionalProperties:false, properties:{ variants:{type:'array', items:{type:'string'}, minItems:5, maxItems:5} }, required:['variants'] }

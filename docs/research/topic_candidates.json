@@ -1,0 +1,324 @@
+{
+  "candidates": [
+    {
+      "topic_pl": "Dlaczego czujesz się jak oszust, nawet kiedy ci wychodzi",
+      "emotional_core": "Im więcej osiągasz, tym mocniej czujesz, że zaraz cię zdemaskują - bo wierzysz, że to nie ty, tylko zbieg okoliczności.",
+      "search_phrase_pl": "dlaczego czuję się jak oszust mimo sukcesów",
+      "archetype": "impostor syndrome / fear of being found out",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Syndrom oszusta to evergreen rdzeń lane SENSUM - PoW/School of Life i topic-channele (HealthyGamer) wracają do 'fear of being exposed' latami; emocja, nie protokół."
+    },
+    {
+      "topic_pl": "Dlaczego czujesz się niepotrzebny, choć nikt cię nie odrzucił",
+      "emotional_core": "Nosisz w sobie ciche przekonanie, że gdyby cię zabrakło, świat by tego nie zauważył - i ustawiasz całe życie tak, żeby tego nie sprawdzać.",
+      "search_phrase_pl": "dlaczego czuję się niepotrzebna",
+      "archetype": "feeling worthless / 'I don't matter' core wound",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Poczucie 'nie mam wartości / nie liczę się' to ponadkulturowa rana dzieciństwa, rdzeń katalogów Crappy Childhood Fairy / Teahan; autocomplete PL potwierdza dosłownie 'czuję się niepotrzebna'."
+    },
+    {
+      "topic_pl": "Dlaczego cudza pochwała spływa po tobie, a jedna krytyka zostaje na tygodnie",
+      "emotional_core": "Komplement odbijasz w sekundę, a jedno krzywe słowo zostaje w tobie tygodniami - bo gdzieś w środku wierzysz, że krytyka mówi prawdę, a pochwała kłamie.",
+      "search_phrase_pl": "dlaczego nie umiem przyjąć komplementu",
+      "archetype": "negativity bias of low self-worth / can't take a compliment",
+      "architecture": "Systems Audit",
+      "a_rationale": "Asymetria 'pochwała znika, krytyka zostaje' to klasyczny, evergreen temat psych-YT (School of Life 'why we hate compliments'); mechanizm filtrujący dowody na własną wartość - chłodny audyt sygnału, ciepło do widza."
+    },
+    {
+      "topic_pl": "Dlaczego czekasz, aż będziesz gotowy, zanim pozwolisz sobie zacząć",
+      "emotional_core": "Odkładasz to, na czym ci zależy, do dnia, w którym będziesz wystarczająco dobry - a ten dzień nigdy nie nadchodzi, bo poprzeczka cofa się razem z tobą.",
+      "search_phrase_pl": "dlaczego czuję że nie jestem wystarczająco dobry",
+      "archetype": "'not good enough yet' / chronic unreadiness",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "'Nie jestem jeszcze wystarczająco dobry' to evergreen rana niewystarczalności w lane SENSUM (Pursuit of Wonder o czekaniu na gotowość); singel Blondiee 'NIEWYSTARCZAJĄCA' (267K) potwierdza, że słowo monetyzuje uwagę po polsku."
+    },
+    {
+      "topic_pl": "Dlaczego czujesz, że musisz zasłużyć na to, żeby istnieć",
+      "emotional_core": "Odpoczynek bez powodu wydaje ci się kradzieżą - jakbyś musiał wciąż czymś spłacać samo prawo do zajmowania miejsca.",
+      "search_phrase_pl": "dlaczego czuję że muszę zasłużyć na odpoczynek",
+      "archetype": "conditional worth / 'I must earn my existence'",
+      "architecture": "Historical Reversal",
+      "a_rationale": "Warunkowa wartość ('jesteś wart tyle, ile produkujesz') to evergreen temat School of Life / Einzelgänger; daje czyste odwrócenie wpajanej 'prawdy', że odpoczynek trzeba sobie zasłużyć - rdzeń emocji, nie protokół."
+    },
+    {
+      "topic_pl": "Dlaczego twoje osiągnięcia nigdy nie czują się twoje",
+      "emotional_core": "Każdy sukces tłumaczysz szczęściem, pomocą innych albo łatwizną zadania - nigdy sobą - więc dowody na własną wartość przelatują przez ciebie, nie zostawiając śladu.",
+      "search_phrase_pl": "dlaczego nie czuję dumy z własnych osiągnięć",
+      "archetype": "discounting success / external attribution of worth",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Mechanizm 'sukces był przypadkiem' to udokumentowana, kontrintuicyjna manifestacja niskiej samooceny - evergreen u topic-channeli (HealthyGamer o atrybucji); inny objaw niż syndrom oszusta (tu: rozbrajanie dowodów po fakcie, nie lęk przed demaskacją)."
+    },
+    {
+      "topic_pl": "Dlaczego wstydzisz się samego siebie, choć nikt cię nie ocenia",
+      "emotional_core": "Najsurowszego sędziego nosisz w sobie - patrzysz na siebie cudzymi, najgorszymi oczami i kulisz się przed widownią, której nie ma.",
+      "search_phrase_pl": "wstydzę się siebie",
+      "archetype": "core shame / toxic self-judgment",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Wstyd-rdzeń to evergreen lane SENSUM; PL dowód wielkości: emce□ 'Dlaczego odczuwamy wstyd?' 512K + autocomplete 'wstydzę się siebie'. Inny objaw/metafora niż 'wstyd za własne życie' (tam: gdzie/kim jestem; tu: wewnętrzny sędzia patrzący na samego mnie)."
+    },
+    {
+      "topic_pl": "Samotny w pełnym pokoju — dlaczego bywasz najbardziej sam wśród ludzi",
+      "emotional_core": "Najgłębsza samotność to nie ta, gdy jesteś sam, tylko ta, gdy siedzisz wśród bliskich i nikt nie widzi, co naprawdę czujesz — i powoli przestajesz wierzyć, że kiedykolwiek zobaczy.",
+      "search_phrase_pl": "dlaczego czuję się samotny wśród ludzi",
+      "archetype": "loneliness / disconnection-amid-people (alone in a crowd)",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Evergreen rdzeń lane SENSUM — 'lonely in a crowd' to flagowy temat School of Life / Pursuit of Wonder; rdzeniem jest emocja bycia-niezauważonym, nie protokół. PL dowód kategorii: JASNA STRONA 'Dlaczego czujesz się samotny' 111K (Z2)."
+    },
+    {
+      "topic_pl": "Dlaczego nie potrafisz kochać — chociaż bardzo chcesz",
+      "emotional_core": "To nie jest tak, że nie masz w sobie miłości — masz ją zamkniętą za drzwiami, które kiedyś nauczyłeś się trzymać zaryglowane, żeby cię nie zabolało, i teraz nie pamiętasz, jak się je otwiera.",
+      "search_phrase_pl": "dlaczego nie potrafię kochać",
+      "archetype": "blocked attachment / inability to love (defended heart)",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "Twardy PL popyt z Z3 — 'dlaczego nie potrafię kochać' to pierwsza podpowiedź autocomplete pod 'dlaczego nie potrafię...'. Evergreen rana przywiązania (Crappy Childhood Fairy / HealthyGamer rdzeń); emocja, nie porada. Pytanie w rdzeniu = Socratic."
+    },
+    {
+      "topic_pl": "Mur, który miał cię chronić — dlaczego odpychasz ludzi, których chcesz blisko",
+      "emotional_core": "Wycofujesz się dokładnie wtedy, gdy ktoś zaczyna być ważny — nie dlatego, że ci nie zależy, tylko dlatego, że bliskość kiedyś oznaczała niebezpieczeństwo, a ciało wciąż traktuje czułość jak alarm.",
+      "search_phrase_pl": "dlaczego odpycham ludzi na których mi zależy",
+      "archetype": "avoidant attachment / push-pull intimacy",
+      "architecture": "Systems Audit",
+      "a_rationale": "Unikanie bliskości to evergreen temat Einzelgänger / HealthyGamer (avoidant attachment robi duże zasięgi po angielsku). PL kategoria monetyzuje uwagę (relacje: Gosia Ohme 116K, Z2). Mechanizm-jako-system pasuje do Systems Audit — ale chłód opisuje alarm, nie człowieka."
+    },
+    {
+      "topic_pl": "Dlaczego nie umiesz okazywać uczuć — nawet tym, których kochasz",
+      "emotional_core": "Czujesz mnóstwo w środku, ale w momencie, gdy trzeba to pokazać, twarz zastyga i słowa nie wychodzą — nie dlatego, że jesteś zimny, tylko dlatego, że dawno nauczyłeś się, że pokazywanie uczuć jest ryzykowne.",
+      "search_phrase_pl": "dlaczego nie potrafię okazywać uczuć",
+      "archetype": "emotional inexpressiveness / learned guardedness",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Bezpośredni Z3 — 'dlaczego nie potrafię okazywać uczuć' w autocomplete pod 'nie potrafię...'. Evergreen lane (emotional numbness/alexithymia u Teahan/HealthyGamer). Kontrintuicyjny objaw (dużo czuję, nic nie pokazuję) = dziwna manifestacja → Forensic."
+    },
+    {
+      "topic_pl": "Ludzie, którzy wolą być sami — wybór czy blizna",
+      "emotional_core": "Mówisz sobie, że po prostu lubisz swój spokój, i częściowo to prawda — ale gdzieś pod spodem jest też cicha ulga, że skoro nikogo nie wpuściłeś, to nikt cię nie zostawił.",
+      "search_phrase_pl": "czy to normalne że wolę być sam",
+      "archetype": "chosen solitude vs protective withdrawal",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "Evergreen lane temat (Einzelgänger cały kanał o byciu samemu). PL bilingual-served ryzyko: PBS robi dokładnie 'Ludzie, którzy lubią być sami' jako listicle — luka jakościowa na ciepłe rozpoznanie. Pytanie 'wybór czy blizna?' = Socratic."
+    },
+    {
+      "topic_pl": "Tłumacz, który nigdy nie odpoczywa — dlaczego czujesz się samotny, choć ciągle jesteś z ludźmi",
+      "emotional_core": "Jesteś miły, pomocny, zawsze dostępny — i właśnie dlatego nikt nie zna prawdziwego ciebie; pokazujesz wersję, która ma być lubiana, a potem dziwisz się, czemu mimo tylu ludzi wokół nikt nie jest naprawdę blisko.",
+      "search_phrase_pl": "dlaczego czuję się samotny mimo że mam ludzi",
+      "archetype": "performed self / people-pleasing loneliness (unseen behind the mask)",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Evergreen przecięcie people-pleasing × samotność (School of Life 'why nice people are lonely'). Różny objaw i metafora od 'samotny w pełnym pokoju' (tu: maska/wystawiona wersja siebie, nie 'alone in a crowd'). PL relacyjny cluster monetyzuje (Z2)."
+    },
+    {
+      "topic_pl": "Dlaczego trzymasz wszystkich na dystans — i nazywasz to niezależnością",
+      "emotional_core": "Nauczyłeś się nie potrzebować nikogo, bo kiedyś potrzebowanie kończyło się zawodem — i teraz twoja samowystarczalność, z której jesteś dumny, jest też ścianą, która nie wpuszcza nikogo do środka.",
+      "search_phrase_pl": "dlaczego nie potrafię nikomu zaufać",
+      "archetype": "compulsive self-reliance / fear of dependency (counter-dependence)",
+      "architecture": "Historical Reversal",
+      "a_rationale": "Evergreen przeramowanie 'niezależność = siła' → 'to obrona przed bliskością' (lane: Crappy Childhood Fairy / Teahan o hyper-independence jako trauma response). Stare przekonanie obalone przez współczesne rozumienie przywiązania → Historical Reversal. Różny objaw (zaufanie/zależność) od 'mur który miał cię chronić'."
+    },
+    {
+      "topic_pl": "Dlaczego nie potrafisz po prostu przyjąć, że ktoś cię kocha",
+      "emotional_core": "Czujesz, że jesteś kochany 'na próbę' — że gdy druga osoba zobaczy cię naprawdę, odejdzie; więc czekasz na moment, w którym wszystko się wyda.",
+      "search_phrase_pl": "dlaczego nie potrafię przyjąć miłości",
+      "archetype": "unlovable-core / fear-of-being-truly-seen",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "Pursuit of Wonder / School of Life i topic-channele (Teahan) mają wieloletnie eseje o poczuciu bycia niekochanym i lęku przed bliskością; evergreen rana relacyjna. Inny objaw niż 'nie potrafię kochać' (tu: niemożność PRZYJĘCIA miłości, nie dania)."
+    },
+    {
+      "topic_pl": "Nie jesteś leniwy — po prostu nie masz już z czego czerpać",
+      "emotional_core": "To, co bierzesz za lenistwo, jest pustym bakiem po cichym, długim wyczerpaniu — nie wadą charakteru.",
+      "search_phrase_pl": "dlaczego nic mi się nie chce i jestem ciągle zmęczona",
+      "archetype": "exhaustion-mistaken-for-laziness / depletion not defect",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Rdzeń 'wyczerpanie mylone z lenistwem' to evergreen lane SENSUM — HealthyGamerGG 'Anhedonia' 735K, Dr. Scott Eilers 348K; format-anchor PoW/School of Life latami wraca do 'nie jesteś leniwy, jesteś wyczerpany'. Emocja (wstyd za bezczynność), nie protokół."
+    },
+    {
+      "topic_pl": "Dlaczego rano już jesteś zmęczony tym, czego jeszcze nie zacząłeś",
+      "emotional_core": "Sam ciężar wyobrażenia sobie zadania zużywa siłę, zanim go dotkniesz — i dlatego utykasz, choć 'nic nie zrobiłeś'.",
+      "search_phrase_pl": "dlaczego jestem zmęczony zanim cokolwiek zrobię",
+      "archetype": "anticipatory-fatigue / the task is heavy before you touch it",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Kontrintuicyjny objaw (zmęczenie PRZED wysiłkiem) idealny na Forensic — evergreen w lane (Einzelgänger/PoW o 'mental load'). Anhedonia/zmęczenie performuje po polsku (348K–735K). Emocja, nie technika."
+    },
+    {
+      "topic_pl": "Czekasz na dzień, w którym wreszcie ci się zachce — a on nie przychodzi",
+      "emotional_core": "Wierzysz, że motywacja przyjdzie pierwsza i wtedy ruszysz — ale to przekonanie jest dokładnie tym, co cię trzyma w bezruchu.",
+      "search_phrase_pl": "dlaczego czekam aż mi się zachce a nigdy się nie chce",
+      "archetype": "waiting-for-motivation / the false sequence",
+      "architecture": "Historical Reversal",
+      "a_rationale": "Klasyczne odwrócenie 'motywacja → działanie' obalone przez współczesne rozumienie działania-przed-motywacją — flagowy temat lane (School of Life, PoW 500K+). Evergreen, emocjonalny rdzeń: tęsknota za 'tym dniem', nie protokół."
+    },
+    {
+      "topic_pl": "Stoisz w miejscu nie dlatego, że nie wiesz dokąd — tylko dlatego, że każda droga oznacza stratę reszty",
+      "emotional_core": "Brak kierunku to często nie pustka, lecz cichy żal, że wybór jednej drogi to pożegnanie wszystkich pozostałych.",
+      "search_phrase_pl": "dlaczego nie potrafię podjąć decyzji co dalej w życiu",
+      "archetype": "decision-paralysis / every choice is a small grief",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "Paraliż decyzyjny jako żałoba-po-niewybranym to evergreen egzystencjalny lane (School of Life, PoW). Polskie 'jak znaleźć cel/sens' (177K) jest, ale w ramie wykładu — luka na sokratejskie rozpoznanie. Emocja straty, nie poradnik kariery."
+    },
+    {
+      "topic_pl": "Twoje życie nie zatrzymało się nagle — osuwało się tak wolno, że tego nie zauważyłeś",
+      "emotional_core": "Utknięcie rzadko jest dramatem; to suma tysiąca małych 'jutro', których nikt nie widział, łącznie z tobą.",
+      "search_phrase_pl": "czuję że stoję w miejscu od kilku lat",
+      "archetype": "slow-drift stagnation / the invisible standstill",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "'Powolny dryf życia' to evergreen egzystencjalny lane (Einzelgänger, PoW o 'how life slips by'). Polskie 'czuję że przegrałem życie' (Z3) + 'jak nie odkładać życia na jutro' (235K) dowodzą popytu; podaż to techniki, nie rozpoznanie dryfu."
+    },
+    {
+      "topic_pl": "Im dłużej zwlekasz, tym trudniej zacząć — i wiesz o tym, co tylko pogarsza sprawę",
+      "emotional_core": "Zwłoka karmi się wstydem za zwłokę: każdy nietknięty dzień dokłada ciężaru do następnego, aż start wydaje się niemożliwy.",
+      "search_phrase_pl": "im dłużej odkładam tym trudniej zacząć",
+      "archetype": "shame-procrastination loop / the snowball of avoidance",
+      "architecture": "Systems Audit",
+      "a_rationale": "Pętla wstyd→unik→większy wstyd to evergreen mechanizm (PoW, HealthyGamer o 'procrastination shame spiral'). Polski Niedźwiecki 'Dlaczego odkładasz wszystko na później' 109K dowodzi popytu emocjonalnego; reszta podaży to techniki. Pętla, nie porada."
+    },
+    {
+      "topic_pl": "Nie odpoczywasz, kiedy odpoczywasz — i dlatego nigdy nie masz siły, by ruszyć",
+      "emotional_core": "Twój bezruch nie jest regeneracją; to czuwanie z poczuciem winy, które męczy bardziej niż samo działanie.",
+      "search_phrase_pl": "dlaczego po odpoczynku nadal jestem zmęczony",
+      "archetype": "guilty-rest / stillness that doesn't restore",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Kontrintuicyjny objaw (odpoczynek, który nie regeneruje) idealny na Forensic — evergreen w lane (PoW, Einzelgänger o 'rest and guilt'). Polskie 'dlaczego jestem ciągle zmęczona' bogato w Z3; podaż kliniczna o depresji, luka na ten konkretny mechanizm."
+    },
+    {
+      "topic_pl": "boję się, że stanę się swoją matką (albo swoim ojcem)",
+      "emotional_core": "Łapiesz się na geście, tonie głosu, reakcji, której przysięgałeś sobie nigdy nie powtórzyć — i przez sekundę widzisz w lustrze rodzica, przed którym uciekałeś.",
+      "search_phrase_pl": "boję się że będę jak matka",
+      "archetype": "inherited-self / becoming-the-parent-you-feared",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Najmocniejszy evergreen w lane: Crappy Childhood Fairy / Patrick Teahan / HealthyGamer mają flagowe filmy 500k+ na 'becoming your parent'; autocomplete PL bardzo bogaty ('boję się że będę jak matka' w wielu wariantach, w tym jako szukana książka); rdzeniem emocja (lęk, wstyd), nie protokół."
+    },
+    {
+      "topic_pl": "ciągle przepraszasz za to, że w ogóle jesteś",
+      "emotional_core": "Mówisz 'przepraszam', zanim ktokolwiek się zezłości — bo w domu nauczyłeś się, że zajmowanie miejsca było ryzykowne, a bycie niewidzialnym było bezpieczne.",
+      "search_phrase_pl": "dlaczego ciągle za wszystko przepraszam",
+      "archetype": "self-erasure / the child who learned to disappear",
+      "architecture": "Composite Portrait",
+      "a_rationale": "People-pleasing/self-erasure to udowodniony evergreen u PoW i topic-channeli (Teahan, HealthyGamer) z flagowcami 500k+; tu w wersji rodzinno-dziecięcej, czysta emocja wstydu i lęku, nie porada o granicach."
+    },
+    {
+      "topic_pl": "nie umiesz płakać, choć bardzo byś chciał",
+      "emotional_core": "Coś w tobie się zamknęło dawno temu — patrzysz na własny smutek zza szyby i nie możesz go dosięgnąć, jakby płacz był luksusem, na który nigdy nie dostałeś pozwolenia.",
+      "search_phrase_pl": "dlaczego nie potrafię płakać",
+      "archetype": "frozen-feeling / emotional numbness from childhood",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Anhedonia/emocjonalne odrętwienie to potwierdzony Z2 (HealthyGamer 735k 'Anhedonia', Kati Morton 610k, Scott Eilers 348k) i evergreen w lane; dziwny, kontrintuicyjny symptom idealny pod studium kryminalistyczne, rdzeniem emocja nie protokół. Inny objaw niż 'nie okazywać uczuć' (tu: konkretnie płacz/łzy)."
+    },
+    {
+      "topic_pl": "wstydzisz się tego, skąd jesteś — domu, rodziny, dzieciństwa",
+      "emotional_core": "Zmieniasz temat, gdy ktoś pyta o twój dom rodzinny; nosisz w sobie cichy wstyd za to, co cię ukształtowało, jakby pochodzenie było wadą, którą trzeba ukrywać.",
+      "search_phrase_pl": "wstydzę się swojej rodziny",
+      "archetype": "origin-shame / shame about where you come from",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Wstyd jako rdzeń to potwierdzony PL Z2 (emce□ 'Dlaczego odczuwamy wstyd?' 512k) i evergreen u SoL/PoW; ten kąt (wstyd POCHODZENIA, nie życia) ma własny objaw i metaforę, więc nie repeat względem 'wstyd za własne życie'."
+    },
+    {
+      "topic_pl": "wciąż starasz się zasłużyć na miłość, której nigdy nie dostałeś za darmo",
+      "emotional_core": "Pracujesz, osiągasz, dajesz z siebie wszystko — a w środku czujesz, że to nigdy nie wystarcza, bo gonisz uznanie rodzica, który już dawno przestał patrzeć.",
+      "search_phrase_pl": "dlaczego ciągle muszę coś udowadniać",
+      "archetype": "earning-love / the unwinnable bid for a parent's approval",
+      "architecture": "Systems Audit",
+      "a_rationale": "Conditional-love / chasing approval to evergreen u topic-channeli (Teahan, HealthyGamer) z dużymi zasięgami; daje się czysto opisać jako pętla z trybem awarii (audyt systemu, chłód na mechanizm, ciepło na widza), rdzeń emocjonalny nie optymalizacyjny."
+    },
+    {
+      "topic_pl": "powtarzasz w głowie zdania, które usłyszałeś jako dziecko",
+      "emotional_core": "Popełniasz drobny błąd i słyszysz w głowie nie swój głos, tylko czyjś — surowy, znajomy, sprzed lat; krytyk, którego nie zatrudniłeś, ale którego nosisz codziennie.",
+      "search_phrase_pl": "dlaczego jestem dla siebie taki surowy",
+      "archetype": "inherited inner critic / the borrowed harsh voice",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Wewnętrzny krytyk z dzieciństwa to evergreen u HealthyGamer/Teahan i format-anchorów; dziwny mechanizm 'cudzego głosu w twojej głowie' świetnie unosi studium kryminalistyczne, czysta emocja wstydu/lęku."
+    },
+    {
+      "topic_pl": "czujesz się winny, gdy jest ci dobrze",
+      "emotional_core": "Ledwo poczujesz spokój albo radość, a już coś w tobie się napina — jakbyś nie miał prawa do lekkości, jakby szczęście trzeba było odpokutować.",
+      "search_phrase_pl": "dlaczego czuję się winny gdy jest mi dobrze",
+      "archetype": "survivor / undeserving-of-good guilt",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "Wina i poczucie niezasługiwania na dobro to evergreen u School of Life / Einzelgänger i topic-channeli; pytanie w rdzeniu ('dlaczego nie wolno mi mieć dobrze?') idealne pod wyzwanie sokratejskie, czysta emocja."
+    },
+    {
+      "topic_pl": "ciągle czekasz, aż rodzic wreszcie powie 'jestem z ciebie dumny'",
+      "emotional_core": "Jesteś dorosły, a wciąż mierzysz swoje życie cudzym spojrzeniem; czekasz na zdanie, które może nigdy nie padnie, i nie umiesz przestać go potrzebować.",
+      "search_phrase_pl": "dlaczego potrzebuję akceptacji rodziców",
+      "archetype": "the waiting child / unmet need for parental recognition",
+      "architecture": "Historical Reversal",
+      "a_rationale": "Tęsknota za uznaniem rodzica to evergreen u topic-channeli (Teahan, HealthyGamer); odwraca utrwalone 'dorosłość = niezależność od rodziców' na 'część ciebie wciąż czeka', co czysto unosi odwrócenie historyczne; rdzeń emocjonalny. Inny objaw niż 'zasłużyć na miłość' (tu: czekanie na słowo, nie zarabianie pracą)."
+    },
+    {
+      "topic_pl": "boisz się mieć dziecko, żeby nie skrzywdzić go tak, jak ciebie skrzywdzono",
+      "emotional_core": "Część ciebie pragnie rodziny, a część boi się, że niesiesz w sobie to samo, co cię zraniło — i że mimo wszystkich obietnic powtórzysz cykl.",
+      "search_phrase_pl": "boję się że skrzywdzę swoje dziecko jak mnie",
+      "archetype": "breaking-the-cycle / fear of passing on the wound",
+      "architecture": "Composite Portrait",
+      "a_rationale": "Przerwanie międzypokoleniowego cyklu to udowodniony evergreen u Crappy Childhood Fairy/Teahan z flagowcami 500k+; autocomplete potwierdza PL demand ('boję się że urodzę chore dziecko', 'boję się że będę jak matka'); czysta emocja lęku i wstydu, nie porada rodzicielska. Inny objaw niż 'stanę się swoją matką' (tu: lęk o DZIECKO, nie o siebie w lustrze)."
+    },
+    {
+      "topic_pl": "Robisz wszystko jak należy, a w środku nic nie czujesz",
+      "emotional_core": "Życie wygląda poprawnie z zewnątrz, ale w środku jest cicho i głucho — jakby ktoś ściszył dźwięk całego świata, a ty udajesz, że słyszysz.",
+      "search_phrase_pl": "dlaczego nic mnie nie cieszy mimo że wszystko mam",
+      "archetype": "emotional numbness / anhedonia jako ochrona, nie wada",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "Anhedonia/odrętwienie to udowodniony evergreen w lane SENSUM — wielokanałowo (HealthyGamer 735K, Kati Morton 610K, Eilers 348K) plus polskie pokrycie kategorii (Kasia Sawicka 181K), rdzeniem jest emocja (utrata czucia), nie protokół. Otwiera dziwnym objawem (wszystko na miejscu, zero radości) → Forensic."
+    },
+    {
+      "topic_pl": "Czekasz, aż życie się w końcu zacznie",
+      "emotional_core": "Cały czas masz wrażenie, że to jeszcze nie to prawdziwe życie — że ono zacznie się później, kiedy coś się ułoży — a tymczasem mija dzień po dniu w poczekalni.",
+      "search_phrase_pl": "czuję że odkładam życie na później",
+      "archetype": "the deferred life / 'życie zacznie się, kiedy…'",
+      "architecture": "Composite Portrait",
+      "a_rationale": "'Odkładanie życia / życie zacznie się później' to klasyczny evergreen egzystencjalny School of Life; polskie pokrycie kategorii silne ('Jak nie odkładać życia na jutro?' 235K, 'nic ci się nie chce' 233K), ale w formacie porad/listicle — luka na ciepłe rozpoznanie."
+    },
+    {
+      "topic_pl": "Mijają lata, a ty czujesz, że ich nie przeżyłeś",
+      "emotional_core": "Patrzysz wstecz i nie umiesz odróżnić jednego roku od drugiego — jakby czas przeleciał obok ciebie, a ty nie zdążyłeś go dotknąć.",
+      "search_phrase_pl": "dlaczego czas tak szybko leci i nic nie pamiętam",
+      "archetype": "the unremembered years / czas przelatuje obok",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "'Dlaczego lata zlewają się w jedno / dlaczego czas leci coraz szybciej' to udowodniony evergreen egzystencjalny w esej-lane (Pursuit of Wonder, School of Life regularnie), rdzeniem emocja straty, nie protokół zarządzania czasem."
+    },
+    {
+      "topic_pl": "Wstajesz rano i nie wiesz, po co",
+      "emotional_core": "Nie chodzi o to, że jest źle — chodzi o to, że nie wiesz, do czego to wszystko zmierza, i ten brak punktu na horyzoncie jest cięższy niż każdy konkretny problem.",
+      "search_phrase_pl": "po co żyję skoro nic nie ma sensu",
+      "archetype": "loss of meaning / pustka sensu",
+      "architecture": "Socratic Challenge",
+      "a_rationale": "Sens życia / pustka egzystencjalna to ścisły evergreen Einzelgänger/SoL; PL kategoria mocno monetyzuje uwagę (Sasana 436K, NWASD 177K, Selfmastery 167K) — ale w rejestrze wykładowo-buddyjskim, nie ciepłego rozpoznania DO jednej osoby."
+    },
+    {
+      "topic_pl": "Wypaliłeś się i nawet odpoczynek już nie pomaga",
+      "emotional_core": "Najpierw był zmęczony, potem wyczerpany, a teraz jest coś gorszego — obojętność, w której weekend nic nie naprawia, bo to nie ciało odmówiło, tylko coś głębiej.",
+      "search_phrase_pl": "jestem ciągle zmęczona mimo że dużo śpię",
+      "archetype": "burnout-as-depletion / wypalenie poza zmęczeniem",
+      "architecture": "Systems Audit",
+      "a_rationale": "Wypalenie/chroniczne wyczerpanie to evergreen z bardzo silnym werbalizowanym PL popytem (autocomplete 'dlaczego ciągle jestem zmęczona' najbogatszy klaster) + pokrewny film 191K; rdzeniem emocja wyczerpania-do-obojętności, nie protokół snu. Inny objaw niż 'guilty-rest' (tu: skala wypalenia, czuwanie z poczuciem winy odsiane)."
+    },
+    {
+      "topic_pl": "Masz wszystko, a i tak czujesz, że czegoś brakuje",
+      "emotional_core": "Z zewnątrz nie masz prawa narzekać — i właśnie dlatego ten brak jest tak samotny, bo nie umiesz go nazwać ani usprawiedliwić nawet przed sobą.",
+      "search_phrase_pl": "dlaczego czuję pustkę mimo że mam dobre życie",
+      "archetype": "the hollow at the center / pustka w środku mimo 'dobrego życia'",
+      "architecture": "Composite Portrait",
+      "a_rationale": "'Wewnętrzna pustka mimo dobrego życia' ma bezpośredni polski dowód zasięgowy (Kasia Sawicka 'Dlaczego czuję wewnętrzną pustkę' 181K) i jest evergreen School of Life; emocja (niewytłumaczalny brak), nie optymalizacja. Inny objaw niż 'nic nie czuję' (tu: brak/tęsknota, nie odrętwienie)."
+    },
+    {
+      "topic_pl": "Boisz się, że twoje życie już się nie zmieni",
+      "emotional_core": "Doszedłeś do punktu, w którym ciszej myślisz 'to już tak będzie zawsze' — i to nie rozpacz, tylko spokojna, ciężka rezygnacja, która przeraża bardziej niż ból.",
+      "search_phrase_pl": "czuję że przegrałem życie",
+      "archetype": "quiet resignation / 'już za późno, to już tak zostanie'",
+      "architecture": "Historical Reversal",
+      "a_rationale": "Poczucie 'przegranego/zamkniętego życia' ma twardy autocomplete PL ('czuję że przegrałem życie') + pokrewny film 318K (beznadzieja); evergreen egzystencjalny. Historical Reversal odwraca utrwalone 'po pewnym wieku już się nie zmienisz' — emocja, nie porada."
+    },
+    {
+      "topic_pl": "Patrzysz na siebie i czujesz, że marnujesz swój potencjał",
+      "emotional_core": "Gdzieś w środku wiesz, że było cię na więcej — i ten cichy zarzut wobec samego siebie wraca każdego wieczoru, choć nie umiesz powiedzieć, gdzie konkretnie się rozminąłeś.",
+      "search_phrase_pl": "czuję że marnuję swój potencjał i życie",
+      "archetype": "the wasted potential / 'mogłem być kimś więcej'",
+      "architecture": "Forensic Case Study",
+      "a_rationale": "'Marnowanie potencjału / mogłem być kimś więcej' to evergreen School of Life; w PL temat krąży jako clickbait-optymalizacja (Simonte 196K) — czysta luka na ciepłe, nie-oceniające rozpoznanie. Emocja (cichy zarzut do siebie), nie protokół."
+    },
+    {
+      "topic_pl": "Przestałeś się czymkolwiek ekscytować",
+      "emotional_core": "Kiedyś coś cię ciągnęło — film, plan, człowiek — a teraz wszystko jest letnie i obojętne, i najbardziej brakuje ci nie radości, tylko samego pragnienia, żeby czegoś chcieć.",
+      "search_phrase_pl": "dlaczego nic mnie już nie interesuje",
+      "archetype": "loss of desire / zanik chęci i ciekawości",
+      "architecture": "Systems Audit",
+      "a_rationale": "Zanik chęci/ciekawości ('nic mnie nie interesuje, nic mi się nie chce') ma jeden z najbogatszych werbalizowanych klastrów PL w autocomplete + pokrewny film 233K; evergreen odrętwienia. Systems Audit czyta to jako tryb awarii układu motywacji, ciepło wobec widza — nie diagnoza osoby. Inny objaw niż 'nic nie czuję' (tu: zanik PRAGNIENIA/chęci, nie radości)."
+    }
+  ]
+}

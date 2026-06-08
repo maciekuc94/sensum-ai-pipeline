@@ -150,9 +150,13 @@ Slug : <slug>
   suppression, head-cropping suppression) to each prompt.
 - Calls `gemini-3-pro-image-preview` with `response_modalities=["IMAGE"]`.
 - Saves the result as `image_NNN.png`.
-- Post-processes: resizes/pillarboxes to 1920×1080 with `#F4E5CA` padding,
-  then enforces the brand background color by replacing near-white pixels
-  (`>248` in all channels) with exact `#F4E5CA`.
+- Post-processes each image in this order: resizes/pillarboxes to 1920×1080
+  with `#F4E5CA` padding → `enforce_background_color` snaps near-light pixels
+  (all channels `>170`) to exact `#F4E5CA` → `flatten_background` collapses any
+  remaining model texture in the **empty** background to flat `#F4E5CA`,
+  deterministically, while preserving the drawn subject (no re-render needed).
+  Texture baked **onto** the subject is left intact by design — that needs a
+  reroll, and Agent 6b QA flags it.
 - Waits 20 s between calls to stay under the Vertex AI quota.
 
 Existing files at the target path are skipped — to re-render a single image,
@@ -172,6 +176,19 @@ and need to enforce brand background color.
 
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --correct-bg
+```
+
+### `--flatten-bg` — background flatten pass (in place)
+
+Flattens model background texture to flat `#F4E5CA` across `images/`, **in place**
+(no re-render). The `--generate` pipeline already runs this on every fresh image;
+this mode is for flattening images that already exist. Idempotent — safe to re-run.
+Honors `--indices "1,6"` to flatten only specific images. Preserves the drawn
+subject; texture **on** the subject is left for a reroll (Agent 6b QA flags it).
+
+```bash
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --flatten-bg
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --flatten-bg --indices "1,6"
 ```
 
 ### `--apply-grain N` — grain pass

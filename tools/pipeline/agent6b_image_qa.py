@@ -6,9 +6,11 @@ contract using Gemini 2.5 Flash on Vertex AI. Cheap (~$0.04 per 120-image video)
 and roughly 2 minutes per video.
 
 Checks:
-  1. Background is a single flat solid sage beige (~#F4E5CA). No texture,
-     paper grain, mottling, aged-paper effect, parchment fibers, stains,
-     or color tint other than warm beige.
+  1. The drawn SUBJECT is clean engraving — no texture/grain/mottling baked
+     INTO the figure or object. (The empty background is flattened to exact
+     #F4E5CA deterministically in post by `flatten_background`, so background
+     texture is NOT a defect; texture ON the subject cannot be auto-fixed and
+     IS a real failure → reroll.)
   2. Only ink color is dark brown (~#582F0E). No greens, greys, ochres, etc.
   3. NO decorative border, frame, panel, or outline around the image.
   4. If a human figure appears, the entire head is inside the frame.
@@ -48,10 +50,16 @@ REQUEST_DELAY = 1.0  # seconds between Vertex AI calls
 
 QA_PROMPT = (
     "You are auditing an illustration for strict style compliance. "
-    "The illustration MUST satisfy ALL of the following:\n"
-    "1. Background is a single flat solid sage beige color (~#F4E5CA). "
-    "No texture, no grain visible to a human eye, no aged-paper effect, "
-    "no parchment fibers, no mottling, no color tint other than warm beige.\n"
+    "IMPORTANT CONTEXT: the empty sage-beige background is GUARANTEED clean by a "
+    "deterministic post-process that flattens it to exact #F4E5CA, so you must NOT "
+    "fail an image for texture, grain, mottling or tint in the EMPTY background "
+    "area — that is already handled and cannot be a defect. Judge only what is "
+    "actually DRAWN. The illustration MUST satisfy ALL of the following:\n"
+    "1. The drawn SUBJECT itself is clean line-and-cross-hatch engraving: no "
+    "photographic texture, no paper-grain, mottling or noise baked INTO the "
+    "figure/object, no aged-paper or parchment look on the subject. Texture sitting "
+    "ON the subject cannot be auto-flattened and IS a real failure that needs a "
+    "re-render — flag it.\n"
     "2. The only ink color is dark brown (~#582F0E). "
     "No greens, no greys, no ochres, no other colors.\n"
     "3. There is NO decorative border, frame, panel, or outline surrounding "

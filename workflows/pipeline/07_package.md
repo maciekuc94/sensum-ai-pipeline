@@ -26,7 +26,7 @@ Re-roll the winner after picking: `... --render --no-grain --indices N --count 3
 
 ## The 3-strategy contract
 
-Generate exactly **3** strategies. Each attacks a **distinct psychological angle** on THIS script — pick the 3 best-fitting from the menu (like the script architecture selector), never 3 flavours of one angle:
+Generate exactly **3** strategies. Each attacks a **distinct psychological angle** on THIS script — pick the 3 best-fitting from the menu, never 3 flavours of one angle:
 
 - **Reframe neurobiologiczny** — the hidden mechanism beneath the symptom.
 - **Uderzenie w mit** — overturns a belief the viewer holds as obvious.
@@ -51,8 +51,18 @@ Each strategy's title obeys **08_publish.md STEP 1** in full (do not restate it 
 
 **Visual vocabulary (optional palette, at most one per strategy):** single figure in a symbolic environment · symbolic still-life / one central object · dual / ghost figure (lived self beside unlived self) · metaphorical interior space · anatomical / 19th-century textbook cross-section (shapes only, no readable text).
 
+### 4 · Storytelling, rozmach & CTR — the v8 thumbnail doctrine
+The thumbnail is the **single highest-stakes frame of the whole video** — the click. It is rendered on the **premium model (`gemini-3-pro-image-preview`, native ~4K)**, so push the craft to the ceiling. Same storytelling spine as Agent 5's v8 image doctrine, dialled to maximum:
+
+- **Metaphor in TENSION, never a static icon.** The dominant symbol must be a concrete metaphor caught in a *moment* — mid-action, mid-break, forces colliding, a scale clash — not a calm object just sitting there or a figure simply standing and "being" the idea. Power order: **figure in a dynamic situation > figure straining against a charged object > a single charged object mid-event > inert object.**
+- **Rozmach is MANDATORY here** (in body images grandeur is *reserved*; in the thumbnail it is the *default*). Reach for cinematic scale every time: a dramatic camera angle (low-angle so the symbol towers; top-down so the human is dwarfed), an exaggerated **scale contrast** (tiny human vs colossal symbol — the slug-3 *górujący budzik nad maleńką figurą* is the baseline, not the ceiling), deep one-point perspective, one dominant force filling the frame.
+- **Emotion through POSTURE — faces are blank.** The figure has no face, so the **body carries the feeling**: collapse, recoil, curling inward, straining, reaching, surging. A faceless body in a charged posture out-emotes any neutral standing mannequin. Never a calm front-facing stander.
+- **The 1-second / postage-stamp test.** It must read *instantly* at 128 px: ONE focal point, massive figure-ground contrast, zero micro-detail that dissolves when shrunk. If you can't name it as a stamp, it fails.
+- **Visual curiosity gap.** The image itself poses a question (*what's crushing them? why are they so small? what's about to break?*) that the title + napis answer — **image, title, napis = three points of one hook.**
+- **Scroll-stop = scale + tension + contrast**, not prettiness. Reject: a floating symbol with no stakes, two calm figures, a tiny element lost in space, busy multi-element scenes, anything that reads as "a tasteful illustration" rather than "a moment that demands explanation."
+
 ### Render-prompt expansion
-For each strategy, expand its visual concept into a full **~400-word render prompt**: open with the scene, embed `CHARACTER_DESCRIPTION` **verbatim only if a figure appears**, close with `STYLE_SUFFIX` **verbatim**. These go to `md/07_prompts.md` (text-free; the napis is NOT in the prompt).
+For each strategy, expand its visual concept into a full **~400-word render prompt** that makes the grandeur **explicit** — name the **camera angle, the scale contrast, and the charged posture** (the model renders what you specify; a vague prompt defaults to a flat standing figure). Open with the dramatic scene, embed `CHARACTER_DESCRIPTION` **verbatim only if a figure appears**, close with `STYLE_SUFFIX` **verbatim**. These go to `md/07_prompts.md` (text-free; the napis is NOT in the prompt).
 
 ## Outputs
 
@@ -100,18 +110,20 @@ Model: claude-opus-4-8 (Claude Code)
 <… strategy 3 …>
 ```
 
-**`thumbnails_no_grain/thumbnail_01..03.png`** — one render per strategy (1920×1080, sage-beige pad, text-free). Strategy N → `thumbnail_0N.png`.
+**`thumbnails_no_grain/thumbnail_01..03.png`** — one render per strategy (**`gemini-3-pro-image-preview`, native ~4K ≈ 5504×3072, padded to exact 16:9**, sage-beige, text-free). Strategy N → `thumbnail_0N.png`. The premium model + 4K are reserved for these 3 click-assets; body images (Agent 6) stay on flash-v8.
 
 ## Self-check before writing
 - [ ] Exactly **3** strategies, **3 distinct angles**.
 - [ ] Every title obeys 08_publish.md STEP 1 (no clickbait, no instructional verb, no list, no mechanistic subject, ≤70 chars, no trailing period).
 - [ ] Every napis is **2–3 ALL-CAPS words** and **≠ its title** (real curiosity gap); no tabloid words.
 - [ ] Every visual = one dominant symbol, etching contract, **negative space reserved for the napis**, no text in the prompt.
+- [ ] Every visual clears the **rozmach + CTR bar**: metaphor in tension (not a static icon or a flat standing figure), cinematic scale or scale-contrast, emotion carried by posture, reads instantly at 128 px.
+- [ ] Each render prompt makes the **camera angle + scale + posture explicit** (no vague scene that defaults to a flat stander).
 - [ ] `07_prompts.md` uses `## Thumbnail N` headers; each prompt ends with `STYLE_SUFFIX` verbatim; `CHARACTER_DESCRIPTION` only where a figure appears.
 - [ ] Strategy 1 marked `[PRIMARY — recommended]`.
 
 ## Rate limiting & recovery
-3 renders × 20s spacing ≈ 1–1.5 min. Re-roll one strategy's image: `agent7_thumbnails.py <slug> --render --no-grain --indices N`. Variations of the winner: `--indices N --count 3`. All renders too similar: re-run `/package <slug>` for a fresh strategy pass.
+3 renders × 20s spacing on the premium 3-pro model (native 4K renders are slower) ≈ 2–3 min. Re-roll one strategy's image: `agent7_thumbnails.py <slug> --render --no-grain --indices N`. Variations of the winner: `--indices N --count 3`. All renders too similar: re-run `/package <slug>` for a fresh strategy pass.
 
 ## Post-production (Canva, manual)
 1. Open the chosen `thumbnail_0N.png` in Canva.

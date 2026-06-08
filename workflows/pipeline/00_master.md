@@ -275,7 +275,7 @@ workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
 workflows/pipeline/06_images.md      — Agent 6 (image generation, manual)
 workflows/pipeline/07_package.md     — Package (title+thumbnail strategist, manual)
 workflows/pipeline/align.md          — Align (post-record DaVinci bundle)
-workflows/guides/voice_brief.md      — Script-voice canon (6 rules)
+workflows/guides/voice_brief.md      — Script-voice canon (7 rules, v2 2026-06-07)
 workflows/guides/style_guide_images.md — Image style rules
 workflows/guides/davinci_subtitle_preset.md — One-time DaVinci subtitle preset
 ```

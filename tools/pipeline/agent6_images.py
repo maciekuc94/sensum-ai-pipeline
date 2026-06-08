@@ -34,6 +34,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from tools.utils import (
     read_output, write_output, get_output_dir, get_env,
     add_grain, resize_to_target, enforce_background_color, make_transparent,
+    flatten_background,
 )
 
 # ---------------------------------------------------------------------------
@@ -79,7 +80,9 @@ V8_FIGURE_RULE = (
     "waist, no hourglass, no feminine curve. Wherever skin is bare, render it as a smooth blank surface "
     "— no navel, no collarbones, no shoulder blades, no spine line, no abdominal or rib lines — just a "
     "clean contour with cross-hatch shading for volume. Absolutely no face. If the scene implies a "
-    "clothed person, draw simple plain clothing. "
+    "clothed person, draw simple plain clothing. If the scene is a STILL LIFE with no figure (objects "
+    "or an environment only), draw ONLY those objects with NO human figure, no mannequin, no hand and "
+    "no body anywhere in the frame. "
 )
 
 V8_MASTER_RENDERING = (
@@ -124,15 +127,23 @@ NEGATIVE_TRANSPARENT = (
 )
 
 
-def _generate_image_with_retry(client, genai_types, model, full_prompt, max_retries=4):
-    """Call Vertex image generation with 429 backoff; return raw image bytes."""
+def _generate_image_with_retry(client, genai_types, model, full_prompt, max_retries=4, image_config=None):
+    """Call Vertex image generation with 429 backoff; return raw image bytes.
+
+    image_config (genai_types.ImageConfig) is optional: flash body images pass
+    None (default resolution); agent7 thumbnails pass a 4K 16:9 ImageConfig to
+    render the premium 3-pro asset at native 4K. None leaves behavior unchanged.
+    """
     delay = 30
     for attempt in range(max_retries + 1):
         try:
             response = client.models.generate_content(
                 model=model,
                 contents=full_prompt,
-                config=genai_types.GenerateContentConfig(response_modalities=["IMAGE"]),
+                config=genai_types.GenerateContentConfig(
+                    response_modalities=["IMAGE"],
+                    image_config=image_config,
+                ),
             )
             candidates = response.candidates or []
             if not candidates or not candidates[0].content or not candidates[0].content.parts:
@@ -391,6 +402,7 @@ def generate_images(
             else:
                 resize_to_target(output_path)
                 enforce_background_color(output_path)
+                flatten_background(output_path)
                 if grain > 0:
                     add_grain(output_path, intensity=grain)
             print(f"  Saved: {output_path}")
@@ -483,6 +495,42 @@ def correct_background(slug: str) -> None:
         print(f"    Saved: {dst_path}")
 
     print(f"\nDone. {total} corrected image(s) saved to {corrected_dir}")
+
+
+# ---------------------------------------------------------------------------
+# Background flatten pass — kill model bg texture in place (no re-render)
+# ---------------------------------------------------------------------------
+
+
+def flatten_background_pass(slug: str, indices: list[int] | None = None) -> None:
+    """Flatten model background texture to flat sage in images/, IN PLACE.
+
+    Deterministic post-process (see utils.flatten_background): keeps the drawn
+    subject, collapses the textured *empty* background to exact #F4E5CA. Safe to
+    re-run (idempotent). Texture ON the subject is preserved by design — that
+    needs a re-render (Agent 6b QA flags it as a real failure).
+    """
+    print(f"\n=== Agent 6: Background Flatten Pass (in place) ===")
+    output_dir = get_output_dir(slug)
+    images_dir = output_dir / "images"
+    png_files = sorted(images_dir.glob("image_*.png"))
+    if not png_files:
+        print(f"No images found in {images_dir}")
+        return
+    if indices:
+        wanted = {f"image_{i:03d}.png" for i in indices}
+        png_files = [p for p in png_files if p.name in wanted]
+        if not png_files:
+            print(f"No images matched --indices {sorted(indices)} in {images_dir}")
+            return
+    total = len(png_files)
+    print(f"  Images dir: {images_dir}")
+    print(f"  Images    : {total}")
+    print()
+    for i, src_path in enumerate(png_files, start=1):
+        flatten_background(src_path)
+        print(f"  [{i}/{total}] flattened {src_path.name}")
+    print(f"\nDone. {total} image(s) flattened in place.")
 
 
 # ---------------------------------------------------------------------------
@@ -588,6 +636,9 @@ def _parse_args() -> argparse.Namespace:
                       help="Phase 2: generate images from 05_prompts.md.")
     mode.add_argument("--correct-bg", action="store_true",
                       help="Re-process existing images, masking near-white to #F4E5CA.")
+    mode.add_argument("--flatten-bg", action="store_true",
+                      help="Flatten model background texture to flat #F4E5CA in images/ "
+                           "in place (no re-render). Honors --indices.")
     mode.add_argument("--sync-scripts", action="store_true",
                       help="Align [IMAGE_NNN] markers in scripts with 05_prompts.md.")
     mode.add_argument("--apply-grain", type=int, metavar="N", default=0,
@@ -622,6 +673,15 @@ def main() -> None:
 
     if args.correct_bg:
         correct_background(slug)
+    elif args.flatten_bg:
+        flat_indices: list[int] | None = None
+        if args.indices:
+            try:
+                flat_indices = [int(x.strip()) for x in args.indices.split(",") if x.strip()]
+            except ValueError:
+                print(f"Error: --indices must be comma-separated integers, got: {args.indices!r}")
+                sys.exit(1)
+        flatten_background_pass(slug, indices=flat_indices)
     elif args.sync_scripts:
         sync_scripts(slug)
     elif args.apply_grain > 0:

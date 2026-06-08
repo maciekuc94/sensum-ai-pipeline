@@ -487,6 +487,55 @@ def make_transparent(image_path, *, threshold: int = BACKGROUND_THRESHOLD_DEFAUL
     Image.fromarray(arr).save(str(image_path))
 
 
+def flatten_background(
+    image_path,
+    *,
+    dark_t: int = 150,
+    min_size: int = 400,
+    dilate: int = 2,
+    background: tuple[int, int, int] = TARGET_BACKGROUND_RGB,
+) -> None:
+    """Deterministically flatten model background texture to exact sage — no re-render.
+
+    `enforce_background_color` only snaps near-white pixels; it cannot remove the
+    mid-tone mottle/speckle the image model bakes into the *empty* background.
+    This pass keeps the SUBJECT (the large connected dark ink/cross-hatch
+    structures of the drawing, plus everything they enclose) and flattens
+    EVERYTHING ELSE — including the small isolated dark speckles of background
+    texture — to exact `background`.
+
+    Limitation by design: texture sitting ON the drawn subject (e.g. a textured
+    clock face) is part of the subject mask and is intentionally preserved — that
+    case needs a re-render, not a flatten. Agent 6b QA is aware of this split.
+
+    Idempotent: re-running on an already-flat image yields the same result.
+    Degrades gracefully (leaves the image untouched) if SciPy is unavailable.
+    """
+    try:
+        from scipy import ndimage
+    except ImportError:
+        print(f"  flatten_background skipped (SciPy not installed): {Path(image_path).name}")
+        return
+    import numpy as np
+    from PIL import Image
+
+    arr = np.array(Image.open(str(image_path)).convert("RGB"))
+    minc = arr.min(axis=2)
+    ink = minc < dark_t                                          # structural ink/hatching of the drawing
+    ink_d = ndimage.binary_dilation(ink, iterations=dilate)      # bridge line fragments
+    labels, n = ndimage.label(ink_d)
+    if n == 0:                                                   # nothing drawn — leave as-is
+        return
+    counts = np.bincount(labels.ravel())
+    counts[0] = 0                                                # ignore the background label
+    keep = np.where(counts >= min_size)[0]                       # drop tiny isolated speckles
+    real = np.isin(labels, keep)
+    subject = ndimage.binary_fill_holes(real)                    # recover enclosed light/mid-tone interior
+    subject = ndimage.binary_erosion(subject, iterations=dilate)  # undo the bridging dilation
+    arr[~subject] = background
+    Image.fromarray(arr).save(str(image_path))
+
+
 # ---------------------------------------------------------------------------
 # Film grain (shared by agent6_images, agent7_thumbnails, tools/dev/add_grain)
 # ---------------------------------------------------------------------------

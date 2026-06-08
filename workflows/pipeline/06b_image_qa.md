@@ -3,9 +3,11 @@
 ## Purpose
 
 Agent 6b is a vision-based second pass over the images produced by **Agent 6**.
-It catches style violations that the in-pipeline color enforcement (`_enforce_background_color`)
-cannot detect — textured backgrounds, decorative borders, wrong color tints,
-and cropped heads.
+The empty background is no longer its job: Agent 6 now flattens the empty
+background to exact `#F4E5CA` deterministically in post (`flatten_background`),
+so **background texture is not a defect**. Agent 6b catches what flattening
+cannot touch — texture baked **into the drawn subject** (which needs a
+re-render), decorative borders, wrong color tints, and cropped heads.
 
 The validator uses **Gemini 2.5 Flash** on Vertex AI to score each PNG against
 the SENSUM style contract and writes a markdown report. It does **not** delete
@@ -63,9 +65,11 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent6b_image_qa.py "5_how_to_actua
 
 Each image must pass ALL five rules:
 
-1. Background is a single flat solid sage beige (~#F4E5CA). No texture, paper
-   grain, mottling, aged-paper effect, parchment fibers, stains, or any color
-   tint other than warm beige.
+1. The drawn **subject** is clean line-and-cross-hatch engraving — no
+   photographic texture, paper grain, mottling or noise baked **into** the
+   figure/object. The empty background is flattened to exact `#F4E5CA` in post,
+   so background texture is **not** a defect; texture **on the subject** cannot
+   be auto-flattened and is a real failure that needs a re-render.
 2. The only ink color is dark brown (~#582F0E). No greens, no greys, no ochres,
    no other colors.
 3. There is NO decorative border, frame, panel, or outline around the image.

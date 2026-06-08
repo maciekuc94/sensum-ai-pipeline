@@ -27,17 +27,18 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.utils import (
     read_output, get_output_dir, get_env,
-    add_grain, resize_to_target, enforce_background_color,
+    add_grain, resize_to_target, enforce_background_color, flatten_background,
 )
 from tools.pipeline.agent6_images import (
     V8_BG_RULE, V8_FIGURE_RULE, V8_MASTER_RENDERING, V8_NEGATIVE,
+    _generate_image_with_retry,
 )
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-IMAGE_MODEL = "gemini-2.5-flash-image"  # v8 (2026-06-08): tuned flash; was gemini-3-pro-image-preview
+IMAGE_MODEL = "gemini-3-pro-image-preview"  # premium: thumbnails are the 3-image click asset → 3-pro at native max res (~5504×3072 at image_size="4K"). Body images (agent6) stay flash-v8.
 GRAIN_INTENSITY = 12  # project standard (Gaussian std dev on 0–255)
 REQUEST_DELAY = 20    # seconds between Vertex AI calls to stay under QPM quota
 
@@ -104,39 +105,34 @@ def _generate_image(
     """Generate one image via Gemini and apply post-processing. Returns True on success."""
     from google.genai import types as genai_types
 
-    print(f"  Generating thumbnail {index}/{total}...")
+    print(f"  Generating thumbnail {index}/{total} (3-pro, native 4K)...")
     try:
-        response = client.models.generate_content(
-            model=IMAGE_MODEL,
-            contents=V8_BG_RULE + V8_FIGURE_RULE + prompt + V8_MASTER_RENDERING + V8_NEGATIVE + NEGATIVE_TEXT,
-            config=genai_types.GenerateContentConfig(
-                response_modalities=["IMAGE"],
-            ),
+        img_bytes = _generate_image_with_retry(
+            client, genai_types, IMAGE_MODEL,
+            V8_BG_RULE + V8_FIGURE_RULE + prompt + V8_MASTER_RENDERING + V8_NEGATIVE + NEGATIVE_TEXT,
+            image_config=genai_types.ImageConfig(aspect_ratio="16:9", image_size="4K"),
         )
     except Exception as exc:
         print(f"  ERROR generating thumbnail {index}: {exc}")
         return False
 
-    candidates = response.candidates
-    if not candidates:
-        print(f"  ERROR: No candidates returned for thumbnail {index}")
-        return False
-
-    img_bytes = None
-    for part in candidates[0].content.parts:
-        if hasattr(part, "inline_data") and part.inline_data:
-            img_bytes = part.inline_data.data
-            break
-
-    if not img_bytes:
-        print(f"  ERROR: No image bytes in response for thumbnail {index}")
-        return False
-
     output_path.write_bytes(img_bytes)
 
-    # Post-processing: resize → bg enforce → (optional) grain
-    resize_to_target(output_path)
+    # Post-processing: PRESERVE the model's native max resolution (3-pro returns ~5504×3072
+    # at image_size="4K") — never downscale. Pad up to exact 16:9 only if the native ratio is
+    # slightly off (adds a thin sage bar, loses no pixels), then enforce the bichromatic
+    # contract and flatten background texture.
+    from PIL import Image as _Image
+    w, h = _Image.open(output_path).size
+    if w / h > 16 / 9:
+        target = (w, round(w * 9 / 16))      # too wide → pad height
+    elif w / h < 16 / 9:
+        target = (round(h * 16 / 9), h)      # too tall → pad width
+    else:
+        target = (w, h)
+    resize_to_target(output_path, target_size=target)
     enforce_background_color(output_path)
+    flatten_background(output_path)
     if apply_grain:
         add_grain(output_path, intensity=GRAIN_INTENSITY)
 

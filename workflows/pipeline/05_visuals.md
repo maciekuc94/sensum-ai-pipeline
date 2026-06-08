@@ -4,7 +4,7 @@
 
 Agent 5 reads the final edited script (`04_final.md`) and generates production-ready image prompts. This is a dedicated visual storytelling pass — the model focuses entirely on composition, pacing, and emotional resonance, with no narrative writing responsibilities.
 
-Since 2026-05-15 Agent 5 is **beat-aware**: it reads the script's `ARCHITECTURE:` declaration (Composite Portrait, Forensic Case Study, Historical Reversal, Socratic Challenge, or Systems Audit) and applies a *Visual Register Map* specific to each beat of that architecture. Since 2026-05-29 the default architecture is **Composite Portrait** (recurring figure + recurring object-motif, ~10–15 min, full second person).
+Agent 5 reads the script's **natural emotional arc** organically — it is not tied to any declared architecture (narrative architectures were retired 2026-06-07; the lean `/draft` chain writes the script freely, with no architecture tag). Lead the visual register with the arc the script *actually* has: an intimate, observational opening → a deepening toward the cost, mechanism, or origin → a wide, quiet, resolving close. When the script supports it, lean on a recurring faceless figure (the viewer's „ty") and a recurring object-motif that returns transformed at the close.
 
 Since 2026-05-28 Agent 5 runs **inside the Claude Code session** — Opus 4.8 generates prompts directly, no Anthropic API call. The Python script (`agent5_visuals.py --expand`) handles only the post-processing: injecting CHARACTER_DESCRIPTION + STYLE_SUFFIX constants into every visual description and exporting phrase files. (`--extract` is extraction-only — it pulls `docx/script_corrected.docx` to `md/script_corrected.md`, which `/visuals` uses as its source when present. Called automatically by the skill.)
 
@@ -47,7 +47,6 @@ Write the header block first, then one entry per image separated by `---`. Use t
 Generated: <YYYY-MM-DD>
 Source: md/04_final.md
 Agent: agent5_visuals (claude-opus-4-8 / Claude Code)
-Architecture: <architecture name>
 Total images: <N>
 
 Review and edit these prompts before expanding. Run --expand to assemble full Imagen prompts.
@@ -55,7 +54,6 @@ Review and edit these prompts before expanding. Run --expand to assemble full Im
 ---
 
 ## Image 001
-**Beat:** <beat name from the architecture>
 **Figure:** yes|no
 **Sentence:** "<exact verbatim sentence(s) from script>"
 **Visual:**
@@ -67,7 +65,7 @@ Review and edit these prompts before expanding. Run --expand to assemble full Im
 ...
 ```
 
-Extract `<topic>` from the first `# ` heading of `04_final.md`. Extract `<architecture>` from `md/03_architecture.md` (first line `ARCHITECTURE: <name>`) — as of 2026-06-04 the `ARCHITECTURE:` line no longer lives in `04_final.md` (stripped at finalize so it can't leak into the recorded script). Fallback for older slugs without `03_architecture.md`: read the `ARCHITECTURE:` line from the script, else `Composite Portrait` (the channel default).
+Extract `<topic>` from the first `# ` heading of `04_final.md` (or the first line of `md/script_corrected.md` when present).
 
 **Critical:** write only the core visual description in `**Visual:**` — do NOT prepend CHARACTER_DESCRIPTION or append STYLE_SUFFIX. The expand step injects those constants automatically.
 
@@ -82,7 +80,7 @@ Extract `<topic>` from the first `# ` heading of `04_final.md`. Extract `<archit
 
 ### Composition Types
 
-Each visual must imply one of these compositions. Vary across the full set — use each at least 6 times where the beat allows, never repeat the same type more than twice in a row:
+Each visual must imply one of these compositions. Vary across the full set — use each at least 6 times where the script allows, never repeat the same type more than twice in a row:
 
 - **Close-up**: just hands holding an object, a detail of posture, two hands in contrast
 - **Overhead**: figure viewed from directly above, small in large empty space
@@ -98,6 +96,35 @@ Each visual must imply one of these compositions. Vary across the full set — u
 - **Theatre tableau**: three or more figures arranged in a stage-like composition, frozen mid-gesture, centered, slightly stylized
 
 Any composition may be rendered without a figure when the scene's meaning lives in absence, in objects, in an environment, or in an anatomical/diagrammatic mechanism.
+
+### Metaphor Mandate — abstract lines become concrete images
+
+The single biggest difference between a forgettable image and a strong one: a CONCRETE sentence can be shown literally; an ABSTRACT / conceptual / emotional sentence must be TRANSLATED into a concrete visual metaphor — never illustrated literally as "a figure embodying the idea".
+
+Run this test on EVERY sentence:
+- **Concrete** — names a physical action, object, or place ("przespałeś budzik", "telefon w dłoni")? → show it directly.
+- **Abstract** — a concept, judgment, feeling, or generalization with no physical anchor ("twoja wartość na czymś się opiera", "jesteś do niczego", "życie napędzane strachem")? → you MUST invent a concrete metaphor (object, environment, dynamic situation, or spatial relationship) that CARRIES the idea.
+
+Build the metaphor in this order of preference:
+1. **Figure inside a dynamic situation** — the ground cracking under it, fleeing its own shadow, balancing on one fragile support. Strongest: it SHOWS the idea happening.
+2. **Figure interacting with a meaning-bearing object** — reaching for a bar always out of reach; a hand holding a magnifying glass over one tiny mark.
+3. **Object / environment alone** when a body adds nothing.
+
+Pick an interesting CAMERA. Frontal eye-level on a centred figure is the most inert choice — avoid it for abstract beats.
+
+### Anti-patterns — the boring defaults to REFUSE
+
+What the model reaches for when it gives up on storytelling. If your visual for an abstract sentence is one of these, rewrite it:
+- A faceless figure standing front-facing, arms at sides, "being" the abstraction.
+- Two figures standing side by side AS the whole idea (two-figure contrast is only allowed when both halves DO something specific).
+- A figure sitting passively with no object, situation, or spatial tension.
+- "A figure representing [abstract noun]" — representation is not storytelling.
+
+Gut-check: does this frame SHOW the idea happening, or just POINT at it? If it points, find the image that makes it happen.
+
+### Grandeur gear — scale & sweep on the dramatic beats
+
+The renderer now applies museum-grade master-engraving craft to every image automatically (deep tonal range, sculptural light, refined detail — Agent 6). YOUR job is to decide WHERE the composition itself goes big. On the climactic / high-stakes / dramatic-metaphor beats (the cost, the collapse, the turn), stage with cinematic GRANDEUR: monumental scale (a small figure dwarfed by a towering element, or one object rendered vast), a dramatic camera (low worm's-eye up, steep overhead, strong diagonal recession into depth), sweeping dynamic energy. RESERVE it — keep the intimate openings intimate and the quiet close quiet. Grandeur is a spike on the peak beats, not a constant: if every image is epic, none is.
 
 ### When to Include the Figure (`include_figure: yes|no`)
 
@@ -119,206 +146,19 @@ OMIT the figure when:
 
 When in doubt, ask: does the sentence want the viewer to see a *person*, or to see *what a person is left with*?
 
-**CALIBRATION:** across the full set, expect roughly 50–70% `**Figure:** yes`. If your output is 90%+ figures, you are under-using absence. If 30% or below, you are losing the channel's signature.
+**CALIBRATION:** across the full set, expect roughly 60–75% `**Figure:** yes` — the faceless figure is the channel's signature, but spend absence deliberately (objects, environments, mechanisms). If your output is 90%+ figures, you are under-using absence; if 40% or below, you are losing the signature.
 
-### Beat Sequence & Visual Register
+### Emotional Arc
 
-**Read the architecture from `md/03_architecture.md` (first line `ARCHITECTURE: <name>`; fallback: the script's `ARCHITECTURE:` line for older slugs) and apply the matching register below.**
+The script is **not tagged with any architecture** — read it and follow the emotional arc it *actually* has, then lead the visual register with that arc. Don't impose a fixed structure; if the script moves differently, follow the script. The point is that the visuals should breathe with the script's movement, not stamp one mood across the whole set.
 
----
+Most SENSUM scripts move roughly like this:
 
-**FORENSIC CASE STUDY** (4 beats: Symptom → Investigation → Culprit → Implication)
+- **Opening — the surface.** Intimate, observational, a caught private moment. Prefer close-ups of posture, object-forward (a telltale object), overhead of the figure small in space, still-life. Avoid diagram/explanation here — observe, don't diagnose yet.
+- **Middle — the cost, the mechanism, the origin.** This is where weight accumulates and the "why" is revealed. Prefer figure-burdened / sequential (same figure twice, before/after the toll), and — where it genuinely fits — cutaway/cross-section, scale-shift (the small root made enormous), diagrammatic, two-figure contrast. Keep it warm, not cold-lab, when it's the figure's own history.
+- **Close — the reframe and recognition.** Settling, lightened, returned-but-changed. Prefer diptych (old reading vs new reading of the same thing), the figure holding the recurring motif differently, figure upright/opened, and a wide, quiet resolving frame. Avoid "fixed/cured" triumph — this is acceptance, not victory; echo the opening with one element changed.
 
-Beats appear in order; [Visual Pause] markers and transitions ("Start with the symptom…", "Now the investigation…", "Here is the mechanism…", "Now look at what this reveals…") signal beat boundaries.
-
-**Beat 1 — The Symptom (opening)**
-- Mood: clinical observation, quiet, intimate
-- Preferred compositions: close-up of posture detail, overhead of figure in empty space, still-life
-- Metaphor families: clinical evidence — clipboard, single chair, phone face-down, stethoscope on desk
-- Scale: small, single-subject, intimate
-- Avoid: dynamic action, multi-figure scenes, dramatic motion
-
-**Beat 2 — The Investigation**
-- Mood: forensic, diagrammatic, evidence-gathering
-- Preferred compositions: object-forward (magnifier, lab instruments), cross-section/cutaway, two-figure contrast (researcher vs. subject), diagrammatic/schematic
-- Metaphor families: investigation tools — magnifier, microscope, evidence board, schematic diagram, exposed mechanism, dissection layout
-- Scale: medium with annotated detail
-- Avoid: empty environments — populate with evidence
-
-**Beat 3 — The Culprit (mechanism revealed)**
-- Mood: revelation, structural, unveiling
-- Preferred compositions: cross-section, cutaway, scale-shift (the small made enormous), diagrammatic, x-ray transparency
-- Metaphor families: anatomy revealed — brain cross-section, exposed gear, machine interior, root system underground, building cutaway
-- Scale: dramatic, the hidden made huge
-- Avoid: surface-level exteriors, generic faceless figure poses
-
-**Beat 4 — The Implication (close)**
-- Mood: quiet, resolving, wide
-- Preferred compositions: wide (figure-in-landscape), figure-walking-away, doorframe/passage, figure on a threshold
-- Metaphor families: return to life — open doorway, horizon line, single figure walking forward, dawn-window, empty path
-- Scale: expansive, figure small but resolved
-- Avoid: tight intimacy, claustrophobia
-
----
-
-**HISTORICAL REVERSAL** (4 beats: Old Belief → Discovery → New Mechanism → Rewrite)
-
-**Beat 1 — The Old Belief**
-- Mood: dignified, period, settled
-- Preferred compositions: formal portrait pose, single-figure dignified, still-life (old textbook), framed picture on a wall
-- Metaphor families: period authority — old textbook, lecture podium, wall portrait, framed certificate, dusty leather-bound book
-- Scale: medium, formal, centered
-- Avoid: motion, contemporary objects, asymmetry
-
-**Beat 2 — The Discovery That Broke It**
-- Mood: dynamic, unexpected angle, off-balance
-- Preferred compositions: two-figure contrast (old vs. new), object-forward (single new instrument), diptych showing rupture
-- Metaphor families: a hand reaching past a barrier, a single new tool, a notebook page mid-write, a paper torn down the middle
-- Scale: medium with one element breaking the symmetry
-- Avoid: settled formal compositions — break the visual rhythm of Beat 1
-
-**Beat 3 — The New Mechanism**
-- Mood: modern, diagrammatic, clean
-- Preferred compositions: cross-section, schematic/diagrammatic, anatomical cutaway, scale-shift
-- Metaphor families: modern science — clean diagram, flowchart, exposed circuit board, anatomical plate
-- Scale: medium with annotated detail
-- Avoid: period imagery, formal portraits
-
-**Beat 4 — The Rewrite**
-- Mood: side-by-side weight, recognition, settled-new
-- Preferred compositions: diptych (before/after), two-figure contrast (then/now), erasure-and-replace layout
-- Metaphor families: comparison artifacts — left page vs. right page, framed old vs. open new, a hand crossing out and rewriting
-- Scale: balanced, two-element composition
-- Avoid: single-element shots — this beat IS the contrast
-
----
-
-**SOCRATIC CHALLENGE** (6 beats: Question → Step 1 → Step 2 → Step 3 → Answer → Question Reframed)
-
-**Beat 1 — The Question**
-- Mood: open, suspended, facing-the-unknown
-- Preferred compositions: figure shown from behind facing away, figure facing a blank wall, figure on a threshold, still-life (closed door alone)
-- Metaphor families: the unanswered — blank wall, empty page, closed door, fork in a path
-- Scale: medium, figure-centered, surrounded by space
-- Avoid: answers, resolution imagery, multi-figure scenes
-
-**Beat 2 — Logical Step 1**
-- Mood: instructional, careful, single-idea
-- Preferred compositions: object-forward (one prop), close-up of a single hand on a single object, isolated still-life
-- Metaphor families: foundational objects — a single brick, a single key, a single coin, an open palm
-- Scale: tight, one-element
-- Avoid: complexity, multiple objects
-
-**Beat 3 — Logical Step 2**
-- Mood: building, additive, sequence
-- Preferred compositions: two-element still-life, hand placing a second object beside the first, sequential frames
-- Metaphor families: stacking — two bricks, a hand bridging two objects, a chain link
-- Scale: medium, two-element
-- Avoid: chaos, more than two focal points
-
-**Beat 4 — Logical Step 3**
-- Mood: completing, click-into-place
-- Preferred compositions: three-element arrangement, sequential, fitting-together imagery
-- Metaphor families: locking mechanisms — three bricks forming an arch, a key entering a lock, a final puzzle piece
-- Scale: medium, structural
-- Avoid: incompleteness imagery
-
-**Beat 5 — The Answer**
-- Mood: revelation, quiet recognition
-- Preferred compositions: scale-shift, cross-section, single-element revealed
-- Metaphor families: opened-up — door swung open, lid lifted off a box, curtain pulled back, a single object now in full view
-- Scale: dramatic
-- Avoid: dimming, atmospheric haze
-
-**Beat 6 — The Question Reframed**
-- Mood: returned-but-changed, settled
-- Preferred compositions: echo of Beat 1 composition (figure-from-behind, threshold) — but one element deliberately changed
-- Metaphor families: same scene, new posture — open door instead of closed, figure stepping forward instead of standing still
-- Scale: medium, deliberately echoing the opener
-- Avoid: a brand-new visual register — the *return* is the point
-
----
-
-**SYSTEMS AUDIT** (5 beats: System Description → Failure Mode → Trigger → What System Optimizes For → Diagnostic Conclusion)
-
-**Beat 1 — The System Description**
-- Mood: engineering-precise, schematic, cool
-- Preferred compositions: schematic/diagrammatic, cross-section, exposed-machine, still-life of the machine at rest
-- Metaphor families: machine anatomy — gears in a row, pipes and valves, a circuit board, a cutaway engine
-- Scale: medium with annotated detail
-- Avoid: human warmth, organic curves
-
-**Beat 2 — The Failure Mode**
-- Mood: malfunction, interruption, jam
-- Preferred compositions: object-forward with one element broken/displaced, close-up of a jammed gear, diptych (working/broken)
-- Metaphor families: breakage — bent gear, snapped wire, leaking pipe, an arrow halted mid-flight, a stuck lever
-- Scale: medium, single-failure-point
-- Avoid: full-system shots — zoom in on the broken part
-
-**Beat 3 — The Trigger**
-- Mood: cause-and-effect, sequence
-- Preferred compositions: sequential, theatre tableau (dominoes mid-fall), object-forward (input-leading-to-output)
-- Metaphor families: trigger chain — a hand pressing a button, a pebble starting a rockslide, a match approaching a fuse
-- Scale: medium, sequential
-- Avoid: static single-shot imagery — show the chain
-
-**Beat 4 — What the System Is Actually Optimizing For**
-- Mood: pulled-back, reveal-of-purpose, redirection
-- Preferred compositions: wide reveal showing where outputs actually go, two-figure contrast (expected vs. actual destination), diagrammatic (redirected-flow)
-- Metaphor families: misdirection — water flowing somewhere unexpected, a track switching, a current pulling sideways
-- Scale: wide, redirective
-- Avoid: tight close-ups — pull back to show the *real* destination
-
-**Beat 5 — The Diagnostic Conclusion**
-- Mood: settled, system-at-rest, accepting
-- Preferred compositions: the system shown calmly, working-as-designed, diagrammatic (annotated schematic), still-life
-- Metaphor families: accepted-machine — a clock ticking steadily, a river flowing in its bed, an engine idling
-- Scale: medium, balanced
-- Avoid: triumph imagery, transformation imagery — this is *acceptance*, not victory
-
----
-
-**COMPOSITE PORTRAIT** (4 movements: Surface → Cost → Origin → Reframe) — **the channel default (~10–15 min, full second person „ty")**
-
-**Signature rules (apply across the whole set):**
-- **One recurring figure.** The faceless figure is the SAME protagonist throughout — same silhouette/proportions, evolving posture across the movements. This continuity is the visual spine. Lean hard on the **Sequential** composition (same figure twice in one frame, at two moments). The script is now written in **full second person**, so this figure is the viewer's own avatar — „you"; it is never a named third-person character (the voice braid was retired 2026-05-29).
-- **One recurring object-motif.** A single object (chair, door, stone, thread) introduced in Surface, reappearing transformed in every movement and at the close. Give it its own object-forward / still-life frames.
-- **Figure calibration runs higher here: ~70–80% `**Figure:** yes`** (the protagonist is the spine) — but keep object-only/absence frames for the motif and for breathing room.
-
-**Beat 1 — The Surface**
-- Mood: intimate, observational, a caught private moment
-- Preferred compositions: close-up of the figure mid-gesture (the telltale behaviour), object-forward (the motif introduced), overhead of the figure small in space
-- Metaphor families: the tell — a repeated small action, the motif-object in the figure's hands, a habitual posture
-- Scale: intimate, single-subject
-- Avoid: diagram/explanation, multi-figure, anything that diagnoses (we observe, not explain yet)
-
-**Beat 2 — The Cost**
-- Mood: quiet weight, accumulation, depletion
-- Preferred compositions: figure carrying/burdened, sequential (same figure twice — before/after the toll), still-life of aftermath (the motif worn, heavier)
-- Metaphor families: weight & residue — sagging posture, an object grown heavy, traces left behind, an emptied room
-- Scale: medium, the toll made physical
-- Avoid: mechanism/diagram (too early), triumph
-
-**Beat 3 — The Origin**
-- Mood: revelation, structural, tender — not clinical
-- Preferred compositions: cross-section/cutaway (the origin inside), scale-shift (the small root made enormous), sequential (figure now vs an earlier self), the motif shown at its beginning
-- Metaphor families: roots & beginnings — a root system, a first imprint, a hand learning the gesture for the first time, the motif as it once was
-- Scale: dramatic, the hidden made visible
-- Avoid: cold-lab framing (this is the figure's history — keep it warm), blame imagery
-
-**Beat 4 — The Reframe**
-- Mood: settling, recognition, lightened
-- Preferred compositions: diptych (old reading vs new reading of the SAME behaviour), figure holding the motif differently (same object, new relationship), figure upright/opened
-- Metaphor families: same thing seen anew — the motif re-held, a door now open, the same posture unclenched
-- Scale: balanced
-- Avoid: "fixed/cured" imagery — this is acceptance, not victory
-
-**Beat 5 — Permission Practice + Recognition Close**
-- Mood: at rest, quiet, returned-but-changed
-- Preferred compositions: echo of Beat 1's composition but with one element changed; figure at rest with the motif resolved; wide/quiet
-- Metaphor families: the return — same scene, new posture; the motif set down or held lightly
-- Scale: expansive but intimate
-- Avoid: a brand-new visual register — the *return* to Beat 1 is the point
+**Recurring spine (when the script supports it).** Many scripts have a recurring faceless figure (the same protagonist — the viewer's own „ty", same silhouette, evolving posture) and a single recurring object-motif (a chair, a door, a stone, a clock, a thread) introduced early and returning transformed at the close. When they're there, lean on them: give the motif its own object-forward / still-life frames, and use the **Sequential** composition (same figure twice in one frame) to show change over time. This continuity is the visual spine — but it's driven by the script, not mandatory.
 
 ---
 
@@ -365,14 +205,23 @@ Replace or remove before writing any entry:
 - "Cross-section anatomical diagram of a human chest cavity in 19th-century scientific etching style, the ribcage opened like a delicate cabinet, each rib finely articulated in cross-hatched ink, a small nested chamber at center"
 - "A tipped antique hourglass on its side with fine sand spilling in a delicate curving stream onto a plain surface, beside it a single glass vessel half-filled with water, one round droplet suspended mid-fall above its surface"
 
+**Abstract → concrete metaphor (the hard cases — translate, don't illustrate):**
+
+- "self-worth stays grounded regardless of the day" → a figure stands still while roots from its feet grip the earth and a gust of torn paper and dry leaves streams past unmoved (NOT "a figure standing firmly")
+- "worth propped up by one thing — results" → a figure balancing on a thin plank held up by a single fragile post over empty space
+- "it's not one thing that cracks — the ground under you cracks" → a figure braced as deep fissures split the floor apart beneath its feet
+- "growth became 'you're never enough yet'" → a figure on tip-toe reaching for a bar always lifted just beyond its fingertips, earlier bars receding behind
+- "a life driven by fear of yourself" → a figure fleeing its own long cast shadow, which rises off the floor into a clawed pursuer
+- "judging your whole self over one ordinary day" → a hand holding a magnifying glass that blows one tiny speck into a huge looming blot, the rest of the surface clean
+
 ### Script Cleaning
 
 Before processing, mentally strip these from the script:
 - [EDITOR NOTE: ...] annotations
-- Metadata headers (lines starting with #, Generated:, Model:, ARCHITECTURE:, ---)
+- Metadata headers (lines starting with #, Generated:, Model:, ---)
 - `## ` section-divider headers (2026-06-01) — these are editorial pause-markers, not spoken narration; `_clean_script` in `agent5_visuals.py` strips them automatically via `^#.*$`. Never generate an image for a section header line.
 
-[Visual Pause] markers ARE preserved — treat them as beat-boundary signals (the writer is telling you "this is a moment of weight, hold the image"). Do not quote them in the `**Sentence:**` field, but use them to recognize that you are crossing into a new beat.
+[Visual Pause] markers ARE preserved — treat them as moments of weight (the writer is telling you "hold the image here"). Do not quote them in the `**Sentence:**` field, but use them to recognize a shift in the emotional arc.
 
 The text you quote in `**Sentence:**` fields must be clean narration text only.
 
@@ -380,12 +229,14 @@ The text you quote in `**Sentence:**` fields must be clean narration text only.
 
 Before writing the file, verify:
 1. Every sentence in the script is covered by exactly one entry (no gaps, no double-coverage)
-2. `**Figure:**` calibration: 50–70% yes across the full set
+2. `**Figure:**` calibration: roughly 60–75% yes across the full set
 3. No entry has "glowing", "dim", "shadowed", "scribbles", or readable text
 4. Head-framing rule: every `**Figure:** yes` entry either shows the full head or explicitly excludes the head ("hand only")
-5. Architecture declared and beats appear in the correct order
+5. The visual register follows the script's emotional arc (intimate open → deepen → resolving close), with composition variety across the set
 6. No `**Visual:**` entry contains CHARACTER_DESCRIPTION or STYLE_SUFFIX text
 7. `Total images: <N>` in the header matches the actual count
+8. **Metaphor check:** every abstract / conceptual / emotional sentence is a concrete metaphor (object / situation / spatial relation), NOT a literal front-facing figure — zero "standing figure doing the abstraction", zero "two figures standing" as the whole idea
+9. **Grandeur is reserved:** dramatic scale/camera is spent on the peak/cost beats, not stamped on intimate openings or the quiet close
 
 ---
 
@@ -409,7 +260,6 @@ outputs/
 
 ```markdown
 ## Image 001
-**Beat:** The Symptom
 **Figure:** yes
 **Sentence:** "exact quoted sentence from the script"
 **Visual:**
@@ -422,7 +272,6 @@ Faceless figure perched on the edge of a bed, one hand resting limp on a face-do
 
 ```markdown
 ## Image 001
-**Beat:** The Symptom
 **Figure:** yes
 **Sentence:** "exact quoted sentence from the script"
 **Imagen prompt:**
@@ -448,9 +297,9 @@ Open `outputs/videos_pl/{slug}/md/05_prompts.md` after `--expand` completes. Thi
 - Specifically watch for cutaways, scale-shifts, diagrammatic, still-life, and diptych.
 - Flag any run of 3+ identical composition types and rewrite one.
 
-**Check beat-aware register:**
-- Does each beat *look* like its register? Symptom-beat should feel quiet and intimate; investigation-beat should be evidence/diagrammatic; mechanism-reveal should use cutaway/scale-shift; close should be wide and resolving.
-- Beats should appear in the order declared by the architecture.
+**Check the emotional arc:**
+- Does the visual register follow the script's arc? The opening should feel quiet and intimate; the deepening/mechanism stretch can use cutaway/scale-shift/diagrammatic; the close should be wide and resolving.
+- Mood should track the script's movement — not one register stamped across the whole set.
 
 **Check emotional accuracy:**
 - Does each image amplify the emotional beat of its sentence?
@@ -480,13 +329,9 @@ The script may be shorter than expected, or Claude grouped too many sentences to
 
 The compact `05_prompts.md` may be corrupted or already expanded. If it already has `**Imagen prompt:**` entries, it's ready for Agent 9. If it's empty or malformed, re-run `/visuals <slug>`.
 
-**Beat field missing, wrong, or all the same beat**
+**Mood is flat — one register stamped across the whole set**
 
-Confirm `md/03_architecture.md` exists and its first line is `ARCHITECTURE:` followed by one of the five names exactly (this is the source of truth since 2026-06-04 — the `ARCHITECTURE:` line is intentionally stripped from `04_final.md`). If `03_architecture.md` is missing, `/visuals` falls back to the script's `ARCHITECTURE:` line, then to Composite Portrait (the channel default) — which is wrong for any forced short-form architecture. Re-run the architecture-selection step (or `/draft`) to regenerate `03_architecture.md`.
-
-**Investigation-beat images all show generic faceless figures**
-
-The register is being read but ignored. Spot-fix: edit the `**Imagen prompt:**` lines directly to insert investigation props (magnifier, microscope, evidence board, schematic diagram, cutaway). Or re-run `/visuals` — prompts are non-deterministic and the second pass typically applies the register more aggressively.
+The emotional arc isn't being followed. Spot-fix: edit the `**Imagen prompt:**` lines directly so the opening stays intimate (close-ups, still-life), the middle can deepen (cutaway, scale-shift, diagrammatic, two-figure contrast), and the close opens wide and resolves. Or re-run `/visuals` — prompts are non-deterministic and a second pass usually tracks the arc better.
 
 ---
 

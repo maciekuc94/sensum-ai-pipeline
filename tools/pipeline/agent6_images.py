@@ -55,6 +55,102 @@ NEGATIVE_PROMPT = (
 )
 
 # ---------------------------------------------------------------------------
+# v8 render recipe — "professionalism + rozmach" (tuned flash, 2026-06-08)
+# Master-engraving CRAFT + figure discipline + flat-bg + strengthened negative
+# are applied to EVERY render below (universal quality uplift, validated on
+# slug 3 v8 A/B). GRANDEUR / dramatic scale is deployed per-beat by Agent 5
+# (workflows/pipeline/05_visuals.md), NOT blanket-stamped here — so intimate
+# openings stay intimate. Revert: restore IMAGE_MODEL + remove this block.
+# ---------------------------------------------------------------------------
+
+V8_BG_RULE = (
+    "BACKGROUND RULE (absolute, highest priority): the entire background — every pixel that is "
+    "not part of the figure or the staged props — is ONE flat solid sage beige (#F4E5CA), "
+    "completely empty and uniform: no grey, no toned panel, no backdrop, no shadow field, no "
+    "halo, no vignette, no square inner panel, no album-cover framing. "
+)
+
+V8_FIGURE_RULE = (
+    "FIGURE RULE (highest priority): any human figure is a smooth, seamless, sexless, fully "
+    "androgynous featureless mannequin — ONE continuous smooth surface like a blank dress-form, "
+    "with NO visible joints, NO ball-and-socket segments, NO wooden panel seams. The figure has NO "
+    "gender: shoulders and hips the SAME width, the chest a single smooth FLAT plane like a plain "
+    "tailor's dress-form — no breasts, no cleavage, no pectoral curve, no nipples, no areola; straight "
+    "waist, no hourglass, no feminine curve. Wherever skin is bare, render it as a smooth blank surface "
+    "— no navel, no collarbones, no shoulder blades, no spine line, no abdominal or rib lines — just a "
+    "clean contour with cross-hatch shading for volume. Absolutely no face. If the scene implies a "
+    "clothed person, draw simple plain clothing. "
+)
+
+V8_MASTER_RENDERING = (
+    " RENDERING — museum-grade master engraving: render with the craftsmanship of a 19th-century "
+    "master engraving plate, the calibre of a Gustave Dore or Albrecht Durer engraving. Full rich "
+    "tonal range achieved purely through engraver's craft — deep, dense, velvety shadows built from "
+    "tightly layered cross-hatching and burin lines that wrap and follow the form, luminous clean "
+    "highlights, finely graded mid-tones; directional light that models every surface as sculptural and "
+    "volumetric. Intricate, controlled, confident linework with refined detail in materials, fabric "
+    "folds and props — the precision of a published plate, richly worked yet never cluttered. Bold dark "
+    "#582F0E espresso-brown ink, strong and decisive, NEVER faint or pale. Deep shadows are always DENSE "
+    "HATCHING, never a flat solid black silhouette fill. "
+)
+
+V8_NEGATIVE = (
+    "\n\nAvoid in this image: face, eyes, nose, mouth, facial features; "
+    "nipples, areola, breasts, breast swell, cleavage, chest or pectoral definition, "
+    "navel, belly button, genitals, pubic area, visible musculature, muscle tone, six-pack abs, "
+    "defined abdomen, rib lines, collarbones, shoulder blades, spine furrow; "
+    "hourglass figure, feminine curves, wide hips, narrow tapered waist, curvy silhouette; "
+    "ecorche, anatomical study, medical anatomy chart, realistic skin detail; "
+    "wooden ball joints, visible body joints, segmented manikin limbs, panel seams, articulated doll joints; "
+    "faint lines, pale washed-out linework, thin light-grey lines, low-contrast faded sketch, under-inked; "
+    "flat even dull lighting, uniform monotonous line weight, amateur flat shading; "
+    "busy cluttered overcrowded cramped composition, messy tangled scribble; "
+    "solid black silhouette fill, flat black shape; "
+    "front-view standing anatomy chart pose, gridded anatomy study; "
+    "photorealistic, photograph, 3D render; "
+    "any background other than one flat solid sage beige (#F4E5CA) — no paper texture, no mottling, "
+    "no parchment, no vellum, no grain, no green tint, no grey tint, no shading in the background, "
+    "no grey or toned backdrop, no shaded halo or vignette behind the figure; "
+    "decorative border, frame, inner panel or rectangle around the image; "
+    "cropped head, head out of frame, head touching top edge."
+)
+
+# Transparent mode (overlays) renders on white, so the sage-bg rules don't apply.
+NEGATIVE_TRANSPARENT = (
+    "\n\nAvoid in this image: face, facial features, photorealistic face, 3D render, "
+    "nipples, breasts, cleavage, navel, visible musculature, anatomical study; "
+    "faint pale washed-out linework; solid black silhouette fill; "
+    "cropped head, head out of frame, paper texture, decorative border, frame, inner panel."
+)
+
+
+def _generate_image_with_retry(client, genai_types, model, full_prompt, max_retries=4):
+    """Call Vertex image generation with 429 backoff; return raw image bytes."""
+    delay = 30
+    for attempt in range(max_retries + 1):
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=full_prompt,
+                config=genai_types.GenerateContentConfig(response_modalities=["IMAGE"]),
+            )
+            candidates = response.candidates or []
+            if not candidates or not candidates[0].content or not candidates[0].content.parts:
+                raise ValueError("Empty response (possible safety filter)")
+            for part in candidates[0].content.parts:
+                if hasattr(part, "inline_data") and part.inline_data:
+                    return part.inline_data.data
+            raise ValueError("No image in response")
+        except Exception as exc:
+            msg = str(exc)
+            if ("429" in msg or "RESOURCE_EXHAUSTED" in msg) and attempt < max_retries:
+                print(f"    429 — backoff {delay}s (retry {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+                delay = min(delay * 2, 120)
+                continue
+            raise
+
+# ---------------------------------------------------------------------------
 # Auto-QA helper
 # ---------------------------------------------------------------------------
 
@@ -235,7 +331,7 @@ def generate_images(
         print("  gcloud auth application-default login")
         sys.exit(1)
 
-    IMAGE_MODEL = "gemini-3-pro-image-preview"
+    IMAGE_MODEL = "gemini-2.5-flash-image"  # v8 (2026-06-08): tuned flash; was gemini-3-pro-image-preview
     print(f"  Project  : {project}")
     print(f"  Location : {location}")
     print(f"  Model    : {IMAGE_MODEL}")
@@ -250,12 +346,8 @@ def generate_images(
     success = 0
     REQUEST_DELAY = 20  # seconds between requests to stay under QPM quota
 
-    NEGATIVE_TEXT = (
-        "\n\nAvoid in this image: face, eyes, nose, mouth, facial features, "
-        "photorealistic face, 3D render, green/dark/colored background, "
-        "cropped head, head out of frame, paper texture, vellum, parchment, "
-        "decorative border, frame around image, inner panel."
-    )
+    # v8 recipe (V8_BG_RULE / V8_FIGURE_RULE / V8_MASTER_RENDERING / V8_NEGATIVE)
+    # is applied below from the module-level constants.
 
     WHITE_BG_OVERRIDE = (
         " BACKGROUND: flat solid pure white background (#FFFFFF), no texture, no grain. "
@@ -278,24 +370,17 @@ def generate_images(
         print(f"  [{seq}/{total}] Generating {filename}...")
 
         try:
-            full_prompt = prompt_text + (WHITE_BG_OVERRIDE if transparent else "") + NEGATIVE_TEXT
-            response = client.models.generate_content(
-                model=IMAGE_MODEL,
-                contents=full_prompt,
-                config=genai_types.GenerateContentConfig(
-                    response_modalities=["IMAGE"],
-                ),
-            )
-            candidates = response.candidates or []
-            if not candidates or not candidates[0].content:
-                raise ValueError("Empty response (possible safety filter)")
-            img_bytes = None
-            for part in candidates[0].content.parts:
-                if hasattr(part, "inline_data") and part.inline_data:
-                    img_bytes = part.inline_data.data
-                    break
-            if not img_bytes:
-                raise ValueError("No image in response")
+            if transparent:
+                full_prompt = (
+                    V8_FIGURE_RULE + prompt_text + WHITE_BG_OVERRIDE
+                    + V8_MASTER_RENDERING + NEGATIVE_TRANSPARENT
+                )
+            else:
+                full_prompt = (
+                    V8_BG_RULE + V8_FIGURE_RULE + prompt_text
+                    + V8_MASTER_RENDERING + V8_NEGATIVE
+                )
+            img_bytes = _generate_image_with_retry(client, genai_types, IMAGE_MODEL, full_prompt)
 
             with open(str(output_path), "wb") as f:
                 f.write(img_bytes)

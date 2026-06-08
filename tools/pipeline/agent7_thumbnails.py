@@ -29,12 +29,15 @@ from tools.utils import (
     read_output, get_output_dir, get_env,
     add_grain, resize_to_target, enforce_background_color,
 )
+from tools.pipeline.agent6_images import (
+    V8_BG_RULE, V8_FIGURE_RULE, V8_MASTER_RENDERING, V8_NEGATIVE,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-IMAGE_MODEL = "gemini-3-pro-image-preview"
+IMAGE_MODEL = "gemini-2.5-flash-image"  # v8 (2026-06-08): tuned flash; was gemini-3-pro-image-preview
 GRAIN_INTENSITY = 12  # project standard (Gaussian std dev on 0–255)
 REQUEST_DELAY = 20    # seconds between Vertex AI calls to stay under QPM quota
 
@@ -105,7 +108,7 @@ def _generate_image(
     try:
         response = client.models.generate_content(
             model=IMAGE_MODEL,
-            contents=prompt + NEGATIVE_TEXT,
+            contents=V8_BG_RULE + V8_FIGURE_RULE + prompt + V8_MASTER_RENDERING + V8_NEGATIVE + NEGATIVE_TEXT,
             config=genai_types.GenerateContentConfig(
                 response_modalities=["IMAGE"],
             ),

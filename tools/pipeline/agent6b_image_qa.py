@@ -281,14 +281,14 @@ def audit(slug: str, *, quiet: bool = False, only_indices: list[int] | None = No
 
     if not png_files:
         if not quiet:
-            print(f"\n=== Agent 9b: Image QA ===")
+            print(f"\n=== Agent 6b: Image QA ===")
             for r in missing:
                 print(f"  MISS  {r['filename']}  image file missing")
         return sorted(missing, key=lambda r: r["index"])
 
     client, project = _init_client()
 
-    print(f"\n=== Agent 9b: Image QA ===")
+    print(f"\n=== Agent 6b: Image QA ===")
     print(f"Slug    : {slug}")
     print(f"Project : {project}")
     print(f"Model   : {QA_MODEL}")
@@ -343,7 +343,7 @@ def _retry_failed(slug: str, failed_indices: list[int]) -> None:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Agent 9b: vision-based image QA against SENSUM style rules.",
+        description="Agent 6b: vision-based image QA against SENSUM style rules.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"
@@ -351,11 +351,11 @@ def _parse_args() -> argparse.Namespace:
             "  python tools/pipeline/agent6b_image_qa.py \"5_how_to_actually_stay_mentally_healthy\" --retry\n"
         ),
     )
-    parser.add_argument("slug", help="Output slug under outputs/videos/.")
+    parser.add_argument("slug", help="Output slug under outputs/videos_pl/.")
     parser.add_argument("--quiet", action="store_true",
                         help="Suppress per-image stdout, only print summary.")
     parser.add_argument("--retry", action="store_true",
-                        help="After QA, auto-regenerate failed images via Agent 9 and re-run QA on them.")
+                        help="After QA, auto-regenerate failed images via Agent 6 and re-run QA on them.")
     parser.add_argument("--indices", type=str, default=None,
                         help="Comma-separated 1-based indices to audit only (e.g. \"4,13,31\").")
     return parser.parse_args()
@@ -387,7 +387,7 @@ def main() -> None:
     if args.retry and failed:
         failed_indices = sorted(r["index"] for r in failed)
         _retry_failed(slug, failed_indices)
-        print(f"\n=== Agent 9b: Re-running QA on retried indices ===")
+        print(f"\n=== Agent 6b: Re-running QA on retried indices ===")
         results2 = audit(slug, quiet=args.quiet, only_indices=failed_indices)
         # Merge: replace the retried entries in the original results, keep others.
         retry_map = {r["index"]: r for r in results2}

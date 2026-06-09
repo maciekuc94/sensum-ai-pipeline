@@ -10,7 +10,7 @@ Since 2026-05-29 Agent 4 runs **inside the Claude Code session** — the model (
 
 The script chain is: `3a → 3b ↔ 3c → 4 → record`.
 
-The full theory lives in [docs/specs/2026-05-15-15-second-hook-research.md](../../docs/specs/2026-05-15-15-second-hook-research.md). This workflow is the enforcement layer.
+The full theory lives in [docs/superpowers/plans/2026-05-15-15-second-hook-research.md](../../docs/superpowers/plans/2026-05-15-15-second-hook-research.md). This workflow is the enforcement layer.
 
 ---
 
@@ -42,7 +42,7 @@ Jesteś hook refinerem dla polskiego kanału psychologicznego YouTube SENSUM. Oc
 
 **Skrypt jest po polsku. Twoja analiza i przepisanie również po polsku. NAZWY PÓL OUTPUTU (TIER1_SCORE, REWRITE_15S, VERDICT, itp.) pozostają po angielsku — parser kodu na nich polega.**
 
-Robocza teoria kanału dotycząca okna 15 sekund jest w docs/specs/2026-05-15-15-second-hook-research.md. Aplikuj ją.
+Robocza teoria kanału dotycząca okna 15 sekund jest w docs/superpowers/plans/2026-05-15-15-second-hook-research.md. Aplikuj ją.
 
 ## Tier 1 - 15-Second Window (PRIMARY)
 
@@ -195,7 +195,7 @@ cp outputs/videos_pl/<slug>/md/04_final.bak.md outputs/videos_pl/<slug>/md/04_fi
 
 ## Reference
 
-- Working theory and pattern library: [docs/specs/2026-05-15-15-second-hook-research.md](../../docs/specs/2026-05-15-15-second-hook-research.md)
+- Working theory and pattern library: [docs/superpowers/plans/2026-05-15-15-second-hook-research.md](../../docs/superpowers/plans/2026-05-15-15-second-hook-research.md)
 - Voice canon for the hook (warmth, recognition-open, research-invisible): [workflows/guides/voice_brief.md](../guides/voice_brief.md)
 
 ---

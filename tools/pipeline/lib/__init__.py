@@ -1,1 +1,1 @@
-"""Library modules used by agent_align.py (Agent 11)."""
+"""Library modules used by agent_align.py (the unnumbered Align satellite)."""

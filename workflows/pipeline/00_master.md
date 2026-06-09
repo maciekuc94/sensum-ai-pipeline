@@ -172,7 +172,7 @@ In Claude Code:
 
 Scores the opening 37 words (Tier 1, ≥8) and the opening 200 words (Tier 2, ≥7) in-session on Opus 4.8, then `agent4_hook.py --apply` splices the rewrite in place. Verdict must be `RECORD` before recording voiceover. See [04_hook.md](04_hook.md).
 
-### Steps 5, 6, 8 — Parallel-safe after 4
+### Steps 5 & 8 — Parallel-safe after 4
 
 ```bash
 # Both run in Claude Code (Opus 4.8, in-session — no API):
@@ -185,11 +185,11 @@ Scores the opening 37 words (Tier 1, ≥8) and the opening 200 words (Tier 2, �
 
 Review `05_prompts.md` carefully — it is the only gate before image cost. See [05_visuals.md](05_visuals.md) and [08_publish.md](08_publish.md).
 
-### **STOP — manual gate before Agents 9 and 10**
+### **STOP — manual gate before Agents 6 and 7**
 
-Agents 9 and 10 cost API credits and time. Always pause after Agent 8 completes and wait for explicit instruction before running either. This is a locked invariant.
+Agents 6 and 7 cost API credits and time. Always pause after Agent 8 completes and wait for explicit instruction before running either. This is a locked invariant.
 
-### Step 9 — Generate Images (manual)
+### Step 6 — Generate Images (manual)
 
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "emotional-dysregulation-in-adhd" --generate
@@ -197,7 +197,7 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "emotional-dysregu
 
 Renders each prompt via Gemini 3 Pro Image Preview at 16:9. See [06_images.md](06_images.md).
 
-### Step 10 — Generate Package: titles + thumbnails (manual)
+### Step 7 — Generate Package: titles + thumbnails (manual)
 
 In Claude Code (generates 3 packaging strategies in-session, then renders 3):
 
@@ -205,7 +205,7 @@ In Claude Code (generates 3 packaging strategies in-session, then renders 3):
 /package emotional-dysregulation-in-adhd
 ```
 
-Three packaging strategies (title + napis + visual concept) via Opus 4.8 (in-session, no API) → 3 thumbnails rendered by `agent7_thumbnails.py --render` on Gemini 3 Pro Image Preview. Grain + napis overlay added manually in Canva. Runs before `/publish` (its title feeds Agent 8). See [07_package.md](07_package.md).
+Three packaging strategies (title + napis + visual concept) via Opus 4.8 (in-session, no API) → 3 thumbnails rendered by `agent7_package.py --render` on Gemini 3 Pro Image Preview. Grain + napis overlay added manually in Canva. Runs before `/publish` (its title feeds Agent 8). See [07_package.md](07_package.md).
 
 ### Align — Post-Record (DaVinci Bundle)
 
@@ -238,8 +238,8 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 5 | `md/05_phrases.md` | Short phrase index used by Align |
 | 4  | `docx/script.docx` | Teleprompter-ready script (edit → save as `script_corrected.docx`) |
 | 8 | `md/08_publish.md` | Titles, 5 Shorts packages, YouTube metadata |
-| 9 | `images/image_NNN.png` | Generated 16:9 images |
-| 10 | `thumbnails_no_grain/thumbnail_NN.png` | 3 packaging thumbnails at 1920×1080 |
+| 6 | `images/image_NNN.png` | Generated 16:9 images |
+| 7 | `thumbnails_no_grain/thumbnail_NN.png` | 3 packaging thumbnails at 1920×1080 |
 | Align | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` | DaVinci bundle |
 | 3, 5, 6, 8 | `docx/*.docx` | Word exports of the corresponding markdown |
 

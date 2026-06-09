@@ -28,7 +28,7 @@ voiceover. The QA pass is fast (~2 minutes per 120-image video) and cheap
 
 Same as Agent 6:
 
-1. Images exist at `outputs/videos/{slug}/images/image_*.png`.
+1. Images exist at `outputs/videos_pl/{slug}/images/image_*.png`.
 2. `GOOGLE_CLOUD_PROJECT` is set in `.env`.
 3. Application Default Credentials are authenticated:
    ```bash
@@ -89,7 +89,7 @@ REASONS: <if FAIL, comma-separated phrases; if PASS write "none">
 
 ## Output
 
-`outputs/videos/{slug}/md/06_qa.md` — markdown report with:
+`outputs/videos_pl/{slug}/md/06_qa.md` — markdown report with:
 
 - Summary header (pass / fail / error counts, model used).
 - `## Failed images` — table of failed PNGs and the human-readable reasons.
@@ -134,11 +134,11 @@ If the Vertex model ID changes, edit `QA_MODEL` near the top of
 
 ## Common issues
 
-**`No images found in outputs/videos/<slug>/images/`**
+**`No images found in outputs/videos_pl/<slug>/images/`**
 
 Agent 6 has not run yet, or the slug is wrong. Verify:
 ```bash
-ls outputs/videos/<slug>/images/
+ls outputs/videos_pl/<slug>/images/
 ```
 
 **`vertex call failed: 404 ...`**

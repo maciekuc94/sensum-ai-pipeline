@@ -174,7 +174,7 @@ def _expand_mode(slug: str) -> None:
     docx_path = export_to_docx(slug, "md/05_phrases.md", "docx/05_phrases.docx")
     print(f"  Word export: {docx_path}")
 
-    print(f"\nDone. Review {OUTPUT_FILENAME}, then run Agent 9:")
+    print(f"\nDone. Review {OUTPUT_FILENAME}, then run Agent 6:")
     print(f'  PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "{slug}" --generate')
 
 
@@ -252,7 +252,7 @@ def main() -> None:
             return
         elif "**Imagen prompt:**" in existing_content:
             print("05_prompts.md already expanded. Nothing to do.")
-            print(f"Review {OUTPUT_FILENAME} and run Agent 9 when ready:")
+            print(f"Review {OUTPUT_FILENAME} and run Agent 6 when ready:")
             print(f'  PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "{slug}" --generate')
             sys.exit(0)
 

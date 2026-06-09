@@ -75,7 +75,7 @@ Slug : emotional-dysregulation-in-adhd
 [3/3] Parsing verification results and building output document...
   Verified: 8 | Flagged: 3 | Removed: 1
 
-Saved: outputs/videos/emotional-dysregulation-in-adhd/md/02_verified_research.md
+Saved: outputs/videos_pl/emotional-dysregulation-in-adhd/md/02_verified_research.md
 
 Done. Review the output, then run Agent 3 in Claude Code:
   /draft emotional-dysregulation-in-adhd
@@ -130,7 +130,7 @@ Verified: X claims | Flagged: Y claims | Removed: Z claims
 
 ## How to Review the Output
 
-Open `outputs/videos/{slug}/md/02_verified_research.md` in any markdown viewer or text
+Open `outputs/videos_pl/{slug}/md/02_verified_research.md` in any markdown viewer or text
 editor.
 
 ### Verified Claims

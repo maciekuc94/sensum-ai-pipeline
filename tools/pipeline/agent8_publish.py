@@ -1002,7 +1002,7 @@ def run_api_pipeline(slug: str) -> None:
         research = read_output(slug, RESEARCH_FILENAME)
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
-        print(f'\nRun Agent 2 first:\n  python tools/agent2_verify.py "{slug}"')
+        print(f'\nRun Agent 2 first:\n  python tools/pipeline/agent2_verify.py "{slug}"')
         sys.exit(1)
 
     topic = _extract_topic(narration)

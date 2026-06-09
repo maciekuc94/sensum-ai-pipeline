@@ -7,10 +7,10 @@ a PNG via Gemini 3 Pro Image Preview on Vertex AI (location=global).
 
 Two-phase workflow:
   Phase 1 — Verify prompts file exists (Agent 5 must have run first):
-      python tools/agent6_images.py "slug"
+      python tools/pipeline/agent6_images.py "slug"
 
   Phase 2 — Generate images:
-      python tools/agent6_images.py "slug" --generate
+      python tools/pipeline/agent6_images.py "slug" --generate
 
 Auxiliary modes:
   --correct-bg    Replace near-white pixels with #F4E5CA in existing images.
@@ -214,12 +214,12 @@ def _parse_prompts_from_file(content: str) -> list[str]:
 
 def extract_and_save_prompts(slug: str) -> None:
     """Phase 1: verify that 05_prompts.md was produced by Agent 5."""
-    print(f"\n=== Agent 9: Image Generation — Phase 1 Check ===")
+    print(f"\n=== Agent 6: Image Generation — Phase 1 Check ===")
     print(f"Slug : {slug}")
     print()
     print("Agent 5 writes 05_prompts.md directly.")
     print("Run Agent 5 if you have not already:")
-    print(f'  python tools/agent5_visuals.py "{slug}"')
+    print(f'  python tools/pipeline/agent5_visuals.py "{slug}"')
     print()
 
     # Verify the prompts file already exists
@@ -231,7 +231,7 @@ def extract_and_save_prompts(slug: str) -> None:
         print(f'  python tools/pipeline/agent6_images.py "{slug}" --generate')
     except FileNotFoundError:
         print(f"  {PROMPTS_FILENAME} not found. Run Agent 5 first:")
-        print(f'  python tools/agent5_visuals.py "{slug}"')
+        print(f'  python tools/pipeline/agent5_visuals.py "{slug}"')
         sys.exit(1)
 
 
@@ -258,7 +258,7 @@ def generate_images(
     PNGs with transparent background to images_transparent/. Does not touch
     images/. Grain is skipped in transparent mode.
     """
-    print(f"\n=== Agent 9: Image Generation — Phase 2 (Generate Images) ===")
+    print(f"\n=== Agent 6: Image Generation — Phase 2 (Generate Images) ===")
     print(f"Slug : {slug}")
     if transparent:
         print(f"Mode : transparent (white bg → RGBA alpha → images_transparent/)")
@@ -427,7 +427,7 @@ def generate_images(
 def apply_grain_pass(slug: str, intensity: int, limit: int | None = None, start: int = 1) -> None:
     """Apply film grain to images already in images_corrected/ (or images/), saving to images_grain/."""
     import shutil
-    print(f"\n=== Agent 9: Film Grain Pass ===")
+    print(f"\n=== Agent 6: Film Grain Pass ===")
     output_dir = get_output_dir(slug)
     corrected_dir = output_dir / "images_corrected"
     images_dir = corrected_dir if corrected_dir.exists() and any(corrected_dir.glob("*.png")) else output_dir / "images"
@@ -469,7 +469,7 @@ def apply_grain_pass(slug: str, intensity: int, limit: int | None = None, start:
 def correct_background(slug: str) -> None:
     """Copy images/ to images_corrected/, applying background color correction to each."""
     import shutil
-    print(f"\n=== Agent 9: Background Color Correction ===")
+    print(f"\n=== Agent 6: Background Color Correction ===")
     output_dir = get_output_dir(slug)
     images_dir = output_dir / "images"
     corrected_dir = output_dir / "images_corrected"
@@ -586,7 +586,7 @@ def sync_scripts(slug: str) -> None:
     04_final.md: strips old [IMAGE: ...] markers, inserts [IMAGE_NNN]
     before the sentence each image maps to.
     """
-    print(f"\n=== Agent 9: Sync Scripts with Image Pipeline ===")
+    print(f"\n=== Agent 6: Sync Scripts with Image Pipeline ===")
     print(f"Slug : {slug}")
     print()
 
@@ -660,7 +660,7 @@ def sync_scripts(slug: str) -> None:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Agent 9: image prompt extraction and Imagen generation.",
+        description="Agent 6: image prompt extraction and Imagen generation.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "Examples:\n"

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Align agent (`tools/pipeline/agent_align.py`) eliminates the 2-4 hours of manual work that used to happen in DaVinci after recording the voiceover. It runs forced alignment between the recorded WAV and the canonical script, then emits four files into `outputs/videos/{slug}/edit/`:
+The Align agent (`tools/pipeline/agent_align.py`) eliminates the 2-4 hours of manual work that used to happen in DaVinci after recording the voiceover. It runs forced alignment between the recorded WAV and the canonical script, then emits four files into `outputs/videos_pl/{slug}/edit/`:
 
 > Note: this is the "post-record" step. The file is `agent_align.py` (no number) — it's a satellite, not a numbered pipeline stage.
 
@@ -21,15 +21,15 @@ After import, the DaVinci work is artistic only: zoom and reframe each image to 
 
 1. **Voiceover recorded and exported.** Place the exported file at:
    ```
-   outputs/videos/{slug}/voiceover/voiceover.wav
+   outputs/videos_pl/{slug}/voiceover/voiceover.wav
    ```
    `.mp3`, `.m4a`, and `.flac` are also accepted. If the directory has multiple files and none is named `voiceover.wav`, the first audio file alphabetically wins. Use `--audio <path>` to override.
 
-2. **Agent 5 has run** — `outputs/videos/{slug}/md/05_phrases.md` exists.
+2. **Agent 5 has run** — `outputs/videos_pl/{slug}/md/05_phrases.md` exists.
 
-3. **Agent 4 has run** — `outputs/videos/{slug}/docx/script.docx` exists (exported automatically by `--apply`). If you edited the script, `script_corrected.docx` takes priority. **Section headers (`## `) are automatically skipped** by `read_script_docx` in `lib/aligner.py` — any Heading-styled paragraph is ignored, so dividers added by the draft chain (or manually in Word) do not affect alignment.
+3. **Agent 4 has run** — `outputs/videos_pl/{slug}/docx/script.docx` exists (exported automatically by `--apply`). If you edited the script, `script_corrected.docx` takes priority. **Section headers (`## `) are automatically skipped** by `read_script_docx` in `lib/aligner.py` — any Heading-styled paragraph is ignored, so dividers added by the draft chain (or manually in Word) do not affect alignment.
 
-4. **Agent 6 has run** — generated images exist at `outputs/videos/{slug}/images/image_*.png`. If you skip Agent 6, the timeline will be built without the V3 image track.
+4. **Agent 6 has run** — generated images exist at `outputs/videos_pl/{slug}/images/image_*.png`. If you skip Agent 6, the timeline will be built without the V3 image track.
 
 5. **Channel assets present** in `outputs/channel_assets/`:
    - `blank_background_grain.png` — the static canvas
@@ -67,6 +67,8 @@ Flags:
 | `--max-gap <s>` | `1.50` | Audio pause above which the screen clears between cues; lower → clears at more pauses, `0` → always continuous |
 | `--lead-out <s>` | `0.50` | At a cleared pause, how long a cue lingers past its last word before the screen clears |
 | `--no-drop-phantom` | off | Keep an unspoken leading/trailing line (hook/title written in the script but never read) instead of dropping it |
+
+> Optional QA: `python tools/dev/analyze_subtitles.py "<slug>"` inspects the generated subtitles (timing/length diagnostics).
 
 ---
 
@@ -145,7 +147,7 @@ interpolated head words, sub-floor cues, sentence-crossings, and CPS outliers.
 ## Output Location
 
 ```
-outputs/videos/{slug}/
+outputs/videos_pl/{slug}/
 ├── voiceover/
 │   └── voiceover.wav         (you put this here)
 ├── md/
@@ -155,7 +157,7 @@ outputs/videos/{slug}/
 │   └── script.docx           (fallback — input)
 ├── images/
 │   └── image_NNN.png         (existing — input)
-└── edit/                     (NEW — agent 11 output)
+└── edit/                     (NEW — Align agent output)
     ├── subtitles.srt
     ├── timeline.fcpxml
     ├── alignment.json
@@ -168,7 +170,7 @@ outputs/videos/{slug}/
 
 **`Error: No voiceover file found.`**
 
-You haven't dropped the WAV into `outputs/videos/{slug}/voiceover/`. Either move it there as `voiceover.wav` or pass `--audio <path>`.
+You haven't dropped the WAV into `outputs/videos_pl/{slug}/voiceover/`. Either move it there as `voiceover.wav` or pass `--audio <path>`.
 
 **Match rate under 90%, lots of unmatched rows in the preview**
 
@@ -214,7 +216,7 @@ This agent has not yet been validated against a real production voiceover. Video
 
 **Drop location:**
 ```
-outputs/videos/4_why_you_can_t_stick_to_anything/voiceover/voiceover.wav
+outputs/videos_pl/4_why_you_can_t_stick_to_anything/voiceover/voiceover.wav
 ```
 
 **Run:**
@@ -224,7 +226,7 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent_align.py "4_why_you_can_t_sti
 
 **Verification checklist:**
 
-1. Open `outputs/videos/4_why_you_can_t_stick_to_anything/edit/preview.html` in a browser.
+1. Open `outputs/videos_pl/4_why_you_can_t_stick_to_anything/edit/preview.html` in a browser.
 2. Confirm **match rate ≥ 95%** in the header bar.
 3. Spot-check 5 random phrases — does the start timestamp line up with where the phrase is spoken? Tolerance: ±150 ms.
 4. Confirm zero (or near-zero) unmatched / red rows.

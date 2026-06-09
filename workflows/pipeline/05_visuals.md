@@ -8,7 +8,7 @@ Agent 5 reads the script's **natural emotional arc** organically — it is not t
 
 Since 2026-05-28 Agent 5 runs **inside the Claude Code session** — Opus 4.8 generates prompts directly, no Anthropic API call. The Python script (`agent5_visuals.py --expand`) handles only the post-processing: injecting CHARACTER_DESCRIPTION + STYLE_SUFFIX constants into every visual description and exporting phrase files. (`--extract` is extraction-only — it pulls `docx/script_corrected.docx` to `md/script_corrected.md`, which `/visuals` uses as its source when present. Called automatically by the skill.)
 
-The result is `05_prompts.md`, which the human reviews before Agent 9 generates the actual images.
+The result is `05_prompts.md`, which the human reviews before Agent 6 generates the actual images.
 
 ---
 
@@ -248,7 +248,7 @@ outputs/
     └── {slug}/
         └── md/
             ├── 04_final.md         (Agent 3 finalize — input for Agent 5)
-            ├── 05_prompts.md       (Agent 5 output — review before Agent 9)
+            ├── 05_prompts.md       (Agent 5 output — review before Agent 6)
             └── 05_phrases.md       (simple phrase table for alignment)
 ```
 
@@ -280,7 +280,7 @@ Faceless figure perched on the edge of a bed, one hand resting limp on a face-do
 ---
 ```
 
-Agent 9 reads the `**Imagen prompt:**` field and sends it directly to Vertex AI.
+Agent 6 reads the `**Imagen prompt:**` field and sends it directly to Vertex AI.
 
 ---
 
@@ -308,7 +308,7 @@ Open `outputs/videos_pl/{slug}/md/05_prompts.md` after `--expand` completes. Thi
 **Check forbidden terms:**
 - Scan for "glowing", "dim", "shadowed", "scribbles", "tangled lines", readable text — rewrite or remove any found.
 
-**Edit directly** in `05_prompts.md` before running Agent 9. Changes to the `**Imagen prompt:**` line are what Imagen receives.
+**Edit directly** in `05_prompts.md` before running Agent 6. Changes to the `**Imagen prompt:**` line are what Imagen receives.
 
 ---
 
@@ -327,7 +327,7 @@ The script may be shorter than expected, or Claude grouped too many sentences to
 
 **`--expand` finds no `**Visual:**` fields**
 
-The compact `05_prompts.md` may be corrupted or already expanded. If it already has `**Imagen prompt:**` entries, it's ready for Agent 9. If it's empty or malformed, re-run `/visuals <slug>`.
+The compact `05_prompts.md` may be corrupted or already expanded. If it already has `**Imagen prompt:**` entries, it's ready for Agent 6. If it's empty or malformed, re-run `/visuals <slug>`.
 
 **Mood is flat — one register stamped across the whole set**
 

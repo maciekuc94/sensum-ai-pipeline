@@ -356,10 +356,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Align voiceover audio to the canonical script and emit DaVinci import assets."
     )
-    parser.add_argument("slug", help="Slug under outputs/videos/")
+    parser.add_argument("slug", help="Slug under outputs/videos_pl/")
     parser.add_argument(
         "--audio",
-        help="Path to voiceover audio file (default: outputs/videos/<slug>/voiceover/voiceover.wav)",
+        help="Path to voiceover audio file (default: outputs/videos_pl/<slug>/voiceover/voiceover.wav)",
     )
     parser.add_argument("--model", default="large-v3", help="faster-whisper model size (default: large-v3)")
     parser.add_argument("--device", default="cpu", help="cpu or cuda (default: cpu)")

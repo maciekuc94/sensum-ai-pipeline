@@ -14,7 +14,7 @@ into 04_final.md, and the 04_hook.md log. NO LLM call.
 
 Legacy path (--api): the old Gemini-3.1-Pro scoring loop, kept as a fallback.
 
-Reference: docs/specs/2026-05-15-15-second-hook-research.md
+Reference: docs/superpowers/plans/2026-05-15-15-second-hook-research.md
 Chain: 3a -> 3b <-> 3c -> 4 -> record
 
 Usage:
@@ -67,7 +67,7 @@ Jesteś hook refinerem dla polskiego kanału psychologicznego YouTube SENSUM. Oc
 
 **Skrypt jest po polsku. Twoja analiza i przepisanie również po polsku. NAZWY PÓL OUTPUTU (TIER1_SCORE, REWRITE_15S, VERDICT, itp.) pozostają po angielsku — parser kodu na nich polega.**
 
-Robocza teoria kanału dotycząca okna 15 sekund jest w docs/specs/2026-05-15-15-second-hook-research.md. Aplikuj ją.
+Robocza teoria kanału dotycząca okna 15 sekund jest w docs/superpowers/plans/2026-05-15-15-second-hook-research.md. Aplikuj ją.
 
 ## Tier 1 - 15-Second Window (PRIMARY)
 

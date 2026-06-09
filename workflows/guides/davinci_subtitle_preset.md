@@ -1,6 +1,6 @@
 # DaVinci Resolve — One-Time Subtitle Preset Setup
 
-Agent 11 emits `subtitles.srt` with timing only. Visual styling is applied **once** in DaVinci as a saved preset, then reapplied per project. This guide walks through that one-time setup so every imported SRT matches the SENSUM brand.
+The Align agent emits `subtitles.srt` with timing only. Visual styling is applied **once** in DaVinci as a saved preset, then reapplied per project. This guide walks through that one-time setup so every imported SRT matches the SENSUM brand.
 
 Target style (matches the brown-italic look in shipped videos):
 
@@ -62,7 +62,7 @@ This takes ~10 seconds total per video.
 
 ## Optional: per-line italic vs regular weight
 
-Shipped videos mix Lora Italic (descriptive / poetic lines) and Lora Regular (factual statements). Agent 11 v1 uses Italic for every line. To override individual lines, select that subtitle clip in DaVinci and switch its Font Face to Regular. This is a manual judgment call per line; if it becomes routine, the agent could be extended to classify lines automatically.
+Shipped videos mix Lora Italic (descriptive / poetic lines) and Lora Regular (factual statements). The Align agent (v1) uses Italic for every line. To override individual lines, select that subtitle clip in DaVinci and switch its Font Face to Regular. This is a manual judgment call per line; if it becomes routine, the agent could be extended to classify lines automatically.
 
 ## Color hex reminder
 

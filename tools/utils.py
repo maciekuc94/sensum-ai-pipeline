@@ -424,7 +424,7 @@ def export_to_docx(
 
 
 # ---------------------------------------------------------------------------
-# Image post-processing (shared by agent6_images and agent7_thumbnails)
+# Image post-processing (shared by agent6_images and agent7_package)
 # ---------------------------------------------------------------------------
 
 TARGET_BACKGROUND_RGB = (244, 229, 202)  # #F4E5CA sage beige
@@ -433,7 +433,7 @@ BACKGROUND_THRESHOLD_DEFAULT = 170
 # Threshold 170 catches off-brand beiges (Gemini drifts to e.g. #E7D7B5 / #F4DCB5,
 # min channel ~175-181) that the old >240 threshold silently missed. Ink (#582F0E)
 # has min channel ~14 and cross-hatch mid-tones land ~100-160, so 170 leaves
-# shading intact. History note: a prior bug used 240 vs 170 between agent9 and
+# shading intact. History note: a prior bug used 240 vs 170 between agent6 and
 # agent7 — keep both agents on the same threshold by importing from here.
 
 
@@ -583,7 +583,7 @@ def two_color(
 
 
 # ---------------------------------------------------------------------------
-# Film grain (shared by agent6_images, agent7_thumbnails, tools/dev/add_grain)
+# Film grain (shared by agent6_images, agent7_package, tools/dev/add_grain)
 # ---------------------------------------------------------------------------
 
 GRAIN_INTENSITY_DEFAULT = 12  # SENSUM standard — Gaussian std-dev on 0–255 scale

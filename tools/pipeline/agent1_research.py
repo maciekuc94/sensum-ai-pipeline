@@ -326,7 +326,7 @@ def main() -> None:
     output_path = write_output(slug, "md/01_research.md", content)
     print(f"\nSaved: {output_path}")
     print("\nDone. Review the output, then run Agent 2:")
-    print(f"  python tools/agent2_verify.py \"{slug}\"")
+    print(f"  python tools/pipeline/agent2_verify.py \"{slug}\"")
 
 
 if __name__ == "__main__":

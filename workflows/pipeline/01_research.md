@@ -64,7 +64,7 @@ Slug  : emotional-dysregulation-in-adhd
 
 Synthesizing results into markdown...
 
-Saved: outputs/videos/emotional-dysregulation-in-adhd/md/01_research.md
+Saved: outputs/videos_pl/emotional-dysregulation-in-adhd/md/01_research.md
 
 Done. Review the output, then run Agent 2:
   python tools/pipeline/agent2_verify.py "emotional-dysregulation-in-adhd"
@@ -124,7 +124,7 @@ Generated: [date]
 
 ## How to Review the Output
 
-Open `outputs/videos/{slug}/md/01_research.md` in any markdown viewer or text editor.
+Open `outputs/videos_pl/{slug}/md/01_research.md` in any markdown viewer or text editor.
 
 **What to look for:**
 

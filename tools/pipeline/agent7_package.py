@@ -13,10 +13,10 @@ This script makes NO Claude/Anthropic API call. It only renders.
 
 Usage:
     /package <slug>                                            # generate concepts in-session, then render
-    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render
-    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render --no-grain
-    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render --indices 1,4 --count 2
-    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --reuse-prompts   # re-render a prior run's prompts
+    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py <slug> --render
+    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py <slug> --render --no-grain
+    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py <slug> --render --indices 1,4 --count 2
+    PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py <slug> --reuse-prompts   # re-render a prior run's prompts
 """
 
 import sys
@@ -147,7 +147,7 @@ def _generate_image(
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py <slug> --render [--no-grain] [--indices 1,4] [--count 2]")
+        print("Usage: PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py <slug> --render [--no-grain] [--indices 1,4] [--count 2]")
         print("       (generate concepts first in Claude Code:  /package <slug>)")
         sys.exit(1)
 

@@ -169,7 +169,7 @@ def main() -> None:
     print(f"  Saved: {output_path}")
 
     print(f"\nDone. Book insights ready. Now run Agent 1:")
-    print(f'  python tools/agent1_research.py "{topic}"')
+    print(f'  python tools/pipeline/agent1_research.py "{topic}"')
 
 
 if __name__ == "__main__":

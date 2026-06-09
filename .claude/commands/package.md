@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Bash, Glob
 
 # /package — Title ↔ Thumbnail Packaging Strategist (in-session, Opus 4.8)
 
-You design **3 radically different "packaging" strategies** for the video — each a coherent **{strategy name · title · thumbnail napis · visual concept}** bound by a **curiosity gap** — in-session (you are Opus 4.8, no Gemini, no Anthropic API), then hand the 3 visual prompts to `agent7_thumbnails.py --render`, which renders one thumbnail per strategy via Gemini. `$1` is the slug under `outputs/videos_pl/`.
+You design **3 radically different "packaging" strategies** for the video — each a coherent **{strategy name · title · thumbnail napis · visual concept}** bound by a **curiosity gap** — in-session (you are Opus 4.8, no Gemini, no Anthropic API), then hand the 3 visual prompts to `agent7_package.py --render`, which renders one thumbnail per strategy via Gemini. `$1` is the slug under `outputs/videos_pl/`.
 
 > **Manual agent.** Run `/package` only when the user explicitly asks — the default path renders 3 images (credits + ~1.5 min). Pass `--no-render` for a free text-only pass.
 
@@ -36,11 +36,11 @@ You design **3 radically different "packaging" strategies** for the video — ea
 
 5. **Render** (skip this step if `$2` is `--no-render`):
    ```bash
-   PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py "$1" --render --no-grain
+   PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py "$1" --render --no-grain
    ```
    Renders strategy N → `thumbnails_no_grain/thumbnail_0N.png` (**`gemini-3-pro-image-preview`, native ~4K ≈ 5504×3072, padded to exact 16:9**, sage-beige, text-free). 20s rate limit between calls; premium 4K renders are slower (~2–3 min total).
 
-6. **Report back:** the 3 strategies (name · title · napis), how many thumbnails rendered + the folder (`thumbnails_no_grain/`). Remind the user: pick ONE strategy (title + thumbnail together to preserve the gap); in Canva add that strategy's **napis** as the overlay (in the reserved space) + grain; the chosen **title** is already available to `/publish` (it reads `07_package.md`). Re-roll one image: `agent7_thumbnails.py "$1" --render --no-grain --indices N --count 3`.
+6. **Report back:** the 3 strategies (name · title · napis), how many thumbnails rendered + the folder (`thumbnails_no_grain/`). Remind the user: pick ONE strategy (title + thumbnail together to preserve the gap); in Canva add that strategy's **napis** as the overlay (in the reserved space) + grain; the chosen **title** is already available to `/publish` (it reads `07_package.md`). Re-roll one image: `agent7_package.py "$1" --render --no-grain --indices N --count 3`.
 
 ## Notes
 - **You are the model.** Write all 3 strategies + both files in this conversation — no API. The Python step only renders (Gemini) and post-processes.

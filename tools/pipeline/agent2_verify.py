@@ -331,8 +331,8 @@ def build_markdown(
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Usage: python tools/agent2_verify.py \"<slug>\"")
-        print("Example: python tools/agent2_verify.py \"emotional-dysregulation-in-adhd\"")
+        print("Usage: python tools/pipeline/agent2_verify.py \"<slug>\"")
+        print("Example: python tools/pipeline/agent2_verify.py \"emotional-dysregulation-in-adhd\"")
         sys.exit(1)
 
     slug = sys.argv[1].strip()
@@ -351,7 +351,7 @@ def main() -> None:
     except FileNotFoundError as exc:
         print(f"\nError: {exc}")
         print("\nRun Agent 1 first:")
-        print(f'  python tools/agent1_research.py "<topic>"')
+        print(f'  python tools/pipeline/agent1_research.py "<topic>"')
         sys.exit(1)
 
     topic = _extract_topic_from_research(research_content)
@@ -398,7 +398,7 @@ def main() -> None:
     output_path = write_output(slug, OUTPUT_FILENAME, content)
     print(f"\nSaved: {output_path}")
     print("\nDone. Review the output, then run Agent 3:")
-    print(f"  python tools/agent3_script.py \"{slug}\"")
+    print(f'  /draft "{slug}"   (Agent 3 runs in Claude Code, no Python script)')
 
 
 if __name__ == "__main__":

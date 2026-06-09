@@ -1,5 +1,5 @@
 ---
-name: grain_thumbnail
+name: grain-thumbnail
 description: Use when the user asks in plain language to apply the SENSUM thumbnail finish — two-colour + coarse grain (s2/i18) — to an EXISTING thumbnail file given its path. Polish triggers like "dodaj grain do <ścieżka>", "dograinuj miniaturę <plik>", "ziarno do thumbnaila <plik>", "wykończ miniaturę", "zrób finish miniatury", "two_color i grain do <plik>", or English "add grain to <thumbnail path>", "finish this thumbnail". The user names a concrete PNG file/path. DISTINCT from package-thumbnail (which DESIGNS / renders a new thumbnail and costs credits) — this skill post-finishes one already-rendered thumbnail before Canva, locally, with no API cost. Routes to tools/dev/finish_thumbnail.py.
 user-invocable: false
 ---

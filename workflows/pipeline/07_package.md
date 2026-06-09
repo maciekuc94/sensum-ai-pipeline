@@ -20,7 +20,7 @@ After `/hook` (script locked), **before `/publish`** — its titles feed Agent 8
 ```
 Render step the command calls (no LLM):
 ```bash
-PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_thumbnails.py "<slug>" --render --no-grain
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent7_package.py "<slug>" --render --no-grain
 ```
 Re-roll the winner after picking: `... --render --no-grain --indices N --count 3`.
 
@@ -123,7 +123,7 @@ Model: claude-opus-4-8 (Claude Code)
 - [ ] Strategy 1 marked `[PRIMARY — recommended]`.
 
 ## Rate limiting & recovery
-3 renders × 20s spacing on the premium 3-pro model (native 4K renders are slower) ≈ 2–3 min. Re-roll one strategy's image: `agent7_thumbnails.py <slug> --render --no-grain --indices N`. Variations of the winner: `--indices N --count 3`. All renders too similar: re-run `/package <slug>` for a fresh strategy pass.
+3 renders × 20s spacing on the premium 3-pro model (native 4K renders are slower) ≈ 2–3 min. Re-roll one strategy's image: `agent7_package.py <slug> --render --no-grain --indices N`. Variations of the winner: `--indices N --count 3`. All renders too similar: re-run `/package <slug>` for a fresh strategy pass.
 
 ## Post-production — the SENSUM thumbnail finish (2026-06-08)
 
@@ -140,9 +140,11 @@ slug-3 thumbnail #2 (`thumbnail_02_v2`), 2026-06-08.
    invisible at this size — that is why thumbnail grain is `s2/i18`, heavier and
    coarser than the body-image standard.
 
-**Run it — `grain_thumbnail` skill / `finish_thumbnail.py` (2026-06-08).** Both
+> Script: `python tools/dev/finish_thumbnail.py "<thumbnail.png>"` (deterministic two_color + grain s2/i18 finish).
+
+**Run it — `grain-thumbnail` skill / `finish_thumbnail.py` (2026-06-08).** Both
 steps run in one deterministic command — or just say *„dodaj grain do
-`<ścieżka>`"* and the `grain_thumbnail` skill routes to it (no hand-work):
+`<ścieżka>`"* and the `grain-thumbnail` skill routes to it (no hand-work):
 ```bash
 PYTHONIOENCODING=utf-8 python tools/dev/finish_thumbnail.py "<path/to/thumbnail_0N.png>"
 ```

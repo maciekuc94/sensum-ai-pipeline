@@ -15,7 +15,7 @@ Agent 6 is a renderer — it does not generate or rewrite prompts.
 ## Prerequisites
 
 1. **Agent 5 must have run successfully.** The file
-   `outputs/videos/{slug}/md/05_prompts.md` must exist. If it does not, run:
+   `outputs/videos_pl/{slug}/md/05_prompts.md` must exist. If it does not, run:
    ```bash
    PYTHONIOENCODING=utf-8 python tools/pipeline/agent5_visuals.py "<slug>"
    ```
@@ -71,7 +71,7 @@ Agent 5 first.
 
 ## Phase 2: Review prompts
 
-Open `outputs/videos/{slug}/md/05_prompts.md` before running generation. Each
+Open `outputs/videos_pl/{slug}/md/05_prompts.md` before running generation. Each
 block looks like this:
 
 ```markdown
@@ -139,7 +139,7 @@ Slug : <slug>
 
 [3/3] Generating 76 image(s)...
   [1/76] Generating image_001.png...
-  Saved: outputs/videos/<slug>/images/image_001.png
+  Saved: outputs/videos_pl/<slug>/images/image_001.png
   Waiting 20s (rate limit)...
   ...
 ```
@@ -179,7 +179,7 @@ whether an image matches its sentence**, a stale image left over from the old
 script passes QA cleanly and the gap is invisible without the hash check.
 Rationale: slug-3 corrected-script rerender (2026-06-08).
 
-**Output:** `outputs/videos/{slug}/images/image_001.png`, `image_002.png`, ...
+**Output:** `outputs/videos_pl/{slug}/images/image_001.png`, `image_002.png`, ...
 
 ---
 
@@ -318,7 +318,7 @@ Phase 2.
 ## Output Location
 
 ```
-outputs/videos/<slug>/
+outputs/videos_pl/<slug>/
 ├── md/
 │   ├── 04_final.md         (Agent 4b output)
 │   └── 05_prompts.md        (Agent 5 output — Agent 6 input)

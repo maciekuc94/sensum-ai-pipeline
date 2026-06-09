@@ -6,7 +6,8 @@ client_secret_*.json
 __pycache__/
 *.pyc
 .superpowers/
-.claude/
+# .claude/ holds project-critical commands/skills/agents — track them; ignore only personal local settings
+.claude/settings.local.json
 .tmp/
 .pytest_cache/
 *.bak.md

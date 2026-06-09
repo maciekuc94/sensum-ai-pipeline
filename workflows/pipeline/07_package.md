@@ -125,8 +125,33 @@ Model: claude-opus-4-8 (Claude Code)
 ## Rate limiting & recovery
 3 renders × 20s spacing on the premium 3-pro model (native 4K renders are slower) ≈ 2–3 min. Re-roll one strategy's image: `agent7_thumbnails.py <slug> --render --no-grain --indices N`. Variations of the winner: `--indices N --count 3`. All renders too similar: re-run `/package <slug>` for a fresh strategy pass.
 
-## Post-production (Canva, manual)
-1. Open the chosen `thumbnail_0N.png` in Canva.
-2. Add the strategy's **napis** as the text overlay (place it in the reserved negative space).
-3. Apply film grain to the whole composition (Gaussian std dev 12 on 0–255).
-4. Export. Use the strategy's **tytuł** as the YouTube title (already available to `/publish`).
+## Post-production — the SENSUM thumbnail finish (2026-06-08)
+
+The picked thumbnail gets a **deterministic two-colour + coarse-grain finish
+*before* Canva**, so Canva is reduced to the napis overlay. Decided + validated on
+slug-3 thumbnail #2 (`thumbnail_02_v2`), 2026-06-08.
+
+**Finish (applied to the chosen `thumbnail_0N.png`, in this order):**
+1. **2-colour** — hard-snap every pixel to the nearer of `#582F0E` / `#F4E5CA`
+   (`tools/utils.py:two_color`), the same brand contract as the body images.
+2. **Coarse grain `s2/i18`** — `add_grain(intensity=18, grain_scale=2)`. At native
+   ~4K (~5504 px) grain needs a ~2 px *cell* (`grain_scale=2`), not 1 px, or it
+   vanishes when YouTube downscales the thumbnail; std-dev 18. Fine 1-px grain is
+   invisible at this size — that is why thumbnail grain is `s2/i18`, heavier and
+   coarser than the body-image standard.
+
+**Run it — `grain_thumbnail` skill / `finish_thumbnail.py` (2026-06-08).** Both
+steps run in one deterministic command — or just say *„dodaj grain do
+`<ścieżka>`"* and the `grain_thumbnail` skill routes to it (no hand-work):
+```bash
+PYTHONIOENCODING=utf-8 python tools/dev/finish_thumbnail.py "<path/to/thumbnail_0N.png>"
+```
+Writes a `*_final.png` copy and leaves the original untouched (grain is
+irreversible); `--in-place` overwrites, `--out <path>` sets an explicit
+destination. Deterministic (`rng_seed=42`), so re-runs match.
+
+**Canva (manual) — napis only:**
+1. Open the finished `thumbnail_0N.png` in Canva.
+2. Add the strategy's **napis** as the text overlay in the reserved negative space.
+   Grain is already baked in — do **not** add Canva grain.
+3. Export. Use the strategy's **tytuł** as the YouTube title (already available to `/publish`).

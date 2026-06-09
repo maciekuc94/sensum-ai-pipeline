@@ -13,7 +13,7 @@ deterministic bookends that bracket the in-session run, plus the legacy Gemini p
               read.
   --finalize  POST-step. Read the in-session-written `md/08_publish.md`, then in place:
               annotate each shorts clip block with its script quarter (Q1–Q4), trim the
-              long-form tag line to the 450-char budget, validate every Short has a clip
+              long-form tag line to the 480-char budget, validate every Short has a clip
               block, and export `docx/08_publish.docx`.
   --api       Legacy fallback. Run the original 3-pass Gemini orchestrator end-to-end
               (titles → shorts → metadata) and write `md/08_publish.md` itself. Kept per
@@ -280,7 +280,7 @@ Output format — use this block exactly for each Short, separated by ---:
 **Why this works:** [Cognitive Autonomy: complete-thought structure | Instant Hook: opening 1.5s emotion/problem | Curiosity Gap: forward door to main video]
 
 **Script lines to clip:**
-> [exact lines from narration, copy/paste ready]
+> [the FULL contiguous passage — every sentence of the Short in script order, no gaps, verbatim from the narration; the first line is the ~3s cold open]
 
 ---
 
@@ -327,9 +327,9 @@ Backend Tag Block rules (kept tight — Shorts algorithm barely reads backend ta
 - Tags tuned to THIS Short's specific angle, not the parent video as a whole. Quality over quantity — 3 strong tags beats 5 padded with filler.
 
 Script Lines to Clip rules:
-- Two sub-sections, in this exact order: `Hook (first ~3s):` followed by the exact opening line(s) the editor cuts in for the first ~3 seconds; then `Core payload:` followed by the exact line(s) carrying the Short's main claim.
-- Quote both blocks verbatim from the narration script — same words, same punctuation. No paraphrasing, no summarising. The editor uses these exact lines to find the cut points in the recorded audio.
-- The combined hook + payload should still land in the 25–70 second range when read aloud at conversational pace (~50–150 words total across both blocks).
+- ONE verbatim block: the `**Script Lines to Clip:**` label, then the FULL contiguous passage as `> ` quoted lines — every sentence of the Short in script order, no gaps. The first quoted line is the ~3s cold open; the rest carries the main claim through to the curiosity-gap cut.
+- Quote it verbatim from the narration script — same words, same punctuation. No paraphrasing, no summarising. This is the exact span the editor cuts from the recorded audio, so it must be the COMPLETE passage, not just the opening line and the punchline.
+- The passage must land in the 25–70 second range read aloud at conversational pace (~50–150 words). A two-line hook-plus-punchline block is too short — include the connective body that lives between them.
 """
 
 
@@ -337,7 +337,7 @@ def _build_shorts_pass3_prompt(narration: str, shorts_text: str) -> str:
     return f"""\
 {_SHORTS_BRAND_SYSTEM}
 
-Below are the **selected** YouTube Shorts (between 1 and 4 — Pass 2 returned only those candidates that passed the Triple Retention Filter as a hard AND-gate). For each Short Pass 2 provided, add **Title**, **Description**, **Tags**, and a restructured **Script Lines to Clip** block (split into Hook + Core payload). **DROP** the `**Why this works:**` line — it was Pass 2's internal selection justification and does not appear in the final published output.
+Below are the **selected** YouTube Shorts (between 1 and 4 — Pass 2 returned only those candidates that passed the Triple Retention Filter as a hard AND-gate). For each Short Pass 2 provided, add **Title**, **Description**, **Tags**, and carry forward Pass 2's **Script Lines to Clip** block verbatim (the full contiguous passage). **DROP** the `**Why this works:**` line — it was Pass 2's internal selection justification and does not appear in the final published output.
 
 HARD RULES (violating any of these breaks downstream tooling):
 
@@ -345,18 +345,18 @@ HARD RULES (violating any of these breaks downstream tooling):
 
 2. **Exactly ONE of each labelled field per Short.** Under each `## Short N` heading there must be exactly one `**Title:**` line, exactly one `**Description:**` line, exactly one `**Tags:**` line, and exactly one `**Script Lines to Clip:**` block. NEVER output two of any field under the same Short.
 
-3. **VALIDATION GATE — read this BEFORE writing each Short.** For each Short, before writing ANY field (Title / Description / Tags / Script Lines), check: do I have BOTH a Hook quote AND a Core payload quote sourced verbatim from Pass 2 or the Narration Script? If NO, OMIT that Short entirely — do not write its Title, Description, or Tags. Move on to the next Short. **A 3-Short output with all four fields intact on every Short is REQUIRED. A 4-Short output with one missing Script Lines block is REJECTED downstream and triggers a regeneration cost.**
+3. **VALIDATION GATE — read this BEFORE writing each Short.** For each Short, before writing ANY field (Title / Description / Tags / Script Lines), check: do I have the full contiguous verbatim passage (≥ ~50 words, not just an opening line and a punchline) sourced from Pass 2 or the Narration Script? If NO, OMIT that Short entirely — do not write its Title, Description, or Tags. Move on to the next Short. **A 3-Short output with all four fields intact on every Short is REQUIRED. A 4-Short output with one missing Script Lines block is REJECTED downstream and triggers a regeneration cost.**
 
    The `**Script Lines to Clip:**` block format:
-   - `Hook (first ~3s):` followed by `> ` and the exact opening line(s) the editor cuts in for the first ~3 seconds — verbatim from Pass 2 or the Narration Script. No paraphrasing.
-   - `Core payload:` followed by `> ` and the remaining quoted line(s) carrying the Short's main claim — verbatim. No paraphrasing.
-   If Pass 2 provided only one short quote, place it under `Hook (first ~3s):` and source the `Core payload:` from the next 1–2 sentences in the Narration Script that continue the same thought verbatim. If you cannot find a verbatim continuation in the narration, OMIT THE WHOLE SHORT (validation gate above).
+   - The `**Script Lines to Clip:**` label, then the FULL contiguous passage as consecutive `> ` quoted lines — every sentence of the Short in script order, no gaps, verbatim from Pass 2 or the Narration Script. No paraphrasing.
+   - The first quoted line is the ~3s cold open; the passage runs through to the curiosity-gap cut. Target 50–150 words (25–70s read aloud) — never just an opening line plus a punchline with the body dropped.
+   If Pass 2 provided only a short fragment, extend it to the full contiguous passage using the surrounding sentences in the Narration Script (verbatim). If no contiguous passage reaches ~50 words, OMIT THE WHOLE SHORT (validation gate above).
 
 4. **Field order is LOCKED:** under each `## Short N — [angle tag]` heading, the lines must appear in this exact order — and no others:
    - `**Title:**` (single title, max 60 chars, identity-reframe / paradox / system-reveal blueprint)
    - `**Description:**` (1–2 sentences mapping the cognitive dissonance, ending with `#Shorts #x #y`)
    - `**Tags:**` (3–5 multi-word intent phrases, comma-separated, no `#` prefix)
-   - `**Script Lines to Clip:**` (followed immediately by `Hook (first ~3s):` and `Core payload:` blocks on their own lines, each followed by `> ` quoted lines)
+   - `**Script Lines to Clip:**` (followed immediately by the full contiguous passage as consecutive `> ` quoted lines — the entire Short, in script order, no gaps)
 
 5. **Tags — KEEP TIGHT.** 3–5 multi-word intent phrases per Short, each 2–4 words, comma-separated, no `#` prefix. Single-word tags are PROHIBITED (semantic dilution). Brand exception: SENSUM appears once (uppercase) as the only single-word entry. Every phrase extractable from THIS Short's quoted lines or a direct-intent paraphrase. Backend tags are a categorization safety net on Shorts, not a discovery driver — the description hashtags carry the real algorithmic signal.
 
@@ -368,7 +368,7 @@ HARD RULES (violating any of these breaks downstream tooling):
 
 Output one full block per Short Pass 2 provided, with the new fields included. No preamble, no commentary outside the blocks.
 
-## Narration Script (for context — use to split Hook from Core payload and to source any continuation lines)
+## Narration Script (for context — use to extend each clip to the full contiguous passage and to verify the lines are verbatim)
 
 {narration}
 
@@ -378,19 +378,21 @@ Output one full block per Short Pass 2 provided, with the new fields included. N
 """
 
 
-_QUARTER_LABEL_RE = re.compile(r"^(Hook \(first ~3s\):|Core payload:)\s*(?:\[Q[1-4?]\])?\s*$")
+_QUARTER_LABEL_RE = re.compile(r"^(\*\*Script Lines to Clip:\*\*)\s*(?:\[Q[1-4?]\])?\s*$")
 
 
 def _annotate_script_quarters(narration: str, shorts_text: str) -> str:
-    """Tag each Hook / Core-payload label with the script quarter (Q1–Q4) of its quote.
+    """Tag each `**Script Lines to Clip:**` block with the script quarter (Q1–Q4) of its passage.
 
     Splits the narration into four equal-word-count quarters, then for every
-    `Hook (first ~3s):` and `Core payload:` label in the Shorts text, finds the
-    first following `> …` line and appends `[Q1] / [Q2] / [Q3] / [Q4]` to the
-    label based on where that quote appears in the narration. The editor uses
-    the marker to locate the line in DaVinci by text-search within the right
-    quarter of the script. Falls back to `[Q?]` when no match is found, so
-    failures are visible rather than silent.
+    `**Script Lines to Clip:**` label in the Shorts text, finds the first
+    following `> …` line (the opening line of the verbatim passage) and appends
+    `[Q1] / [Q2] / [Q3] / [Q4]` to the label based on where that passage starts
+    in the narration. The editor uses the marker to locate the cut in DaVinci by
+    text-search within the right quarter of the script. Falls back to `[Q?]`
+    when no match is found, so failures are visible rather than silent. A
+    `[MISSING …]` placeholder line is left untouched (the regex only matches a
+    bare label or one already carrying a `[Q…]` marker, so re-runs are idempotent).
     """
     words = narration.split()
     total = len(words)
@@ -461,6 +463,47 @@ def _validate_shorts_clip_blocks(shorts_text: str) -> tuple[str, list[int]]:
             block = block.rstrip() + "\n\n**Script Lines to Clip:** [MISSING — model dropped this block; locate the lines manually in script_corrected.docx/script.docx or rerun the Shorts pass]\n\n---\n"
         output_blocks.append(block)
     return "".join(output_blocks), broken
+
+
+# A Shorts clip block is the verbatim passage the editor cuts. ~2 words/sec at
+# conversational Polish pace → 25–70 s ≈ 50–150 words (the STEP 6 target). The
+# window below adds a small margin on each side so only genuinely off blocks warn.
+_CLIP_WORD_FLOOR = 45
+_CLIP_WORD_CEIL = 170
+
+
+def _clip_block_word_counts(shorts_text: str) -> list[tuple[int, int]]:
+    """Return (short_number, word_count) for every Short's clip-block passage.
+
+    Counts the words inside the `> ` quoted passage under each
+    `**Script Lines to Clip:**` label — the verbatim lines the editor actually
+    cuts. `>` prefixes and the quarter marker are stripped. `[MISSING]`
+    placeholder blocks are skipped (the validator already warns about those), so
+    this guard speaks only to real passages that are too short or too long.
+    """
+    counts: list[tuple[int, int]] = []
+    for block in re.split(r"(?m)(?=^## Short \d+)", shorts_text):
+        header_match = re.match(r"^## Short (\d+)", block)
+        if not header_match:
+            continue
+        in_clip = False
+        words = 0
+        for line in block.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("**Script Lines to Clip:**"):
+                if "MISSING" in stripped:
+                    in_clip = False
+                    break
+                in_clip = True
+                continue
+            if in_clip:
+                if stripped.startswith(">"):
+                    words += len(stripped.lstrip("> ").split())
+                elif stripped.startswith("---") or stripped.startswith("## Short"):
+                    break
+        if in_clip:
+            counts.append((int(header_match.group(1)), words))
+    return counts
 
 
 def run_shorts_pass(narration: str) -> str:
@@ -626,7 +669,7 @@ Return a single JSON object. No preamble, no commentary outside the JSON block.
 ```
 
 Rules:
-- `description_hook`: the full description body — exactly 5 sentences of natural Polish prose (no fragments, no list), under 80 words total, following the Description Architecture above. The `Timestamps:` and `Research & References:` sections are appended by downstream tooling — do NOT include them in this field.
+- `description_hook`: the full description body — exactly 5 sentences of natural Polish prose (no fragments, no list), under 80 words total, following the Description Architecture above. The `Rozdziały:` and `Badania i źródła:` sections are appended by downstream tooling — do NOT include them in this field.
 - `chapters`: detect natural section breaks from ## headings or bold section labels in the script. Produce 6–12 chapters. Labels: a full sentence or question from the viewer's navigation perspective — what will the viewer find in this section? Write labels as "Skąd bierze się poczucie, że jesteś w tyle" or "Jak algorytmy wzmacniają ten alarm" — NOT dry technical single-word labels like "Mechanizm" or academic phrases like "Pułapka fałszywej średniej". First chapter `"placeholder"` is always `"00:00"` and its label should name the actual opening topic of the video (not the word "Wprowadzenie"). All others use `"[XX:XX]"` as placeholder.
 - `hashtags`: Produce 3 hashtags only. Single-word, lowercase, with `#` prefix. First hashtag is always `#sensum`. The other 2 are the single-word core topic + one single-word concept from the script (e.g. `#sensum #willpower #grit`). NO multi-word hashtags, NO camelCase combinations, NO spaces inside a hashtag. The hashtags block is the ONLY single-word survivor — the YouTube Tags field is exclusively multi-word (≥2 words; the SENSUM brand slot is the sole single-word exception).
 - `tags`: **THE TAG PROTOCOL — NON-NEGOTIABLE.**
@@ -639,7 +682,7 @@ Rules:
   - **The intent test.** For each phrase: *"Would a real person living this problem type these exact words into YouTube search?"* If not, cut it.
   - Tag metaphors by underlying concept, not the prop (e.g. wyczerpanie woli, not bateria).
   - Every phrase must be extractable from the script's language OR a direct paraphrase of the search intent the chosen title surfaces.
-  - **Total comma-separated string must stay under 450 characters** (500-char YouTube hard cap minus safety margin). Order is STRONGEST FIRST — the post-pass trimmer drops from the tail if you overrun."""
+  - **Total comma-separated string must stay under 480 characters** (500-char YouTube hard cap minus safety margin). Order is STRONGEST FIRST — the post-pass trimmer drops from the tail if you overrun."""
 
 
 def _parse_metadata(response: str) -> dict:
@@ -652,14 +695,14 @@ def _parse_metadata(response: str) -> dict:
     raise ValueError("No JSON found in Gemini response.")
 
 
-def _trim_tags_to_budget(tags: list[str], char_budget: int = 450) -> list[str]:
+def _trim_tags_to_budget(tags: list[str], char_budget: int = 480) -> list[str]:
     """Trim tags from the END of the list until the comma-joined string fits.
 
     Preserves the SENSUM brand-exception slot regardless of position. Trims
     non-SENSUM entries from the tail inward — the prompt instructs Gemini to
     front-load by algorithmic weight (Tag #1 = exact-match primary keyword,
     Tags #2–#5 = strongest variations, tail = broader anchors), so end-trimming
-    preserves the highest-weight slots. Budget defaults to 450 to leave
+    preserves the highest-weight slots. Budget defaults to 480 to leave
     headroom under YouTube's hard 500-char tag-field cap.
     """
     if not tags:
@@ -696,10 +739,10 @@ def run_metadata_pass(topic: str, script: str, research: str, titles_text: str =
     tags_len = len(", ".join(trimmed_tags))
     dropped = len(raw_tags) - len(trimmed_tags)
     if dropped > 0:
-        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars (trimmed {dropped} from tail to fit 450-char target; doctrine 5–8; YouTube cap is 500)")
+        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars (trimmed {dropped} from tail to fit 480-char target; doctrine 12–15; YouTube cap is 500)")
     else:
-        within_doctrine = "within doctrine" if 5 <= len(trimmed_tags) <= 8 else f"OUTSIDE doctrine 5–8"
-        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars ({within_doctrine}; under 450-char target; YouTube cap is 500)")
+        within_doctrine = "within doctrine" if 12 <= len(trimmed_tags) <= 15 else f"OUTSIDE doctrine 12–15"
+        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars ({within_doctrine}; under 480-char target; YouTube cap is 500)")
 
     return meta
 
@@ -725,16 +768,13 @@ def _build_metadata_block(meta: dict) -> str:
 
 {meta['description_hook']}
 
-Timestamps:
+Rozdziały:
 {chapters_block}
 
 Badania i źródła:
 {bib_block}
 
 {hashtags_line}
-
----
-*SENSUM — Science of Kindness*
 
 ---
 
@@ -893,10 +933,11 @@ def run_finalize(slug: str) -> None:
     """POST bookend: deterministically post-process the in-session master file.
 
     Reads the `md/08_publish.md` that `/publish` wrote in-session, then in place:
-    annotates every shorts Hook/Core-payload label with its script quarter
-    (Q1–Q4), trims the long-form tag line to the 450-char budget, validates that
-    every Short carries a `**Script Lines to Clip:**` block (loud `[MISSING]`
-    placeholder otherwise), and exports the Word version.
+    annotates every shorts clip block with its script quarter (Q1–Q4), trims the
+    long-form tag line to the 480-char budget, validates that every Short carries
+    a `**Script Lines to Clip:**` block (loud `[MISSING]` placeholder otherwise),
+    warns on any clip passage outside the 25–70s word window, and exports the
+    Word version.
     """
     print(f"\n=== Agent 8 --finalize (Q1–Q4 + tag trim + validate + docx) ===")
     print(f"Slug : {slug}\n")
@@ -920,7 +961,7 @@ def run_finalize(slug: str) -> None:
     # 3. Trim the long-form tag line to budget.
     trimmed_text, tag_count, tag_chars = _trim_tags_in_markdown(validated)
     if tag_count >= 0:
-        print(f"  Tag block: {tag_count} tags, {tag_chars} chars (trimmed to 450-char target; YouTube cap is 500)")
+        print(f"  Tag block: {tag_count} tags, {tag_chars} chars (trimmed to 480-char target; YouTube cap is 500)")
     else:
         print("  Note: no `## YouTube Tags` section found to trim")
 
@@ -928,6 +969,13 @@ def run_finalize(slug: str) -> None:
     q_unmatched = trimmed_text.count("[Q?]")
     if q_unmatched:
         print(f"  WARNING: {q_unmatched} clip quote(s) did not substring-match the narration ([Q?]) — fix the quote or regenerate that Short")
+
+    # 5. Warn on clip passages outside the 25–70s window (the recurring "too short" failure).
+    for short_num, wc in _clip_block_word_counts(trimmed_text):
+        if wc < _CLIP_WORD_FLOOR:
+            print(f"  WARNING: Short {short_num} clip passage is only ~{wc} words (<{_CLIP_WORD_FLOOR}) — too short for a 25–70s Short; extend it to the full contiguous passage or drop the Short")
+        elif wc > _CLIP_WORD_CEIL:
+            print(f"  WARNING: Short {short_num} clip passage is ~{wc} words (>{_CLIP_WORD_CEIL}) — likely too long for a Short; tighten to one contiguous passage")
 
     write_output(slug, OUTPUT_FILENAME, trimmed_text.rstrip("\n") + "\n")
     docx_path = export_to_docx(slug, OUTPUT_FILENAME, "docx/08_publish.docx")

@@ -57,9 +57,16 @@ Flags:
 | `--model <size>` | `large-v3` | Use `medium` or `small` for faster CPU runs (slight precision loss; still usable for word-for-word reading) |
 | `--device <cpu\|cuda>` | `cpu` | You have an NVIDIA GPU + CUDA-enabled ctranslate2 |
 | `--compute-type <int8\|float16\|float32>` | `int8` | More precision (slower; needs GPU for float16) |
-| `--language <code>` | `en` | Voiceover is in another language |
+| `--language <code>` | `pl` | Voiceover is in another language (`--language en` for legacy English) |
 | `--fps <n>` | `30` | Project runs at 24 or 60 fps |
 | `--window <n>` | `10` | Alignment match rate is low and you suspect the script and audio drift apart further than 10 words |
+| `--min-dur <s>` | `1.20` | Subtitles flash too fast → raise; feel sluggish → lower. Min seconds before a comma/pause break is allowed |
+| `--sentence-min <s>` | `0.85` | Absolute floor for a stand-alone cue (Netflix 5/6 s). Shorter cues are merged into a neighbour |
+| `--max-dur <s>` | `7.00` | Longest a cue may grow while merging (Netflix max event) |
+| `--lead-in <s>` | `0.10` | Subtitles feel late → raise (appear earlier); feel early → lower or `0`. Global earlier-nudge |
+| `--max-gap <s>` | `1.50` | Audio pause above which the screen clears between cues; lower → clears at more pauses, `0` → always continuous |
+| `--lead-out <s>` | `0.50` | At a cleared pause, how long a cue lingers past its last word before the screen clears |
+| `--no-drop-phantom` | off | Keep an unspoken leading/trailing line (hook/title written in the script but never read) instead of dropping it |
 
 ---
 
@@ -68,8 +75,57 @@ Flags:
 1. **Transcribe.** Runs `faster-whisper` on the WAV with `word_timestamps=True`.
 2. **Align.** Greedy walk through the script tokens, snapping each one to the matching Whisper word in the next `--window` positions. Unmatched tokens get their timestamps interpolated between neighbors.
 3. **Map phrases.** Parses `05_phrases.md` and finds each phrase as a contiguous run in the aligned script.
-4. **Chunk subtitles.** Groups aligned words into 4-7-word chunks, breaking on sentence boundaries, natural pauses, and held single words.
+4. **Chunk subtitles (duration-aware, sentence-first).** Packs aligned words into single-line cues on **real word timestamps** — see *Subtitle rhythm & sync* below.
 5. **Emit assets.** Writes `subtitles.srt`, `timeline.fcpxml`, `alignment.json`, and `preview.html`.
+
+---
+
+## Subtitle rhythm & sync (`lib/subtitle_chunker.py`, redesigned 2026-06-08)
+
+The chunker is **duration-aware and sentence-first**, tuned to broadcast standards
+(BBC / Netflix / Amara). It replaced a word-count chunker that broke on every
+comma/period regardless of timing, which left ~20% of cues flashing by (<1.2 s).
+
+**How it builds a cue (all on real word timestamps — no proportional guessing):**
+1. **Drop phantom edges.** A leading/trailing run of *fully-unmatched* (interpolated)
+   words has fabricated timing — e.g. an on-screen hook/title line written into the
+   script but never read aloud. It is dropped (it would otherwise render a wrong
+   cue crammed into the first ~0.7 s). `--no-drop-phantom` keeps it.
+2. **Segment into sentences** (a paragraph break also starts one). **A cue never
+   spans a sentence boundary** — no more `"…troska. Że to…"` cards.
+3. **Pack each sentence:** group clauses (comma / dash / pause) until the cue
+   reaches the duration floor, then break at that clause boundary → even rhythm.
+   A group longer than one line is **balance-split by word**, so a sentence-final
+   word is never stranded onto the next cue.
+4. **Absorb leftovers:** a cue under `--sentence-min` (0.85 s) merges into its own
+   clause / best-fitting neighbour.
+5. **Chain & breathe:** cues chain (no gaps) through continuous speech, but where
+   the audio pause to the next cue exceeds `--max-gap` (1.5 s — a section break),
+   the cue lingers `--lead-out` (0.5 s) past its last word and the screen clears.
+6. **Lead-in:** every cue is nudged `--lead-in` (0.10 s) earlier so it lands *with*
+   the spoken word, not after it (a trailing subtitle reads as "late").
+
+Calibrated against a full hand-timed reference SRT (slug 3, 2026-06-08): the output
+matches the human subtitler's rhythm — median ~2.1 s, stdev ~0.72, ~5 pause-gaps,
+1–2 sub-floor beats — to within noise. The human tolerated a slightly wider line
+(up to ~50 chars) in a few spots; raise `MAX_CPL` if you want fewer mid-clause
+balance-splits, at the cost of broadcast-standard 42-char safety.
+
+**The numbers (why these defaults):** comfortable reading ≈ 15–17 CPS; min display
+0.85 s (Netflix 5/6 s) / 1.2 s before a soft break; max 7 s; one line ≤ 42 chars.
+
+**What you still own (the machine can't):** *sync feel* is verified by **ear** in
+`preview.html` / DaVinci — only you can hear whether a cue lands on the word. If the
+whole track feels late, raise `--lead-in`; if early, lower it. Genuinely short cues
+(0.85–1.2 s) on terse clauses are **faithful to speech tempo**, not bugs.
+
+**Lesson — the phantom hook (slug 3, 2026-06-08).** Agent 4 writes the hook as the
+script's first line, but if you record starting from the *second* line, the hook is
+absent from the audio → all its words interpolate into the first ~0.7 s. The chunker
+now drops such phantom edges. If you want the hook visible, add it as a **title card
+in DaVinci** (not a subtitle), or re-record reading it. Verify with the diagnostic:
+`PYTHONIOENCODING=utf-8 python tools/dev/analyze_subtitles.py <slug>` flags
+interpolated head words, sub-floor cues, sentence-crossings, and CPS outliers.
 
 ---
 

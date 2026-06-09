@@ -7,7 +7,8 @@ wkleja je u siebie, żeby zostać zimnym i samowystarczalnym; skill
 
 **Wersja v2 (2026-06-07).** Świadomy pivot względem v1: SENSUM jest odrobinę
 bardziej WYJAŚNIAJĄCY i swobodniejszy formalnie — wolno trochę odsłonić mechanizm
-(„badania pokazują" OK, zrozumiały termin OK), zniknął przymus jednej metafory.
+(zrozumiały termin OK; ale „badania pokazują" w narracji NIE — patrz reguła 4),
+zniknął przymus jednej metafory.
 Rationale: brainstorm `brainstorms/2026-06-07-poprawka-doktryny-glosu.md`.
 
 ---

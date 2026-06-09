@@ -1,35 +1,35 @@
-"""Subtitle chunking for the SENSUM pipeline — single-line cards only.
+"""Subtitle chunking for the SENSUM pipeline — duration-aware single-line cards.
 
-Output discipline:
-  - Every cue is exactly one line of text (no 2-line cards).
-  - Max MAX_CPL characters per line (default 42).
-  - Break only at natural pauses; never end a line on an article, common
-    preposition, or auxiliary verb (would orphan it from its noun/main verb),
-    unless the word ends in punctuation (which marks a clause boundary).
+Architecture (sentence-first, real word timings throughout):
+  1. Drop phantom edges — leading/trailing runs of fully-unmatched (interpolated)
+     words, e.g. an on-screen hook/title line that was never spoken aloud. Their
+     timestamps are fabricated, so emitting them produces a wrong cue.
+  2. Segment the words into SENTENCES (a paragraph break also starts one). A cue
+     never spans a sentence boundary — so no cue ever reads "...troska. Że to...".
+  3. Pack each sentence into cues (`_pack_sentence`):
+       - split the sentence into clauses (comma / dash / pause / paragraph);
+       - greedily group clauses into a cue until it reaches the duration floor
+         (MIN_DUR_S), then break at that clause boundary — even rhythm, breaks on
+         real linguistic boundaries with real word timestamps;
+       - if a group would exceed one line (MAX_CPL) it is balance-split BY WORD
+         (again real timestamps), so a sentence-final word is never stranded onto
+         the next cue and no clause flashes by.
+  4. Absorb leftovers (`_merge_subminimum`): a cue still under SENTENCE_MIN_S
+     (0.85s, Netflix 5/6 s) is merged into its own clause / best-fitting neighbour.
+  5. Quote protection, single-line safety net, gap fill, and a small lead-in so
+     each cue lands with — not after — the spoken word.
 
-Break rules in priority order (highest → lowest):
-  1. force_break_before on the next word        — paragraph / newline in source
-  2. previous word ends a sentence (.!?)         — sentence terminator
-  3. previous word ends with a comma             — comma pause
-  4. previous word is or ends in a standalone dash (— or -)
-  5. natural pause in audio (gap ≥ PAUSE_GAP_S)
-  6. adding the next word would exceed MAX_CPL
-  7. solo held word (duration > SOLO_DURATION_S)
+Layout & sticky discipline:
+  - Every cue is one line, <= MAX_CPL chars.
+  - Never end a line on an article / preposition / aux verb (sticky words bind
+    forward to their noun/verb), unless the word carries clause punctuation.
 
-A break is suppressed if the chunk's current last word is "sticky" — sticky
-words (articles, prepositions, aux verbs) must always attach to the next word.
-
-Post-processing passes:
-  - Orphan merge: 1–2 word chunks merge into the previous chunk EXCEPT when
-    the boundary was created by a forced break (rules 1–4).
-  - Forward fragment absorb: 1–2 word leading fragments merge into the next
-    chunk (handles a paragraph's first word being flushed alone due to a
-    speaker pause).
-  - Quote protection: opening-quote chunks merge forward until quote closes,
-    bounded by MAX_CPL.
-  - Overflow split: any chunk still longer than MAX_CPL is greedily split
-    into multiple single-line cues with proportionally-distributed timestamps.
-  - Gap fill: each chunk's end is extended to the next chunk's start.
+Research-backed thresholds (BBC / Netflix / Amara; see workflows/pipeline/align.md):
+  - soft pause / paragraph break commits a cut only past MIN_DUR_S (1.2s) — this
+    is what kills comma-flashes like "pobiegac," (0.78s);
+  - a sentence stands at >= SENTENCE_MIN_S (0.85s), so deliberate one-word beats
+    ("Oczywiscie.") survive but 0.38s tags are absorbed;
+  - one line <= MAX_CPL (42); reading speed stays comfortable (~15-17 CPS).
 """
 
 from __future__ import annotations
@@ -41,11 +41,17 @@ from .aligner import AlignedWord
 
 
 # Layout limit — single line only
-MAX_CPL = 42                                # max characters per cue
+MAX_CPL = 42                 # max characters per cue (Netflix/BBC line cap)
 
-# Timing thresholds
-PAUSE_GAP_S = 0.30
-SOLO_DURATION_S = 1.00       # only really-held words deserve their own cue
+# Timing thresholds (research-backed — BBC / Netflix / Amara; see align.md)
+PAUSE_GAP_S = 0.30           # audio gap that counts as a natural pause
+MIN_DUR_S = 1.20             # preferred floor: a soft pause won't break below this
+SENTENCE_MIN_S = 0.85        # absolute floor (Netflix 5/6 s): a standalone cue may be this short
+MAX_DUR_S = 7.00             # ceiling for merge growth (Netflix max event)
+LEAD_IN_S = 0.10             # nudge every cue this many seconds earlier (lands with the word)
+GAP_CLEAR_S = 1.50           # an audio pause longer than this clears the screen (no chain)
+LEAD_OUT_S = 0.50            # at such a pause, how long the cue lingers after its last word
+SOLO_DURATION_S = 1.00       # retained for reference; superseded by the duration floors
 
 # Merge bounds — never grow a cue past one line
 MAX_MERGED_CHARS = MAX_CPL
@@ -164,145 +170,328 @@ def _chunk_text(words: list[AlignedWord]) -> str:
     return " ".join(_clean_word_for_display(w.word) for w in words)
 
 
+def _card_len(words: list[AlignedWord]) -> int:
+    """Rendered single-line length of a word list (display text, as shown)."""
+    return len(_chunk_text(words))
+
+
+# Phantom-edge trimming -------------------------------------------------------
+
+def _strip_phantom_edges(aligned: list[AlignedWord]) -> list[AlignedWord]:
+    """Drop leading/trailing runs of fully-unmatched (interpolated) words.
+
+    A run of unmatched words at the very head or tail of the script has no real
+    audio anchor on one side, so its timestamps are fabricated (crammed between
+    0.0 and the first real word, or between the last real word and the audio
+    end). Emitting them produces a wrong cue — e.g. an on-screen hook / title
+    line written into the script but never spoken aloud. Interior unmatched
+    words are kept: they sit between two matched neighbours and interpolate
+    sensibly. If nothing matched at all, the list is returned untouched so the
+    failure is visible rather than silently swallowed.
+    """
+    if not any(w.matched for w in aligned):
+        return list(aligned)
+    start = 0
+    while start < len(aligned) and not aligned[start].matched:
+        start += 1
+    end = len(aligned)
+    while end > start and not aligned[end - 1].matched:
+        end -= 1
+    return list(aligned[start:end])
+
+
+# Sentence / clause segmentation ----------------------------------------------
+
+def _segment_sentences(words: list[AlignedWord]) -> list[list[AlignedWord]]:
+    """Split the word stream into sentence units.
+
+    A unit ends after any word carrying a terminator (. ! ?). A source paragraph
+    break (force_break_before on the next word) also starts a new unit. Cues are
+    built per-unit and never merged across one in the builder, so a cue can never
+    straddle two sentences.
+    """
+    sentences: list[list[AlignedWord]] = []
+    cur: list[AlignedWord] = []
+    for w in words:
+        if cur and w.force_break_before:
+            sentences.append(cur)
+            cur = []
+        cur.append(w)
+        if _ends_sentence(w.word):
+            sentences.append(cur)
+            cur = []
+    if cur:
+        sentences.append(cur)
+    return sentences
+
+
+def _segment_clauses(words: list[AlignedWord]) -> list[list[AlignedWord]]:
+    """Split one sentence's words into clauses at commas / dashes / audio pauses.
+
+    A clause boundary is suppressed when the boundary word is sticky (a function
+    word that must bind forward) so we never strand an article/preposition at a
+    line end.
+    """
+    clauses: list[list[AlignedWord]] = []
+    cur: list[AlignedWord] = []
+    n = len(words)
+    for i, w in enumerate(words):
+        cur.append(w)
+        nxt = words[i + 1] if i + 1 < n else None
+        if nxt is None:
+            boundary = True
+        else:
+            boundary = (
+                _ends_comma(w.word)
+                or _ends_with_dash(w.word)
+                or (nxt.start - w.end) >= PAUSE_GAP_S
+                or nxt.force_break_before
+            )
+        if boundary and not _is_sticky(w.word):
+            clauses.append(cur)
+            cur = []
+    if cur:
+        clauses.append(cur)
+    return clauses
+
+
+def _balance_split_words(words: list[AlignedWord], max_cpl: int) -> list[list[AlignedWord]]:
+    """Split an over-line run of words into balanced <= max_cpl word-lists.
+
+    Greedy pack to max_cpl, then balance a thin tail backward and shift sticky
+    line-enders forward. Operates on AlignedWord lists so each resulting cue
+    keeps the real start/end of its own words (no proportional approximation).
+    """
+    lists: list[list[AlignedWord]] = []
+    cur: list[AlignedWord] = []
+    for w in words:
+        disp = _clean_word_for_display(w.word)
+        added = len(disp) if not cur else _card_len(cur) + 1 + len(disp)
+        if added > max_cpl and cur:
+            if _is_standalone_dash(w.word):
+                cur.append(w)   # a bare dash binds backward — keep it on this line
+                continue
+            lists.append(cur)
+            cur = [w]
+        else:
+            cur.append(w)
+    if cur:
+        lists.append(cur)
+
+    # Balance: pull a trailing word from the previous line into a 1–2 word tail.
+    for i in range(1, len(lists)):
+        while len(lists[i]) <= 2 and len(lists[i - 1]) > 1:
+            popped = lists[i - 1][-1]
+            proj_cur = _card_len([popped] + lists[i])
+            proj_prev = _card_len(lists[i - 1][:-1])
+            if proj_cur <= max_cpl and proj_prev >= 1 and proj_prev >= proj_cur // 2:
+                lists[i - 1] = lists[i - 1][:-1]
+                lists[i] = [popped] + lists[i]
+            else:
+                break
+
+    # Shift a sticky line-ender forward so it binds to its noun/verb.
+    for i in range(len(lists) - 1):
+        while len(lists[i]) > 1 and _is_sticky(lists[i][-1].word):
+            popped = lists[i][-1]
+            if _card_len([popped] + lists[i + 1]) <= max_cpl:
+                lists[i] = lists[i][:-1]
+                lists[i + 1] = [popped] + lists[i + 1]
+            else:
+                break
+
+    return [wl for wl in lists if wl]
+
+
+def _pack_sentence(words: list[AlignedWord], min_dur: float, max_cpl: int) -> list[list[AlignedWord]]:
+    """Pack one sentence into cue word-lists with real timestamps.
+
+    Clauses are grouped until the cue reaches min_dur, then broken at that clause
+    boundary. A group that would overrun one line is balance-split by word; if
+    the running cue is still too short to stand alone when an overrun looms, the
+    short head is folded into the balance-split rather than stranded.
+    """
+    clauses = _segment_clauses(words)
+    if not clauses:
+        return []
+
+    cues: list[list[AlignedWord]] = []
+    cur: list[AlignedWord] = []
+    last_idx = len(clauses) - 1
+    for ci, cl in enumerate(clauses):
+        if cur and _card_len(cur + cl) > max_cpl:
+            cur_dur = cur[-1].end - cur[0].start
+            if cur_dur < min_dur:
+                # Too short to stand alone — combine with this clause and split
+                # the combination by word so nothing is stranded. All but the
+                # last piece are final; the last stays open for further grouping.
+                pieces = _balance_split_words(cur + cl, max_cpl)
+                cues.extend(pieces[:-1])
+                cur = pieces[-1]
+            else:
+                cues.append(cur)
+                cur = list(cl)
+        else:
+            cur = cur + cl
+        dur = cur[-1].end - cur[0].start
+        if ci != last_idx and dur >= min_dur:
+            cues.append(cur)
+            cur = []
+    if cur:
+        cues.append(cur)
+
+    # Any cue that is still a single over-line clause → balance-split by word.
+    out: list[list[AlignedWord]] = []
+    for cue in cues:
+        if _card_len(cue) <= max_cpl:
+            out.append(cue)
+        else:
+            out.extend(_balance_split_words(cue, max_cpl))
+    return out
+
+
+# Sub-minimum merge -----------------------------------------------------------
+
+def _merge_subminimum(
+    chunks: list[SubtitleChunk],
+    *,
+    sentence_min: float,
+    max_dur: float,
+) -> list[SubtitleChunk]:
+    """Absorb any cue shorter than sentence_min, keeping it with its own clause.
+
+    Sentence-first packing already keeps mid-sentence cues at/above the floor, so
+    a short cue is usually a complete short sentence with no same-clause
+    neighbour: merge it into whichever neighbour fits one line (shorter first),
+    or leave it as a deliberate beat rather than force a sentence-crossing
+    overflow. A rare mid-sentence remainder (``forced_start``/``forced_end``
+    False) is merged into its own clause, allowing a brief overflow that the
+    single-line pass re-splits inside the sentence.
+    """
+    def dur(c: SubtitleChunk) -> float:
+        return c.end - c.start
+
+    changed = True
+    while changed and len(chunks) > 1:
+        changed = False
+        for i, c in enumerate(chunks):
+            if dur(c) >= sentence_min:
+                continue
+            same_clause_prev = i > 0 and not c.forced_start
+            same_clause_next = i < len(chunks) - 1 and not c.forced_end
+
+            if same_clause_prev:
+                p = chunks[i - 1]
+                if (c.end - p.start) <= max_dur and len(p.text) + 1 + len(c.text) <= 2 * MAX_CPL:
+                    p.text = p.text + " " + c.text
+                    p.end = c.end
+                    p.forced_end = c.forced_end
+                    chunks.pop(i)
+                    changed = True
+                    break
+            if same_clause_next:
+                n = chunks[i + 1]
+                if (n.end - c.start) <= max_dur and len(c.text) + 1 + len(n.text) <= 2 * MAX_CPL:
+                    n.text = c.text + " " + n.text
+                    n.start = c.start
+                    n.forced_start = c.forced_start
+                    chunks.pop(i)
+                    changed = True
+                    break
+
+            options: list[tuple[float, str]] = []  # (neighbour_dur, side)
+            if i > 0:
+                p = chunks[i - 1]
+                if len(p.text) + 1 + len(c.text) <= MAX_MERGED_CHARS and (c.end - p.start) <= max_dur:
+                    options.append((dur(p), "prev"))
+            if i < len(chunks) - 1:
+                n = chunks[i + 1]
+                if len(c.text) + 1 + len(n.text) <= MAX_MERGED_CHARS and (n.end - c.start) <= max_dur:
+                    options.append((dur(n), "next"))
+            if not options:
+                continue
+            options.sort()
+            if options[0][1] == "prev":
+                p = chunks[i - 1]
+                p.text = p.text + " " + c.text
+                p.end = c.end
+                p.forced_end = c.forced_end
+                chunks.pop(i)
+            else:
+                n = chunks[i + 1]
+                n.text = c.text + " " + n.text
+                n.start = c.start
+                n.forced_start = c.forced_start
+                chunks.pop(i)
+            changed = True
+            break
+    return chunks
+
+
 # Main chunk builder ----------------------------------------------------------
 
-def build_chunks(aligned: list[AlignedWord]) -> list[SubtitleChunk]:
+def _gap_fill(chunks: list[SubtitleChunk], *, gap_clear: float, lead_out: float) -> None:
+    """Chain each cue's end to the next cue's start — except across a real pause.
+
+    Continuous speech → cues chain (no gaps), so a subtitle is always on screen.
+    But where the audio pause to the next cue exceeds ``gap_clear`` (a section
+    break), the cue lingers only ``lead_out`` seconds past its last word and then
+    the screen clears, letting it breathe — matching how a human subtitler times
+    section transitions. ``gap_clear <= 0`` restores fully-continuous behaviour.
+    """
+    for i in range(len(chunks) - 1):
+        nxt = chunks[i + 1].start
+        pause = nxt - chunks[i].end
+        if gap_clear > 0 and pause > gap_clear:
+            chunks[i].end = min(nxt, chunks[i].end + lead_out)
+        else:
+            chunks[i].end = nxt
+
+
+def build_chunks(
+    aligned: list[AlignedWord],
+    *,
+    min_dur: float = MIN_DUR_S,
+    sentence_min: float = SENTENCE_MIN_S,
+    max_dur: float = MAX_DUR_S,
+    lead_in: float = LEAD_IN_S,
+    gap_clear: float = GAP_CLEAR_S,
+    lead_out: float = LEAD_OUT_S,
+    drop_phantom: bool = True,
+) -> list[SubtitleChunk]:
+    """Group aligned words into duration-aware single-line subtitle cues.
+
+    Sentence-first: each sentence is packed independently (so no cue spans a
+    sentence boundary), clauses are grouped to the duration floor, and over-line
+    groups are balance-split by word — all on real word timestamps. See the
+    module docstring for the full pipeline.
+    """
+    aligned = _strip_phantom_edges(aligned) if drop_phantom else list(aligned)
     if not aligned:
         return []
 
     chunks: list[SubtitleChunk] = []
-    current: list[AlignedWord] = []
-    next_chunk_forced_start = False
+    for sentence in _segment_sentences(aligned):
+        word_lists = _pack_sentence(sentence, min_dur, MAX_CPL)
+        for j, wl in enumerate(word_lists):
+            chunks.append(SubtitleChunk(
+                index=0,
+                text=_chunk_text(wl),
+                start=wl[0].start,
+                end=wl[-1].end,
+                forced_start=(j == 0),                       # first cue of a sentence
+                forced_end=(j == len(word_lists) - 1),       # last cue of a sentence
+            ))
 
-    def projected_card_len(extra: AlignedWord | None = None) -> int:
-        words = current + ([extra] if extra is not None else [])
-        return len(_chunk_text(words))
+    # --- Post-pass 1: absorb any cue still under the absolute minimum ---------
+    chunks = _merge_subminimum(chunks, sentence_min=sentence_min, max_dur=max_dur)
 
-    def flush(reason_forced: bool) -> None:
-        nonlocal next_chunk_forced_start
-        if not current:
-            return
-        text = _chunk_text(current)
-        chunks.append(SubtitleChunk(
-            index=0,
-            text=text,
-            start=current[0].start,
-            end=current[-1].end,
-            forced_start=next_chunk_forced_start,
-            forced_end=reason_forced,
-        ))
-        current.clear()
-        next_chunk_forced_start = reason_forced
-
-    prev: AlignedWord | None = None
-    for w in aligned:
-        if prev is not None and current:
-            last_word = current[-1].word
-            last_sticky = _is_sticky(last_word)
-            gap = max(0.0, w.start - prev.end)
-            prev_duration = max(0.0, prev.end - prev.start)
-
-            # Standalone-dash protection: never flush a chunk whose only
-            # content is a bare dash — it would render as a single "—" cue.
-            current_is_just_dash = (
-                len(current) == 1 and _is_standalone_dash(current[0].word)
-            )
-
-            # Rule 1: forced break before this word (paragraph in source).
-            # This bypasses sticky — if the script intentionally broke the line,
-            # we honor it even at the cost of an orphaned article.
-            if w.force_break_before and not current_is_just_dash:
-                flush(reason_forced=True)
-            elif current_is_just_dash:
-                pass  # let the dash attach to the next word
-            elif not last_sticky:
-                # Rule 2: previous word ends a sentence.
-                if _ends_sentence(last_word):
-                    flush(reason_forced=True)
-                # Rule 3: previous word ends with a comma.
-                elif _ends_comma(last_word):
-                    flush(reason_forced=True)
-                # Rule 4: previous word is/ends with a dash.
-                elif _ends_with_dash(last_word):
-                    flush(reason_forced=True)
-                # Rule 5: natural pause in audio.
-                elif gap >= PAUSE_GAP_S:
-                    flush(reason_forced=False)
-                # Rule 6: solo held word (only fires for very held words).
-                elif prev_duration > SOLO_DURATION_S and len(current) == 1:
-                    flush(reason_forced=False)
-            # Note: no MAX_CPL flush here — the _enforce_single_line post-pass
-            # greedy-splits oversized chunks at non-sticky word boundaries,
-            # which avoids orphans like a stranded sentence-final word.
-
-        current.append(w)
-        prev = w
-
-    flush(reason_forced=False)
-
-    # --- Post-processing pass 1: merge orphan chunks (≤2 words) backward ---
-    # Skip across forced boundaries (intentional punctuation breaks).
-    i = 1
-    while i < len(chunks):
-        cur = chunks[i]
-        prev_c = chunks[i - 1]
-        wc_cur = len(cur.text.split())
-        boundary_forced = prev_c.forced_end or cur.forced_start
-        combined_chars = len(prev_c.text) + 1 + len(cur.text)
-        if (
-            not boundary_forced
-            and wc_cur <= 2
-            and combined_chars <= MAX_MERGED_CHARS
-        ):
-            prev_c.text = prev_c.text + " " + cur.text
-            prev_c.end = cur.end
-            prev_c.forced_end = cur.forced_end
-            chunks.pop(i)
-        else:
-            i += 1
-
-    # --- Post-processing pass 1b: forward-absorb leading fragments ---
-    # If chunk i is a 1–2 word fragment that does NOT end with deliberate
-    # punctuation (comma / dash / sentence terminator), absorb it forward into
-    # chunk i+1. Handles cases like a paragraph's first word being flushed as
-    # a singleton due to a speaker pause ("Most" → merge into "of the time,").
+    # --- Post-pass 2: quote protection — keep an opening quote with content ---
     i = 0
     while i < len(chunks) - 1:
         cur = chunks[i]
         nxt = chunks[i + 1]
-        wc_cur = len(cur.text.split())
-        cur_last_word = cur.text.rsplit(" ", 1)[-1] if cur.text else ""
-        ends_with_punct = (
-            _ends_comma(cur_last_word)
-            or _ends_sentence(cur_last_word)
-            or _ends_with_dash(cur_last_word)
-        )
-        combined_chars = len(cur.text) + 1 + len(nxt.text)
-        # Allow forward-merge to overflow a single line; the single-line
-        # enforcement pass will re-split the merged chunk cleanly. Cap at
-        # 2 × MAX_CPL so a fragment never absorbs a giant chunk.
-        if (
-            wc_cur <= 2
-            and not ends_with_punct
-            and not cur.forced_end
-            and combined_chars <= MAX_CPL * 2
-        ):
-            nxt.text = cur.text + " " + nxt.text
-            nxt.start = cur.start
-            # Preserve forced_start from the fragment (e.g. paragraph break)
-            nxt.forced_start = cur.forced_start or nxt.forced_start
-            chunks.pop(i)
-            # Do NOT increment i — re-check the merged chunk against its new neighbor
-        else:
-            i += 1
-
-    # --- Post-processing pass 2: quote protection ---
-    i = 0
-    while i < len(chunks) - 1:
-        cur = chunks[i]
-        nxt = chunks[i + 1]
-        opens = cur.text.count('"')
-        if opens % 2 == 1:  # unbalanced — inside a quote
+        if cur.text.count('"') % 2 == 1:  # unbalanced — inside a quote
             combined = cur.text + " " + nxt.text
             if len(combined) <= MAX_QUOTE_CHARS:
                 cur.text = combined
@@ -312,19 +501,21 @@ def build_chunks(aligned: list[AlignedWord]) -> list[SubtitleChunk]:
                 continue  # re-check same index with new next chunk
         i += 1
 
-    # --- Post-processing pass 3: enforce single-line cards ---
-    # Any chunk still exceeding MAX_CPL (rare — happens only when sticky-word
-    # protection prevented earlier flushes) is split into multiple single-line
-    # cues with proportionally-distributed timestamps.
+    # --- Post-pass 3: single-line safety net (should be a no-op after packing) -
     chunks = _enforce_single_line(chunks)
 
-    # --- Re-number ---
+    # --- Re-number + final chain (clearing the screen at real pauses) --------
     for idx, chunk in enumerate(chunks, 1):
         chunk.index = idx
+    _gap_fill(chunks, gap_clear=gap_clear, lead_out=lead_out)
 
-    # --- Gap fill: extend each end to next start ---
-    for i, chunk in enumerate(chunks[:-1]):
-        chunk.end = chunks[i + 1].start
+    # --- Lead-in: nudge every cue slightly earlier so it lands with (not after)
+    # the spoken word. A subtitle that trails speech reads as "late"; leading by
+    # ~0.1s reads as on-time. Per-cue duration and the chain are preserved.
+    if lead_in > 0:
+        for chunk in chunks:
+            chunk.start = max(0.0, chunk.start - lead_in)
+            chunk.end = max(chunk.start + 0.05, chunk.end - lead_in)
 
     return chunks
 
@@ -335,7 +526,8 @@ def _enforce_single_line(chunks: list[SubtitleChunk]) -> list[SubtitleChunk]:
     """Ensure every chunk's text fits on a single line (≤ MAX_CPL chars).
 
     Any chunk exceeding MAX_CPL is split into multiple single-line cues with
-    proportionally-distributed timestamps.
+    proportionally-distributed timestamps. With sentence-first packing this is a
+    safety net only — the builder already balance-splits over-line groups by word.
     """
     out: list[SubtitleChunk] = []
     for chunk in chunks:

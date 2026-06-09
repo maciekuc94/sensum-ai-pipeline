@@ -52,7 +52,7 @@ verdict.
 - **Long-form + Shorts tags** (steps 4, 9) — these are search-shaped queries, deliberately not natural
   prose. A tag is *supposed* to read like a search box, not like speech. Leave them.
 - **Bibliography** (step 5) — concept labels stay in English by policy. Not your call.
-- **Verbatim Shorts Hook / Core-payload quotes** (step 6 clip blocks) — these are lifted **verbatim
+- **Verbatim Shorts clip passages** (step 6 clip blocks) — these are lifted **verbatim
   from the already-vetted script**. They passed the script's own native-ear gate. **Never flag or
   suggest changing a quoted script line** — doing so breaks the `[Q1]–[Q4]` substring match.
 - **The 3 hashtags** (single-word, no-diacritics by policy) and the `#Shorts #x #y` Shorts hashtags.

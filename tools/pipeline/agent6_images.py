@@ -34,7 +34,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from tools.utils import (
     read_output, write_output, get_output_dir, get_env,
     add_grain, resize_to_target, enforce_background_color, make_transparent,
-    flatten_background,
+    flatten_background, two_color,
 )
 
 # ---------------------------------------------------------------------------
@@ -401,8 +401,7 @@ def generate_images(
                 print(f"  Grain skipped (transparent mode)")
             else:
                 resize_to_target(output_path)
-                enforce_background_color(output_path)
-                flatten_background(output_path)
+                two_color(output_path)                      # hard 2-colour brand pass — replaces enforce+flatten
                 if grain > 0:
                     add_grain(output_path, intensity=grain)
             print(f"  Saved: {output_path}")
@@ -533,6 +532,48 @@ def flatten_background_pass(slug: str, indices: list[int] | None = None) -> None
     print(f"\nDone. {total} image(s) flattened in place.")
 
 
+def two_color_pass(slug: str, indices: list[int] | None = None, *, in_place: bool = False) -> None:
+    """Hard two-colour brand pass over every body image (see utils.two_color).
+
+    Snaps each pixel to the nearer of {#582F0E ink, #F4E5CA sage}, collapsing
+    every off-brand cast (greenish/grey muck inside objects, residual background
+    texture) onto the two brand anchors in one deterministic step. Form is
+    untouched — only colour. Cross-hatching survives (dark -> ink, gaps -> paper)
+    so the result reads as a clean engraving. Grain is NOT applied (added later
+    in DaVinci).
+
+    Non-destructive by default: writes the quantized copies to images_post/ for
+    review, leaving images/ intact. Pass in_place=True to overwrite images/.
+    Honors --indices.
+    """
+    label = "in place" if in_place else "-> images_post/"
+    print(f"\n=== Agent 6: Two-Colour Brand Pass ({label}) ===")
+    output_dir = get_output_dir(slug)
+    images_dir = output_dir / "images"
+    png_files = sorted(images_dir.glob("image_*.png"))
+    if not png_files:
+        print(f"No images found in {images_dir}")
+        return
+    if indices:
+        wanted = {f"image_{i:03d}.png" for i in indices}
+        png_files = [p for p in png_files if p.name in wanted]
+        if not png_files:
+            print(f"No images matched --indices {sorted(indices)} in {images_dir}")
+            return
+    dest_dir = images_dir if in_place else (output_dir / "images_post")
+    if not in_place:
+        dest_dir.mkdir(parents=True, exist_ok=True)
+    total = len(png_files)
+    print(f"  Source : {images_dir}")
+    print(f"  Dest   : {dest_dir}")
+    print(f"  Images : {total}")
+    print()
+    for i, src_path in enumerate(png_files, start=1):
+        two_color(src_path, output_path=dest_dir / src_path.name)
+        print(f"  [{i}/{total}] two-colour {src_path.name}")
+    print(f"\nDone. {total} image(s) written to {dest_dir}.")
+
+
 # ---------------------------------------------------------------------------
 # Script sync — align [IMAGE_NNN] markers with 05_prompts.md
 # ---------------------------------------------------------------------------
@@ -639,6 +680,10 @@ def _parse_args() -> argparse.Namespace:
     mode.add_argument("--flatten-bg", action="store_true",
                       help="Flatten model background texture to flat #F4E5CA in images/ "
                            "in place (no re-render). Honors --indices.")
+    mode.add_argument("--two-color", action="store_true",
+                      help="Hard two-colour brand pass: snap every pixel to the nearer of "
+                           "#582F0E / #F4E5CA. Writes to images_post/ for review "
+                           "(add --in-place to overwrite images/). Honors --indices.")
     mode.add_argument("--sync-scripts", action="store_true",
                       help="Align [IMAGE_NNN] markers in scripts with 05_prompts.md.")
     mode.add_argument("--apply-grain", type=int, metavar="N", default=0,
@@ -660,6 +705,8 @@ def _parse_args() -> argparse.Namespace:
                         help="Generate on white background; output RGBA PNGs with transparent "
                              "background to images_transparent/. Compatible with --indices. "
                              "Never overwrites images/.")
+    parser.add_argument("--in-place", action="store_true",
+                        help="With --two-color: overwrite images/ instead of writing images_post/.")
 
     return parser.parse_args()
 
@@ -682,6 +729,15 @@ def main() -> None:
                 print(f"Error: --indices must be comma-separated integers, got: {args.indices!r}")
                 sys.exit(1)
         flatten_background_pass(slug, indices=flat_indices)
+    elif args.two_color:
+        tc_indices: list[int] | None = None
+        if args.indices:
+            try:
+                tc_indices = [int(x.strip()) for x in args.indices.split(",") if x.strip()]
+            except ValueError:
+                print(f"Error: --indices must be comma-separated integers, got: {args.indices!r}")
+                sys.exit(1)
+        two_color_pass(slug, indices=tc_indices, in_place=args.in_place)
     elif args.sync_scripts:
         sync_scripts(slug)
     elif args.apply_grain > 0:

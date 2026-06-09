@@ -12,3 +12,5 @@ __pycache__/
 .pytest_cache/
 *.bak.md
 outputs/
+# Windows/MSYS artifact: a bash `>nul` redirect creates a literal file named `nul` in cwd
+/nul

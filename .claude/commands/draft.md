@@ -6,7 +6,8 @@ allowed-tools: Read, Write, Bash, Glob, Agent
 
 # /draft — pisarz → section+arc checkery (ensemble) → fixer → ściskacz
 
-Zimne konteksty Opus, każdy ślepy na pozostałe; Ty (lead) tylko przekazujesz pliki
+Zimne konteksty, każdy ślepy na pozostałe (model wg roli — Opus: pisarz/fixer/arc,
+Sonnet: section-checkery/ściskacz); Ty (lead) tylko przekazujesz pliki
 i kolejność. Jeden przebieg:
 - **pisarz** pisze cały skrypt luźno,
 - na **zamrożonym** drafcie rusza **ensemble checkerów równolegle**: jeden
@@ -64,10 +65,11 @@ checker go nie zmienia.
 
 ## Step 4 — Ensemble checkerów (RÓWNOLEGLE — wszystkie spawny w JEDNEJ wiadomości)
 Wyślij **wszystkie** poniższe spawny w **jednej** wiadomości (równoległość). Każdy
-to świeży zimny subagent (`general-purpose`, `model: opus`).
+to świeży zimny subagent (`general-purpose`); **model różny wg roli** — section-checkery
+na `sonnet`, arc-checker na `opus` (patrz niżej).
 
-**a) Po jednym section-checkerze na każdy nagłówek z kroku 3.** Dla sekcji o
-indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
+**a) Po jednym section-checkerze na każdy nagłówek z kroku 3 (`model: sonnet`).** Dla
+sekcji o indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
 
 > Jesteś native'owym redaktorem polskim, dispatchowanym na zimno. Przeczytaj
 > `workflows/pipeline/03b_section_checker.md` i wykonaj go dokładnie. Cały
@@ -76,7 +78,7 @@ indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
 > poprawiaj). Zapisz listę zgłoszeń do `outputs/videos_pl/$1/md/iter/sek_NN.md`.
 > Twój zwrot = treść pliku.
 
-**b) Jeden arc-checker:**
+**b) Jeden arc-checker (`model: opus`):**
 
 > Jesteś redaktorem patrzącym na spójność całości, dispatchowanym na zimno.
 > Przeczytaj `workflows/pipeline/03b_arc_checker.md` i wykonaj go dokładnie na całym
@@ -109,7 +111,7 @@ Poczekaj na ukończenie.
 ## Step 6.5 — Ściskacz (świeży zimny subagent Opus, TYLKO cięcie)
 Najpierw zachowaj wersję sprzed ściśnięcia do porównania — skopiuj (Bash)
 `md/04_final.md` → `md/04_final_presqueeze.md`. Potem zespawnuj **nowego**
-subagenta (`general-purpose`, `model: opus`) z briefem:
+subagenta (`general-purpose`, `model: sonnet`) z briefem:
 
 > Jesteś ściskaczem SENSUM, dispatchowanym na zimno. Przeczytaj
 > `workflows/pipeline/03d_compressor.md` i wykonaj go dokładnie. Scenariusz:
@@ -147,6 +149,13 @@ Wczytaj `outputs/videos_pl/$1/md/04_final.md`. Zdaj userowi:
 - **Równoległość = wszystkie spawny kroku 4 w JEDNEJ wiadomości.**
 - **Bez pętli.** Pisarz → ensemble → fixer → ściskacz i koniec. Twoje ucho na
   `script_corrected.docx` to ostatni sufit — nie iterujemy maszyną w nieskończoność.
+- **Model wg roli (2026-06-09).** `opus`: pisarz (3a), arc-checker (3b/b), fixer (3c)
+  — generacja głosu, osąd całości, integracja z dbałością o zgodność; **swap pisarza
+  był testowany i zamknięty** (Sonnet/Gemini łamały reguły głosu). `sonnet`:
+  section-checkery (3b/a, ×6–8) i ściskacz (3d) — detekcja wg jawnej rubryki `[Z]/[K]`
+  i cut-only wg 6 trybów to egzekucja reguł, nie twórczość. To ~7–9 z ~10–12 spawnów →
+  >50% taniej na skrypt bez ruszania warstwy generacji/integracji. Haiku nigdzie —
+  section-checker potrzebuje native'owego ucha do polszczyzny.
 - **Ściskacz tylko tnie.** Ostatni pass; usuwa przegadanie, NIGDY nie dopisuje
   (cut-only = zero thrashu — nie wprowadzi dziwnych zdań). Wersja sprzed ściśnięcia
   zostaje w `md/04_final_presqueeze.md` do porównania.

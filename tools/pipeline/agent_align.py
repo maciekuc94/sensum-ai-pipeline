@@ -260,7 +260,16 @@ def main(args: argparse.Namespace) -> None:
     # ------------------------------------------------------------------
     step = "Step 2/4" if args.from_alignment else "Step 3/5"
     print(f"{step}: Building subtitle chunks...")
-    chunks = build_chunks(aligned)
+    chunks = build_chunks(
+        aligned,
+        min_dur=args.min_dur,
+        sentence_min=args.sentence_min,
+        max_dur=args.max_dur,
+        lead_in=args.lead_in,
+        gap_clear=args.max_gap,
+        lead_out=args.lead_out,
+        drop_phantom=not args.no_drop_phantom,
+    )
     srt_text = render_srt(chunks)
     srt_path = edit_dir / "subtitles.srt"
     srt_path.write_text(srt_text, encoding="utf-8")
@@ -358,6 +367,35 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--language", default="pl", help="Audio language code (default: pl). Use --language en for legacy English voiceovers.")
     parser.add_argument("--fps", type=int, default=30, help="Timeline frame rate (default: 30)")
     parser.add_argument("--window", type=int, default=10, help="Greedy alignment lookahead (default: 10)")
+    # Subtitle rhythm / sync knobs — tune without editing subtitle_chunker.py.
+    parser.add_argument(
+        "--min-dur", dest="min_dur", type=float, default=1.20,
+        help="Min on-screen seconds before a soft (comma/pause) break is allowed (default: 1.20)",
+    )
+    parser.add_argument(
+        "--sentence-min", dest="sentence_min", type=float, default=0.85,
+        help="Absolute min seconds for a sentence-end cue; shorter cues are merged (default: 0.85)",
+    )
+    parser.add_argument(
+        "--max-dur", dest="max_dur", type=float, default=7.00,
+        help="Max seconds a cue may grow to during merging (default: 7.00)",
+    )
+    parser.add_argument(
+        "--lead-in", dest="lead_in", type=float, default=0.10,
+        help="Seconds to nudge every cue earlier so it lands with the word (default: 0.10; 0 disables)",
+    )
+    parser.add_argument(
+        "--max-gap", dest="max_gap", type=float, default=1.50,
+        help="Audio pause (s) above which the screen clears between cues instead of chaining (default: 1.50; 0 = always continuous)",
+    )
+    parser.add_argument(
+        "--lead-out", dest="lead_out", type=float, default=0.50,
+        help="At a cleared pause, seconds a cue lingers past its last word before the screen clears (default: 0.50)",
+    )
+    parser.add_argument(
+        "--no-drop-phantom", dest="no_drop_phantom", action="store_true",
+        help="Keep leading/trailing fully-interpolated cues (unspoken hook/title lines) instead of dropping them",
+    )
     parser.add_argument(
         "--from-alignment", dest="from_alignment", action="store_true",
         help="Skip Whisper transcription — rebuild SRT + FCPXML from existing alignment.json (fast, seconds)",

@@ -151,16 +151,33 @@ Slug : <slug>
 - Calls `gemini-3-pro-image-preview` with `response_modalities=["IMAGE"]`.
 - Saves the result as `image_NNN.png`.
 - Post-processes each image in this order: resizes/pillarboxes to 1920×1080
-  with `#F4E5CA` padding → `enforce_background_color` snaps near-light pixels
-  (all channels `>170`) to exact `#F4E5CA` → `flatten_background` collapses any
-  remaining model texture in the **empty** background to flat `#F4E5CA`,
-  deterministically, while preserving the drawn subject (no re-render needed).
-  Texture baked **onto** the subject is left intact by design — that needs a
-  reroll, and Agent 6b QA flags it.
+  with `#F4E5CA` padding → **`two_color`** hard-quantizes every pixel to the
+  nearer of the two brand anchors `#582F0E` / `#F4E5CA`, collapsing every
+  off-brand cast (greenish/grey muck inside objects, any residual background
+  texture) onto the strict two-colour contract in one deterministic step, while
+  the cross-hatching survives (dark strokes → ink, gaps → paper). Form is
+  untouched — only colour. This **replaces** the older
+  `enforce_background_color` + `flatten_background` pair on the generate path
+  (both remain available as the `--correct-bg` / `--flatten-bg` aux modes).
+  **Grain is NOT applied here** — it is added later in post (DaVinci Resolve).
 - Waits 20 s between calls to stay under the Vertex AI quota.
 
 Existing files at the target path are skipped — to re-render a single image,
 delete `image_NNN.png` first.
+
+**Full re-render after a script change (lesson, 2026-06-08).** The skip-existing
+behaviour means a bare `--generate` will NOT refresh a slug that already has
+images — it only fills in missing numbers, then auto-runs QA + one retry on
+whatever it touched. So after editing the script (e.g. swapping in
+`script_corrected` and re-running `/visuals` to rewrite `05_prompts.md`),
+`--generate` silently skips every existing `image_NNN.png` and leaves the old
+visuals in place. To force a true full re-render, either delete `images/` first
+or pass `--indices` covering the whole stale set (`--indices` overwrites in
+place). Verify the swap actually took with a byte-hash diff against a backup —
+because **Agent 6b QA validates STYLE only (colour, text, frames, faces), never
+whether an image matches its sentence**, a stale image left over from the old
+script passes QA cleanly and the gap is invisible without the hash check.
+Rationale: slug-3 corrected-script rerender (2026-06-08).
 
 **Output:** `outputs/videos/{slug}/images/image_001.png`, `image_002.png`, ...
 
@@ -189,6 +206,21 @@ subject; texture **on** the subject is left for a reroll (Agent 6b QA flags it).
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --flatten-bg
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --flatten-bg --indices "1,6"
+```
+
+### `--two-color` — hard two-colour brand pass
+
+Snaps every pixel of `images/image_*.png` to the nearer of `#582F0E` / `#F4E5CA`
+(see `tools/utils.py:two_color`) — the **same pass the `--generate` path now runs
+on every fresh image**. Removes off-brand casts inside objects and any background
+texture in one deterministic step; form is untouched, only colour. Non-destructive
+by default: writes the quantized copies to `images_post/` for review, leaving
+`images/` intact. Add `--in-place` to overwrite `images/`. Honors `--indices "1,6"`.
+Grain is never applied here (added later in DaVinci).
+
+```bash
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --two-color
+PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --two-color --in-place --indices "1,6"
 ```
 
 ### `--apply-grain N` — grain pass

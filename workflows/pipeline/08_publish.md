@@ -75,6 +75,7 @@ The viewer must feel addressed at the level of *identity* or *underlying mechani
 - Exactly 5 titles. Each under 70 characters.
 - Specific to THIS script's actual content. Do not invent claims the script doesn't make.
 - Mix architectural modes — at least 2 of the 3 modes (identity reframe / paradox / system reveal) must be represented across the 5.
+- **Anchor on the THESIS, not the cold open.** At least 2 of the 5 must name the video's *central* mechanism or theme — the deep subject a viewer would name after watching the whole thing — NOT the opening anecdote or a vivid prop from the first minute. A script that opens on a slept-through alarm but is really about the self-improvement trap should yield titles like "Pułapka samorozwoju. Dlaczego ciągle czujesz, że to «za mało»" (thesis), not only "Dlaczego jedna wpadka rozwala ci cały dzień" (cold-open anecdote). The anecdote is the hook into the topic; the title sells the topic.
 
 **Output:** 5 numbered titles, title text only, no labels or commentary. (These feed the `## Titles` section of the master and the primary-keyword extraction in step 4.)
 
@@ -82,25 +83,25 @@ The viewer must feel addressed at the level of *identity* or *underlying mechani
 
 # STEP 2 — Video Description (+ 3 hashtags)
 
-Write the description in exactly **5 sentences**. Natural prose — not fragments, not a list. Total under 80 words.
+Write the description as a **discovery surface**, not just warm prose — ~5 sentences, ~80–130 words. Keyword coverage beats brevity, so the old hard 80-word cap is lifted (don't pad, but don't starve the description of searchable phrasings just to hit a count).
 
 Sentence structure (follow this order):
-1. The viewer's experience — a specific, felt moment or pattern that drives them to search for this video. Start from their daily life, not from an abstract concept.
-2. Psychological reframe — gently reassure that this experience doesn't mean something is wrong with them; name the mechanism in plain everyday Polish (no jargon).
-3. What the film covers — a brief "W tym filmie..." sentence summarizing the core topic.
-4. Additional context — one more thing the video covers or reveals.
-5. CTA — a warm, direct invitation to watch: "Jeśli chcesz [benefit], obejrzyj i posłuchaj do końca."
+1. **Open with the viewer's literal search query, as a question.** The first line is the phrase a real person types into search, said back to them: "Dlaczego jedna porażka rujnuje cały dzień?" / "Dlaczego ciągle czujesz, że to za mało?" This doubles as the hook and the primary keyword.
+2. **"W tym filmie pokazuję…" + keyword coverage** — name the core topics, weaving searchable phrasings in naturally ("czym różni się wstyd od poczucia winy, skąd bierze się nadmierna samokrytyka, dlaczego jedno potknięcie uderza w poczucie własnej wartości").
+3. **"Jeśli zastanawiasz się, jak…" lived-search line** — stack 2–3 lived-experience search intents ("jak przestać się obwiniać, jak nie porównywać się z innymi, jak łagodniej reagować na gorsze dni") and close with "…ten materiał jest dla ciebie."
+4. **Reframe grounded in concrete scenarios** — the gentle "this doesn't mean something is wrong with you" beat, anchored in the script's literal situations (przespany budzik, odpuszczony trening, słabszy dzień) and what they do NOT mean about you.
+5. **Thematic summary** — "To film o [psychologii X, presji Y]…" naming the deep theme, optionally a warm close.
 
-Good example (do not copy verbatim):
-> "Czasem wystarczy kilka minut scrollowania, żeby pojawiło się przytłaczające wrażenie, że wszyscy są już dalej niż ty. To uczucie nie musi oznaczać, że coś z tobą jest nie tak — często jest po prostu reakcją układu nerwowego na ciągłe porównywanie się z cudzymi wycinkami życia. W tym filmie pokazuję, skąd bierze się poczucie bycia w tyle i dlaczego potrafi tak mocno uderzać w ciało oraz psychikę. Opowiadam też, jak algorytmy i presja społeczna wzmacniają ten fałszywy alarm. Jeśli chcesz lepiej zrozumieć siebie i poczuć trochę ulgi, obejrzyj i posłuchaj do końca."
+Good example (this is the user-corrected target — match this register, do not copy verbatim):
+> "Dlaczego jedna porażka rujnuje cały dzień? W tym filmie pokazuję, czym różni się wstyd od poczucia winy, skąd bierze się nadmierna samokrytyka i dlaczego jedno potknięcie potrafi uderzyć w poczucie własnej wartości. Jeśli zastanawiasz się, jak przestać się obwiniać, jak nie porównywać się z innymi i jak łagodniej reagować na gorsze dni, ten materiał jest dla ciebie. Mówię o tym, dlaczego przespany budzik, odpuszczony trening albo słabszy dzień nie definiują tego, kim jesteś. To film o psychologii wstydu, presji ciągłego poprawiania siebie i o tym, jak odzyskać bardziej stabilne poczucie własnej wartości."
 
 Hard rules:
-- Exactly 5 sentences. Count them. If you write 4 or 6, rewrite.
+- ~5 sentences, ~80–130 words. Keyword coverage is the priority; never drop a searchable phrasing just to shorten.
+- The first sentence is a question shaped like a real search query — NOT an abstract concept, NOT a generic feeling.
 - NO researcher names, NO study years, NO Latin-sounding jargon.
 - NO fragment-style lines (no "Nocne scrollowanie. Kolejne zaręczyny." openers).
-- NO second-person preachy lines.
 - NO clickbait words (see step 1 ban list).
-- Natural conversational Polish — as if spoken directly to one person.
+- Natural conversational Polish — warm even while it carries keywords; never a robotic keyword list.
 
 **3 hashtags** (generated with the description): exactly 3, single-word, lowercase, `#` prefix. First is always `#sensum`. The other 2 are the single-word core topic + one single-word concept from the script (e.g. `#sensum #presja #porównywanie`). NO multi-word hashtags, NO camelCase, NO spaces, NO Polish diacritics in hashtags (use `#lek` not `#lęk`). These 3 hashtags are the ONLY single-word survivors — the long-form Tags field (step 4) is exclusively multi-word.
 
@@ -108,11 +109,12 @@ Hard rules:
 
 # STEP 3 — Timestamps (chapters)
 
-Detect natural section breaks from the `## ` headings / bold section labels / topic shifts in the script. Produce **6–12 chapters**.
+Detect natural section breaks from the `## ` headings / bold section labels / topic shifts in the script. Produce **5–7 broad chapters** — consolidate, don't over-segment; a viewer wants a few clear acts, not 12 micro-steps.
 
-- Each label is a full sentence or question from the viewer's navigation perspective — what will the viewer find in this section? Write "Skąd bierze się poczucie, że jesteś w tyle" or "Jak algorytmy wzmacniają ten alarm" — NOT dry technical single-word labels like "Mechanizm" or academic phrases like "Pułapka fałszywej średniej".
+- The section heading in the description is **`Rozdziały:`** (Polish), never "Timestamps:".
+- Each label is a tight sentence or question from the viewer's navigation perspective — what will the viewer find here? Write "Wstyd i poczucie winy — kluczowa różnica" or "Dlaczego ciągle czujesz, że nie jesteś wystarczający" — NOT dry single-word labels ("Mechanizm") or academic phrases. Keep them scannable.
 - First chapter is `00:00` and its label names the actual opening topic (NOT the word "Wprowadzenie").
-- All other chapters use the placeholder `[XX:XX]` (the user fills real timestamps after the edit is locked).
+- All other chapters use the placeholder `[XX:XX]` — keep these placeholders (the user fills real timestamps after the edit is locked; without `00:00` + timestamps YouTube won't render functional chapters).
 
 **Output format** (one per line): `00:00 <label>` then `[XX:XX] <label>` for the rest.
 
@@ -127,20 +129,20 @@ First read `.tmp/08_signals.md` (YouTube autocomplete suggestions).
 - A tag is a search query, not a vocabulary word. If you can't picture a real person living this problem typing it into YouTube search, it has no place in the tag block.
 - **Tag #1 carries the most algorithmic weight.** YouTube front-loads semantic weight onto the first tag. Tag #1 must be the **exact-match primary keyword** of the video — a search-shaped phrase extracted from (or paraphrased from) the strongest of the 5 step-1 titles. If that title is metaphor-heavy and would not autocomplete in YouTube search, use a more search-shaped paraphrase. The remaining tags cluster around this primary keyword.
 - Prefer multi-word phrases (≥2 words) — they carry more search intent.
-- Metaphors and props in the script (cookies, batteries, GPS, doors, villages) are illustrations, not search terms. Tag the underlying mechanism the metaphor points to.
+- **Metaphors** in the script (cookies, batteries, GPS, doors, villages) are illustrations, not search terms — tag the underlying mechanism they point to. But **literal relatable scenarios** (przespany budzik, odpuszczony trening, scrollowanie) are NOT metaphors — people genuinely search them, so they are welcome as long-tail intent phrases ("przespany budzik i wyrzuty sumienia", "odpuszczony trening i poczucie winy").
 - Established clinical / pop-psychology terms (ruminacja, regulacja, przywiązanie, wypalenie, maskowanie) are what serious viewers actually search for — render them inside multi-word phrases that match real search behavior.
 
 ## THE TAG PROTOCOL — NON-NEGOTIABLE
 
-- Produce **5–8 tags total**. Comma-separated, no `#` prefix. 2026 YouTube SEO consensus: 5–8 highly relevant tags outperform padded lists. Quality over quantity.
+- Produce **12–15 tags total**. Comma-separated, no `#` prefix. Cast a **wide long-tail net** — cover every realistic search a viewer living this problem would type, not a minimalist set. (Earlier doctrine said 5–8; the channel owner consistently wants the wider net.)
 - **SLOT STRUCTURE — order by algorithmic weight (front-loaded):**
-  - **Tag #1 (mandatory): the exact-match primary keyword** for this video (from the strongest candidate title, or a more search-shaped paraphrase). Multi-word. This slot does the heaviest discovery work.
-  - **Tags #2–#6: long-tail intent phrases.** 2–4 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("dlaczego zawsze zaczynam od nowa"), clinical/mechanism phrases rendered as searches ("rozregulowanie układu nerwowego", "pętla ruminacji").
+  - **Tag #1 (mandatory): the strongest search-shaped primary keyword** for this video. Prefer the strongest *standalone search-concept* (e.g. "wstyd a poczucie winy") even if it is not the literal title phrase — a metaphor-heavy title would not autocomplete, so a search-shaped concept wins this slot. Multi-word. This slot does the heaviest discovery work.
+  - **Tags #2–#14: long-tail intent phrases.** 2–5 words each. Mix: close paraphrases of the primary keyword, lived-experience phrasing ("jak nie brać wszystkiego do siebie", "dlaczego czuję się gorszy od innych"), literal relatable scenarios ("przespany budzik i wyrzuty sumienia"), clinical/mechanism phrases rendered as searches ("nadmierna samokrytyka", "niska samoocena"), and "psychologia [tematu]" framings.
   - **SENSUM**: include exactly once (uppercase). Brand tag — the only single-word entry permitted.
   - **Optional: up to 2 single-word Polish psychology anchors** (e.g. "psychologia", "emocje") — ONLY if no multi-word phrase captures the same high-volume search better.
 - **The intent test.** For each phrase: *"Would a real person living this problem type these exact words into YouTube search?"* If not, cut it.
 - Every phrase must be extractable from the script's language OR a direct paraphrase of the search intent the chosen title surfaces.
-- Order STRONGEST FIRST — the `--finalize` trimmer drops from the tail if the comma-joined string overruns the 450-char budget (500-char YouTube hard cap minus margin), so never put a weak tag ahead of a strong one.
+- Order STRONGEST FIRST — the `--finalize` trimmer drops from the tail if the comma-joined string overruns the 480-char budget (500-char YouTube hard cap minus margin), so never put a weak tag ahead of a strong one.
 
 **Output:** one comma-separated line, no `#` prefix, strongest first.
 
@@ -197,10 +199,10 @@ A passage qualifies ONLY if it passes ALL THREE filters. Failing any one disqual
 - Only if FEWER than 4 genuinely pass do you return fewer (3, 2, even 1). Be honest about which dropped and on which filter. Do not promote borderline candidates; do not over-prune a clean three-filter pass.
 - You are NOT constrained to any fixed archetype menu — all 4 can be the same "type" if that's what the script supports.
 - **No two Shorts may share any lines.**
-- Quote the **exact** lines verbatim from the narration — no paraphrasing, no added words. Each clip lands in the 25–70 second range read aloud (~50–150 words).
+- Quote the **exact** lines verbatim from the narration — no paraphrasing, no added words. Each clip is a **single contiguous passage**: every sentence of the Short in script order, no gaps. It lands in the 25–70 second range read aloud (~50–150 words). A two-line hook-plus-punchline is too short — the body between the opening and the main claim is what fills the Short.
 - For each, choose a free-form **angle tag** (2–4 words) describing its actual pull — e.g. "Mind-blow reveal", "Naming the unnamed", "Open loop", "Practical reframe", "Body-feels-this", "Identity absolution".
 
-For each selected Short, hold internally (used by steps 7–9 and the clip block): a **Hook** quote (the exact opening line(s) the editor cuts in for the first ~3s) and a **Core payload** quote (the exact line(s) carrying the main claim) — both verbatim. If you only have one quote, source the Core payload from the next 1–2 verbatim sentences in the narration that continue the same thought. If you cannot find a verbatim continuation, **drop the whole Short**.
+For each selected Short capture the **full contiguous verbatim passage** — the entire Short as one block of consecutive narration lines, opening line first. The first line is the ~3s cold open (the editor's cut-in); the passage runs through the main claim to the curiosity-gap cut. Do **not** quote only the opening and the punchline with the middle dropped — the editor cuts one continuous span of the voiceover, so the block must be that whole span. If the strongest opening and the main claim are not contiguous in the script, either extend the passage to include everything between them (that *is* the Short) or pick a tighter passage that is contiguous; never quote with gaps. If no contiguous passage reaches ~50 words, **drop the whole Short**.
 
 ---
 
@@ -220,23 +222,24 @@ For each step-6 Short, write exactly **ONE** title (not a candidate list).
 # STEP 8 — Shorts: Descriptions
 
 For each step-6 Short, write the description — exactly **2 sentences**:
-- First sentence names the viewer's experience.
-- Second delivers the psychological reframe or mechanism (no jargon).
+- **First sentence is a direct QUESTION to the viewer** naming their experience — "Myślisz, że to lenistwo albo brak silnej woli?" / "Scrollujesz i czujesz, że wszyscy mają lepiej poukładane życie niż ty?" The question is the hook.
+- Second delivers the psychological reframe or mechanism (no jargon), gently — prefer "Czasem… po prostu…" over an absolute verdict.
 - State the claim directly in the speaker's own voice. NO research-framing language (no "badania pokazują", "naukowcy odkryli", "studies show", "research suggests").
+- The topic hashtag must match the Short's actual key word — a tiredness Short ends `#zmeczenie`, not `#wypalenie`.
 - End the description with: `#Shorts #psychologia` plus **1** single-word lowercase topic hashtag matching the Short's theme (e.g. `#presja #stres #lek #smutek #emocje`). Each hashtag is ONE word — no spaces, no Polish diacritics (use `#lek` not `#lęk`).
 
 ---
 
 # STEP 9 — Shorts: Tags
 
-For each step-6 Short, write a tight backend-tag block. (Shorts algorithm barely reads backend tags — the real categorization signal is the step-8 description hashtags — so keep these tight.)
+For each step-6 Short, write a backend-tag block — cast a **wide long-tail net** (the channel owner wants breadth here too, not a minimalist set).
 
-- **3–5 multi-word intent phrases** per Short. Each phrase 2–4 words. Comma-separated, no `#` prefix.
+- **8–10 multi-word intent phrases** per Short. Each phrase 2–5 words. Comma-separated, no `#` prefix.
 - Tag #1 is the strongest search-shaped phrase mapping to THIS Short's core claim — its primary keyword.
-- Every phrase extracted from (or a direct-intent paraphrase of) THIS Short's quoted lines.
+- Every phrase extracted from (or a direct-intent paraphrase of) THIS Short's quoted lines. Include lived-experience question phrasings ("czemu ciągle jestem zmęczony"), platform-specific searches where they fit ("porównywanie się na instagramie"), and "psychologia [tematu]" framings.
 - **SINGLE-WORD TAGS ARE PROHIBITED** (semantic dilution). The only single-word allowance is the brand handle `SENSUM` (uppercase), included ONCE.
-- Tag the underlying concept, never the prop/metaphor (cookie, GPS, village, battery, door).
-- Tags tuned to THIS Short's specific angle, not the parent video. 3 strong tags beat 5 padded with filler.
+- Tag the underlying concept, never the metaphor (cookie, GPS, village, battery, door) — but literal relatable scenarios and platform names are fair game.
+- Tags tuned to THIS Short's specific angle, not the parent video.
 
 ---
 
@@ -261,16 +264,13 @@ _Generated: <YYYY-MM-DD> · Agent 8 (in-session) · Slug: <slug>_
 
 <step 2 — 5-sentence description>
 
-Timestamps:
+Rozdziały:
 <step 3 — chapters>
 
 Badania i źródła:
 <step 5 — bibliography lines>
 
 <step 2 — 3 hashtags on one line>
-
----
-*SENSUM — Science of Kindness*
 
 ---
 
@@ -287,17 +287,13 @@ Badania i źródła:
 **Description:** <step 8> #Shorts #x #y
 **Tags:** <step 9 — comma-separated, no # prefix>
 **Script Lines to Clip:**
-Hook (first ~3s):
-> <verbatim Hook quote>
-
-Core payload:
-> <verbatim Core-payload quote>
+> <full contiguous verbatim passage — the entire Short, every line in script order, no gaps, opening line first>
 
 ---
 [… Shorts 2–4, same block …]
 ```
 
-**Field order inside each Short is LOCKED:** `**Title:**`, `**Description:**`, `**Tags:**`, `**Script Lines to Clip:**` — exactly one of each, in that order. Inside the clip block, `Hook (first ~3s):` then `Core payload:`, each followed by its `> ` quoted line(s). Leave the `Hook (first ~3s):` / `Core payload:` labels with no quarter marker — `--finalize` appends the `[Q1]–[Q4]` markers deterministically.
+**Field order inside each Short is LOCKED:** `**Title:**`, `**Description:**`, `**Tags:**`, `**Script Lines to Clip:**` — exactly one of each, in that order. The clip block is the `**Script Lines to Clip:**` label followed immediately by the full contiguous passage as consecutive `> ` quoted lines (no `Hook`/`Core payload` sub-labels). Leave the `**Script Lines to Clip:**` label with no quarter marker — `--finalize` appends the single `[Q1]–[Q4]` marker deterministically (located by the passage's opening line).
 
 Then run `agent8_publish.py "<slug>" --finalize` to add the Q1–Q4 markers, trim the tag line to budget, validate every Short has a clip block, and export the docx.
 
@@ -306,13 +302,13 @@ Then run `agent8_publish.py "<slug>" --finalize` to add the Q1–Q4 markers, tri
 ## Self-check before saving the master file
 
 - [ ] Exactly **5** long-form titles; none instructional, none with a mechanistic subject, none ending in a period.
-- [ ] Description is **exactly 5 sentences**, under 80 words, no fragments, no jargon, no research-framing.
+- [ ] Description opens with a search-query **question**, ~5 sentences / ~80–130 words, keyword-dense, no fragments, no jargon, no research-framing.
 - [ ] Exactly **3 hashtags**, all single-word, `#sensum` first, no diacritics.
-- [ ] **6–12** chapters; first is `00:00` with a real topic label (not "Wprowadzenie"); all others `[XX:XX]`; labels are viewer-perspective sentences/questions, not dry nouns.
-- [ ] **Tag #1** is the exact-match primary keyword (search-shaped, would autocomplete); 5–8 tags total; every tag multi-word except `SENSUM` (once) and ≤2 optional single-word anchors; strongest first.
+- [ ] **5–7** chapters under the `Rozdziały:` heading; first `00:00` with a real topic label (not "Wprowadzenie"); all others `[XX:XX]`; tight viewer-perspective labels, not dry nouns.
+- [ ] **Tag #1** is the strongest search-shaped concept (would autocomplete); **12–15** tags total, wide long-tail; every tag multi-word except `SENSUM` (once) and ≤2 optional single-word anchors; strongest first.
 - [ ] Bibliography entries come **only** from `02_verified_research.md`; any thematic tie included; concept labels left in English; citation-only format.
-- [ ] **1–4 Shorts**, no shared lines; every Hook and Core-payload quote is **verbatim** from the narration (will be checked by the Q1–Q4 substring match).
-- [ ] Each Short: exactly one Title (≤60 chars, no trailing period), one Description (exactly 2 sentences + `#Shorts #x #y`), one Tags line (3–5 multi-word, `SENSUM` at most once), one clip block.
+- [ ] **1–4 Shorts**, no shared lines; every clip block is a **single contiguous verbatim passage** (50–150 words, opening line first, no gaps) — verbatim from the narration (checked by the Q1–Q4 substring match; `--finalize` warns if a passage is too short).
+- [ ] Each Short: exactly one Title (≤60 chars, no trailing period), one Description (2 sentences, question opener, + `#Shorts #x #y`), one Tags line (8–10 multi-word, `SENSUM` at most once), one clip block.
 - [ ] Master file section order matches the template above.
 
 ---
@@ -323,19 +319,19 @@ Then run `agent8_publish.py "<slug>" --finalize` to add the Q1–Q4 markers, tri
 Pick one. All 5 should be emotionally direct, natural spoken Polish. If a title sounds like a research abstract or has a mechanistic subject ("Twój układ nerwowy…", "Mechanizm…"), regenerate that step. Max 70 chars.
 
 ### Video Description
-Exactly 5 sentences: (1) viewer's experience, (2) reframe, (3) "W tym filmie…", (4) extra context, (5) CTA. Natural conversational Polish, under 80 words. If it reads like an abstract or runs long, regenerate step 2.
+≈5 sentences opening with a search-query **question**, then "W tym filmie…" + keyword coverage, a "Jeśli zastanawiasz się, jak…" lived-search line, a reframe grounded in concrete scenarios, and a thematic close. ~80–130 words, keyword-dense but still warm. If it reads like a robotic keyword list or skips the question opener, regenerate step 2.
 
-### Timestamps
-Each label a full sentence/question from the viewer's perspective. Fill in `[XX:XX]` after the edit is locked.
+### Rozdziały
+5–7 broad chapters under the `Rozdziały:` heading; each label a tight viewer-perspective sentence/question. Fill in `[XX:XX]` after the edit is locked.
 
 ### Research & References
 Verify entries match `02_verified_research.md`. Any thematic tie qualifies; only true zero-tie entries are excluded.
 
 ### Tags (long-form)
-Paste the comma-separated string into Tags (no `#`). **Tag #1 = exact-match primary keyword** — test by pasting into YouTube search; if it would not autocomplete, regenerate step 4. 5–8 tags, every one multi-word except `SENSUM` (once). `--finalize` reports the final char count (target < 450; YouTube cap 500).
+Paste the comma-separated string into Tags (no `#`). **Tag #1 = strongest search-shaped concept** — test by pasting into YouTube search; if it would not autocomplete, regenerate step 4. 12–15 tags, wide long-tail (literal relatable scenarios welcome), every one multi-word except `SENSUM` (once). `--finalize` reports the final char count (target < 480; YouTube cap 500).
 
 ### YouTube Shorts
-1–4 Shorts, each with one title, a 2-sentence description, 3–5 multi-word backend tags, and the Hook/Core-payload clip split. Titles max 60 chars, no trailing period. The `[Q1]–[Q4]` marker tells you which quarter of the script the quoted line lives in — open the script, count to that quarter, text-search the phrase to find the cut in DaVinci. `[Q?]` means the quote did not substring-match (paraphrase slipped in) — fix the quote or regenerate the Short.
+1–4 Shorts, each with one title, a 2-sentence description (question opener), 8–10 multi-word backend tags, and the full contiguous clip passage (50–150 words). Titles max 60 chars, no trailing period. The `[Q1]–[Q4]` marker on the clip block tells you which quarter of the script the passage opens in — open the script, count to that quarter, text-search the first line to find the cut in DaVinci, then cut through to the end of the quoted passage. `[Q?]` means the opening line did not substring-match (paraphrase slipped in) — fix the quote or regenerate the Short.
 
 ---
 
@@ -347,5 +343,6 @@ Paste the comma-separated string into Tags (no `#`). **Tag #1 = exact-match prim
 | Script source missing | Run `/draft` then `/hook` (exports `docx/script.docx`); or edit to `docx/script_corrected.docx` |
 | `--signals` returns 0 suggestions | Network issue — tags step falls back on the script; suggestions block shows `(unavailable)` |
 | Tag block exceeds budget | `--finalize` trims from the tail and prints the final length; reorder so weak tags are last |
-| `[Q?]` on a clip block | The quote did not substring-match the narration — the model paraphrased; edit the quote to match the script verbatim or regenerate that Short |
+| `[Q?]` on a clip block | The opening line did not substring-match the narration — the model paraphrased; edit the quote to match the script verbatim or regenerate that Short |
 | `[MISSING]` on a clip block | A Short was written without its `**Script Lines to Clip:**` block — locate the lines manually or regenerate step 6 |
+| `clip passage is only ~N words` warning | The clip block is a hook-plus-punchline stub, not the full passage — extend it to the contiguous span (50–150 words) verbatim, or drop the Short |

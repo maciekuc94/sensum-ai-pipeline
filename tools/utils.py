@@ -537,6 +537,52 @@ def flatten_background(
 
 
 # ---------------------------------------------------------------------------
+# Two-colour brand quantization (the deterministic POST pass for body images)
+# ---------------------------------------------------------------------------
+
+BRAND_INK_RGB = (0x58, 0x2F, 0x0E)        # #582F0E Dark Brown — every line/hatch
+# background anchor reuses TARGET_BACKGROUND_RGB (#F4E5CA Sage Beige)
+
+
+def two_color(
+    image_path,
+    *,
+    output_path=None,
+    ink: tuple[int, int, int] = BRAND_INK_RGB,
+    background: tuple[int, int, int] = TARGET_BACKGROUND_RGB,
+) -> None:
+    """Hard-quantize every pixel to the nearer of the two brand colours.
+
+    Each pixel becomes EXACTLY `ink` (#582F0E) or `background` (#F4E5CA) —
+    whichever it sits closer to in RGB space. This is the deterministic
+    two-colour POST pass for body images: in one step it strips every off-brand
+    cast (greenish / grey muck inside objects, any residual background texture)
+    and guarantees the strict two-colour Scientific-Etching contract, while the
+    cross-hatching survives intact (dark strokes -> ink, gaps -> paper) so the
+    result reads as a clean 19th-century engraving. Form is untouched — only
+    colour is collapsed onto the two anchors.
+
+    Non-destructive when `output_path` is given (writes the copy there);
+    otherwise overwrites `image_path` in place. Grain is NOT applied here — it
+    is added later in post (DaVinci Resolve), per channel workflow.
+    """
+    import numpy as np
+    from PIL import Image
+
+    arr = np.array(Image.open(str(image_path)).convert("RGB")).astype(np.int32)
+    ink_a = np.array(ink, dtype=np.int32)
+    bg_a = np.array(background, dtype=np.int32)
+    d_ink = ((arr - ink_a) ** 2).sum(axis=2)
+    d_bg = ((arr - bg_a) ** 2).sum(axis=2)
+    out = np.where(
+        (d_ink <= d_bg)[:, :, None],
+        np.array(ink, dtype=np.uint8),
+        np.array(background, dtype=np.uint8),
+    ).astype(np.uint8)
+    Image.fromarray(out, "RGB").save(str(output_path or image_path))
+
+
+# ---------------------------------------------------------------------------
 # Film grain (shared by agent6_images, agent7_thumbnails, tools/dev/add_grain)
 # ---------------------------------------------------------------------------
 
@@ -547,11 +593,22 @@ def add_grain(
     image_path,
     *,
     intensity: int = GRAIN_INTENSITY_DEFAULT,
+    grain_scale: int = 1,
     out_path=None,
     rng_seed: int | None = None,
 ) -> Path:
     """
     Apply Gaussian film grain to a single PNG.
+
+    `intensity` is the noise std-dev on the 0–255 scale. `grain_scale` sets the
+    grain *cell size* in pixels:
+      - `1` (default) = fine per-pixel grain, independent per channel (legacy
+        behaviour — unchanged).
+      - `>1` = coarse **monochrome** grain: noise is generated at 1/grain_scale
+        resolution and bilinear-upscaled so each grain cell is ~grain_scale px.
+        Needed so grain stays visible after a 4K image is downscaled. The SENSUM
+        thumbnail finish is `grain_scale=2, intensity=18` on the 2-colour 4K
+        render (validated on slug-3 thumbnail #2, 2026-06-08).
 
     When `out_path` is None the image is overwritten in place; otherwise the
     result is written to `out_path` (parent directory must already exist).
@@ -567,7 +624,15 @@ def add_grain(
     mode = img.mode if img.mode in ("RGB", "RGBA") else "RGB"
     arr = np.array(img.convert(mode), dtype=np.int16)
     rng = np.random.default_rng(rng_seed) if rng_seed is not None else np.random.default_rng()
-    if mode == "RGBA":
+    h, w = arr.shape[:2]
+    if grain_scale > 1:
+        # Coarse monochrome grain: noise at reduced res, bilinear-upscaled to
+        # ~grain_scale px cells, applied uniformly across channels (luminance).
+        nh, nw = max(1, h // grain_scale), max(1, w // grain_scale)
+        small = rng.normal(0, intensity, (nh, nw)).astype(np.float32)
+        noise = np.array(Image.fromarray(small, mode="F").resize((w, h), Image.BILINEAR))
+        arr[:, :, :3] = np.clip(arr[:, :, :3] + noise[:, :, None], 0, 255)
+    elif mode == "RGBA":
         noise = rng.normal(0, intensity, arr[:, :, :3].shape).astype(np.int16)
         arr[:, :, :3] = np.clip(arr[:, :, :3] + noise, 0, 255)
     else:

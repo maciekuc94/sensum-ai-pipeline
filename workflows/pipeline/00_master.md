@@ -257,7 +257,6 @@ Every factual claim in the final script must originate from the **Verified Claim
 |-------|-----|
 | `Vertex AI error: Application Default Credentials not found` | Run `gcloud auth application-default login` |
 | `GOOGLE_CLOUD_PROJECT not set` | Add `GOOGLE_CLOUD_PROJECT=your-project-id` to `.env` |
-| `ANTHROPIC_API_KEY not set` | Add `ANTHROPIC_API_KEY=your-key` to `.env` |
 | Agent 2 returns `Verified: 0 claims` | Topic too broad — try a more specific phrasing |
 | Agent 6 `--generate`: `md/05_prompts.md not found` | Run Agent 5 first |
 | Unicode errors on Windows | Prefix the command with `PYTHONIOENCODING=utf-8` |

@@ -4,24 +4,17 @@ You're working inside the **WAT framework** (Workflows, Agents, Tools). This arc
 
 ## The WAT Architecture
 
-**Layer 1: Workflows (The Instructions)**
-- Markdown SOPs stored in `workflows/`
-- Each workflow defines the objective, required inputs, which tools to use, expected outputs, and how to handle edge cases
-- Written in plain language, the same way you'd brief someone on your team
+**Layer 1: Workflows (The Instructions)** — Markdown SOPs in `workflows/`. Each defines the objective, inputs, which tools to use, outputs, and edge cases. Plain language.
 
-**Layer 2: Agents (The Decision-Maker)**
-- This is your role. You're responsible for intelligent coordination.
-- Read the relevant workflow, run tools in the correct sequence, handle failures gracefully, and ask clarifying questions when needed
-- You connect intent to execution without trying to do everything yourself
-- Example: If you need to pull data from a website, don't attempt it directly. Read `workflows/scrape_website.md`, figure out the required inputs, then execute `tools/scrape_single_site.py`
+**Layer 2: Agents (The Decision-Maker)** — your role. Read the relevant workflow, run tools in sequence, handle failures, ask when unclear; connect intent to execution without doing everything yourself. *Example:* to verify research, read `workflows/pipeline/02_verify.md`, then run `tools/pipeline/agent2_verify.py "<slug>"`.
 
-**Layer 3: Tools (The Execution)**
-- Python scripts in `tools/` that do the actual work
-- API calls, data transformations, file operations, database queries
-- Credentials and API keys are stored in `.env`
-- These scripts are consistent, testable, and fast
+**Layer 3: Tools (The Execution)** — Python in `tools/` for the deterministic work: API calls, file ops, transforms. Consistent, testable, fast. Secrets in `.env`.
 
-**Why this matters:** By offloading execution to deterministic scripts, you stay focused on orchestration and decision-making where you excel.
+**Why this matters — and where the rule bends.** Offloading execution to deterministic scripts keeps you on orchestration. **But the creative core has no Layer 3:** the `/draft` script chain, `/hook`, `/visuals` prompts, `/package` strategies, and `/publish` copy *execute in-session* — you can't make good Polish prose deterministic. Python stays only where the work is genuinely mechanical (research APIs, image render, hook splice, forced alignment, validation, docx). The three layers hold; the reasoning↔execution boundary just moved.
+
+**Where `.claude/` fits — it is NOT a fourth layer.** It's the Claude Code *interface* to the three layers: `commands/` = manual launchers, `skills/` = auto-firing routers + doctrine guards, `agents/` = specialist sub-contexts for `/publish`, `settings.json` = harness config. The instructions still live in `workflows/`; `.claude/` only triggers and configures them.
+
+**"Agent" is two words.** WAT "Agent" (Layer 2) = the reasoning orchestrator — *you*, a role, not a file. A Claude Code "agent" (`.claude/agents/*.md`) = a spawned subagent context. Same word, two things — the #1 source of confusion here.
 
 ## Channel Language (2026-05-25 — Polish localization)
 
@@ -63,23 +56,27 @@ This loop is how the framework improves over time.
 
 **Directory layout:**
 ```
-.tmp/                    # Temporary files (scraped data, intermediate exports). Regenerated as needed.
-.claude/
-  commands/              # Slash commands (user-invoked): /draft /hook /visuals /package /publish (/draft = cold subagents (Opus + Sonnet wg roli): writer → section/arc ensemble → fixer → ściskacz; /publish defaults to Agent-Teams, auto-fallback in-session)
-  agents/                # Agent-Teams teammates for /publish (native-copy critic; publish specialists)
-  skills/                # Auto-invoked skills (model picks via `description`): doctrine guards (scientific-etching-guard, native-voice-guard) + natural-language routers (render-images, write-script, score-hook, package-thumbnail, publish-package) that fire on plain-language requests outside the slash commands
+.claude/                 # Claude Code interface (NOT a WAT layer — see "Where .claude/ fits")
+  commands/              # Manual slash launchers: /draft /hook /visuals /package /publish
+  agents/                # /publish teammates: native-copy-critic + publish-{copywriter,seo,clips}
+  skills/                # 10 skills: 2 guards (scientific-etching, native-voice) + 5 routers (write-script, score-hook, package-thumbnail, render-images, publish-package) + 3 utils (grain_thumbnail, sensum-pdf, grill-me)
+  settings.json          # Shared harness config (committed); settings.local.json = personal (gitignored)
 tools/
-  pipeline/              # Agent scripts 0–8 + align (the full production chain)
-  dev/                   # Support tools: add_grain.py
-  utils.py               # Shared utilities (all agents import from here)
+  pipeline/              # Agent scripts 0–8 + align; lib/ = align helper modules (aligner, fcpxml_writer, …)
+  dev/                   # Standalone tools: add_grain, finish_thumbnail, md_to_pdf_sensum, analyze_subtitles, research_{gate,topic}_signals
+  utils.py               # Shared constants/utilities (CHARACTER_DESCRIPTION, STYLE_SUFFIX) — all agents import
   research_sources.py    # Peer-reviewed source aggregation for Agent 1 (PubMed + Europe PMC)
 workflows/
-  pipeline/              # Numbered SOPs 00–08 (one per pipeline agent), plus align.md
-  guides/                # voice_brief.md (script-voice canon), style_guide_images.md
+  pipeline/              # Numbered SOPs 00–08 (one per agent) + align.md
+  guides/                # voice_brief.md (voice canon), style_guide_images.md, davinci_subtitle_preset.md
+docs/                    # Lazy-read references: Claude Code authoring guides (subagents/skills/…) + research/ + archive/
+brainstorms/             # Dated design-decision logs (cited as rationale throughout this file)
+materials/               # Agent-0 input materials (PDFs etc.)
 outputs/
-  videos_pl/             # Polish-channel videos (one folder per slug). videos_en/ exists for legacy English content.
+  videos_pl/             # Polish videos (one folder per slug); videos_en/ = legacy English
   channel_assets/        # Shared brand assets (logo, fonts, colors)
-.env                     # API keys and environment variables (NEVER store secrets anywhere else)
+.tmp/                    # Disposable intermediate files (regenerated as needed)
+.env                     # API keys / secrets (NEVER store secrets anywhere else)
 ```
 
 **Core principle:** Local files are just for processing. Anything I need to see or use lives in cloud services. Everything in `.tmp/` is disposable.
@@ -177,7 +174,7 @@ All pipeline scripts live in `tools/pipeline/`.
 | 8d | (inside `/publish`) `native-copy-critic` teammate | Opus 4.8 (Claude Code teammate — no API) | `md/08_working.md` | `md/08d_nativecopy_iter{N}.md` |
 | 6 **(manual)** | `pipeline/agent6_images.py` | Gemini 2.5 Flash Image (tuned-flash v8) | `05_prompts.md` | `images/image_*.png` |
 | 6b **(QA, optional)** | `pipeline/agent6b_image_qa.py` | Gemini 2.5 Flash | `images/*.png` | `md/06_qa.md` |
-| 7 → Package **(manual)** | `/package <slug>` + `agent7_thumbnails.py --render` | Opus 4.8 strategies (in-session) + Gemini 2.5 Flash Image render (v8) | `04_final.md` (script) | `md/07_package.md` + `md/07_prompts.md` + `thumbnails_no_grain/thumbnail_0N.png` × 3 |
+| 7 → Package **(manual)** | `/package <slug>` + `agent7_thumbnails.py --render` | Opus 4.8 strategies (in-session) + Gemini 3 Pro Image render (`gemini-3-pro-image-preview`, ~4K) | `04_final.md` (script) | `md/07_package.md` + `md/07_prompts.md` + `thumbnails_no_grain/thumbnail_0N.png` × 3 |
 | Align **(post-record)** | `pipeline/agent_align.py` | faster-whisper (local, free) | `voiceover/voiceover.wav` + `05_phrases.md` + `script_corrected.docx` / `script.docx` / `04_final.md` | `edit/subtitles.srt` + `edit/timeline.fcpxml` + `edit/preview.html` + `edit/alignment.json` |
 
 **Parallel-safe after Agent 3 (script chain):** Agents 5 and 8 can run simultaneously. Agent 6 depends on Agent 5. `/package` runs after `/hook` and before `/publish` (it feeds the title), independent of Agents 5/6.

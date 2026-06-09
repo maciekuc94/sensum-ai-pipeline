@@ -33,6 +33,7 @@ The scoring rubric, red-flag list, rewrite rules, and the mandatory output contr
    PYTHONIOENCODING=utf-8 python tools/pipeline/agent4_hook.py "$1" --apply
    ```
    This backs up the original opening once (`04_final.bak.md`), splices `REWRITE_15S` into `04_final.md` if it differs from the current opening, writes the `04_hook.md` log, and deletes the temp response file.
+   - **Verify the docx export.** `--apply` also exports `outputs/videos_pl/$1/docx/script.docx`. Confirm that file now exists; if it is absent, the export failed — warn the user, because downstream `/package`, `/visuals`, and `/publish` would silently fall back to `04_final.md` (losing the user's Word/Copilot pass).
 
 7. **Report back** to the user:
    - Final Tier 1 (15s) and Tier 2 (30s) scores

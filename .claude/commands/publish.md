@@ -45,6 +45,12 @@ and *writes* its `08d_nativecopy_iter*.md` logs.
   `PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "$1"` first, and stop.
 - Resolve the **script source** (first that exists): `docx/script_corrected.docx` > `docx/script.docx`
   > `md/04_final.md`. If none exists, tell the user to run `/draft $1` then `/hook $1` first, and stop.
+- **Package-handoff gate.** Check whether `outputs/videos_pl/$1/md/07_package.md` exists. If it is
+  **missing**, do not silently proceed: warn the user that `/package` has not run, so the titles here
+  will be generated **standalone** and won't be co-designed with the thumbnail (curiosity-gap synergy
+  lost) — and that running `/package $1` *after* `/publish` is **too late**: it orphans the package and
+  forces a full re-run. Recommend running `/package $1` first. Proceed only on explicit confirmation
+  (standalone publish is a supported but inferior mode per `08_publish.md` STEP 1).
 
 ## Step 1.5 — Preflight the team (graceful fallback)
 
@@ -128,8 +134,8 @@ The critic reads `md/08_working.md` cold. Loop:
    - `NATIVE` → exit the debate.
    - `REWORK` & `N < MAX` → **rewrite only the challenged copy lines** in `08_working.md` (titles,
      description, chapter labels, Shorts titles/descriptions only — **never** tags, bibliography, or a
-     verbatim Shorts clip passage), toward the STEP 1/STEP 2 register in `08_publish.md` and the four named
-     tells in `voice_corpus.md` §C2. **Do not touch un-challenged lines** (avoid drift) and **do not
+     verbatim Shorts clip passage), toward the STEP 1/STEP 2 register in `08_publish.md` and the voice canon in
+     `workflows/guides/voice_brief.md`. **Do not touch un-challenged lines** (avoid drift) and **do not
      over-correct** — restore the hit through a sharper phrasing, never by flattening; protect the
      strongest title. Save `08_working.md`, set `N = N + 1`, continue.
    - `REWORK`/`UNKNOWN` at `N == MAX` → exit, mark the language verdict not-NATIVE.
@@ -171,7 +177,10 @@ from the lead, never from a teammate.
   user to fix those before publishing.
 - **Native-copy debate:** verdict (`NATIVE`/`REWORK`) + rounds used; if not clean, point at
   `md/08d_nativecopy_iter<N>.md`.
-- Next command (manual, never auto): `/package $1`.
+- **Order reminder:** `/package $1` runs *before* `/publish` (its titles feed STEP 1) — it is **not** a
+  next step. If `07_package.md` was absent, the titles above are standalone (see the Step 1
+  package-handoff gate). After publish, the only remaining work is manual: images (Agent 6) and
+  recording + Align.
 
 ## Notes
 

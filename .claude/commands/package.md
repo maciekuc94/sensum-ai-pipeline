@@ -15,6 +15,8 @@ You design **3 radically different "packaging" strategies** for the video — ea
 ## Workflow
 
 1. **Validate input.** Resolve the script source (first that exists): `outputs/videos_pl/$1/docx/script_corrected.docx` > `docx/script.docx` > `md/04_final.md`. If none exists, tell the user to run `/draft $1` (then `/hook $1`) first, and stop. (Unlike old `/thumbnails`, you do NOT need `08_publish.md` — `/package` runs before `/publish`.)
+   - **Hook-gate check:** if `outputs/videos_pl/$1/md/04_hook.md` is absent, `/hook` has not run — warn that the opening is un-gated and the packaging titles will be built on an unreviewed script; recommend `/hook $1` first. Warn and continue (do not hard-stop).
+   - **Reverse-order check:** if `outputs/videos_pl/$1/md/08_publish.md` already exists, `/publish` has already run on a standalone title — warn that after this `/package` the user must **re-run `/publish $1`** to pick up the co-designed title. Warn and continue (redesigning the thumbnail post-publish is a legitimate reason to be here).
 
 2. **Load source + rulebook + brand constants:**
    - The script source above (theme, emotional angles, metaphors). If it is only a `.docx`, run `PYTHONIOENCODING=utf-8 python tools/pipeline/agent8_publish.py "$1" --extract` and read `outputs/videos_pl/$1/.tmp/08_narration.md`.

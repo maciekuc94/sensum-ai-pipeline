@@ -128,7 +128,7 @@ If the Vertex model ID changes, edit `QA_MODEL` near the top of
 
 - **One retry only.** `--retry` triggers a single regen pass. If the
   regenerated image still fails, fix the underlying prompt in
-  `md/05_prompts.md` and rerun Agent 6 manually.
+  `md/05_image_prompts.md` and rerun Agent 6 manually.
 
 ---
 

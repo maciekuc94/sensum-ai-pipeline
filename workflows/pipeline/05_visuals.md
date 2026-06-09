@@ -8,7 +8,7 @@ Agent 5 reads the script's **natural emotional arc** organically — it is not t
 
 Since 2026-05-28 Agent 5 runs **inside the Claude Code session** — Opus 4.8 generates prompts directly, no Anthropic API call. The Python script (`agent5_visuals.py --expand`) handles only the post-processing: injecting CHARACTER_DESCRIPTION + STYLE_SUFFIX constants into every visual description and exporting phrase files. (`--extract` is extraction-only — it pulls `docx/script_corrected.docx` to `md/script_corrected.md`, which `/visuals` uses as its source when present. Called automatically by the skill.)
 
-The result is `05_prompts.md`, which the human reviews before Agent 6 generates the actual images.
+The result is `05_image_prompts.md`, which the human reviews before Agent 6 generates the actual images.
 
 ---
 
@@ -26,7 +26,7 @@ The result is `05_prompts.md`, which the human reviews before Agent 6 generates 
 /visuals <slug>
 ```
 
-Claude Code slash command. Generates compact `05_prompts.md` in-session (Opus 4.8, no API cost), then auto-runs `agent5_visuals.py --expand` to assemble full Imagen prompts and export phrase files.
+Claude Code slash command. Generates compact `05_image_prompts.md` in-session (Opus 4.8, no API cost), then auto-runs `agent5_visuals.py --expand` to assemble full Imagen prompts and export phrase files.
 
 Can be run **in parallel with Agent 8** — both read the script independently.
 
@@ -248,7 +248,7 @@ outputs/
     └── {slug}/
         └── md/
             ├── 04_final.md         (Agent 3 finalize — input for Agent 5)
-            ├── 05_prompts.md       (Agent 5 output — review before Agent 6)
+            ├── 05_image_prompts.md       (Agent 5 output — review before Agent 6)
             └── 05_phrases.md       (simple phrase table for alignment)
 ```
 
@@ -284,9 +284,9 @@ Agent 6 reads the `**Imagen prompt:**` field and sends it directly to Vertex AI.
 
 ---
 
-## How to Review 05_prompts.md
+## How to Review 05_image_prompts.md
 
-Open `outputs/videos_pl/{slug}/md/05_prompts.md` after `--expand` completes. This is the only manual gate before images are generated — spend time here.
+Open `outputs/videos_pl/{slug}/md/05_image_prompts.md` after `--expand` completes. This is the only manual gate before images are generated — spend time here.
 
 **Check pacing:**
 - Is every sentence covered? Scroll through and spot any gaps.
@@ -308,7 +308,7 @@ Open `outputs/videos_pl/{slug}/md/05_prompts.md` after `--expand` completes. Thi
 **Check forbidden terms:**
 - Scan for "glowing", "dim", "shadowed", "scribbles", "tangled lines", readable text — rewrite or remove any found.
 
-**Edit directly** in `05_prompts.md` before running Agent 6. Changes to the `**Imagen prompt:**` line are what Imagen receives.
+**Edit directly** in `05_image_prompts.md` before running Agent 6. Changes to the `**Imagen prompt:**` line are what Imagen receives.
 
 ---
 
@@ -323,11 +323,11 @@ Agent 3 has not been run yet for this slug, or the slug is misspelled. Run:
 
 **Fewer than 60 prompts generated**
 
-The script may be shorter than expected, or Claude grouped too many sentences together. Review `05_prompts.md` and split dense entries by hand, or re-run `/visuals <slug>`.
+The script may be shorter than expected, or Claude grouped too many sentences together. Review `05_image_prompts.md` and split dense entries by hand, or re-run `/visuals <slug>`.
 
 **`--expand` finds no `**Visual:**` fields**
 
-The compact `05_prompts.md` may be corrupted or already expanded. If it already has `**Imagen prompt:**` entries, it's ready for Agent 6. If it's empty or malformed, re-run `/visuals <slug>`.
+The compact `05_image_prompts.md` may be corrupted or already expanded. If it already has `**Imagen prompt:**` entries, it's ready for Agent 6. If it's empty or malformed, re-run `/visuals <slug>`.
 
 **Mood is flat — one register stamped across the whole set**
 
@@ -337,7 +337,7 @@ The emotional arc isn't being followed. Spot-fix: edit the `**Imagen prompt:**` 
 
 ## Next Step
 
-After reviewing and editing `05_prompts.md`, generate the images:
+After reviewing and editing `05_image_prompts.md`, generate the images:
 
 ```bash
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --generate

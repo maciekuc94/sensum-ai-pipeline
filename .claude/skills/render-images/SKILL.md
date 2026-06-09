@@ -24,8 +24,8 @@ Slugi to foldery w `outputs/videos_pl/` z **numerycznym prefiksem**:
 ## Krok 1 — Sprawdź warunki wstępne (procedura to łańcuch)
 Render obrazów (Agent 6) potrzebuje promptów (Agent 5), które potrzebują finalnego
 skryptu. Sprawdź w tej kolejności dla `outputs/videos_pl/<slug>/`:
-1. Jest `md/05_prompts.md` z rozwiniętymi wpisami `**Imagen prompt:**` → gotowe na Agenta 6.
-2. Brak `05_prompts.md`, ale jest `md/04_final.md` (lub `docx/script_corrected.docx`) →
+1. Jest `md/05_image_prompts.md` z rozwiniętymi wpisami `**Imagen prompt:**` → gotowe na Agenta 6.
+2. Brak `05_image_prompts.md`, ale jest `md/04_final.md` (lub `docx/script_corrected.docx`) →
    najpierw uruchom `/visuals <slug>` (Agent 5), potem przejdź do Agenta 6.
 3. Brak `04_final.md` → zatrzymaj się; powiedz userowi, że trzeba najpierw
    `/draft <slug>` (i `/hook <slug>`).
@@ -34,14 +34,14 @@ skryptu. Sprawdź w tej kolejności dla `outputs/videos_pl/<slug>/`:
 Agent 6 jest oznaczony w CLAUDE.md jako „manual — never run automatically", a render
 kosztuje kredyty obrazowe Gemini. Przed uruchomieniem pokaż userowi:
 - rozwiązany slug,
-- ile obrazów powstanie (policz bloki `**Imagen prompt:**` w `05_prompts.md`),
+- ile obrazów powstanie (policz bloki `**Imagen prompt:**` w `05_image_prompts.md`),
 - dokładną komendę, którą zaraz odpalisz,
 i uzyskaj wyraźne „tak". **Nie renderuj na cichym założeniu.**
 
 ## Krok 3 — Wykonaj procedurę
 Po potwierdzeniu, z korzenia repo:
 ```bash
-# (tylko jeśli brak 05_prompts.md) najpierw Agent 5:
+# (tylko jeśli brak 05_image_prompts.md) najpierw Agent 5:
 /visuals <slug>
 # Agent 6 — render (domyślnie auto-odpala Agent 6b QA --retry, chyba że --skip-qa):
 PYTHONIOENCODING=utf-8 python tools/pipeline/agent6_images.py "<slug>" --generate

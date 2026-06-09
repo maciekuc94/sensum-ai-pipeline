@@ -164,7 +164,7 @@ def _check_background_color(image_path: Path) -> str | None:
 def _check_missing_images(slug: str, images_dir: Path) -> list[dict]:
     """Return FAIL entries for expected image indices absent from images/."""
     try:
-        content = read_output(slug, "md/05_prompts.md")
+        content = read_output(slug, "md/05_image_prompts.md")
     except FileNotFoundError:
         return []
     header_match = re.search(r'^Total images:\s*(\d+)', content, re.MULTILINE)

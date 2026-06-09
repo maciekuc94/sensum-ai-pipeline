@@ -1,7 +1,7 @@
 """
 Agent 6: Image Generation
 
-Reads `md/05_prompts.md` produced by Agent 5 (which is the source of
+Reads `md/05_image_prompts.md` produced by Agent 5 (which is the source of
 truth for image prompts in the current pipeline) and renders each prompt to
 a PNG via Gemini 3 Pro Image Preview on Vertex AI (location=global).
 
@@ -16,7 +16,7 @@ Auxiliary modes:
   --correct-bg    Replace near-white pixels with #F4E5CA in existing images.
   --apply-grain N Apply film grain at intensity N to existing images.
   --sync-scripts  Insert [IMAGE_NNN] cue markers into 04_final.md
-                  aligned with the rows in 05_prompts.md.
+                  aligned with the rows in 05_image_prompts.md.
   --transparent   Generate on white background; output RGBA PNGs with
                   transparent background to images_transparent/. Compatible
                   with --indices. Never overwrites images/.
@@ -42,7 +42,7 @@ from tools.utils import (
 # ---------------------------------------------------------------------------
 
 SCRIPT_FILENAME = "md/04_final.md"
-PROMPTS_FILENAME = "md/05_prompts.md"
+PROMPTS_FILENAME = "md/05_image_prompts.md"
 
 # Passed as negative_prompt to suppress face generation and background color drift.
 NEGATIVE_PROMPT = (
@@ -182,7 +182,7 @@ def _run_auto_qa(slug: str) -> None:
 
 def _parse_prompts_from_file(content: str) -> list[str]:
     """
-    Parse the Imagen prompts from 05_prompts.md.
+    Parse the Imagen prompts from 05_image_prompts.md.
 
     Each prompt starts at the first non-empty line after a '**Imagen prompt:**'
     marker and continues until the next blank line or '---' boundary. Lines are
@@ -213,11 +213,11 @@ def _parse_prompts_from_file(content: str) -> list[str]:
 
 
 def extract_and_save_prompts(slug: str) -> None:
-    """Phase 1: verify that 05_prompts.md was produced by Agent 5."""
+    """Phase 1: verify that 05_image_prompts.md was produced by Agent 5."""
     print(f"\n=== Agent 6: Image Generation — Phase 1 Check ===")
     print(f"Slug : {slug}")
     print()
-    print("Agent 5 writes 05_prompts.md directly.")
+    print("Agent 5 writes 05_image_prompts.md directly.")
     print("Run Agent 5 if you have not already:")
     print(f'  python tools/pipeline/agent5_visuals.py "{slug}"')
     print()
@@ -294,7 +294,7 @@ def generate_images(
         actual = len(prompts)
         if expected != actual:
             print(
-                f"[WARNING] 05_prompts.md header says {expected} images but "
+                f"[WARNING] 05_image_prompts.md header says {expected} images but "
                 f"{actual} prompt blocks were parsed.\n"
                 f"         This may indicate a corrupted or partially-edited file.\n"
                 f"         Proceeding with {actual} parsed prompts."
@@ -575,13 +575,13 @@ def two_color_pass(slug: str, indices: list[int] | None = None, *, in_place: boo
 
 
 # ---------------------------------------------------------------------------
-# Script sync — align [IMAGE_NNN] markers with 05_prompts.md
+# Script sync — align [IMAGE_NNN] markers with 05_image_prompts.md
 # ---------------------------------------------------------------------------
 
 
 def sync_scripts(slug: str) -> None:
     """
-    Update script files so image markers match 05_prompts.md.
+    Update script files so image markers match 05_image_prompts.md.
 
     04_final.md: strips old [IMAGE: ...] markers, inserts [IMAGE_NNN]
     before the sentence each image maps to.
@@ -593,10 +593,10 @@ def sync_scripts(slug: str) -> None:
     try:
         prompts_content = read_output(slug, PROMPTS_FILENAME)
     except FileNotFoundError:
-        print("Error: 05_prompts.md not found. Run Phase 1 first.")
+        print("Error: 05_image_prompts.md not found. Run Phase 1 first.")
         sys.exit(1)
 
-    # Parse (image_num, first_sentence) from 05_prompts.md
+    # Parse (image_num, first_sentence) from 05_image_prompts.md
     image_sentences: list[tuple[int, str]] = []
     # Tolerate optional metadata lines (e.g., **Beat:** ...) between the image
     # header and the **Sentence:** line — Agent 5 may insert beat tags.
@@ -650,7 +650,7 @@ def sync_scripts(slug: str) -> None:
     write_output(slug, "md/04_final.md", cleaned)
     print(f"  md/04_final.md: stripped old markers, inserted {inserted}/{len(image_sentences)} [IMAGE_NNN] markers")
 
-    print(f"\nDone. Scripts are now consistent with 05_prompts.md.")
+    print(f"\nDone. Scripts are now consistent with 05_image_prompts.md.")
 
 
 # ---------------------------------------------------------------------------
@@ -674,7 +674,7 @@ def _parse_args() -> argparse.Namespace:
 
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--generate", action="store_true",
-                      help="Phase 2: generate images from 05_prompts.md.")
+                      help="Phase 2: generate images from 05_image_prompts.md.")
     mode.add_argument("--correct-bg", action="store_true",
                       help="Re-process existing images, masking near-white to #F4E5CA.")
     mode.add_argument("--flatten-bg", action="store_true",
@@ -685,7 +685,7 @@ def _parse_args() -> argparse.Namespace:
                            "#582F0E / #F4E5CA. Writes to images_post/ for review "
                            "(add --in-place to overwrite images/). Honors --indices.")
     mode.add_argument("--sync-scripts", action="store_true",
-                      help="Align [IMAGE_NNN] markers in scripts with 05_prompts.md.")
+                      help="Align [IMAGE_NNN] markers in scripts with 05_image_prompts.md.")
     mode.add_argument("--apply-grain", type=int, metavar="N", default=0,
                       help="Apply film grain at intensity N to existing images.")
 

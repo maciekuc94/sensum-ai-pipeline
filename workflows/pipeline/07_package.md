@@ -62,7 +62,7 @@ The thumbnail is the **single highest-stakes frame of the whole video** — the 
 - **Scroll-stop = scale + tension + contrast**, not prettiness. Reject: a floating symbol with no stakes, two calm figures, a tiny element lost in space, busy multi-element scenes, anything that reads as "a tasteful illustration" rather than "a moment that demands explanation."
 
 ### Render-prompt expansion
-For each strategy, expand its visual concept into a full **~400-word render prompt** that makes the grandeur **explicit** — name the **camera angle, the scale contrast, and the charged posture** (the model renders what you specify; a vague prompt defaults to a flat standing figure). Open with the dramatic scene, embed `CHARACTER_DESCRIPTION` **verbatim only if a figure appears**, close with `STYLE_SUFFIX` **verbatim**. These go to `md/07_prompts.md` (text-free; the napis is NOT in the prompt).
+For each strategy, expand its visual concept into a full **~400-word render prompt** that makes the grandeur **explicit** — name the **camera angle, the scale contrast, and the charged posture** (the model renders what you specify; a vague prompt defaults to a flat standing figure). Open with the dramatic scene, embed `CHARACTER_DESCRIPTION` **verbatim only if a figure appears**, close with `STYLE_SUFFIX` **verbatim**. These go to `md/07_package_prompts.md` (text-free; the napis is NOT in the prompt).
 
 ## Outputs
 
@@ -87,7 +87,7 @@ For each strategy, expand its visual concept into a full **~400-word render prom
 ```
 Strategy 1 = the model's strongest recommendation (`[PRIMARY]`). The user may re-rank by editing the file; `/publish` reads `[PRIMARY]` (or the first strategy if none marked) as the primary-keyword source.
 
-**`md/07_prompts.md`** — the 3 full render prompts in the exact `## Thumbnail N` format the renderer parses:
+**`md/07_package_prompts.md`** — the 3 full render prompts in the exact `## Thumbnail N` format the renderer parses:
 ```
 # Thumbnail Prompts: <topic>
 Generated: <YYYY-MM-DD>
@@ -119,7 +119,7 @@ Model: claude-opus-4-8 (Claude Code)
 - [ ] Every visual = one dominant symbol, etching contract, **negative space reserved for the napis**, no text in the prompt.
 - [ ] Every visual clears the **rozmach + CTR bar**: metaphor in tension (not a static icon or a flat standing figure), cinematic scale or scale-contrast, emotion carried by posture, reads instantly at 128 px.
 - [ ] Each render prompt makes the **camera angle + scale + posture explicit** (no vague scene that defaults to a flat stander).
-- [ ] `07_prompts.md` uses `## Thumbnail N` headers; each prompt ends with `STYLE_SUFFIX` verbatim; `CHARACTER_DESCRIPTION` only where a figure appears.
+- [ ] `07_package_prompts.md` uses `## Thumbnail N` headers; each prompt ends with `STYLE_SUFFIX` verbatim; `CHARACTER_DESCRIPTION` only where a figure appears.
 - [ ] Strategy 1 marked `[PRIMARY — recommended]`.
 
 ## Rate limiting & recovery

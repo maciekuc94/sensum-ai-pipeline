@@ -4,7 +4,7 @@ Render engine — render thumbnail image candidates for a given output (used by 
 Two-step process:
   1. Concepts (full image prompts) are generated IN-SESSION in Claude Code on
      Opus 4.8 via the `/package <slug>` slash command — no Gemini, no Anthropic
-     API. The command writes them to md/07_prompts.md (`## Thumbnail N` headers).
+     API. The command writes them to md/07_package_prompts.md (`## Thumbnail N` headers).
      (Legacy: the retired `/thumbnails` command wrote the same file format.)
   2. THIS script renders each prompt via Gemini 3 Pro Image Preview (Vertex AI)
      and post-processes (resize -> background enforce -> optional grain).
@@ -42,7 +42,7 @@ IMAGE_MODEL = "gemini-3-pro-image-preview"  # premium: thumbnails are the 3-imag
 GRAIN_INTENSITY = 12  # project standard (Gaussian std dev on 0–255)
 REQUEST_DELAY = 20    # seconds between Vertex AI calls to stay under QPM quota
 
-PROMPTS_MD = "md/07_prompts.md"   # written by /package (in-session strategies)
+PROMPTS_MD = "md/07_package_prompts.md"   # written by /package (in-session strategies)
 
 NEGATIVE_TEXT = (
     "\n\nAvoid in this image: face, eyes, nose, mouth, facial features, "
@@ -69,7 +69,7 @@ def _parse_prompts_text(text: str) -> list[str]:
 
 
 def _load_prompts_md(slug: str) -> list[str]:
-    """Load the concepts written in-session by /package to md/07_prompts.md."""
+    """Load the concepts written in-session by /package to md/07_package_prompts.md."""
     try:
         text = read_output(slug, PROMPTS_MD)
     except FileNotFoundError:

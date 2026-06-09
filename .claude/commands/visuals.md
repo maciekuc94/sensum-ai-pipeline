@@ -20,7 +20,7 @@ Your job: read the final script and generate compact image prompts *yourself* (y
    - **Script source:** if `outputs/videos_pl/$1/docx/script_corrected.docx` exists, first run `python tools/pipeline/agent5_visuals.py "$1" --extract` to extract it to `md/script_corrected.md`, then use `md/script_corrected.md` as the script text (it reflects the user-edited version). Otherwise use `outputs/videos_pl/$1/md/04_final.md`. (Scripts are **not** tagged with any narrative architecture — that concept was retired 2026-06-04; read the script and follow the emotional arc it actually has, per `05_visuals.md`.)
    - `workflows/pipeline/05_visuals.md` — contains the exact visual direction instructions, beat registers, compact output format, and self-check list
 
-3. **Generate the compact prompts file** following the Prompt section in `05_visuals.md`. Write to `outputs/videos_pl/$1/md/05_prompts.md` using the compact format: each entry uses `**Visual:**` containing only the 40–60 word visual description. Do NOT write CHARACTER_DESCRIPTION or STYLE_SUFFIX — those are injected by the expand step.
+3. **Generate the compact prompts file** following the Prompt section in `05_visuals.md`. Write to `outputs/videos_pl/$1/md/05_image_prompts.md` using the compact format: each entry uses `**Visual:**` containing only the 40–60 word visual description. Do NOT write CHARACTER_DESCRIPTION or STYLE_SUFFIX — those are injected by the expand step.
 
 4. **Generate the phrases file** — write `outputs/videos_pl/$1/md/05_phrases.md` as a simple markdown table:
    ```
@@ -37,7 +37,7 @@ Your job: read the final script and generate compact image prompts *yourself* (y
    ```bash
    PYTHONIOENCODING=utf-8 python tools/pipeline/agent5_visuals.py "$1" --expand
    ```
-   This injects CHARACTER_DESCRIPTION + STYLE_SUFFIX into every `**Visual:**` field, rewrites `05_prompts.md` with full `**Imagen prompt:**` entries, and exports `05_phrases.docx`.
+   This injects CHARACTER_DESCRIPTION + STYLE_SUFFIX into every `**Visual:**` field, rewrites `05_image_prompts.md` with full `**Imagen prompt:**` entries, and exports `05_phrases.docx`.
 
 6. **Report back** to the user:
    - Total image count

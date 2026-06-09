@@ -56,7 +56,7 @@ outputs/videos_pl/{slug}/md/04_final.bak.md  (created once, never overwritten)
     │  one prompt per beat                                         │  + autocomplete/finalize bookends
     ▼                                                              ▼
 outputs/videos_pl/{slug}/md/                            outputs/videos_pl/{slug}/md/
-  05_prompts.md                                              08_publish.md
+  05_image_prompts.md                                              08_publish.md
   05_phrases.md
     │                                                              │
     │   ┌──────────────────────────────────────────────────────────┘
@@ -183,7 +183,7 @@ Scores the opening 37 words (Tier 1, ≥8) and the opening 200 words (Tier 2, �
 - Agent 5 — one Imagen prompt per sentence/beat with beat-aware visual register
 - Agent 8 — 9 focused steps: titles, description + hashtags, timestamps, long-form tags, bibliography, then shorts clip-selection / titles / descriptions / tags. Legacy Gemini end-to-end stays at `agent8_publish.py "<slug>" --api`.
 
-Review `05_prompts.md` carefully — it is the only gate before image cost. See [05_visuals.md](05_visuals.md) and [08_publish.md](08_publish.md).
+Review `05_image_prompts.md` carefully — it is the only gate before image cost. See [05_visuals.md](05_visuals.md) and [08_publish.md](08_publish.md).
 
 ### **STOP — manual gate before Agents 6 and 7**
 
@@ -234,7 +234,7 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 3d | `md/04_final_presqueeze.md` | Pre-Ściskacz backup of `04_final.md` |
 | 4  | `md/04_hook.md` | Hook score per attempt + final verdict |
 | 4  | `md/04_final.bak.md` | Pre-hook-refine backup (first run only) |
-| 5 | `md/05_prompts.md` | One Imagen prompt per sentence/beat |
+| 5 | `md/05_image_prompts.md` | One Imagen prompt per sentence/beat |
 | 5 | `md/05_phrases.md` | Short phrase index used by Align |
 | 4  | `docx/script.docx` | Teleprompter-ready script (edit → save as `script_corrected.docx`) |
 | 8 | `md/08_publish.md` | Titles, 5 Shorts packages, YouTube metadata |
@@ -258,7 +258,7 @@ Every factual claim in the final script must originate from the **Verified Claim
 | `Vertex AI error: Application Default Credentials not found` | Run `gcloud auth application-default login` |
 | `GOOGLE_CLOUD_PROJECT not set` | Add `GOOGLE_CLOUD_PROJECT=your-project-id` to `.env` |
 | Agent 2 returns `Verified: 0 claims` | Topic too broad — try a more specific phrasing |
-| Agent 6 `--generate`: `md/05_prompts.md not found` | Run Agent 5 first |
+| Agent 6 `--generate`: `md/05_image_prompts.md not found` | Run Agent 5 first |
 | Unicode errors on Windows | Prefix the command with `PYTHONIOENCODING=utf-8` |
 
 ---

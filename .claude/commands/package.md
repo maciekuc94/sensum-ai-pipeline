@@ -32,7 +32,7 @@ You design **3 radically different "packaging" strategies** for the video — ea
 
 4. **Write two files:**
    - `outputs/videos_pl/$1/md/07_package.md` — the human-facing strategy doc (exact format in `07_package.md`), Strategy 1 marked `[PRIMARY — recommended]`.
-   - `outputs/videos_pl/$1/md/07_prompts.md` — the 3 full ~400-word render prompts under `## Thumbnail 1/2/3` headers (text-free; `CHARACTER_DESCRIPTION` only where a figure appears; each ends with `STYLE_SUFFIX` verbatim). The renderer parses these headers.
+   - `outputs/videos_pl/$1/md/07_package_prompts.md` — the 3 full ~400-word render prompts under `## Thumbnail 1/2/3` headers (text-free; `CHARACTER_DESCRIPTION` only where a figure appears; each ends with `STYLE_SUFFIX` verbatim). The renderer parses these headers.
 
 5. **Render** (skip this step if `$2` is `--no-render`):
    ```bash
@@ -45,4 +45,4 @@ You design **3 radically different "packaging" strategies** for the video — ea
 ## Notes
 - **You are the model.** Write all 3 strategies + both files in this conversation — no API. The Python step only renders (Gemini) and post-processes.
 - Pull `CHARACTER_DESCRIPTION` and `STYLE_SUFFIX` from `tools/utils.py` at runtime — never invent or summarize them.
-- The napis is for the manual Canva overlay; it must NEVER appear in `07_prompts.md` (no-text-in-image contract, re-enforced by the renderer's negative prompt).
+- The napis is for the manual Canva overlay; it must NEVER appear in `07_package_prompts.md` (no-text-in-image contract, re-enforced by the renderer's negative prompt).

@@ -1,7 +1,8 @@
-# Agent 3b — Section checker: zdania + kontekst (zimny subagent Opus)
+# Agent 3b — Section checker: zdania + kontekst (zimny subagent Sonnet)
 
-Dispatchowany na zimno. Twój zwrot = treść zapisanego pliku (nie czat). **Bez
-przykładów-kalibracji** — czytaj native'owym uchem, nie listą zakazów.
+Dispatchowany na zimno. Twój zwrot = krótkie potwierdzenie zapisu (ścieżka +
+liczba zgłoszeń `[Z]`/`[K]`), NIE treść pliku. **Bez przykładów-kalibracji** —
+czytaj native'owym uchem, nie listą zakazów.
 
 Lead przydzielił ci **jedną sekcję** `## ` całego scenariusza. Pozostałe sekcje
 sprawdzają równolegle inni — nie zajmuj się nimi.
@@ -33,6 +34,11 @@ książkowych konstrukcji, dosłowności („ma ciało"), „przetłumaczonej" s
 **To, że zdanie gładko płynie z poprzednim, NIE usprawiedliwia kalki** — gładki
 kontekst nie znosi zgrzytu w samym zdaniu.
 
+**Obrazowość ≠ kalka.** Rodzimy idiom („przejmuje stery") i żywy konkret („Nie
+mówi się o nim przy obiedzie.") **nie są błędem** — flagujesz to, czego Polak by
+**nie powiedział**, nie to, co jest „pisane", obrazowe albo ozdobne. Nie
+spłaszczaj żywego zdania do bezbarwnego.
+
 **[K] — Kontekst (szersza soczewka).** Teraz patrz, jak zdania w twojej sekcji
 **łączą się ze sobą**. Szukaj:
 - fałszywego „bo" / „dlatego" — drugie zdanie udaje, że wynika z pierwszego, a nie
@@ -51,7 +57,8 @@ Ponumerowana lista markdown. Każda pozycja **otagowana** `[Z]` albo `[K]`:
 
 - `[Z]` — **cytat** (dokładny fragment) · **czemu zgrzyta** (kalka / szyk /
   książkowe / „tak się nie mówi") · **naturalna wersja** (jak powie żywy
-  człowiek).
+  człowiek). Jeśli podajesz więcej niż jedną wersję — **najnaturalniejsza zawsze
+  pierwsza** (fixer bierze pierwszą, gdy nie zdecyduje inaczej).
 - `[K]` — **cytat** (oba zdania / fragment, którego dotyczy) · **co się nie klei**
   (fałszywe „bo" / skok / wiszące „to" / razem bez sensu / powtórzenie) · **jak
   skleić** (najmniejszy ruch: mostek, cięcie, dociągnięcie odniesienia — nie nowa

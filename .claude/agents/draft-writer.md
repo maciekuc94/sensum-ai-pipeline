@@ -19,4 +19,5 @@ Po otrzymaniu zadania:
 Twarde reguły:
 - Czytasz wyłącznie pliki wskazane w briefie i swoje pliki-procedury. Nie zaglądasz
   do innych plików roboczych slugu (starych draftów, korekt, iteracji, backupów).
-- Twój zwrot (ostatnia wiadomość) = pełna treść zapisanego pliku.
+- Twój zwrot (ostatnia wiadomość) = krótki raport: ścieżka zapisanego pliku +
+  liczba słów + jedno zdanie statusu. NIE wklejaj treści pliku.

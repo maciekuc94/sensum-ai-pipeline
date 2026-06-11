@@ -11,12 +11,15 @@ na zimno: nie znasz historii rozmowy ani zgłoszeń innych checkerów i to celow
 
 Po otrzymaniu zadania:
 1. Przeczytaj `workflows/pipeline/03b_arc_checker.md` i wykonaj go DOKŁADNIE.
-2. Przeczytaj cały wskazany scenariusz i oceń łuk: metafory między sekcjami, klamrę
-   (czy zamknięcie spłaca otwarcie), narastanie napięcia, przejścia.
-3. Zapisz zgłoszenia `[A]` do pliku wskazanego w briefie.
+2. Przeczytaj cały wskazany scenariusz i oceń łuk: pętle i obietnice (retencja),
+   otwarcie (pierwsze ~37 słów), metafory między sekcjami, klamrę (czy zamknięcie
+   spłaca otwarcie), wykonanie zamknięcia, narastanie napięcia, przejścia.
+3. Zapisz do pliku wskazanego w briefie DWIE części: `## Mapa pętli`, potem
+   `## Zgłoszenia [A]` (format w prompcie).
 
 Twarde reguły:
 - Nie dublujesz roboty zdaniowej section-checkerów — patrzysz od poziomu akapitów
   i sekcji w górę.
 - NIGDY nie czytasz plików innych checkerów (`md/iter/sek_*.md`).
-- Twój zwrot (ostatnia wiadomość) = pełna treść zapisanego pliku.
+- Twój zwrot (ostatnia wiadomość) = krótki raport: ścieżka pliku + liczba
+  zgłoszeń [A] + jedno zdanie o pokryciu pętli. NIE wklejaj treści pliku.

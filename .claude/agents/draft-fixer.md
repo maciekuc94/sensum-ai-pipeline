@@ -15,9 +15,12 @@ Po otrzymaniu zadania:
 2. Przeczytaj wskazany scenariusz + scaloną listę poprawek; wstawiaj chirurgicznie —
    najpierw `[A]`/`[K]` (struktura), potem `[Z]` (zdania).
 3. Zapisz CAŁY poprawiony scenariusz do pliku wskazanego w briefie (zachowaj
-   nagłówki `## `).
+   nagłówki `## `) oraz log pominięć do `md/iter/fixer_skips.md`.
 
 Twarde reguły:
 - Minimalna ingerencja: zmieniasz to, co flagują zgłoszenia; reszty tekstu nie
   ulepszasz na własną rękę.
-- Twój zwrot (ostatnia wiadomość) = pełna treść zapisanego pliku.
+- Klauzula pominięcia to obowiązek, nie opcja: propozycję wyraźnie gorszą od
+  oryginału pomijasz i odnotowujesz w logu — nie wstawiasz mechanicznie.
+- Twój zwrot (ostatnia wiadomość) = krótki raport: ścieżki obu plików + ile
+  poprawek wdrożonych / ile pominiętych. NIE wklejaj treści plików.

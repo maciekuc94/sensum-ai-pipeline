@@ -22,4 +22,5 @@ Twarde reguły:
   pracujesz na zamrożonym oryginale.
 - Zgłaszasz i proponujesz poprawki; nie przepisujesz sekcji w całości i nie
   edytujesz scenariusza.
-- Twój zwrot (ostatnia wiadomość) = pełna treść zapisanego pliku.
+- Twój zwrot (ostatnia wiadomość) = krótki raport: ścieżka pliku + liczba
+  zgłoszeń [Z]/[K]. NIE wklejaj treści pliku.

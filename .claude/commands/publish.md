@@ -44,7 +44,7 @@ and *writes* its `08d_nativecopy_iter*.md` logs.
 - Confirm `outputs/videos_pl/$1/md/02_verified_research.md` exists. If missing, tell the user to run
   `PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "$1"` first, and stop.
 - Resolve the **script source** (first that exists): `docx/script_corrected.docx` > `docx/script.docx`
-  > `md/04_final.md`. If none exists, tell the user to run `/draft $1` then `/hook $1` first, and stop.
+  > `md/04_final.md`. If none exists, tell the user to run `/draft $1` first, and stop.
 - **Package-handoff gate.** Check whether `outputs/videos_pl/$1/md/07_package.md` exists. If it is
   **missing**, do not silently proceed: warn the user that `/package` has not run, so the titles here
   will be generated **standalone** and won't be co-designed with the thumbnail (curiosity-gap synergy

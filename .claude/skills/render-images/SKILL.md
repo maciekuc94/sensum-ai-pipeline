@@ -28,7 +28,7 @@ skryptu. Sprawdź w tej kolejności dla `outputs/videos_pl/<slug>/`:
 2. Brak `05_image_prompts.md`, ale jest `md/04_final.md` (lub `docx/script_corrected.docx`) →
    najpierw uruchom `/visuals <slug>` (Agent 5), potem przejdź do Agenta 6.
 3. Brak `04_final.md` → zatrzymaj się; powiedz userowi, że trzeba najpierw
-   `/draft <slug>` (i `/hook <slug>`).
+   `/draft <slug>`.
 
 ## Krok 2 — POTWIERDŹ przed wydaniem kredytów (nienegocjowalne)
 Agent 6 jest oznaczony w CLAUDE.md jako „manual — never run automatically", a render

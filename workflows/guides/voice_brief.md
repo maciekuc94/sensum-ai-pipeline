@@ -29,7 +29,7 @@ To jest cały kanon głosu — siedem reguł i kilka zasad nadrzędnych, nic poz
    lat, decymali, effect-size, p-value, liczby badań / uczestników. Liczby tylko
    okrągłe i oprawione („blisko połowy"); liczba, która nie niesie emocji —
    wycięta. *(v2.1 — zwalidowane: pisarz użył „badania pokazują" 2×, user wyciął
-   oba; ściskacz 3d i tak je tnie.)*
+   oba; walidator `draft_check.py` flaguje każde, które się prześlizgnie.)*
 5. **Otwórz hookiem, zamknij rozpoznaniem.** Otwarcie: scena albo pytanie —
    konkret, w którym człowiek się rozpozna („Przespałeś budzik."). Recognition
    close **zawsze ostatni**: pokazuje człowiekowi coś o nim samym, nie porada, nie

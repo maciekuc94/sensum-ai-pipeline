@@ -14,8 +14,6 @@ Your job: read the final script and generate compact image prompts *yourself* (y
 
 1. **Validate inputs**:
    - Confirm `outputs/videos_pl/$1/md/04_final.md` exists. If missing, tell the user to run `/draft $1` first (Agent 3 must complete), and stop.
-   - **Hook-gate check:** if `outputs/videos_pl/$1/md/04_hook.md` is absent, `/hook` has not run — warn that image prompts will be anchored to an un-gated opening (and `05_phrases.md` row 1, which feeds Align's SRT, will be the unreviewed first line); recommend `/hook $1` first. Warn and continue.
-
 2. **Load source materials**:
    - **Script source:** if `outputs/videos_pl/$1/docx/script_corrected.docx` exists, first run `python tools/pipeline/agent5_visuals.py "$1" --extract` to extract it to `md/script_corrected.md`, then use `md/script_corrected.md` as the script text (it reflects the user-edited version). Otherwise use `outputs/videos_pl/$1/md/04_final.md`. (Scripts are **not** tagged with any narrative architecture — that concept was retired 2026-06-04; read the script and follow the emotional arc it actually has, per `05_visuals.md`.)
    - `workflows/pipeline/05_visuals.md` — contains the exact visual direction instructions, beat registers, compact output format, and self-check list

@@ -22,7 +22,7 @@ kopia reguł — żywy kanon żyje w `workflows/guides/voice_brief.md` (v2, 2026
    nerwowy") — wolno. Test: czy zwykły człowiek to rozumie.
 4. **Mechanizm — tak; atrybucja do badań — nie.** Mechanizm wolno wyjaśnić, ale
    jak rzecz, którą po prostu wiesz — **bez** „badania pokazują" w narracji
-   (atrybucja żyje tylko w opisie Agenta 8; ściskacz 3d i tak ją tnie). Wciąż
+   (atrybucja żyje tylko w opisie Agenta 8; walidator i tak ją flaguje). Wciąż
    **bez** nazwisk badaczy, lat, decymali, effect-size, p-value, liczby badań.
    Liczba bez emocji — wytnij.
 5. **Otwórz hookiem, zamknij rozpoznaniem.** Recognition close zawsze ostatni —

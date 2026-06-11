@@ -13,9 +13,9 @@ Kanon nazewnictwa dla każdego folderu wideo w `outputs/videos_pl/{slug}/`. Jedn
 | `03a_draft.md` | Pierwszy pełny draft narracji (PL) | 3a pisarz |
 | `03b_corrections.md` | Scalone uwagi korektorów | 3b |
 | `iter/arc.md`, `iter/sek_NN.md` | Surowe notatki 3b (arc + per-sekcja) | 3b |
-| `04_final_presqueeze.md` | Skrypt przed ściskaczem | 3c fixer |
-| `04_final.md` | Finalny lean-skrypt | 3d ściskacz (hook poprawia *in place*) |
-| `04_hook.md` | Log oceny hooka | Agent 4 |
+| `04_final.md` | Finalny skrypt maszyny | 3c fixer |
+| `04_final_machine.md` | Nietykalny snapshot maszyny (pomiar sufitu) | /draft (kopia po fixerze) |
+| `iter/fixer_skips.md` | Log pominięć fixera | 3c fixer |
 | `05_image_prompts.md` | Prompty obrazków per-scena | Agent 5 |
 | `05_phrases.md` | Pliki fraz do forced-alignment | Agent 5 |
 | `06_qa.md` | Raport QA obrazków | Agent 6b |
@@ -26,7 +26,7 @@ Kanon nazewnictwa dla każdego folderu wideo w `outputs/videos_pl/{slug}/`. Jedn
 
 ### Dwie świadome „nietypowości" (nie bałagan — wynikają z logiki pipeline'u)
 
-- **`04_final` dzieli numer z `04_hook`** — bo Agent 4 (hook) modyfikuje finalny skrypt *w miejscu* (backup `04_final.bak.md` jest tymczasowy, kasowany po weryfikacji).
+- **`04_final_machine.md` jest nietykalny** — snapshot wyniku maszyny do diffu ze `script_corrected`; nigdy nie nadpisywany, także przy migracjach nazewnictwa (Gen 5).
 - **`script_corrected.md` jest bez numeru** — jest lustrem `script_corrected.docx`, który edytujesz w Wordzie. Spójność z nazwą docx > numeracja.
 
 ### Rozróżnienie, które kiedyś myliło

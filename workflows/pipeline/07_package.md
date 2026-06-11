@@ -6,7 +6,7 @@ Produce **3 radically different "packaging" strategies** for a video — each a 
 This agent is the **successor to the old Agent 7 `/thumbnails`**. It owns the title↔thumbnail synergy the old split (titles in Agent 8, thumbnails in Agent 7) could never achieve.
 
 ## When to run
-After `/hook` (script locked), **before `/publish`** — its titles feed Agent 8. **Manual agent — only when the user explicitly asks** (the default path renders 3 images = render credits + ~1.5 min).
+After `/draft` (script locked), **before `/publish`** — its titles feed Agent 8. **Manual agent — only when the user explicitly asks** (the default path renders 3 images = render credits + ~1.5 min).
 
 ## Inputs
 - Script source, first that exists: `outputs/videos_pl/{slug}/docx/script_corrected.docx` > `docx/script.docx` > `md/04_final.md`.

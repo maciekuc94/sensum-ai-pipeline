@@ -21,8 +21,7 @@ Slugi to foldery w `outputs/videos_pl/` z **numerycznym prefiksem**.
 `/package` potrzebuje skryptu. Sprawdź w kolejności:
 `docx/script_corrected.docx` > `docx/script.docx` > `md/04_final.md`.
 - Jest którykolwiek → gotowe.
-- Brak → zatrzymaj się; powiedz userowi, że trzeba najpierw `/draft <slug>` (i
-  `/hook <slug>`).
+- Brak → zatrzymaj się; powiedz userowi, że trzeba najpierw `/draft <slug>`.
 
 ## Krok 2 — POTWIERDŹ przed wydaniem kredytów (nienegocjowalne)
 `/package` jest oznaczony w CLAUDE.md jako manual; domyślny bieg renderuje **3

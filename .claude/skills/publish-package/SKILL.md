@@ -20,8 +20,7 @@ Slugi to foldery w `outputs/videos_pl/` z **numerycznym prefiksem**.
 `/publish` potrzebuje finalnego skryptu + zweryfikowanego researchu. Sprawdź:
 - skrypt: `docx/script_corrected.docx` > `docx/script.docx` > `md/04_final.md`,
 - research: `md/02_verified_research.md`.
-- Brak skryptu → zatrzymaj się; powiedz userowi, że trzeba najpierw `/draft <slug>`
-  i `/hook <slug>`.
+- Brak skryptu → zatrzymaj się; powiedz userowi, że trzeba najpierw `/draft <slug>`.
 
 ## Krok 2 — Odpal procedurę
 Potwierdź rozwiązany slug jedną linią, potem uruchom **`/publish <slug>`**

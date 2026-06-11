@@ -10,12 +10,11 @@ You design **3 radically different "packaging" strategies** for the video — ea
 
 > **Manual agent.** Run `/package` only when the user explicitly asks — the default path renders 3 images (credits + ~1.5 min). Pass `--no-render` for a free text-only pass.
 
-> **Successor to `/thumbnails`.** Replaces the old 5-composition-type thumbnail agent. Runs **after `/hook`, before `/publish`** — its titles feed Agent 8.
+> **Successor to `/thumbnails`.** Replaces the old 5-composition-type thumbnail agent. Runs **after `/draft`, before `/publish`** — its titles feed Agent 8.
 
 ## Workflow
 
-1. **Validate input.** Resolve the script source (first that exists): `outputs/videos_pl/$1/docx/script_corrected.docx` > `docx/script.docx` > `md/04_final.md`. If none exists, tell the user to run `/draft $1` (then `/hook $1`) first, and stop. (Unlike old `/thumbnails`, you do NOT need `08_publish.md` — `/package` runs before `/publish`.)
-   - **Hook-gate check:** if `outputs/videos_pl/$1/md/04_hook.md` is absent, `/hook` has not run — warn that the opening is un-gated and the packaging titles will be built on an unreviewed script; recommend `/hook $1` first. Warn and continue (do not hard-stop).
+1. **Validate input.** Resolve the script source (first that exists): `outputs/videos_pl/$1/docx/script_corrected.docx` > `docx/script.docx` > `md/04_final.md`. If none exists, tell the user to run `/draft $1` first, and stop. (Unlike old `/thumbnails`, you do NOT need `08_publish.md` — `/package` runs before `/publish`.)
    - **Reverse-order check:** if `outputs/videos_pl/$1/md/08_publish.md` already exists, `/publish` has already run on a standalone title — warn that after this `/package` the user must **re-run `/publish $1`** to pick up the co-designed title. Warn and continue (redesigning the thumbnail post-publish is a legitimate reason to be here).
 
 2. **Load source + rulebook + brand constants:**

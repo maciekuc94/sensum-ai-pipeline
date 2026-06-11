@@ -340,7 +340,7 @@ Paste the comma-separated string into Tags (no `#`). **Tag #1 = strongest search
 | Symptom | Fix |
 |---------|-----|
 | `02_verified_research.md not found` | Run Agent 2 first |
-| Script source missing | Run `/draft` then `/hook` (exports `docx/script.docx`); or edit to `docx/script_corrected.docx` |
+| Script source missing | Run `/draft` (exports `docx/script.docx`); or edit to `docx/script_corrected.docx` |
 | `--signals` returns 0 suggestions | Network issue — tags step falls back on the script; suggestions block shows `(unavailable)` |
 | Tag block exceeds budget | `--finalize` trims from the tail and prints the final length; reorder so weak tags are last |
 | `[Q?]` on a clip block | The opening line did not substring-match the narration — the model paraphrased; edit the quote to match the script verbatim or regenerate that Short |

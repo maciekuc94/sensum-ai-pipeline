@@ -37,8 +37,8 @@ architekturę („zrób jako Historical Reversal") lub `--sciezka` — przekaż 
 kosztów — wystarczy potwierdzenie slugu z Kroku 0.
 
 ## Krok 3 — Zaraportuj
-To, co raportuje `/draft`: wybrana architektura, liczba słów, werdykt pętli,
-następny krok (`/hook <slug>`).
+To, co raportuje `/draft`: liczba słów, zgłoszenia [A]/[Z]/[K] + pominięcia
+fixera, mapa pętli, werdykt walidatora; następny krok (redakcja `docx/script.docx`).
 
 ## Uwagi
 - Doktryna głosu należy do `native-voice-guard` + samego `/draft` — ten router jej

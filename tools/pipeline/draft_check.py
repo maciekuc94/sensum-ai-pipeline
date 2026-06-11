@@ -90,7 +90,11 @@ def main() -> None:
         sys.exit(1)
 
     final = final_path.read_text(encoding="utf-8")
-    draft = draft_path.read_text(encoding="utf-8") if draft_path.exists() else final
+    if draft_path.exists():
+        draft = draft_path.read_text(encoding="utf-8")
+    else:
+        print(f"Uwaga: {draft_path} nie istnieje — pomijam sprawdzanie przetrwania sekcji.")
+        draft = final
 
     findings = validate_script(draft, final, args.min_words, args.max_words)
     words = len(_narration(final).split())

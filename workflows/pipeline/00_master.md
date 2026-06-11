@@ -4,7 +4,7 @@ This pipeline takes a psychology topic from raw idea to a production-ready narra
 
 For high-level operating invariants (color palette, file layout, model routing, locked output formats), see [CLAUDE.md](../../CLAUDE.md). For per-step detail, see the matching `workflows/pipeline/NN_*.md` file.
 
-> **Stage 3 = lean cold-subagent chain (2026-06-07, model split 2026-06-09).** `/draft <slug>` runs cold subagents, one pass, no loop, no API: **3a Writer** (Opus) → **3b ensemble** (a section-checker per `## ` + one arc-checker, in parallel; Sonnet section / Opus arc) → **3c Fixer** (Opus) → **3d Ściskacz** (Sonnet, cut-only). Authoritative: `03a_writer.md`, `03b_section_checker.md`, `03b_arc_checker.md`, `03c_fixer.md`, `03d_compressor.md`, `.claude/commands/draft.md`, `workflows/guides/voice_brief.md`, CLAUDE.md §„Script chain (Agent 3)".
+> **Stage 3 = Gen 5 cold-subagent chain (2026-06-11).** `/draft <slug>` runs cold subagents, one pass, no loop, no API: **3a Writer** (Opus, 1500–2200 words, promise architecture) → **3b ensemble** (a section-checker per `## ` + one arc-checker with a loop map, in parallel; Sonnet section / Opus arc) → `draft_merge.py` → **3c Fixer** (Opus, skip clause + `iter/fixer_skips.md`) → snapshot `04_final_machine.md` → `draft_check.py --export` (doctrine validator + docx). No Ściskacz, no `/hook` (both retired 2026-06-11 — see `brainstorms/2026-06-11-gen5-draft-redesign.md`). Authoritative: `03a_writer.md`, `03b_section_checker.md`, `03b_arc_checker.md`, `03c_fixer.md`, `.claude/commands/draft.md`, `workflows/guides/voice_brief.md`, CLAUDE.md §„Script chain (Agent 3)".
 
 ---
 
@@ -32,22 +32,17 @@ outputs/videos_pl/{slug}/md/01_research.md
 outputs/videos_pl/{slug}/md/02_verified_research.md
     │
     ▼
-[Agent 3: Script — 3a Writer → 3b ensemble (section+arc) → 3c Fixer → 3d Ściskacz, cold subagents via `/draft <slug>`]
-    │  3a Writer    — Opus 4.8 (cold) writes the whole ~1000-1500-word narration, one loose pass
-    │  3b ensemble  — parallel cold subagents: one section-checker per `## ` (Sonnet) + one arc-checker (Opus) → merged corrections
-    │  3c Fixer     — Opus 4.8 (cold) swaps flagged sentences surgically → 04_final.md
-    │  3d Ściskacz  — Sonnet 4.6 (cold, cut-only) trims over-writing → lean 04_final.md
+[Agent 3: Script — 3a Writer → 3b ensemble (section+arc) → merge → 3c Fixer → validator, cold subagents via `/draft <slug>`]
+    │  3a Writer    — Opus 4.8 (cold) writes the whole 1500-2200-word narration, one loose pass (promise architecture)
+    │  3b ensemble  — parallel cold subagents: one section-checker per `## ` (Sonnet) + one arc-checker with loop map (Opus)
+    │  draft_merge.py — deterministic merge of iter/ findings → 03b_corrections.md
+    │  3c Fixer     — Opus 4.8 (cold) applies corrections surgically, skips clearly-worse ones → 04_final.md + iter/fixer_skips.md
+    │  draft_check.py --export — doctrine validator (report-only) + docx/script.docx
     │  One pass, no loop, no API
     ▼
-outputs/videos_pl/{slug}/md/03a_draft.md → 03b_corrections.md → 04_final.md (+ 04_final_presqueeze.md)
-    │
-    ▼
-[Agent 4: Hook Gate — `/hook <slug>`]  ◀──── must verdict RECORD before voiceover
-    │  Opus 4.8 (in-session) scores opening 37 words / 200 words; agent4_hook.py --apply splices in place
-    ▼
-outputs/videos_pl/{slug}/md/04_final.md  (modified in place)
-outputs/videos_pl/{slug}/md/04_hook.md
-outputs/videos_pl/{slug}/md/04_final.bak.md  (created once, never overwritten)
+outputs/videos_pl/{slug}/md/03a_draft.md → 03b_corrections.md → 04_final.md
+outputs/videos_pl/{slug}/md/04_final_machine.md  (untouchable machine snapshot)
+outputs/videos_pl/{slug}/docx/script.docx
     │
     ├──────────────────────────────────────────────────────────────┐
     ▼                                                              ▼
@@ -152,7 +147,7 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "emotional-dysregu
 
 Gemini 3.1 Pro fact-checks every claim against peer-reviewed sources. Review every Flagged claim before continuing.
 
-### Step 3 — Script (Writer → ensemble → Fixer → Ściskacz, cold subagents)
+### Step 3 — Script (Writer → ensemble → merge → Fixer → validator, cold subagents)
 
 In Claude Code:
 
@@ -160,19 +155,9 @@ In Claude Code:
 /draft emotional-dysregulation-in-adhd
 ```
 
-That slash command runs the whole script chain **in-session — no API** as cold subagents, one pass: **3a Writer** (Opus) saves `md/03a_draft.md`; a **3b ensemble** reads the frozen draft in parallel — one section-checker per `## ` (Sonnet) plus one arc-checker (Opus) — merged into `md/03b_corrections.md`; **3c Fixer** (Opus) applies the swaps surgically; **3d Ściskacz** (Sonnet, cut-only) trims over-writing to the lean `md/04_final.md` (pre-squeeze kept as `md/04_final_presqueeze.md`). No loop. Review `md/03b_corrections.md` and `md/04_final.md`; the final editorial pass is yours on `docx/script_corrected.docx`. See [03a_writer.md](03a_writer.md), [03b_section_checker.md](03b_section_checker.md), [03b_arc_checker.md](03b_arc_checker.md), [03c_fixer.md](03c_fixer.md), [03d_compressor.md](03d_compressor.md), [voice_brief.md](../guides/voice_brief.md).
+That slash command runs the whole script chain **in-session — no API** as cold subagents, one pass: **3a Writer** (Opus) saves `md/03a_draft.md` (1500–2200 words, promise architecture); a **3b ensemble** reads the frozen draft in parallel — one section-checker per `## ` (Sonnet) plus one arc-checker with a loop map (Opus); `draft_merge.py` merges findings into `md/03b_corrections.md`; **3c Fixer** (Opus) applies them surgically, skipping clearly-worse proposals (`md/iter/fixer_skips.md`); the machine snapshot is copied to `md/04_final_machine.md` (untouchable); `draft_check.py --export` validates doctrine and exports `docx/script.docx`. No loop. Review the loop map and `md/04_final.md`; the final editorial pass (including trimming over-writing) is yours on `docx/script_corrected.docx`. See [03a_writer.md](03a_writer.md), [03b_section_checker.md](03b_section_checker.md), [03b_arc_checker.md](03b_arc_checker.md), [03c_fixer.md](03c_fixer.md), [voice_brief.md](../guides/voice_brief.md).
 
-### Step 4 — Hook Gate
-
-In Claude Code:
-
-```text
-/hook emotional-dysregulation-in-adhd
-```
-
-Scores the opening 37 words (Tier 1, ≥8) and the opening 200 words (Tier 2, ≥7) in-session on Opus 4.8, then `agent4_hook.py --apply` splices the rewrite in place. Verdict must be `RECORD` before recording voiceover. See [04_hook.md](04_hook.md).
-
-### Steps 5 & 8 — Parallel-safe after 4
+### Steps 5 & 8 — Parallel-safe after 3
 
 ```bash
 # Both run in Claude Code (Opus 4.8, in-session — no API):
@@ -230,13 +215,12 @@ All files live in `outputs/videos_pl/{slug}/`.
 | 2 | `md/02_verified_research.md` | Claims categorised as Verified, Flagged, or Removed |
 | 3a | `md/03a_draft.md` | Writer's first-pass narration (input to the 3b ensemble) |
 | 3b | `md/03b_corrections.md` | Merged ensemble corrections (section-checkers + arc-checker): quote + why + natural rewrite |
-| 3c→3d | `md/04_final.md` | Final lean script (Fixer applies corrections, Ściskacz trims over-writing) |
-| 3d | `md/04_final_presqueeze.md` | Pre-Ściskacz backup of `04_final.md` |
-| 4  | `md/04_hook.md` | Hook score per attempt + final verdict |
-| 4  | `md/04_final.bak.md` | Pre-hook-refine backup (first run only) |
+| 3c | `md/04_final.md` | Final machine script (Fixer applies corrections; trimming = user docx pass) |
+| 3c | `md/iter/fixer_skips.md` | Fixer skip log (clearly-worse proposals left out) |
+| 3 | `md/04_final_machine.md` | Untouchable machine snapshot (ceiling metric vs `script_corrected`) |
 | 5 | `md/05_image_prompts.md` | One Imagen prompt per sentence/beat |
 | 5 | `md/05_phrases.md` | Short phrase index used by Align |
-| 4  | `docx/script.docx` | Teleprompter-ready script (edit → save as `script_corrected.docx`) |
+| 3 | `docx/script.docx` | Teleprompter-ready script, exported by `draft_check.py --export` (edit → save as `script_corrected.docx`) |
 | 8 | `md/08_publish.md` | Titles, 5 Shorts packages, YouTube metadata |
 | 6 | `images/image_NNN.png` | Generated 16:9 images |
 | 7 | `thumbnails_no_grain/thumbnail_NN.png` | 3 packaging thumbnails at 1920×1080 |
@@ -272,8 +256,6 @@ workflows/pipeline/02_verify.md      — Agent 2
 workflows/pipeline/03a_writer.md     — Agent 3a (Writer)
 workflows/pipeline/03b_section_checker.md / 03b_arc_checker.md — Agent 3b ensemble (section + arc)
 workflows/pipeline/03c_fixer.md      — Agent 3c (Fixer)
-workflows/pipeline/03d_compressor.md — Agent 3d (Ściskacz)
-workflows/pipeline/04_hook.md       — Agent 4 (hook gate)
 workflows/pipeline/05_visuals.md     — Agent 5 (visual storytelling)
 workflows/pipeline/08_publish.md     — Agent 8 (titles, shorts, metadata)
 workflows/pipeline/06_images.md      — Agent 6 (image generation, manual)

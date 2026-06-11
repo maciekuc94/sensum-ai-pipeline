@@ -24,6 +24,7 @@ import json
 import os
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -80,6 +81,42 @@ def _find_background() -> Path:
         f"Background texture not found. Looked for: "
         f"{', '.join(str(CHANNEL_ASSETS_DIR / n) for n in BACKGROUND_CANDIDATES)}"
     )
+
+
+def _detect_speech_onset(audio_path: Path | None, fallback_s: float) -> float:
+    """Find the true speech onset near the first aligned word.
+
+    Whisper word-starts skew ~0.1-0.2 s early at the audio head; the envelope
+    crossing is the honest anchor for the head trim. Falls back to the aligned
+    word start whenever the audio can't be read.
+    """
+    if audio_path is None or not Path(audio_path).exists():
+        return fallback_s
+    try:
+        import soundfile as sf
+
+        with sf.SoundFile(str(audio_path)) as f:
+            sr = f.samplerate
+            lo = max(0, int((fallback_s - 1.0) * sr))
+            f.seek(lo)
+            data = f.read(int(2.5 * sr), dtype="float32", always_2d=True).mean(axis=1)
+        if len(data) < sr // 10:
+            return fallback_s
+        frame = max(1, sr // 100)                       # 10 ms frames
+        n = len(data) // frame
+        env = (data[: n * frame].reshape(n, frame) ** 2).mean(axis=1) ** 0.5
+        peak = float(env.max())
+        if peak <= 0:
+            return fallback_s
+        thr = 0.12 * peak
+        run = 0
+        for i, e in enumerate(env):
+            run = run + 1 if e > thr else 0
+            if run >= 3:                                # 30 ms sustained
+                return lo / sr + (i - run + 1) * frame / sr
+        return fallback_s
+    except Exception:
+        return fallback_s
 
 
 def _discover_images(images_dir: Path) -> dict[int, Path]:
@@ -262,14 +299,40 @@ def main(args: argparse.Namespace) -> None:
     print(f"{step}: Building subtitle chunks...")
     chunks = build_chunks(
         aligned,
-        min_dur=args.min_dur,
         sentence_min=args.sentence_min,
         max_dur=args.max_dur,
         lead_in=args.lead_in,
         gap_clear=args.max_gap,
         lead_out=args.lead_out,
+        switch_delay=args.switch_delay,
         drop_phantom=not args.no_drop_phantom,
     )
+
+    # Head trim — start the timeline where speech starts. The user trims the
+    # leading silence in DaVinci anyway; pre-trimming here keeps the SRT, the
+    # FCPXML and his edit in one time base, so nothing needs hand re-syncing.
+    trim_start_s = 0.0
+    if not args.no_trim_head and chunks:
+        first_word_start = next((w.start for w in aligned if w.matched), None)
+        if first_word_start is not None:
+            onset = _detect_speech_onset(audio_path, first_word_start)
+            t0 = max(0.0, onset - args.head_preroll)
+            if t0 >= 0.30:      # below that the trim isn't worth a cut
+                trim_start_s = round(t0, 3)
+    if trim_start_s > 0:
+        for c in chunks:
+            c.start = max(0.0, c.start - trim_start_s)
+            c.end = max(c.start + 0.1, c.end - trim_start_s)
+        phrase_timings = [
+            replace(p, start=max(0.0, p.start - trim_start_s),
+                    end=max(0.0, p.end - trim_start_s)) if p.matched else p
+            for p in phrase_timings
+        ]
+        print(
+            f"  Head trim: timeline starts {trim_start_s:.2f}s into the WAV "
+            f"(speech onset - {args.head_preroll:.2f}s pre-roll). --no-trim-head keeps raw WAV time."
+        )
+
     srt_text = render_srt(chunks)
     srt_path = edit_dir / "subtitles.srt"
     srt_path.write_text(srt_text, encoding="utf-8")
@@ -295,6 +358,7 @@ def main(args: argparse.Namespace) -> None:
         image_paths=image_paths,
         phrase_timings=[p for p in phrase_timings if p.matched],
         fps=args.fps,
+        trim_start_s=trim_start_s,
     )
     fcpxml_text = render_fcpxml(fcpxml_inputs)
     fcpxml_path = edit_dir / "timeline.fcpxml"
@@ -311,6 +375,7 @@ def main(args: argparse.Namespace) -> None:
         "audio_path": str(audio_path),
         "model": args.model,
         "fps": args.fps,
+        "trim_start_s": trim_start_s,
         "stats": align_stats,
         "aligned_words": aligned_to_dict(aligned),
         "phrase_timings": timings_to_dict(phrase_timings),
@@ -325,7 +390,7 @@ def main(args: argparse.Namespace) -> None:
         phrase_timings=phrase_timings,
         subtitle_chunks=chunks,
         image_paths=image_paths,
-        audio_duration_s=align_stats["audio_duration_s"],
+        audio_duration_s=max(0.0, align_stats["audio_duration_s"] - trim_start_s),
         stats=align_stats,
     )
     preview_path.write_text(preview_html, encoding="utf-8")
@@ -368,29 +433,38 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fps", type=int, default=30, help="Timeline frame rate (default: 30)")
     parser.add_argument("--window", type=int, default=10, help="Greedy alignment lookahead (default: 10)")
     # Subtitle rhythm / sync knobs — tune without editing subtitle_chunker.py.
+    # Defaults calibrated 2026-06-10 against the user's hand-finished slug-3 film.
     parser.add_argument(
-        "--min-dur", dest="min_dur", type=float, default=1.20,
-        help="Min on-screen seconds before a soft (comma/pause) break is allowed (default: 1.20)",
-    )
-    parser.add_argument(
-        "--sentence-min", dest="sentence_min", type=float, default=0.85,
-        help="Absolute min seconds for a sentence-end cue; shorter cues are merged (default: 0.85)",
+        "--sentence-min", dest="sentence_min", type=float, default=0.35,
+        help="Fragments shorter than this merge into a sentence neighbour (default: 0.35)",
     )
     parser.add_argument(
         "--max-dur", dest="max_dur", type=float, default=7.00,
-        help="Max seconds a cue may grow to during merging (default: 7.00)",
+        help="Max seconds for a single cue; longer cues split at their biggest pause (default: 7.00)",
     )
     parser.add_argument(
-        "--lead-in", dest="lead_in", type=float, default=0.10,
-        help="Seconds to nudge every cue earlier so it lands with the word (default: 0.10; 0 disables)",
+        "--lead-in", dest="lead_in", type=float, default=0.0,
+        help="Extra seconds to nudge every cue earlier on top of the switch model (default: 0; legacy knob)",
     )
     parser.add_argument(
-        "--max-gap", dest="max_gap", type=float, default=1.50,
-        help="Audio pause (s) above which the screen clears between cues instead of chaining (default: 1.50; 0 = always continuous)",
+        "--switch-delay", dest="switch_delay", type=float, default=0.40,
+        help="Chained cue appears this many seconds after its first word's onset (default: 0.40 — the user's hand-timed feel)",
     )
     parser.add_argument(
-        "--lead-out", dest="lead_out", type=float, default=0.50,
-        help="At a cleared pause, seconds a cue lingers past its last word before the screen clears (default: 0.50)",
+        "--max-gap", dest="max_gap", type=float, default=1.90,
+        help="Audio pause (s) above which the screen clears between cues instead of chaining (default: 1.90; 0 = always continuous)",
+    )
+    parser.add_argument(
+        "--lead-out", dest="lead_out", type=float, default=1.50,
+        help="At a cleared pause, seconds a cue lingers past its last word before the screen clears (default: 1.50)",
+    )
+    parser.add_argument(
+        "--no-trim-head", dest="no_trim_head", action="store_true",
+        help="Keep raw WAV time — do NOT start the timeline/SRT at the speech onset",
+    )
+    parser.add_argument(
+        "--head-preroll", dest="head_preroll", type=float, default=0.20,
+        help="With head trim: seconds of silence kept before the speech onset (default: 0.20)",
     )
     parser.add_argument(
         "--no-drop-phantom", dest="no_drop_phantom", action="store_true",

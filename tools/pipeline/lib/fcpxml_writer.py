@@ -33,10 +33,11 @@ class FCPXMLInputs:
     ambient_wav: Path
     background_png: Path
     image_paths: dict[int, Path]   # image_num -> Path
-    phrase_timings: list[PhraseTiming]
+    phrase_timings: list[PhraseTiming]   # already shifted by trim_start_s when trimming
     fps: int = 30
     width: int = 1920
     height: int = 1080
+    trim_start_s: float = 0.0      # head trim: voiceover clip in-point (timeline starts here)
 
 
 def _file_uri(path: Path) -> str:
@@ -86,8 +87,12 @@ def render_fcpxml(inputs: FCPXMLInputs) -> str:
     vo_ch = _wav_channels(inputs.voiceover_wav)
     ambient_ch = _wav_channels(inputs.ambient_wav)
 
-    # Sequence length = voiceover length (round up to nearest frame)
-    total_frames = _seconds_to_frames(vo_duration_s, fps)
+    # Head trim: the timeline starts trim_start_s into the voiceover media.
+    trim_s = max(0.0, min(inputs.trim_start_s, vo_duration_s - 0.1))
+    vo_clip_s = vo_duration_s - trim_s
+
+    # Sequence length = trimmed voiceover length (round to nearest frame)
+    total_frames = _seconds_to_frames(vo_clip_s, fps)
 
     # ------------------------------------------------------------------
     # Build XML tree
@@ -251,7 +256,7 @@ def render_fcpxml(inputs: FCPXMLInputs) -> str:
             },
         )
 
-    # A1 (lane -1): Voiceover
+    # A1 (lane -1): Voiceover (in-point = trim_s into the media)
     ET.SubElement(
         gap,
         "audio",
@@ -259,8 +264,8 @@ def render_fcpxml(inputs: FCPXMLInputs) -> str:
             "ref": vo_id,
             "lane": "-1",
             "offset": "0s",
-            "duration": f"{_seconds_to_frames(vo_duration_s, fps)}/{fps}s",
-            "start": "0s",
+            "duration": f"{_seconds_to_frames(vo_clip_s, fps)}/{fps}s",
+            "start": _frame_str(_seconds_to_frames(trim_s, fps), fps),
             "name": "voiceover",
         },
     )

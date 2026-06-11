@@ -60,12 +60,14 @@ Flags:
 | `--language <code>` | `pl` | Voiceover is in another language (`--language en` for legacy English) |
 | `--fps <n>` | `30` | Project runs at 24 or 60 fps |
 | `--window <n>` | `10` | Alignment match rate is low and you suspect the script and audio drift apart further than 10 words |
-| `--min-dur <s>` | `1.20` | Subtitles flash too fast → raise; feel sluggish → lower. Min seconds before a comma/pause break is allowed |
-| `--sentence-min <s>` | `0.85` | Absolute floor for a stand-alone cue (Netflix 5/6 s). Shorter cues are merged into a neighbour |
-| `--max-dur <s>` | `7.00` | Longest a cue may grow while merging (Netflix max event) |
-| `--lead-in <s>` | `0.10` | Subtitles feel late → raise (appear earlier); feel early → lower or `0`. Global earlier-nudge |
-| `--max-gap <s>` | `1.50` | Audio pause above which the screen clears between cues; lower → clears at more pauses, `0` → always continuous |
-| `--lead-out <s>` | `0.50` | At a cleared pause, how long a cue lingers past its last word before the screen clears |
+| `--switch-delay <s>` | `0.40` | Chained cue appears this long after its first word's onset (the user's hand-timed feel). Subtitles feel late → lower; feel early → raise |
+| `--sentence-min <s>` | `0.35` | Fragments shorter than this merge into a sentence neighbour. Short standalone sentences ("Optymalizuj") survive by design |
+| `--max-dur <s>` | `7.00` | Hard ceiling for one cue; longer cues split at their biggest internal pause |
+| `--lead-in <s>` | `0.0` | Legacy global earlier-nudge applied on top of the switch model |
+| `--max-gap <s>` | `1.90` | Audio pause above which the screen clears between cues (film data: a 1.8 s pause chains, 2.1 s clears); `0` → always continuous |
+| `--lead-out <s>` | `1.50` | At a cleared pause, how long a cue lingers past its last word before the screen clears |
+| `--no-trim-head` | off | Keep raw WAV time — do NOT start the timeline/SRT at the speech onset |
+| `--head-preroll <s>` | `0.20` | With head trim: silence kept before the speech onset |
 | `--no-drop-phantom` | off | Keep an unspoken leading/trailing line (hook/title written in the script but never read) instead of dropping it |
 
 > Optional QA: `python tools/dev/analyze_subtitles.py "<slug>"` inspects the generated subtitles (timing/length diagnostics).
@@ -82,44 +84,54 @@ Flags:
 
 ---
 
-## Subtitle rhythm & sync (`lib/subtitle_chunker.py`, redesigned 2026-06-08)
+## Subtitle rhythm & sync (`lib/subtitle_chunker.py`, redesigned 2026-06-10)
 
-The chunker is **duration-aware and sentence-first**, tuned to broadcast standards
-(BBC / Netflix / Amara). It replaced a word-count chunker that broke on every
-comma/period regardless of timing, which left ~20% of cues flashing by (<1.2 s).
+The chunker is **fit-first with seam-split**, rebuilt against ground truth: every
+burned-in card of the user's hand-finished slug-3 film was extracted
+frame-accurately from the final `.mov` (letter-level strip scan + audio
+cross-correlation), matched to script words, and the chunker was redesigned to
+reproduce that de-facto style. Result vs the film: boundary precision 0.91 /
+recall 0.86, switch-point delta median −0.09 s, the same 5 screen-clears at the
+same pauses; the residual diffs are hand emphasis and in-DaVinci text edits.
 
-**How it builds a cue (all on real word timestamps — no proportional guessing):**
-1. **Drop phantom edges.** A leading/trailing run of *fully-unmatched* (interpolated)
-   words has fabricated timing — e.g. an on-screen hook/title line written into the
-   script but never read aloud. It is dropped (it would otherwise render a wrong
-   cue crammed into the first ~0.7 s). `--no-drop-phantom` keeps it.
-2. **Segment into sentences** (a paragraph break also starts one). **A cue never
-   spans a sentence boundary** — no more `"…troska. Że to…"` cards.
-3. **Pack each sentence:** group clauses (comma / dash / pause) until the cue
-   reaches the duration floor, then break at that clause boundary → even rhythm.
-   A group longer than one line is **balance-split by word**, so a sentence-final
-   word is never stranded onto the next cue.
-4. **Absorb leftovers:** a cue under `--sentence-min` (0.85 s) merges into its own
-   clause / best-fitting neighbour.
-5. **Chain & breathe:** cues chain (no gaps) through continuous speech, but where
-   the audio pause to the next cue exceeds `--max-gap` (1.5 s — a section break),
-   the cue lingers `--lead-out` (0.5 s) past its last word and the screen clears.
-6. **Lead-in:** every cue is nudged `--lead-in` (0.10 s) earlier so it lands *with*
-   the spoken word, not after it (a trailing subtitle reads as "late").
+**Segmentation (fit-first):**
+1. **Drop phantom edges** (unspoken hook/title lines). `--no-drop-phantom` keeps them.
+2. **Sentence-first** — a cue never spans a sentence boundary; ultra-short
+   sentences stay standalone cards (the user keeps a 0.6 s "Optymalizuj").
+3. **Fit-first** — a sentence that fits one line (≤ 42 chars) is ONE card; no
+   duration floor ever forces an extra cut ("taki, jaki jesteś, to za mało"
+   stays whole despite two commas).
+4. **Seam-split** for over-line sentences, strongest seam first: colon /
+   quote edges (quote = atomic card, may even strand a preposition: "Ale po
+   chwili z" | "„spóźniłem się…") → comma / dash → audio pause → balanced word
+   boundary. Never after a forward-sticky function word (w/z/do/że/jest/już…),
+   never before a backward clitic (się/ci/mi…). New line preferably opens on a
+   preposition/conjunction phrase ("… wartości | na czymś się opiera").
+5. **Tiny-quote pairing** ("„Rozwijaj się.” „Pracuj nad sobą.”" share a card);
+   fragments under `--sentence-min` merge into a sentence neighbour.
 
-Calibrated against a full hand-timed reference SRT (slug 3, 2026-06-08): the output
-matches the human subtitler's rhythm — median ~2.1 s, stdev ~0.72, ~5 pause-gaps,
-1–2 sub-floor beats — to within noise. The human tolerated a slightly wider line
-(up to ~50 chars) in a few spots; raise `MAX_CPL` if you want fewer mid-clause
-balance-splits, at the cost of broadcast-standard 42-char safety.
+**Timing (switch-delay model, measured from the film):** the user's switch
+points track the NEXT phrase's first-word onset + ~0.45 s (σ 0.24 — the
+tightest of the tested models; tracking the previous word's end was σ 0.42).
+- chained cue start = first word onset + `--switch-delay` (0.40),
+- post-clear cue start = onset + 0.35,
+- before a cleared pause (> `--max-gap` 1.90) the cue lingers `--lead-out`
+  (1.5 s) past its last word, then the screen clears,
+- the first cue starts ~0.15 s before its first word.
 
-**The numbers (why these defaults):** comfortable reading ≈ 15–17 CPS; min display
-0.85 s (Netflix 5/6 s) / 1.2 s before a soft break; max 7 s; one line ≤ 42 chars.
+**Head trim (2026-06-10, default ON):** the user starts every film at the
+voice, so the timeline/SRT now do too. The exact speech onset is detected from
+the audio envelope (Whisper word-starts skew ~0.1–0.2 s early), minus
+`--head-preroll` (0.20 s) of kept silence; the SRT shifts and the FCPXML
+voiceover clip gets that in-point. On slug 3 the detector landed within 75 ms
+of where the user actually cut the film. The internal-edit case (cutting a
+phrase mid-film) still shifts everything after it — do that cut as a ripple
+delete across tracks in DaVinci.
 
-**What you still own (the machine can't):** *sync feel* is verified by **ear** in
-`preview.html` / DaVinci — only you can hear whether a cue lands on the word. If the
-whole track feels late, raise `--lead-in`; if early, lower it. Genuinely short cues
-(0.85–1.2 s) on terse clauses are **faithful to speech tempo**, not bugs.
+**What you still own (the machine can't):** emphasis splits (an extra cut on a
+thesis quote), in-DaVinci text rewrites, and *sync feel* — verify by ear in
+`preview.html` / DaVinci. Track feels late → lower `--switch-delay`; early →
+raise it.
 
 **Lesson — the phantom hook (slug 3, 2026-06-08).** Agent 4 writes the hook as the
 script's first line, but if you record starting from the *second* line, the hook is

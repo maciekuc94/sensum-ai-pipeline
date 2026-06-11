@@ -6,9 +6,10 @@ allowed-tools: Read, Write, Bash, Glob, Agent
 
 # /draft — pisarz → section+arc checkery (ensemble) → fixer → ściskacz
 
-Zimne konteksty, każdy ślepy na pozostałe (model wg roli — Opus: pisarz/fixer/arc,
-Sonnet: section-checkery/ściskacz); Ty (lead) tylko przekazujesz pliki
-i kolejność. Jeden przebieg:
+Zimne konteksty, każdy ślepy na pozostałe — dedykowani specjaliści
+`.claude/agents/draft-*.md` z modelem przypiętym we frontmatter wg roli (Opus:
+pisarz/fixer/arc, Sonnet: section-checkery/ściskacz); Ty (lead) tylko przekazujesz
+pliki i kolejność. Jeden przebieg:
 - **pisarz** pisze cały skrypt luźno,
 - na **zamrożonym** drafcie rusza **ensemble checkerów równolegle**: jeden
   **section-checker na każde `## `** (zdania `[Z]` + kontekst `[K]` w obrębie
@@ -34,6 +35,8 @@ to widać tylko z lotu ptaka. Arc-checker robi dokładnie to i **nie** dubluje z
 Kanon głosu: `workflows/guides/voice_brief.md` (v2). Prompty (single source of
 truth): `03a_writer.md`, `03b_section_checker.md`, `03b_arc_checker.md`,
 `03c_fixer.md`, `03d_compressor.md`. **Każdy subagent czyta swój prompt sam** — Ty go nie streszczasz.
+Definicje specjalistów (`.claude/agents/draft-*.md`) są celowo cienkie — persona +
+twarde reguły; procedura zostaje wyłącznie w plikach-promptach (zero dublowania).
 
 `$1` = slug pod `outputs/videos_pl/`.
 
@@ -45,7 +48,7 @@ powiedz userowi, żeby najpierw uruchomił
 `PYTHONIOENCODING=utf-8 python tools/pipeline/agent2_verify.py "$1"`, i zatrzymaj się.
 
 ## Step 2 — Pisarz (zimny subagent Opus)
-Zespawnuj subagenta (`Agent`, `subagent_type: general-purpose`, `model: opus`) z
+Zespawnuj subagenta (`Agent`, `subagent_type: draft-writer`) z
 briefem dokładnie tej treści:
 
 > Jesteś pisarzem SENSUM, dispatchowanym na zimno. Przeczytaj
@@ -65,10 +68,11 @@ checker go nie zmienia.
 
 ## Step 4 — Ensemble checkerów (RÓWNOLEGLE — wszystkie spawny w JEDNEJ wiadomości)
 Wyślij **wszystkie** poniższe spawny w **jednej** wiadomości (równoległość). Każdy
-to świeży zimny subagent (`general-purpose`); **model różny wg roli** — section-checkery
-na `sonnet`, arc-checker na `opus` (patrz niżej).
+to świeży zimny specjalista — section-checkery jako `subagent_type:
+draft-section-checker`, arc-checker jako `subagent_type: draft-arc-checker`
+(model siedzi we frontmatter definicji).
 
-**a) Po jednym section-checkerze na każdy nagłówek z kroku 3 (`model: sonnet`).** Dla
+**a) Po jednym section-checkerze na każdy nagłówek z kroku 3 (`draft-section-checker`).** Dla
 sekcji o indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
 
 > Jesteś native'owym redaktorem polskim, dispatchowanym na zimno. Przeczytaj
@@ -78,7 +82,7 @@ sekcji o indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
 > poprawiaj). Zapisz listę zgłoszeń do `outputs/videos_pl/$1/md/iter/sek_NN.md`.
 > Twój zwrot = treść pliku.
 
-**b) Jeden arc-checker (`model: opus`):**
+**b) Jeden arc-checker (`draft-arc-checker`):**
 
 > Jesteś redaktorem patrzącym na spójność całości, dispatchowanym na zimno.
 > Przeczytaj `workflows/pipeline/03b_arc_checker.md` i wykonaj go dokładnie na całym
@@ -96,7 +100,7 @@ Zachowaj tagi `[A]`/`[K]`/`[Z]` — fixer po nich segreguje kolejność. Pomiń 
 które zwróciły „Brak zgłoszeń".
 
 ## Step 6 — Fixer (świeży zimny subagent Opus)
-Zespawnuj **nowego** subagenta (`general-purpose`, `model: opus`) z briefem:
+Zespawnuj **nowego** subagenta (`subagent_type: draft-fixer`) z briefem:
 
 > Jesteś redaktorem, dispatchowanym na zimno. Przeczytaj
 > `workflows/pipeline/03c_fixer.md` i wykonaj go dokładnie. Scenariusz:
@@ -111,7 +115,7 @@ Poczekaj na ukończenie.
 ## Step 6.5 — Ściskacz (świeży zimny subagent Opus, TYLKO cięcie)
 Najpierw zachowaj wersję sprzed ściśnięcia do porównania — skopiuj (Bash)
 `md/04_final.md` → `md/04_final_presqueeze.md`. Potem zespawnuj **nowego**
-subagenta (`general-purpose`, `model: sonnet`) z briefem:
+subagenta (`subagent_type: draft-compressor`) z briefem:
 
 > Jesteś ściskaczem SENSUM, dispatchowanym na zimno. Przeczytaj
 > `workflows/pipeline/03d_compressor.md` i wykonaj go dokładnie. Scenariusz:
@@ -155,12 +159,18 @@ Wczytaj `outputs/videos_pl/$1/md/04_final.md`. Zdaj userowi:
   section-checkery (3b/a, ×6–8) i ściskacz (3d) — detekcja wg jawnej rubryki `[Z]/[K]`
   i cut-only wg 6 trybów to egzekucja reguł, nie twórczość. To ~7–9 z ~10–12 spawnów →
   >50% taniej na skrypt bez ruszania warstwy generacji/integracji. Haiku nigdzie —
-  section-checker potrzebuje native'owego ucha do polszczyzny.
+  section-checker potrzebuje native'owego ucha do polszczyzny. Modele siedzą we
+  frontmatter definicji `.claude/agents/draft-*.md`; param `model` w wywołaniu
+  `Agent` **nadpisuje** frontmatter — tak robi się jednorazowe testy A/B innego
+  modelu (np. Fable za Opusa) bez ruszania plików.
 - **Ściskacz tylko tnie.** Ostatni pass; usuwa przegadanie, NIGDY nie dopisuje
   (cut-only = zero thrashu — nie wprowadzi dziwnych zdań). Wersja sprzed ściśnięcia
   zostaje w `md/04_final_presqueeze.md` do porównania.
 - **NIE** shelluj do `tools/pipeline/agent3*.py` — to martwa legacy ścieżka Gemini.
-- Jeśli spawn subagenta zawiedzie: odpal danego agenta jako pojedyncze, **świeże,
+- Jeśli typ `draft-*` nie jest zarejestrowany (plik definicji dodany/zmieniony
+  ręcznie w trakcie sesji — subagenci ładują się na starcie sesji): spawnuj
+  `general-purpose` z modelem wg roli i tym samym briefem.
+- Jeśli spawn subagenta zawiedzie całkiem: odpal danego agenta jako pojedyncze, **świeże,
   zimne przejście** in-session wg jego pliku-promptu, w tej samej kolejności i z
   tymi samymi plikami wyjściowymi. (Section-checkery można wtedy puścić
   sekwencyjnie — i tak czytają zamrożony oryginał, więc kolejność nie szkodzi.)

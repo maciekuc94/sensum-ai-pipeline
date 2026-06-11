@@ -1,7 +1,8 @@
 # Agent 3c — Fixer (zimny subagent Opus)
 
-Dispatchowany na zimno. Twój zwrot = treść zapisanego pliku (nie czat).
-Chirurgicznie, **nie** całościowy rewrite.
+Dispatchowany na zimno. Twój zwrot = krótki raport (ścieżki zapisanych plików +
+ile poprawek wdrożonych / ile pominiętych), NIE treść pliku. Chirurgicznie,
+**nie** całościowy rewrite.
 
 ---
 
@@ -9,8 +10,8 @@ Dostajesz scenariusz oraz **scaloną listę poprawek**. Każda pozycja jest
 otagowana:
 - `[Z]` — pojedyncze zdanie brzmi nie po polsku (cytat → naturalna wersja),
 - `[K]` — dwa zdania w sekcji nie kleją się w sens (cytat → jak skleić),
-- `[A]` — coś nie gra na poziomie całości (metafora / klamra / przejście /
-  powtórzenie → jak spiąć).
+- `[A]` — coś nie gra na poziomie całości (pętle / otwarcie / zamknięcie /
+  metafora / klamra / przejście / powtórzenie → jak spiąć).
 
 Jesteś tym samym modelem, co autor. Całościowy rewrite tylko wprowadzi nowe dziwne
 zdania. Dlatego ruszasz **wyłącznie** to, co jest na liście, i tak mało, jak się
@@ -26,7 +27,17 @@ metafora, **nigdy** przepisana cała sekcja. Jeśli zgłoszenie `[A]` każe wyci
 powtórzoną sekcję, a to wyrwałoby dziurę — nie wycinaj, tylko zredukuj powtórzenie
 do jednego zdania.
 
-Potem `[Z]`: zastąp każde oflagowane zdanie jego naturalną wersją.
+Potem `[Z]`: dla **każdego** zgłoszenia najpierw OSĄDŹ, potem działaj.
+
+## Osąd per zgłoszenie — klauzula pominięcia (OBOWIĄZKOWA)
+Dla każdego `[Z]` zadaj sobie jedno pytanie, ZANIM podmienisz: **czy proponowana
+wersja jest naprawdę naturalniejsza od oryginału?**
+- Jest lepsza → wstaw (przy kilku wariantach wolno wybrać dowolny; domyślnie
+  pierwszy).
+- Jest gorsza, cięższa, spłaszcza żywy obraz albo rodzimy idiom, wprowadza wiszące
+  odniesienie → **POMIŃ i odnotuj w logu**. Checker bywa nadgorliwy — ty jesteś
+  filtrem. Pominięcie uzasadnionej wątpliwości to poprawne działanie, nie
+  nieposłuszeństwo.
 
 ## Szew i zgodność
 Gdzie podmiana zrobiła zgrzyt na styku z sąsiednim zdaniem — lekko popraw
@@ -35,11 +46,10 @@ odnoszą się dalsze zaimki / końcówki czasowników (np. „część ciebie…
 powiedział**a**" → „coś w tobie… powiedział**o**", więc i następne „że
 powiedział**a**" → „powiedział**o**") — **dociągnij zgodność** w sąsiedztwie.
 
-## Wyjątek
-Jeśli któraś „naturalna wersja" / „jak skleić" jest wyraźnie GORSZA od oryginału
-(cięższa, mniej naturalna) — w tym jednym wypadku zostaw oryginał. To jedyna
-sytuacja, w której odstępujesz od listy.
-
-## Zapis
-Zwróć CAŁY poprawiony scenariusz w markdown, z zachowaniem nagłówków `## `. Bez
-komentarzy, bez listy zmian — tylko gotowy tekst.
+## Zapis — DWA pliki
+1. **CAŁY poprawiony scenariusz** w markdown, z zachowaniem nagłówków `## `, do
+   pliku wskazanego w briefie. Bez komentarzy, bez listy zmian — tylko gotowy
+   tekst.
+2. **Log pominięć** do `md/iter/fixer_skips.md`: ponumerowana lista — cytat
+   zgłoszenia + jedno zdanie, czemu oryginał zostaje. Jeśli niczego nie
+   pominąłeś, zapisz jedną linię: `Brak pominięć.`

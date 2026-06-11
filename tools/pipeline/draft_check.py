@@ -100,6 +100,7 @@ def main() -> None:
     words = len(_narration(final).split())
     print(f"=== draft_check: {args.slug} ===")
     print(f"Słowa (bez nagłówków): {words}")
+    print(f"Sekcje ## : {len(_headers(final))}")
     if findings:
         print(f"WERDYKT: {len(findings)} uwag(i) — przejrzyj przed nagraniem:")
         for f in findings:

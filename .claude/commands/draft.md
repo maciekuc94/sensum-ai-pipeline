@@ -77,8 +77,11 @@ Poczekaj na ukończenie.
 ## Step 3 — Spis sekcji (Ty, in-session)
 Wczytaj `outputs/videos_pl/$1/md/03a_draft.md`. Wypisz **w kolejności** wszystkie
 nagłówki `## ` — to lista rewirów dla section-checkerów (zwykle 9–13 przy
-1500–2200 słowach). Utwórz folder `outputs/videos_pl/$1/md/iter/`. Ten draft jest
-od teraz **zamrożony** — żaden checker go nie zmienia.
+1500–2200 słowach). Utwórz folder `outputs/videos_pl/$1/md/iter/` — a jeśli już
+istnieje (ponowny przebieg na tym samym slugu), **najpierw go wyczyść** (Bash:
+`rm -f outputs/videos_pl/$1/md/iter/*.md`) — stare `sek_NN.md` z poprzedniego
+draftu zatrułyby scalanie. Ten draft jest od teraz **zamrożony** — żaden checker
+go nie zmienia.
 
 ## Step 4 — Ensemble checkerów (RÓWNOLEGLE — wszystkie spawny w JEDNEJ wiadomości)
 Wyślij **wszystkie** poniższe spawny w **jednej** wiadomości (równoległość). Każdy
@@ -141,9 +144,10 @@ Zachowaj nietykalną kopię wyniku maszyny:
 cp "outputs/videos_pl/$1/md/04_final.md" "outputs/videos_pl/$1/md/04_final_machine.md"
 ```
 
-**`04_final_machine.md` jest NIETYKALNY** — nigdy go nie nadpisuj ani nie
-edytuj (także przy migracjach nazewnictwa). To podstawa pomiaru sufitu maszyny
-(diff vs `script_corrected`).
+**`04_final_machine.md` jest NIETYKALNY poza `/draft`** — nigdy go nie nadpisuj
+ani nie edytuj ręcznie (także przy migracjach nazewnictwa). Świeży, pełny
+przebieg `/draft` tworzy świeży snapshot — to jedyna dozwolona droga zmiany. To
+podstawa pomiaru sufitu maszyny (diff vs `script_corrected`).
 
 ## Step 7 — Walidator + eksport docx (Bash)
 

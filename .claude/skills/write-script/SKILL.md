@@ -29,9 +29,9 @@ Slugi to foldery w `outputs/videos_pl/` z **numerycznym prefiksem**
 
 ## Krok 2 — Odpal procedurę
 Potwierdź rozwiązany slug jedną linią, potem uruchom **`/draft <slug>`** (komenda
-in-session; domyślnie z panelem Native-Ear + auto-fallbackiem). Jeśli user podał
-architekturę („zrób jako Historical Reversal") lub `--sciezka` — przekaż dalej:
-`/draft <slug> <architecture> [--sciezka]`.
+in-session, Gen 5: pisarz → ensemble checkerów → merge skryptem → fixer →
+snapshot → walidator + eksport docx). `/draft` przyjmuje WYŁĄCZNIE slug —
+żadnych dodatkowych argumentów.
 
 `/draft` nie wydaje kredytów (in-session), więc nie wymaga osobnego potwierdzenia
 kosztów — wystarczy potwierdzenie slugu z Kroku 0.

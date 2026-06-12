@@ -90,6 +90,11 @@ def test_strip_title_zostawia_zwykle_zdanie():
     assert strip_title(text) == text
 
 
+def test_strip_title_zostawia_zdanie_z_typograficznym_cudzyslowem():
+    text = "„Jestem do niczego.”\nDruga linia.\n"
+    assert strip_title(text) == text
+
+
 def test_detect_generation(tmp_path):
     md = tmp_path / "md"
     md.mkdir()

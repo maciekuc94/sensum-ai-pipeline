@@ -112,7 +112,7 @@ def strip_title(text: str) -> str:
         s = line.strip()
         if not s:
             continue
-        if s.startswith("#") or s[-1] in '.!?…""':
+        if s.startswith("#") or s[-1] in '.!?…"”':
             return text
         return "\n".join(lines[k + 1:])
     return text

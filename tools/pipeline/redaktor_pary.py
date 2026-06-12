@@ -199,13 +199,24 @@ def ensure_extracted(slug: str) -> None:
     print(f"  Ekstrakcja: {docx} -> {md}")
 
 
+def ensure_extracted_all() -> None:
+    """Ekstrakcja dla wszystkich slugów — korpus obejmuje wszystkie pary,
+    więc świeżość md musi być zapewniona globalnie, nie tylko dla CLI-sluga."""
+    if not VIDEOS_DIR.exists():
+        return
+    for slug_dir in sorted(p for p in VIDEOS_DIR.iterdir() if p.is_dir()):
+        ensure_extracted(slug_dir.name)
+
+
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(
         description="Redaktor-uczeń — korpus par machine↔docx-pass (cały katalog)")
     parser.add_argument("slug", help="świeżo skorygowany slug (walidacja pary)")
     args = parser.parse_args()
 
-    ensure_extracted(args.slug)
+    ensure_extracted_all()
     pairs = find_pairs()
     if not any(p["slug"] == args.slug for p in pairs):
         print(f"Error: slug '{args.slug}' nie ma pary machine↔script_corrected — "

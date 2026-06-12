@@ -5,9 +5,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from tools.dev.draft_ceiling_report import sentence_diff_stats, split_sentences
+import tools.pipeline.redaktor_pary as redaktor_pary
 from tools.pipeline.redaktor_pary import (
     corpus_for_pair,
     detect_generation,
+    ensure_extracted_all,
     machine_sentences_with_sections,
     pair_sentences,
     strip_title,
@@ -142,3 +144,25 @@ def test_corpus_for_pair(tmp_path):
     assert frag.count("[DEL]") == 1
     assert frag.count("[ADD]") == 1
     assert stats["modified"] == 1 and stats["deleted"] == 1 and stats["added"] == 1
+
+
+def test_ensure_extracted_all_odswieza_przeterminowane(tmp_path, monkeypatch):
+    import docx as docx_lib
+
+    monkeypatch.setattr(redaktor_pary, "VIDEOS_DIR", tmp_path)
+    stale = tmp_path / "8_stale"
+    (stale / "docx").mkdir(parents=True)
+    (stale / "md").mkdir()
+    d = docx_lib.Document()
+    d.add_paragraph("Nowa wersja zdania.")
+    d.save(stale / "docx" / "script_corrected.docx")
+    (stale / "md" / "script_corrected.md").write_text("Stare.", encoding="utf-8")
+    os.utime(stale / "md" / "script_corrected.md", (1, 1))  # md starszy niż docx
+
+    fresh = tmp_path / "9_fresh"
+    (fresh / "md").mkdir(parents=True)
+    (fresh / "md" / "script_corrected.md").write_text("Bez docx.", encoding="utf-8")
+
+    redaktor_pary.ensure_extracted_all()
+    assert "Nowa wersja zdania." in (stale / "md" / "script_corrected.md").read_text(encoding="utf-8")
+    assert (fresh / "md" / "script_corrected.md").read_text(encoding="utf-8") == "Bez docx."

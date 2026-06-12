@@ -142,15 +142,22 @@ slug-3 thumbnail #2 (`thumbnail_02_v2`), 2026-06-08.
 
 > Script: `python tools/dev/finish_thumbnail.py "<thumbnail.png>"` (deterministic two_color + grain s2/i18 finish).
 
-**Run it — `grain-thumbnail` skill / `finish_thumbnail.py` (2026-06-08).** Both
-steps run in one deterministic command — or just say *„dodaj grain do
-`<ścieżka>`"* and the `grain-thumbnail` skill routes to it (no hand-work):
+**Run it — `finish_thumbnail.py` + step skills (2026-06-08; split 2026-06-11).**
+Both steps run in one deterministic command (full finish, `*_final.png` copy):
 ```bash
 PYTHONIOENCODING=utf-8 python tools/dev/finish_thumbnail.py "<path/to/thumbnail_0N.png>"
 ```
-Writes a `*_final.png` copy and leaves the original untouched (grain is
-irreversible); `--in-place` overwrites, `--out <path>` sets an explicit
-destination. Deterministic (`rng_seed=42`), so re-runs match.
+Each step also runs alone, routed by its own skill (no hand-work):
+- *„zrób two color z `<ścieżka>`"* → `two-color-thumbnail` skill →
+  `finish_thumbnail.py "<path>" --two-color-only` (`*_2col.png` copy) — preview
+  the clean palette before graining;
+- *„dodaj grain do `<ścieżka>`"* → `grain-thumbnail` skill →
+  `finish_thumbnail.py "<path>" --grain-only` (`*_grain.png` copy) — warns if
+  the input is not two-colour yet.
+
+All variants leave the original untouched (grain is irreversible); `--in-place`
+overwrites, `--out <path>` sets an explicit destination. Deterministic
+(`rng_seed=42`), so re-runs match.
 
 **Canva (manual) — napis only:**
 1. Open the finished `thumbnail_0N.png` in Canva.

@@ -59,7 +59,7 @@ This loop is how the framework improves over time.
 .claude/                 # Claude Code interface (NOT a WAT layer — see "Where .claude/ fits")
   commands/              # Manual slash launchers: /draft /visuals /package /publish /animate
   agents/                # Cold /draft specialists: draft-{writer,section-checker,arc-checker,fixer} + /publish teammates: native-copy-critic + publish-{copywriter,seo,clips}
-  skills/                # 9 skills: 2 guards (scientific-etching, native-voice) + 4 routers (write-script, package-thumbnail, render-images, publish-package) + 3 utils (grain-thumbnail, sensum-pdf, grill-me)
+  skills/                # 10 skills: 2 guards (scientific-etching, native-voice) + 4 routers (write-script, package-thumbnail, render-images, publish-package) + 4 utils (two-color-thumbnail, grain-thumbnail, sensum-pdf, grill-me)
   settings.json          # Shared harness config (committed); settings.local.json = personal (gitignored)
 tools/
   pipeline/              # Agent scripts 0–8 + align + draft_{merge,check}.py (Gen 5 Layer 3); lib/ = align helper modules (aligner, fcpxml_writer, …)

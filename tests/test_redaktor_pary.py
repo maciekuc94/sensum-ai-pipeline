@@ -5,7 +5,13 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from tools.dev.draft_ceiling_report import sentence_diff_stats, split_sentences
-from tools.pipeline.redaktor_pary import pair_sentences
+from tools.pipeline.redaktor_pary import (
+    detect_generation,
+    machine_sentences_with_sections,
+    pair_sentences,
+    strip_title,
+    word_diff,
+)
 
 MS = [
     "To zdanie zostaje bez zmian.",
@@ -39,3 +45,57 @@ def test_pair_sentences_zgodne_z_ceiling_report():
     assert len(res["modified"]) == stats["modified"]
     assert len(res["deleted"]) == stats["deleted"]
     assert len(res["added"]) == stats["added"]
+
+
+MACHINE_MD = """# Tytuł roboczy
+
+## Otwarcie
+
+Pierwsze zdanie otwarcia. Drugie zdanie otwarcia.
+
+## Mechanizm
+
+Zdanie mechanizmu.
+"""
+
+
+def test_machine_sentences_with_sections():
+    got = machine_sentences_with_sections(MACHINE_MD)
+    assert got == [
+        ("Pierwsze zdanie otwarcia.", "Otwarcie"),
+        ("Drugie zdanie otwarcia.", "Otwarcie"),
+        ("Zdanie mechanizmu.", "Mechanizm"),
+    ]
+
+
+def test_machine_sections_zgodne_ze_split_sentences():
+    """Konkatenacja zdań z sekcji == split_sentences całości (zgodność liczb)."""
+    assert [s for s, _ in machine_sentences_with_sections(MACHINE_MD)] == \
+        split_sentences(MACHINE_MD)
+
+
+def test_word_diff_markup():
+    assert word_diff("ala ma kota w domu", "ala ma psa w domu") == \
+        "ala ma [-kota-] {+psa+} w domu"
+    assert word_diff("ala ma kota", "ala ma kota i psa") == "ala ma kota {+i psa+}"
+
+
+def test_strip_title_usuwa_tytul_bez_interpunkcji():
+    text = "Dlaczego jedna wpadka rozwala dzień\n\nPrzespałeś budzik.\n"
+    assert strip_title(text).strip() == "Przespałeś budzik."
+
+
+def test_strip_title_zostawia_zwykle_zdanie():
+    text = "Przespałeś budzik.\nDruga linia.\n"
+    assert strip_title(text) == text
+
+
+def test_detect_generation(tmp_path):
+    md = tmp_path / "md"
+    md.mkdir()
+    (md / "04_final.md").write_text("x", encoding="utf-8")
+    assert detect_generation(md) == "lean"
+    (md / "04_final_presqueeze.md").write_text("x", encoding="utf-8")
+    assert detect_generation(md) == "sciskacz"
+    (md / "04_final_machine.md").write_text("x", encoding="utf-8")
+    assert detect_generation(md) == "gen5"

@@ -60,3 +60,68 @@ def pair_sentences(ms: list[str], hs: list[str]) -> dict:
         "deleted": [i for i in range(len(ms)) if i not in matched_m],
         "added": [j for j in range(len(hs)) if j not in used],
     }
+
+
+def machine_sentences_with_sections(text: str) -> list[tuple[str, str]]:
+    """Zdania maszyny z nagłówkiem sekcji `## `, z której pochodzą.
+
+    Tekst przed pierwszą sekcją dostaje etykietę "(otwarcie)". Linie nagłówków
+    wycina _narration wewnątrz split_sentences, więc konkatenacja zdań ==
+    split_sentences(text) — patrz test zgodności.
+    """
+    out: list[tuple[str, str]] = []
+    header = "(otwarcie)"
+    buf: list[str] = []
+
+    def flush() -> None:
+        for s in split_sentences("\n".join(buf)):
+            out.append((s, header))
+
+    for line in text.splitlines():
+        if line.strip().startswith("## "):
+            flush()
+            header = line.strip()[3:].strip()
+            buf = []
+        else:
+            buf.append(line)
+    flush()
+    return out
+
+
+def word_diff(machine: str, human: str) -> str:
+    """Diff słowo-po-słowie: [-usunięte-] {+dodane+}."""
+    mw, hw = machine.split(), human.split()
+    sm = difflib.SequenceMatcher(None, mw, hw)
+    parts: list[str] = []
+    for op, i1, i2, j1, j2 in sm.get_opcodes():
+        if op == "equal":
+            parts.extend(mw[i1:i2])
+        if op in ("delete", "replace"):
+            parts.append("[-" + " ".join(mw[i1:i2]) + "-]")
+        if op in ("insert", "replace"):
+            parts.append("{+" + " ".join(hw[j1:j2]) + "+}")
+    return " ".join(parts)
+
+
+def strip_title(text: str) -> str:
+    """Usuwa pierwszą niepustą linię, jeśli wygląda na tytuł (bez interpunkcji
+    na końcu). script_corrected.md zaczyna się tytułem bez kropki — bez tego
+    doklejałby się do pierwszego zdania i fałszował parę na otwarciu."""
+    lines = text.splitlines()
+    for k, line in enumerate(lines):
+        s = line.strip()
+        if not s:
+            continue
+        if s.startswith("#") or s[-1] in '.!?…""':
+            return text
+        return "\n".join(lines[k + 1:])
+    return text
+
+
+def detect_generation(md_dir: Path) -> str:
+    """Tag generacji łańcucha /draft, po obecnych plikach snapshotu."""
+    if (md_dir / "04_final_machine.md").exists():
+        return "gen5"
+    if (md_dir / "04_final_presqueeze.md").exists():
+        return "sciskacz"
+    return "lean"

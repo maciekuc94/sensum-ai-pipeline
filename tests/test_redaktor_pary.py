@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from tools.dev.draft_ceiling_report import sentence_diff_stats, split_sentences
 from tools.pipeline.redaktor_pary import (
+    corpus_for_pair,
     detect_generation,
     machine_sentences_with_sections,
     pair_sentences,
@@ -104,3 +105,40 @@ def test_detect_generation(tmp_path):
     assert detect_generation(md) == "sciskacz"
     (md / "04_final_machine.md").write_text("x", encoding="utf-8")
     assert detect_generation(md) == "gen5"
+
+
+def _fake_pair(tmp_path):
+    md = tmp_path / "md"
+    md.mkdir()
+    (md / "04_final_machine.md").write_text(
+        "# Tytuł\n\n## Otwarcie\n\nZdanie zostaje bez żadnych zmian. "
+        "To zdanie maszyna przegadała bardzo mocno.\n\n## Mechanizm\n\n"
+        "To zdanie user usunie w całości. Drugie zdanie mechanizmu zostaje.\n",
+        encoding="utf-8",
+    )
+    (md / "script_corrected.md").write_text(
+        "Tytuł po redakcji bez kropki\n\nZdanie zostaje bez żadnych zmian. "
+        "To zdanie maszyna przegadała mocno.\n\nDrugie zdanie mechanizmu zostaje. "
+        "To zdanie user dopisał całkiem od siebie późnym wieczorem.\n",
+        encoding="utf-8",
+    )
+    return {
+        "slug": "9_testowy", "generation": "gen5",
+        "machine": md / "04_final_machine.md", "human": md / "script_corrected.md",
+    }
+
+
+def test_corpus_for_pair(tmp_path):
+    frag, stats = corpus_for_pair(_fake_pair(tmp_path))
+    assert "## SLUG: 9_testowy [generacja: gen5]" in frag
+    assert "[MOD] (sekcja: Otwarcie)" in frag
+    assert "  D: To zdanie maszyna przegadała [-bardzo-] mocno." in frag
+    assert "[DEL] (sekcja: Mechanizm)" in frag
+    assert "  M: To zdanie user usunie w całości." in frag
+    assert "[ADD] (po sekcji: Mechanizm)" in frag
+    assert "  H: To zdanie user dopisał całkiem od siebie późnym wieczorem." in frag
+    # identyczne zdania nie generują wpisów — dokładnie po jednym wpisie każdego typu
+    assert frag.count("[MOD]") == 1
+    assert frag.count("[DEL]") == 1
+    assert frag.count("[ADD]") == 1
+    assert stats["modified"] == 1 and stats["deleted"] == 1 and stats["added"] == 1

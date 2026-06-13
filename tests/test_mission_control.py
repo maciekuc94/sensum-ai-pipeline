@@ -83,3 +83,55 @@ def test_detect_pusty_katalog_nie_wybucha(tmp_path):
     assert info["next"][0]["stage"] == "research"
     assert info["finished"] is False
     assert all(not s["done"] for s in info["stages"])
+
+
+from tools.mission_control.backlog_parser import annotate_production, parse_backlog
+
+BACKLOG_FIXTURE = """# Backlog tematów SENSUM — ranking niszy A∩B∩C
+
+## Rekomendowane pierwsze 5 (produkcja teraz)
+
+### 1. „Boję się, że stanę się swoją matką (albo swoim ojcem)" — ZŁOTO (idx 22, suma 12)
+**Archetyp:** becoming-the-parent. **Architektura:** Composite Portrait.
+**Zalążek hooka:** „Łapiesz się na zdaniu, które mówiła twoja matka."
+
+### 2. „Nie umiesz płakać, choć bardzo byś chciał" — ZŁOTO (idx 24, suma 12)
+**Archetyp:** frozen-feeling / numbness. **Architektura:** Forensic Case Study.
+**Zalążek hooka:** „Są łzy, które nigdy nie spadły."
+
+## Pełny ranking
+
+| # | Temat (PL, język bólu) | Archetyp | A | B_pop | B_pod | C | Suma | ZŁOTO | Architektura | Werdykt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Boję się, że stanę się swoją matką (albo swoim ojcem) | becoming-the-parent | 3 | 3 | 3 | 3 | 12 | ✅ | Composite Portrait | ZŁOTO — bogaty popyt |
+| 2 | Nie umiesz płakać, choć bardzo byś chciał | frozen-feeling | 3 | 3 | 3 | 3 | 12 | ✅ | Forensic Case Study | ZŁOTO — evergreen |
+| 3 | Czujesz, że marnujesz życie | drift | 3 | 2 | 2 | 3 | 10 | — | Socratic | SREBRO — luka jakościowa |
+"""
+
+
+def test_parse_backlog_top_i_ranking():
+    data = parse_backlog(BACKLOG_FIXTURE)
+    assert len(data["top"]) == 2
+    t = data["top"][0]
+    assert t["title"].startswith("Boję się")
+    assert t["tier"] == "ZŁOTO" and t["idx"] == 22 and t["suma"] == 12
+    assert "matka" in t["hook"] or "matki" in t["hook"]
+    assert len(data["ranking"]) == 3
+    r = data["ranking"][2]
+    assert r["tier"] == "SREBRO" and r["temat"].startswith("Czujesz")
+    assert r["architektura"] == "Socratic"
+
+
+def test_annotate_production_fuzzy():
+    data = parse_backlog(BACKLOG_FIXTURE)
+    slugs = [
+        {"slug": "4_stane_sie_swoim_rodzicem",
+         "title": "Boję się, że stanę się swoją matką", "finished": False},
+        {"slug": "5_nie_umiesz_plakac",
+         "title": "Nie umiesz płakać, choć bardzo byś chciał", "finished": True},
+    ]
+    annotate_production(data, slugs)
+    by_temat = {r["temat"]: r for r in data["ranking"]}
+    assert by_temat["Boję się, że stanę się swoją matką (albo swoim ojcem)"]["status"] == "w produkcji"
+    assert by_temat["Nie umiesz płakać, choć bardzo byś chciał"]["status"] == "nakręcony"
+    assert by_temat["Czujesz, że marnujesz życie"]["status"] is None

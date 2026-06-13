@@ -76,19 +76,45 @@ def api_backlog() -> dict:
 app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")
 
 
+def _lan_ip() -> str:
+    """Główne IP tej maszyny w LAN (do podglądu na telefonie). Bez wysyłki pakietów."""
+    import socket
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))  # tylko wybór interfejsu wyjściowego
+        return s.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
 def main() -> None:
     import uvicorn
 
     parser = argparse.ArgumentParser(description="SENSUM Mission Control (read-only)")
     parser.add_argument("--port", type=int, default=7777)
+    parser.add_argument("--host", default="127.0.0.1",
+                        help="adres nasłuchu (0.0.0.0 = widoczne w sieci LAN)")
+    parser.add_argument("--lan", action="store_true",
+                        help="skrót: nasłuch na 0.0.0.0 — podgląd na telefonie w tej samej sieci Wi-Fi")
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
 
-    url = f"http://127.0.0.1:{args.port}"
+    host = "0.0.0.0" if args.lan else args.host
+    exposed = host not in ("127.0.0.1", "localhost")
+
+    local_url = f"http://127.0.0.1:{args.port}"
     if not args.no_browser:
-        threading.Timer(0.8, webbrowser.open, args=(url,)).start()
-    print(f"Mission Control: {url}  (Ctrl+C aby zatrzymać)")
-    uvicorn.run(app, host="127.0.0.1", port=args.port, log_level="warning")
+        threading.Timer(0.8, webbrowser.open, args=(local_url,)).start()
+
+    print(f"Mission Control: {local_url}  (Ctrl+C aby zatrzymać)")
+    if exposed:
+        print(f"  Telefon (ta sama sieć Wi-Fi): http://{_lan_ip()}:{args.port}")
+        print("  Uwaga: kokpit (read-only) jest teraz widoczny dla urządzeń w Twojej sieci LAN.")
+        print("  Jeśli telefon się nie łączy — zezwól python.exe na połączenia w Zaporze Windows.")
+    uvicorn.run(app, host=host, port=args.port, log_level="warning")
 
 
 if __name__ == "__main__":

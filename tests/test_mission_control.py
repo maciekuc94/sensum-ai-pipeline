@@ -203,5 +203,14 @@ def test_api_raw_traversal_403(client):
     assert r.status_code == 403
 
 
+def test_api_raw_traversal_warianty(client):
+    """Dodatkowe wektory traversal: ścieżka bezwzględna, backslash, URL-encoded.
+    Żaden nie może zwrócić 200 ani treści spoza katalogu sluga (blokada = 403/404)."""
+    for path in ("C:/Windows/win.ini", "..\\..\\..\\.env",
+                 "%2e%2e/%2e%2e/.env", "/etc/passwd"):
+        r = client.get("/api/slug/9_testowy/raw", params={"path": path})
+        assert r.status_code in (403, 404), f"{path!r} -> {r.status_code}"
+
+
 def test_api_unknown_slug_404(client):
     assert client.get("/api/slug/nie_ma/files").status_code == 404

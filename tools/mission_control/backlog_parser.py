@@ -2,10 +2,9 @@
 
 Dwa źródła: nagłówki `### N. „temat" — TIER (idx X, suma Y)` (rekomendowane,
 z hookiem) i tabela `## Pełny ranking` (pełna lista). Status produkcji przez
-fuzzy dopasowanie tematu do tytułów slugów — niepewne dopasowanie = brak
-statusu (lepiej brak niż fałsz).
+dopasowanie tematu do nazw folderów slugów (pokrycie tokenów) — niepewne
+dopasowanie = brak statusu (lepiej brak niż fałsz).
 """
-import difflib
 import re
 import unicodedata
 

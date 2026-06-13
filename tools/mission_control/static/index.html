@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4E5CA">
 <title>SENSUM · Mission Control</title>
 <link rel="stylesheet" href="/style.css">
 <script src="/vendor/marked.min.js" defer></script>
@@ -10,13 +11,22 @@
 </head>
 <body>
 <header>
-  <div class="brand">SENSUM · MISSION CONTROL</div>
+  <a class="brand" href="#/" aria-label="SENSUM Mission Control — strona główna">
+    <span class="brand-mark">SENSUM</span>
+    <span class="brand-rule"></span>
+    <span class="brand-sub">Mission&nbsp;Control</span>
+  </a>
   <nav>
     <a href="#/" id="nav-pipeline">Pipeline</a>
     <a href="#/backlog" id="nav-backlog">Backlog</a>
   </nav>
 </header>
-<main id="app"><p class="muted">Ładowanie…</p></main>
+<p class="masthead-line"><em>kokpit produkcji</em> — stan slugów, artefakty, backlog</p>
+<main id="app"><p class="muted loading">Ładowanie…</p></main>
+<footer>
+  <span class="footer-orn"></span>
+  read-only · niczego nie zapisuje, niczego nie odpala
+</footer>
 <div id="lightbox" hidden>
   <img id="lightbox-img" alt="">
   <div id="lightbox-cap"></div>

@@ -244,7 +244,8 @@ async function renderBacklog() {
   }
   const startCmd = (temat) =>
     `PYTHONIOENCODING=utf-8 python tools/pipeline/agent1_research.py "${temat}"`;
-  const statusChip = (s) => s ? `<span class="status-chip">${esc(s)}</span>` : '';
+  const statusChip = (s) => s
+    ? `<span class="status-chip${s === 'nakręcony' ? ' done' : ''}">${esc(s)}</span>` : '';
 
   const top = BACKLOG.top.map((t) => `
     <div class="topic">

@@ -76,3 +76,10 @@ def test_slug_title_z_corrected(tmp_path):
     assert slug_title(d) == "Tytul z final"
     _mk(d, "md/script_corrected.md", "Tytul po redakcji\n\ntekst.\n")
     assert slug_title(d) == "Tytul po redakcji"
+
+
+def test_detect_pusty_katalog_nie_wybucha(tmp_path):
+    info = detect(tmp_path / "pustka")
+    assert info["next"][0]["stage"] == "research"
+    assert info["finished"] is False
+    assert all(not s["done"] for s in info["stages"])

@@ -5,6 +5,7 @@ STAGES = kolejność kanoniczna; jedyna równoległość v1: po docx-passie
 /visuals i /package idą obok siebie.
 """
 from pathlib import Path
+import re
 
 STAGES = [
     ("research", "Research", lambda d: (d / "md" / "01_research.md").exists()),
@@ -55,6 +56,13 @@ MANUAL_HINTS = {
     "montaz": "DaVinci: import edit/timeline.fcpxml + subtitles.srt, montaż, render .mov",
 }
 
+LABELS = {sid: label for sid, label, _check in STAGES}
+
+assert {s for _pid, _label, deps in PHASES for s in deps} <= set(LABELS), \
+    "PHASES odwołuje się do nieznanego etapu"
+assert set(COMMANDS) <= set(LABELS) and set(MANUAL_HINTS) <= set(LABELS), \
+    "COMMANDS/MANUAL_HINTS: nieznany etap"
+
 
 def _action(stage_id: str, label: str, slug: str) -> dict:
     cmd = COMMANDS.get(stage_id)
@@ -70,12 +78,12 @@ def slug_title(slug_dir: Path) -> str:
     """Tytuł karty: 1. linia script_corrected.md > '# ...' z 04_final.md > slug."""
     corrected = slug_dir / "md" / "script_corrected.md"
     if corrected.exists():
-        for line in corrected.read_text(encoding="utf-8").splitlines():
+        for line in corrected.read_text(encoding="utf-8", errors="replace").splitlines():
             if line.strip():
-                return line.strip().lstrip("# ").strip()
+                return re.sub(r"^#+\s*", "", line.strip()).strip()
     final = slug_dir / "md" / "04_final.md"
     if final.exists():
-        for line in final.read_text(encoding="utf-8").splitlines():
+        for line in final.read_text(encoding="utf-8", errors="replace").splitlines():
             if line.strip().startswith("# "):
                 return line.strip()[2:].strip()
     return slug_dir.name
@@ -100,7 +108,7 @@ def detect(slug_dir: Path) -> dict:
                 next_actions.append(_action(sid, label, slug))
                 # jedyna równoległość v1: po docx — /visuals i /package obok siebie
                 if sid in ("visuals", "grafiki") and "package" not in done:
-                    pkg_label = dict((s, l) for s, l, _c in STAGES)["package"]
+                    pkg_label = LABELS["package"]
                     next_actions.append(_action("package", pkg_label, slug))
                 break
 

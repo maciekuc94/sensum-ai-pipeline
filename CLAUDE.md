@@ -64,6 +64,7 @@ This loop is how the framework improves over time.
 tools/
   pipeline/              # Agent scripts 0–8 + align + draft_{merge,check}.py (Gen 5 Layer 3); lib/ = align helper modules (aligner, fcpxml_writer, …)
   dev/                   # Standalone tools: add_grain, finish_thumbnail, md_to_pdf_sensum, analyze_subtitles, research_{gate,topic}_signals
+  mission_control/       # Read-only web kokpit (FastAPI + vanilla JS): stan slugów, artefakty, backlog — python tools/mission_control/server.py
   utils.py               # Shared constants/utilities (CHARACTER_DESCRIPTION, STYLE_SUFFIX) — all agents import
   research_sources.py    # Peer-reviewed source aggregation for Agent 1 (PubMed + Europe PMC)
 workflows/
@@ -148,6 +149,7 @@ PYTHONIOENCODING=utf-8 python tools/pipeline/agentN_name.py "<slug>"   # standar
 /animate <slug>                            # Agent 6c planner — typuje beaty do pętli animacyjnych, pisze plan, STOP przed generacją (slug 4+)
 /redaktor <slug>                           # Redaktor-uczeń — korpus par machine↔docx (tool) → 3 zimne kategoryzatory → synteza → raport + wnioski dla checkerów 3b (manual gate); po każdym docx passie
 ls outputs/videos_pl/                      # list existing slugs
+PYTHONIOENCODING=utf-8 python tools/mission_control/server.py   # Mission Control — kokpit na localhost:7777 (read-only; nic nie odpala, komendy do skopiowania)
 ```
 
 **Parallel-safe after Agent 3:** Agents 5 and 8 simultaneously (6 depends on 5); `/package` runs after `/draft`, before `/publish`. **Legacy Gemini paths** sit behind `--api` (inert — in-session slash commands are the default). Voice canon: `workflows/guides/voice_brief.md`.

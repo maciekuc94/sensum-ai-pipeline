@@ -135,3 +135,33 @@ def test_annotate_production_fuzzy():
     assert by_temat["Boję się, że stanę się swoją matką (albo swoim ojcem)"]["status"] == "w produkcji"
     assert by_temat["Nie umiesz płakać, choć bardzo byś chciał"]["status"] == "nakręcony"
     assert by_temat["Czujesz, że marnujesz życie"]["status"] is None
+
+
+def test_annotate_production_dopasowuje_po_nazwie_sluga():
+    """Tytuł to hook (nie temat) — dopasowanie musi działać po NAZWIE folderu."""
+    data = parse_backlog(BACKLOG_FIXTURE)
+    slugs = [
+        {"slug": "4_stane_sie_swoim_rodzicem",
+         "title": "Powiedziałeś to, zanim zdążyłeś pomyśleć.", "finished": False},
+        {"slug": "5_nie_umiesz_plakac",
+         "title": "5_nie_umiesz_plakac", "finished": True},
+    ]
+    annotate_production(data, slugs)
+    by_temat = {r["temat"]: r for r in data["ranking"]}
+    assert by_temat["Boję się, że stanę się swoją matką (albo swoim ojcem)"]["status"] == "w produkcji"
+    assert by_temat["Nie umiesz płakać, choć bardzo byś chciał"]["status"] == "nakręcony"
+    assert by_temat["Czujesz, że marnujesz życie"]["status"] is None
+
+
+def test_parse_backlog_pomija_wiersze_spoza_tieru():
+    table = (
+        "## Pełny ranking\n\n"
+        "| # | Temat | Archetyp | A | B_pop | B_pod | C | Suma | ZŁOTO | Architektura | Werdykt |\n"
+        "|---|---|---|---|---|---|---|---|---|---|---|\n"
+        "| 1 | Realny temat | x | 3 | 3 | 3 | 3 | 12 | OK | Socratic | ZŁOTO — ok |\n"
+        "| 2 | Odrzucony temat | x | 1 | 1 | 1 | 1 | 4 | — | — | BRĄZ — poza niszą |\n"
+    )
+    data = parse_backlog(table)
+    temats = [r["temat"] for r in data["ranking"]]
+    assert "Realny temat" in temats
+    assert "Odrzucony temat" not in temats

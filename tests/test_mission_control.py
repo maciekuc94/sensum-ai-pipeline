@@ -165,3 +165,43 @@ def test_parse_backlog_pomija_wiersze_spoza_tieru():
     temats = [r["temat"] for r in data["ranking"]]
     assert "Realny temat" in temats
     assert "Odrzucony temat" not in temats
+
+
+import pytest
+from fastapi.testclient import TestClient
+
+import tools.mission_control.server as server
+
+
+@pytest.fixture()
+def client(tmp_path, monkeypatch):
+    videos = tmp_path / "outputs" / "videos_pl"
+    d = videos / "9_testowy"
+    _mk(d, "md/01_research.md")
+    _mk(d, "md/02_verified_research.md")
+    _mk(d, "md/04_final.md", "# Tytul\n\nZdanie.\n")
+    _mk(d, "tajny.txt", "sekret")
+    monkeypatch.setattr(server, "VIDEOS", videos)
+    return TestClient(server.app)
+
+
+def test_api_state(client):
+    data = client.get("/api/state").json()
+    assert [s["slug"] for s in data["slugs"]] == ["9_testowy"]
+    assert data["slugs"][0]["next"][0]["stage"] == "docx"
+
+
+def test_api_files_i_raw(client):
+    files = client.get("/api/slug/9_testowy/files").json()["files"]
+    assert any(f["path"] == "md/04_final.md" for f in files)
+    r = client.get("/api/slug/9_testowy/raw", params={"path": "md/04_final.md"})
+    assert r.status_code == 200 and "Tytul" in r.text
+
+
+def test_api_raw_traversal_403(client):
+    r = client.get("/api/slug/9_testowy/raw", params={"path": "../../../.env"})
+    assert r.status_code == 403
+
+
+def test_api_unknown_slug_404(client):
+    assert client.get("/api/slug/nie_ma/files").status_code == 404

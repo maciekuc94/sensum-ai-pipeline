@@ -13,6 +13,10 @@ sprawdzają równolegle inni — nie zajmuj się nimi.
 - Ścieżkę do **całego** scenariusza (`03a_draft.md`).
 - **Nagłówek twojej sekcji** (dokładny, np. `## Skąd się wziął sędzia`) — to twój
   rewir.
+- (Jeśli lead podał w briefie) `workflows/guides/redakcja_wnioski.md` — profil
+  redakcyjny usera z pętli Redaktora-ucznia: heurystyki uwagi (gdzie patrzeć
+  ostrzej), NIE zakazy fraz. Przy konflikcie z `voice_brief.md` wygrywa
+  voice_brief.
 
 ## Jak czytać
 Przeczytaj cały plik, ale wzrok trzymaj na swojej sekcji. Przeczytaj ją razem z

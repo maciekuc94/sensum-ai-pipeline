@@ -97,6 +97,9 @@ sekcji o indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
 > scenariusz: `outputs/videos_pl/$1/md/03a_draft.md`. **Twoja sekcja: `<HEADER>`.**
 > Flaguj tylko zdania w tej sekcji (sąsiednie akapity czytaj dla kontekstu, nie
 > poprawiaj). Zapisz listę zgłoszeń do `outputs/videos_pl/$1/md/iter/sek_NN.md`.
+> Jeśli istnieje `workflows/guides/redakcja_wnioski.md` i ma ≥1 aktywny wniosek,
+> przeczytaj go przed scenariuszem (profil redakcyjny usera — heurystyki uwagi,
+> nie zakazy).
 > Twój zwrot = krótki raport (ścieżka + liczba zgłoszeń), NIE treść pliku.
 
 **b) Jeden arc-checker (`draft-arc-checker`):**
@@ -105,7 +108,11 @@ sekcji o indeksie `NN` (`01`, `02`, …) i nagłówku `<HEADER>`:
 > Przeczytaj `workflows/pipeline/03b_arc_checker.md` i wykonaj go dokładnie na całym
 > `outputs/videos_pl/$1/md/03a_draft.md`. Zapisz do
 > `outputs/videos_pl/$1/md/iter/arc.md` dwie części: `## Mapa pętli` i
-> `## Zgłoszenia [A]`. Twój zwrot = krótki raport (ścieżka + liczba zgłoszeń +
+> `## Zgłoszenia [A]`.
+> Jeśli istnieje `workflows/guides/redakcja_wnioski.md` i ma ≥1 aktywny wniosek,
+> przeczytaj go przed scenariuszem (profil redakcyjny usera — heurystyki uwagi,
+> nie zakazy).
+> Twój zwrot = krótki raport (ścieżka + liczba zgłoszeń +
 > zdanie o pokryciu pętli), NIE treść pliku.
 
 Poczekaj, aż **wszystkie** skończą.

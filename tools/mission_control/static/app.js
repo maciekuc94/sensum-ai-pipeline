@@ -15,11 +15,16 @@ async function getJSON(url) {
 }
 
 function copyCmd(btn, cmd) {
-  navigator.clipboard.writeText(cmd).then(() => {
+  const flash = (msg) => {
     const old = btn.textContent;
-    btn.textContent = 'skopiowano ✓';
-    setTimeout(() => { btn.textContent = old; }, 1200);
-  });
+    btn.textContent = msg;
+    setTimeout(() => { btn.textContent = old; }, 1400);
+  };
+  const fallback = () => window.prompt('Skopiuj komendę (Ctrl+C):', cmd);
+  if (!navigator.clipboard) { fallback(); return; }
+  navigator.clipboard.writeText(cmd)
+    .then(() => flash('skopiowano ✓'))
+    .catch(() => { flash('skopiuj ręcznie ↓'); fallback(); });
 }
 
 /* ---------- widok: tablica pipeline ---------- */
@@ -130,12 +135,14 @@ function galleryHTML(slug, paths) {
   if (!paths.length) return '<p class="muted">Brak obrazów.</p>';
   return `<div class="gallery">${paths.map((p, i) => `
     <figure data-path="${esc(p)}" data-n="${i + 1}">
-      <img loading="lazy" src="${rawURL(slug, p)}" alt="${esc(p)}">
+      <img loading="lazy" src="${rawURL(slug, p)}" alt="${esc(p)}"
+           onerror="this.replaceWith(document.createTextNode('⚠ brak pliku'))">
       <figcaption>#${i + 1} · ${esc(p.split('/').pop())}</figcaption>
     </figure>`).join('')}</div>`;
 }
 
 async function renderSlug(slug, tab) {
+  // STATE reużyte (deep-link działa bez wejścia na board); świeży stan po powrocie na board (renderPipeline zawsze refetchuje).
   if (!STATE) STATE = await getJSON('/api/state');
   const info = STATE.slugs.find((s) => s.slug === slug);
   const files = (await getJSON(`/api/slug/${encodeURIComponent(slug)}/files`)).files;
@@ -157,8 +164,8 @@ async function renderSlug(slug, tab) {
       body = `<div class="version-switch">${sw}</div><div class="prose" id="prose"></div>`;
       queueMicrotask(async () => {
         const load = async (p) => {
-          document.getElementById('prose').innerHTML =
-            marked.parse(await fetchText(slug, p));
+          const el = document.getElementById('prose');
+          if (el) el.innerHTML = marked.parse(await fetchText(slug, p));
         };
         await load(current);
         $app.querySelectorAll('.version-switch a').forEach((a) =>

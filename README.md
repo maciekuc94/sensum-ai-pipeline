@@ -113,11 +113,12 @@ Every illustration is rendered in one strict two-colour "scientific etching" bra
   <img src="docs/screenshots/sample_etching_2.png" width="46%" alt="Generated illustration — basket and briefcase">
 </p>
 
-<!-- Mission Control: zrób zrzut działającego kokpitu, zapisz jako
-     docs/screenshots/mission_control.png i odkomentuj dwie linie poniżej:
 ### Mission Control — read-only FastAPI dashboard
+
+A live, read-only cockpit (FastAPI + vanilla JS) showing every video's pipeline stage,
+artifacts, and the topic backlog:
+
 ![Mission Control dashboard](docs/screenshots/mission_control.png)
--->
 
 ---
 

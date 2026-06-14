@@ -103,10 +103,20 @@ tests/              Unit tests
 docs/               References + research outputs
 ```
 
-<!-- Screenshots: add images to docs/screenshots/ and uncomment.
-## Screenshots
+## Sample output
+
+Every illustration is rendered in one strict two-colour "scientific etching" brand style
+(generated via Vertex AI, then hard-snapped to the two brand colours in post):
+
+<p align="center">
+  <img src="docs/screenshots/sample_etching_1.png" width="46%" alt="Generated illustration — scale, compass, bell">
+  <img src="docs/screenshots/sample_etching_2.png" width="46%" alt="Generated illustration — basket and briefcase">
+</p>
+
+<!-- Mission Control: zrób zrzut działającego kokpitu, zapisz jako
+     docs/screenshots/mission_control.png i odkomentuj dwie linie poniżej:
+### Mission Control — read-only FastAPI dashboard
 ![Mission Control dashboard](docs/screenshots/mission_control.png)
-![Sample illustration output](docs/screenshots/sample_output.png)
 -->
 
 ---

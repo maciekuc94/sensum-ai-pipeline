@@ -32,8 +32,21 @@ Decyzje i rationale: `brainstorms/2026-06-10-agent6c-ozywiacz.md`.
      na sprite'y (alpha z flood-fill; odłączone komponenty dotykające krawędzi
      cropu = wycieki z sąsiedniej figury → odrzucane) → kompozycja na scenie
      w punkcie `Anchor` (x,y = punkt stóp).
-3. Przegląd: `images_anim/frames/NNN/strip.png` — kontaktówka klatek beatu;
-   nieudane fazy re-rollować przez `--indices N --force`.
+3. **Stabilizacja (obowiązkowa po KAŻDEJ generacji/re-rollu):**
+   `python tools/dev/anim_lock_static.py "<slug>" [--beats "N,M"]`, potem sklejka
+   `agent6c_animate.py "<slug>" --no-gen [--indices ...]`. Każda faza to niezależne
+   przerysowanie sceny — obiekty lądują nawet 19–35 px obok (zmierzone, slug 4)
+   i statyka „telepie się" w pętli. Narzędzie wyrównuje fazę do bazy (korelacja
+   fazowa FFT) i zamraża wszystko poza automatyczną maską ruchu (gęstość diffu) —
+   statyka staje się pikselami bazy 1:1, boil kreski zostaje w strefie ruchu.
+   Oryginały Gemini trafiają do `frames/NNN/raw/` (pełny rollback: `--restore`).
+   **Po re-rollu beatu skasuj jego stare `frames/NNN/raw/`** — inaczej narzędzie
+   przetworzy poprzednie klatki zamiast świeżych.
+4. Przegląd: `images_anim/frames/NNN/strip.png` — kontaktówka klatek beatu;
+   nieudane fazy re-rollować przez `--indices N --force`. Przed re-rollem beatu,
+   w którym część faz wyszła dobrze, zabezpiecz udane `raw/{faza}.png` (np. do
+   `frames/_keep/`) — po re-rollu można je przywrócić do `raw/` i przekleić
+   beat lokalnie (`anim_lock_static` + `--no-gen`, zero API).
 
 ## Format planu (`md/06c_animation_plan.md`)
 
@@ -57,6 +70,18 @@ Pola trybu `sheet` dodatkowo: `**Sheet-poses:**` (opis trzech faz arkusza),
 Wzory pętli wg ruchu: dzwonek/wibracja `a,b,a,b,c,a,b,base,base,base` @ 8 fps;
 chód `base,a,b,a` @ 4.5–5 fps; kropla/para 3–4 fps z dłuższymi pauzami na `base`.
 
+**Standard amplitudy (rewizja slug 4, 2026-06-12).** Fazy pisać jako **dyskretne,
+mechaniczne stany obiektu o DUŻEJ, czytelnej amplitudzie** — dzwonek wyraźnie
+w LEWO / wyraźnie w PRAWO, kłąb pary na 1/3 kadru, łańcuch struna vs luźny zwis.
+Zakazane słowa: „slightly", „a hair", „a touch", „subtle" — model wykonuje je
+za drobno i ruch **nie czyta się** na 1080p w 10-sekundowej pętli (zmierzone:
+beaty pisane asekuracyjnie user ocenił „nic się nie dzieje"). Wzorce: dzwonek 059,
+bojler 060 (slug 4). Do opisu fazy dopisywać twarde inwarianty sceny („the tear
+must NEVER be repaired", „stays INSIDE the chamber", „no sleeve, no cuff") —
+typowe wykolejenia modelu to: naprawienie uszkodzenia zamiast pogłębienia,
+wyjście ruchu poza Scope, skasowanie obiektu, dorysowanie ubrania, solid fill
+zamiast szrafowania (tusz +100% = stroboskop).
+
 ## Wyjścia
 
 - `images_anim/image_NNN_anim.mp4` — zapętlony klip (mp4v, 1920×1080, ~10 s),
@@ -71,8 +96,16 @@ chód `base,a,b,a` @ 4.5–5 fps; kropla/para 3–4 fps z dłuższymi pauzami na
 
 ## Edge cases / wiedza
 
-- **Boil to feature** — klatki edycji różnią się drobiazgami w całej rycinie;
-  użytkownik wybrał tę estetykę nad stabilizacją (2026-06-10). Nie stabilizować.
+- **Boil kreski = feature, misrejestracja obiektów = bug (doprecyzowane 2026-06-12).**
+  Drobne różnice rysunku w całej rycinie zostają (decyzja usera 2026-06-10); ale
+  przesunięcia CAŁYCH obiektów między fazami (do 35 px) to wada — korygowana
+  deterministycznie przez `tools/dev/anim_lock_static.py` (krok 3 Przebiegu).
+  Nie wygładzać samego boilu (żadnego deflickera/morphingu klatek).
+- **Beaty, gdzie nieruchomość jest treścią, tnij zamiast wymuszać ruch** —
+  miażdżący ciężar, zatrzymanie w puencie, pulsowanie gęstości kreski (echo)
+  nie zagrają; statyczne PNG między pętlami to celowy kontrast. Koncepty z ruchem
+  na drobnym detalu małej sceny (płomień w komorze piersiowej, slug 4) padały
+  3× z rzędu — po 2 nieudanych re-rollach tego samego konceptu: wytnij.
 - Pętla jest **asynchroniczna względem audio** — celowo (działa bez nagrania).
 - Klatki idempotentnie: istniejąca klatka nie jest regenerowana bez `--force`.
 - Rate limit: 8 s między wywołaniami; 429 z backoffem (jak Agent 6).

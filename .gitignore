@@ -14,3 +14,21 @@ __pycache__/
 outputs/
 # Windows/MSYS artifact: a bash `>nul` redirect creates a literal file named `nul` in cwd
 /nul
+
+# Agent-0 input materials (PDFs etc.) — keep the README, ignore the actual inputs
+materials/*
+!materials/README.md
+
+# Media artifacts (recorded voiceover / rendered video) must never bloat a public repo
+*.wav
+*.mp4
+*.mov
+voiceover/
+
+# OS / editor cruft (the repo is public now — keep it tidy)
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+.idea/
+.vscode/

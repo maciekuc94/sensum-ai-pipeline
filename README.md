@@ -131,6 +131,6 @@ artifacts, and the topic backlog:
 
 ## What I'd build next
 
-- A persistence layer (PostgreSQL) for pipeline state, replacing the filesystem.
-- Containerization + CI (GitHub Actions running the test suite on every push).
-- A deployed version of the control dashboard.
+This filesystem-based version is being grown into a complete, database-backed, deployed
+one — Postgres persistence, Docker, CI, and deployment, in dependency order. The full
+plan lives in **[ROADMAP.md](ROADMAP.md)**.

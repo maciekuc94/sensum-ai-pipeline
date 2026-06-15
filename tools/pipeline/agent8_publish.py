@@ -63,20 +63,19 @@ GEMINI_MODEL = "gemini-3.1-pro-preview"
 SCRIPT_CONTEXT_CHARS = 999_999
 RESEARCH_CONTEXT_CHARS = 999_999
 
-SHORT_TYPES = [
-    ("Surprise",      "A fact that contradicts common belief — stops the scroll"),
-    ("Emotion",       "A moment with fear, shame, hope, or identity — hits the viewer personally"),
-    ("Standalone",    "An idea complete in itself — full value without watching the main video"),
-    ("CTA-Hook",      "An open loop — leaves the viewer wanting the full video"),
-    ("Practical Tip", "One concrete thing the viewer can apply right now"),
-]
-
-_BRAND_USE = [
-    "you may have noticed", "research suggests", "it makes sense that",
-    "you're not alone in this", "what we know is", "studies show",
-    "many people find", "the science of", "it's completely understandable",
-    "let's understand this together", "researchers discovered",
-]
+# ── --api path: FROZEN legacy fallback (en-pipeline era) ─────────────────────
+# The --api orchestrator below is a dormant fallback; the active flow is the
+# in-session /publish slash command. Its contracts intentionally differ from the
+# live SOP (workflows/pipeline/08_publish.md) and are FROZEN — do NOT "fix" them
+# to match the SOP without deciding the fate of the whole --api path:
+#   --api here          ↔  active SOP
+#   long-form tags 5–8  ↔  12–15      (run_metadata_pass / _build_metadata_prompt)
+#   Shorts tags 3–5     ↔  8–10       (shorts pass 3 prompts)
+#   description "exactly 5 sentences" ↔  ~5 sentences / 80–130 words
+# Dead constants removed 2026-06-15: SHORT_TYPES (0 uses, contradicted the
+# anti-archetype rule of STEP 6) and _BRAND_USE (0 references).
+# _BRAND_AVOID stays — still read by the --api titles/metadata prompts (English,
+# en-pipeline relic; the active Polish ban-list lives in 08_publish.md STEP 1).
 _BRAND_AVOID = [
     "hack", "secret", "shocking truth", "you won't believe", "destroy",
     "toxic", "red flags", "wake up", "brutally honest",
@@ -739,10 +738,10 @@ def run_metadata_pass(topic: str, script: str, research: str, titles_text: str =
     tags_len = len(", ".join(trimmed_tags))
     dropped = len(raw_tags) - len(trimmed_tags)
     if dropped > 0:
-        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars (trimmed {dropped} from tail to fit 480-char target; doctrine 12–15; YouTube cap is 500)")
+        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars (trimmed {dropped} from tail to fit 480-char target; --api legacy contract 5–8; YouTube cap is 500)")
     else:
-        within_doctrine = "within doctrine" if 12 <= len(trimmed_tags) <= 15 else f"OUTSIDE doctrine 12–15"
-        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars ({within_doctrine}; under 480-char target; YouTube cap is 500)")
+        within_contract = "within --api 5–8" if 5 <= len(trimmed_tags) <= 8 else "OUTSIDE --api 5–8"
+        print(f"  Tag block: {len(trimmed_tags)} tags, {tags_len} chars ({within_contract}; under 480-char target; YouTube cap is 500)")
 
     return meta
 

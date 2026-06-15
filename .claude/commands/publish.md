@@ -190,8 +190,8 @@ from the lead, never from a teammate.
   the three deterministic bookends (`--extract`, `--signals`, `--finalize`).
 - **Falls back to fully in-session (no team)** if Agent Teams is unavailable (Step 1.5) — that
   in-session-only path is the only cheaper route; there is no separate command and no `--solo` flag.
-- **Token cost:** four extra Opus contexts (3 generators + 1 critic across ≤3 language rounds) above the
-  in-session run.
+- **Token cost:** three extra Sonnet generator contexts (copywriter/seo/clips) + one Opus critic (8d),
+  across ≤3 language rounds, above the in-session run.
 - Everything is Polish except verbatim script quotes (already Polish) and the bibliography concept
   labels (stay English). Keep the published copy research-invisible.
 - Keep the gate honest: the native-copy critic must genuinely re-read, not rubber-stamp. A wasted round

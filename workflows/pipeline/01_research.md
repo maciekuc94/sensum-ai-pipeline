@@ -80,7 +80,7 @@ was successfully retrieved.
 
 ```
 outputs/
-└── videos/
+└── videos_pl/
     └── emotional-dysregulation-in-adhd/
         └── md/
             └── 01_research.md

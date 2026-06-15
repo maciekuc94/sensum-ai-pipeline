@@ -1,6 +1,6 @@
 # Image Style Guide
 
-Visual bible for YouTube psychology channel images. Read by Agent 5 (visuals) when assembling full Imagen prompts. Agent 3 (script) does NOT write image markers — Agent 5 generates all prompts directly from the finished script.
+Visual bible for the SENSUM channel images. Loaded by the **scientific-etching-guard** skill for freeform image requests (outside `/visuals` & `/package`). For the pipeline proper, Agent 5/6 inject the canonical background + character via `STYLE_SUFFIX` / `CHARACTER_DESCRIPTION` in `tools/utils.py`, and the generate path ends in a deterministic `two_color` snap to #582F0E / #F4E5CA. Agent 3 (script) does NOT write image markers.
 
 ---
 
@@ -10,7 +10,7 @@ All images use only these two SENSUM colors. No blue, no teal, no red, no golden
 
 | Color name | Hex | Role |
 |---|---|---|
-| Sage Beige | #F4E5CA | Background applied in DaVinci as canvas color — images generate and export as transparent PNG |
+| Sage Beige | #F4E5CA | Exclusive background — requested in prompts as a flat solid sage beige background with no texture; paper-grain is added in post (`add_grain.py`), never in the prompt |
 | Dark Brown | #582F0E | All linework, ink-liner outlines, cross-hatching |
 
 **Global rule: No text, no labels, no words, no numbers, no letters in any image.**
@@ -21,8 +21,8 @@ All images use only these two SENSUM colors. No blue, no teal, no red, no golden
 
 Every image uses this foundation:
 
-    minimalist high-contrast ink illustration on clean flat white background,
-    color palette strictly limited to #582F0E dark brown ink lines on white — no other colors whatsoever,
+    minimalist high-contrast ink illustration on a flat solid sage beige background (#F4E5CA) with no texture,
+    color palette strictly limited to #582F0E dark brown ink lines on #F4E5CA sage beige — no other colors whatsoever,
     detailed cross-hatching for depth and shadow, fine-liner ink sketch, 2D perspective, heavy negative space,
     19th-century scientific journal engraving style, zero photorealism, no 3D effects, no gradients, no glows, no blurs,
     no golden ochre, no moss green, no watercolor, no color fills,
@@ -42,7 +42,7 @@ The same character appears in every image. Agent 5 (visuals) injects this at the
 **Rules:**
 - Blank smooth oval head, zero facial features — anonymous and universal
 - Gender-neutral body — no gendered shape cues
-- Warm khaki-tan fill, dark espresso brown outlines
+- Dark brown (#582F0E) ink lines and cross-hatching only — no colour fills (no khaki-tan, no skin tone)
 - Same character in every single image — this is what creates visual consistency
 
 ---
@@ -84,5 +84,5 @@ Write the `[IMAGE: ...]` content using body state and environment — the charac
 ## Environment Vocabulary
 
 - **Minimal real spaces (ink lines):** doorframe edge, window sill, floor horizon, staircase base, table surface — all as single minimal ink strokes
-- **Abstract spaces:** pure white void — no lines, figure alone in open space
+- **Abstract spaces:** open sage-beige void (#F4E5CA) — no lines, figure alone in open space
 - **Transitional spaces:** one vertical ink line as a threshold, or radiating ink strokes suggesting light from one side

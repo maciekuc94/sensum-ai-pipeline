@@ -3,9 +3,12 @@
 ## Purpose
 
 Agent 6 reads the `md/05_image_prompts.md` file produced by **Agent 5** and
-renders each prompt as a PNG using **Gemini 3 Pro Image Preview** on Vertex AI.
+renders each prompt as a PNG using **Gemini 2.5 Flash Image (tuned-flash v8)** on Vertex AI.
 It runs in two phases separated by a human review step so prompts can be
 refined before spending API credits on generation.
+
+> The pricier `gemini-3-pro-image-preview` (~4K) renderer is reserved for
+> **Agent 7 (thumbnails)** only — body images use the cheaper tuned-flash v8.
 
 The image-prompt content itself is **owned by Agent 5** (`tools/pipeline/agent5_visuals.py`).
 Agent 6 is a renderer — it does not generate or rewrite prompts.
@@ -24,7 +27,7 @@ Agent 6 is a renderer — it does not generate or rewrite prompts.
    ```
    GOOGLE_CLOUD_PROJECT=my-gcp-project-id
    ```
-   Region is hard-coded to `global` — Gemini 3 Pro Image Preview returns 404 on
+   Region is hard-coded to `global` — Gemini 2.5 Flash Image (tuned-flash v8) returns 404 on
    regional endpoints.
 
 3. **Application Default Credentials** — authenticate once per workstation:
@@ -82,8 +85,8 @@ block looks like this:
 a completely androgynous faceless gender-neutral human mannequin figure with
 a smooth featureless blank oval head — [...full CHARACTER_DESCRIPTION...].
 A faceless figure holds a phone in both hands, thumbs positioned for scrolling.
-minimalist high-contrast ink illustration on clean flat white background,
-color palette strictly limited to #582F0E dark brown ink lines on white —
+minimalist high-contrast ink illustration on a flat solid sage beige background (#F4E5CA) with no texture,
+color palette strictly limited to #582F0E dark brown ink lines on #F4E5CA sage beige —
 [...full STYLE_SUFFIX...] — 16:9 aspect ratio
 ```
 
@@ -132,10 +135,10 @@ Slug : <slug>
 [1/3] Reading md/05_image_prompts.md...
   Loaded 76 prompt(s)
 
-[2/3] Initialising Vertex AI Imagen...
+[2/3] Initialising Vertex AI Gemini...
   Project  : my-gcp-project-id
   Location : global
-  Model    : gemini-3-pro-image-preview
+  Model    : gemini-2.5-flash-image
 
 [3/3] Generating 76 image(s)...
   [1/76] Generating image_001.png...
@@ -148,7 +151,7 @@ Slug : <slug>
 - Parses each `**Imagen prompt:**` block from `md/05_image_prompts.md`.
 - Appends a short negative instruction (face suppression, color-drift
   suppression, head-cropping suppression) to each prompt.
-- Calls `gemini-3-pro-image-preview` with `response_modalities=["IMAGE"]`.
+- Calls `gemini-2.5-flash-image` with `response_modalities=["IMAGE"]`.
 - Saves the result as `image_NNN.png`.
 - Post-processes each image in this order: resizes/pillarboxes to 1920×1080
   with `#F4E5CA` padding → **`two_color`** hard-quantizes every pixel to the
@@ -275,7 +278,7 @@ does **not** re-apply the style — it just renders whatever is in
   between separate calls. The repeated `CHARACTER_DESCRIPTION` reduces drift
   but does not eliminate it.
 
-- **Rate limit** — Vertex AI Gemini 3 Pro Image Preview has a low QPM quota.
+- **Rate limit** — Vertex AI Gemini 2.5 Flash Image (tuned-flash v8) has a low QPM quota.
   Agent 6 spaces calls 20 s apart. A 76-image script takes ~25 minutes.
 
 - **Stochasticity** — Re-running the same prompt produces a different render.
